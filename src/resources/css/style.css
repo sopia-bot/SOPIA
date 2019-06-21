@@ -1,0 +1,24 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+    padding: 0px;
+    height:100vh;
+}
+
+nav {
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    background: linear-gradient(0.25turn, #F0D29C, #F2B442);
+}
+
+.gutter.gutter-horizontal {
+    cursor: ew-resize;
+    background-color:#d1d1d1;
+}
