@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="vendors/js/highlight.pack.js" type="text/javascript"></script>
+		<link href="vendors/css/atom-one-light.css" rel="stylesheet">
+		<style>
+			#homeDiv {
+				width: 100%;
+				height: 100%;
+				padding: 1.5rem;
+				display: table-cell;
+			}
+			#console-output {
+				width: 100%; 
+				height:100%; 
+				overflow-y: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div name="import-child" style="display: table;">
+			<div id="homeDiv">
+				<!-- S:LIVE INFO -->
+				<div class="uk-card uk-card-default" style="width: 100%;">
+					<div class="uk-card-header">
+						<h3 class="uk-card-title uk-margin-remove-bottom">라이브 정보</h3>
+					</div>
+					<!-- S:LIVE INFO BODY -->
+					<div class="uk-card-body">
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>라이브 제목</div>
+							<div class="uk-text-right">
+								<a id="liveTitle" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>라이브 시작 시간</div>
+							<div class="uk-text-right">
+								<a id="liveStartTime" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>라이브 배경 URL</div>
+							<div class="uk-text-right">
+								<a id="liveBgUrl" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 닉네임</div>
+							<div class="uk-text-right">
+								<a id="bjName" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 태그</div>
+							<div class="uk-text-right">
+								<a id="bjTag" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 PID</div>
+							<div class="uk-text-right">
+								<a id="bjPID" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 프로필 URL</div>
+							<div class="uk-text-right">
+								<a id="bjProfileUrl" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 가입일</div>
+							<div class="uk-text-right">
+								<a id="bjDateJoined" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+					</div>
+					<!-- E:LIVE INFO BODY -->
+					<div class="uk-card-footer">
+						<div class="uk-inline" style="width: 100%;">
+							<span class="uk-form-icon uk-form-icon-flip uk-icon" uk-icon="icon: chevron-left"></span>
+							<input id="live-send" placeholder="대화를 입력하세요." class="uk-input uk-input-spoon" onclick="this.focus();" onkeydown="inputEvent(event);" type="text">
+						</div>
+					</div>
+				</div>
+				<!-- E:LIVE INFO -->
+				<!-- S:CONSOLE -->
+				<div class="uk-margin uk-card-default" style="width: 100%;">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">Console</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<label>스크롤 하단 고정&nbsp;<input id="console-scroll-fix" class="uk-checkbox uk-checkbox-spoon" type="checkbox" checked></label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="uk-card-body" style="height: 70vh;">
+						<div id="console-output"></div>
+					</div>
+					<div class="uk-card-footer">
+						<div class="uk-inline" style="width: 100%;">
+							<span class="uk-form-icon uk-form-icon-flip uk-icon" uk-icon="icon: chevron-left"></span>
+							<input id="console-input" class="uk-input uk-input-spoon" onclick="this.focus();" onkeydown="inputEvent(event);" type="text">
+						</div>
+					</div>
+				</div>
+				<!-- E:CONSOLE -->
+			</div>
+		</div>
+		<script type="text/javascript">
+			/**
+			 * @function logging 
+			 * @param {String} str
+			 * 문자열로 받은 str을 console-output 에다가 추가를 한다.
+			 */
+			const logging = (str) => {
+				let row = document.createElement('div');
+				row.className = "row";
+				let colLeft = document.createElement('div');
+				colLeft.className = "col-12";
+
+				let p = document.createElement('pre');
+				p.className = "text-light";
+				p.style = "overflow:hidden; white-space: pre-wrap;";
+				
+				let code = document.createElement('code');
+				code.className = "javascript"
+				code.innerText = str;
+				
+				hljs.highlightBlock(code);
+				
+				p.appendChild(code);
+				colLeft.appendChild(p);
+				row.appendChild(colLeft);
+				document.querySelector('#console-output').appendChild(row);
+				
+				if (document.querySelector('#console-scroll-fix').checked) {
+					document.querySelector('#console-output').scrollTop = 
+						document.querySelector('#console-output').scrollHeight;
+				}
+			};
+
+			/**
+			 * @function sofia.error
+			 * @param {UserException} obj
+			 * try ... catch 로 받은 error 을 출력한다.
+			 */
+			sofia.error = (obj) => {
+				logging(`${obj.name} : ${obj.message}`);
+			};
+
+			/**
+			 * @function sofia.log
+			 * @param {*} obj
+			 * @param {String} cmd
+			 * console.log 와 비슷한 기능
+			 */
+			sofia.log = (obj, cmd = null) => {
+				let code = "";
+				let flag = true;
+				if ( typeof obj === "object" ) {
+					code += JSON.stringify(obj, null, '\t');
+					flag = false;
+				} else if ( typeof obj === "string") {
+					if ( cmd ) {
+						if ( obj.match(/\[object \w+\]/) ) {
+							let s = obj.replace(/\W+\[object\ /, "").replace(/\]$/, "");
+							console.log(s);
+							switch (s.toLowerCase()) {
+								case "object": {
+									code += eval(`JSON.stringify(${cmd}, null, '\t');`);
+									flag = false;
+								} break;
+							}
+						}
+					}
+				}
+
+				if ( flag ) {
+					code += obj + "";
+				}
+				
+				logging(code);
+			};
+
+			/** 
+			 * console-input 에 대한 이벤트.
+			 * 엔터를 누르면 스크립트가 실행이 되고, 
+			 * 위 아래키로 이전 스크립트를 바로 사용할 수 있다.
+			 */
+			const inputEvent = (e) => {
+				if (e.which === 13) {
+					//enter
+					if ( e.target.value.trim() === "" ) {
+						return;
+					}
+					try{
+						sofia.log("< "+e.target.value);
+						sofia.log("= "+eval(e.target.value), e.target.value);
+					} catch(err) {
+						sofia.error(err);
+					}
+					if ( !window.command ) {
+						window.command = {
+							stack: [],
+							idx: 0,
+							length: 0
+						};
+					} else {
+						if ( Array.isArray(window.command.stack) === false ) {
+							window.command.stack = [];
+						}
+						if ( typeof window.command.idx !== "number" ) {
+							window.command.idx = 0;
+						}
+						if ( typeof window.command.length !== "number" ) {
+							window.command.length = window.command.stack.length;
+						}
+					}
+					window.command.stack.push(e.target.value);
+					window.command.length = window.command.stack.length;
+					window.command.idx = window.command.length;
+					e.target.value = "";
+				} else if (e.which === 38 ) {
+					//arrow up
+					if ( window.command.idx > 0 ) {
+						window.command.idx--;
+						e.target.value = window.command.stack[window.command.idx];
+					}
+				} else if (e.which === 40 ) {
+					//arrow down
+					if ( window.command.idx < window.command.length ) {
+						window.command.idx++;
+						let val = window.command.stack[window.command.idx];
+						if ( val ) {
+							e.target.value = val;
+						} else {
+							e.target.value = "";
+						}
+					}
+				}
+			};
+		</script>
+	</body>
+</html>

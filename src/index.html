@@ -3,23 +3,30 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>SOPIA</title>
+		<script src="resources/js/preload.js" type="text/javascript"></script>
+		<script	src="vendors/js/uikit.min.js"		type="text/javascript"></script>
+		<script	src="vendors/js/uikit-icons.min.js"	type="text/javascript"></script>
+
+		<link href="../vs/editor/editor.main.css" data-name="vs/editor/editor.main" rel="stylesheet">
+
 		<link href="vendors/css/uikit.css"		rel="stylesheet">
 		<link href="resources/css/style.css"	rel="stylesheet">
-        <link href="../vs/editor/editor.main.css" data-name="vs/editor/editor.main" rel="stylesheet">
 
-		<!-- <link id="dashbaord"	href="dashboard.html"	rel="import">
-		<link id="code"			href="code.html"		rel="import"> -->
+		<link id="home"			href="home.html"		rel="import">
+		<link id="code"			href="code.html"		rel="import">
+		<link id="live"			href="live.html"		rel="import">
+		<link id="setting"		href="setting.html"		rel="import">
 	</head>
 	<body>
 		<!-- S:Main -->
 		<main id="ContainerPanel" class="flex">
 			<!-- S:Panel1 -->
-			<div name="panel1" style="padding-top: 80px;">
+			<div name="panel1">
 				<!-- S:Navbar -->
 				<nav class="uk-navbar-container" uk-navbar style="position: absolute;">
 					<div class="uk-navbar-left">
 						<ul class="uk-navbar-nav">
-							<li>
+							<li class="uk-active">
 								<a href="#">
 									<span class="uk-icon uk-margin-small-right" uk-icon="icon: home"></span>Home
 								</a>
@@ -44,8 +51,8 @@
 				</nav>
 				<!-- E:Navbar -->
 				<!-- S:Control -->
-				<div id="controls" class="" style="height: 100%;width: 100%;">
-					<div id="code" style="height: 100%; width:100%;"></div>
+				<div id="controls" class="" style="height: 100%;width: 100%;overflow-y: auto;">
+					
 				</div>
 				<!-- E:Control -->
 			</div>
@@ -58,40 +65,13 @@
 		</main>
 		<!-- E:Main -->
 		<!-- S:Script -->
-		<script	src="vendors/js/uikit.min.js"		type="text/javascript"></script>
-		<script	src="vendors/js/uikit-icons.min.js"	type="text/javascript"></script>
 		<script src="vendors/js/split.min.js"		type="text/javascript"></script>
 		<script src="vendors/js/zingtouch.min.js"	type="text/javascript"></script>
 
 		<script src="resources/js/elementLoad.js"	type="text/javascript"></script>
-		<!-- E:Script -->
-        <!-- monaco editor dependency -->
+		<script src="resources/js/DOMContentLoaded.js"	type="text/javascript"></script>
+
 		<script src="../vs/loader.js" type="text/javascript"></script>
-		<script>
-			require(['vs/editor/editor.main'], function() {
-				require.config({
-					paths: {
-						'vs': getPath('vs')
-					}
-				})
-				monaco.editor.create(document.getElementById('code'), {
-					value: "",
-					language: 'javascript',
-					theme: 'vs',
-					automaticLayout: true
-				});
-				// window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function() {
-				// 	// fs.writeFile(getPath("s-bot/main.js"), window.editor.getValue(), {encoding: 'utf8'}, (err) => {
-				// 	// 	if ( err ) {
-				// 	// 		throw err;
-				// 	// 	}
-				// 	// 	window.save_variable = window.ObjClone(sbot.variable);
-				// 	// 	window.code = window.editor.getValue();
-				// 	// 	sbotInit();
-				// 	// 	loadScript();
-				// 	// });
-				// });
-			});
-		</script>
+		<!-- E:Script -->
 	</body>
 </html>

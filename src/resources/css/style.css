@@ -18,6 +18,17 @@ nav {
     background: linear-gradient(0.25turn, #F0D29C, #F2B442);
 }
 
+/* style로 지정하면 width에 의해 padding 값이 사라진다. */
+div[name="panel1"] {
+    padding-top: 80px;
+}
+
+/* import 된 유사템플릿을 부모에 전체로 채운다. */
+div[name="import-child"] {
+    width: 100%;
+    height: 100%;
+}
+
 .gutter.gutter-horizontal {
     cursor: ew-resize;
     background-color:#d1d1d1;

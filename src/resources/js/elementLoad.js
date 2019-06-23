@@ -5,12 +5,6 @@
 ////////////////////////////////////////////////////////////////
 
 
-const path = require('path');
-const app = require('electron').remote.app;
-const getPath = (path_) => {
-    return path.join(app.getAppPath(), path_);
-};
-
 /** 
  * 2분할 된 메인창의 gutter가,
  * Panel1(왼쪽) 의 offset이 @minOffset 이하이면 Navbar의 텍스트가 깨지는 현상으로,
@@ -53,50 +47,43 @@ window.region = new ZingTouch.Region(document.body);
 window.gesture = null;
 
 document.querySelectorAll('*').forEach(e => {
-    console.log(e);
-    window.region.bind(e, 'pan', (e) => {
-        let evt = e.detail.events[0].originalEvent;
-        if ( evt.buttons === 2 ) {
-            let ddata = e.detail.data[0];
-            if ( ddata.currentDirection === 180 ) {
-                //왼쪽으로 제스쳐를 했을 때,
-                window.gesture = "left";
-            } else if ( ddata.currentDirection === 360 ) {
-                //오른쪽으로 제스쳐를 했을 때
-                window.gesture = "right";
-            }
-        } else {
-            console.log(e);
-            document.querySelector('nav').style.width = document.querySelector('#ContainerPanel>div[name="panel1"]').offsetWidth+"px";
-        }
-    });
-    /** 
-     * 위에서 제스쳐가 끝난 후 마우스 오른쪽 버튼을 떼면,
-     * @gesture 에 맞는 동작을 실행한다.
-     */
-    e.addEventListener('mouseup', (e) => {
-        if ( e.button === 2 ) {
-            if ( window.gesture ) {
-                if ( window.gesture === "left" ) {
-                    //webview panel 을 50,50으로 맞춘다.
-                    document.querySelector('#ContainerPanel>div[name="panel1"]').setAttribute('style', 'width:calc(50%)');
-                    document.querySelector('#ContainerPanel>div[name="panel2"]').setAttribute('style', 'width:calc(50%)');
-                } else if ( window.gesture === "right" ) {
-                    //webview panel 을 0으로 맞춘다.
-                    window.ContainerPanel.setSizes([101, -1]);
+    if ( e.tagName.toLowerCase() === "input" ) {
+    } else {
+        window.region.bind(e, 'pan', (e) => {
+            let evt = e.detail.events[0].originalEvent;
+            if ( evt.buttons === 2 ) {
+                let ddata = e.detail.data[0];
+                if ( ddata.currentDirection === 180 ) {
+                    //왼쪽으로 제스쳐를 했을 때,
+                    window.gesture = "left";
+                } else if ( ddata.currentDirection === 360 ) {
+                    //오른쪽으로 제스쳐를 했을 때
+                    window.gesture = "right";
                 }
-                window.gesture = null;
+            } else {
+                refreshNavSize();
             }
-        }
-    });
+        });
+        /** 
+        * 위에서 제스쳐가 끝난 후 마우스 오른쪽 버튼을 떼면,
+        * @gesture 에 맞는 동작을 실행한다.
+        */
+        e.addEventListener('mouseup', (e) => {
+            if ( e.button === 2 ) {
+                if ( window.gesture ) {
+                    if ( window.gesture === "left" ) {
+                        //webview panel 을 50,50으로 맞춘다.
+                        document.querySelector('#ContainerPanel>div[name="panel1"]').setAttribute('style', 'width:calc(50%);');
+                        document.querySelector('#ContainerPanel>div[name="panel2"]').setAttribute('style', 'width:calc(50%);');
+                    } else if ( window.gesture === "right" ) {
+                        //webview panel 을 0으로 맞춘다.
+                        window.ContainerPanel.setSizes([101, -1]);
+                    }
+                    window.gesture = null;
+                    refreshNavSize();
+                }
+            }
+        });
+    }
 });
-document.querySelector('nav').style.width = document.querySelector('#ContainerPanel>div[name="panel1"]').offsetWidth+"px";
-
-//var dashboard = document.querySelector('#dashboard').import.querySelector('div[name="import-child"');
-// if ( dashboard ) {
-//     document.querySelector('#controls').appendChild(dashboard);
-// }
-// var code = document.querySelector('#code').import.querySelector('div[name="import-child"]');
-// if ( code ) {
-//     document.querySelector('#controls').appendChild(code);
-// }
+refreshNavSize();
