@@ -14,11 +14,48 @@
 	<body>
 		<div name="import-child">
 			<div id="settingDiv" style="height: 100%; width:100%;">
+				<!-- S:WebSocket Server Setting -->
 				<div class="uk-margin uk-card-default" style="width: 100%;">
 					<div class="uk-card-header">
 						<div uk-grid>
 							<div class="uk-width-1-2">
 								<h3 class="uk-card-title uk-margin-remove-bottom">웹소켓 서버 설정</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<button id="saveSopia" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="uk-card-body">
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>웹 소켓 포트</div>
+							<div class="uk-text-right">
+								<input id="wsPort" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>최대 프레임 사이즈</div>
+							<div class="uk-text-right">
+								<input id="wsFrameSize" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>최대 메시지 사이즈</div>
+							<div class="uk-text-right">
+								<input id="wsMessageSize" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- E:WebSocket Server Setting -->
+				<!-- S:SOPIA Setting -->
+				<div class="uk-margin uk-card-default" style="width: 100%;">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">SOPIA 설정</h3>
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
@@ -28,9 +65,27 @@
 						</div>
 					</div>
 					<div class="uk-card-body">
-						<div id="console-output"></div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>자동 매니저 멘트 시작</div>
+							<div class="uk-text-right">
+								<input id="wsPort" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>최대 프레임 사이즈</div>
+							<div class="uk-text-right">
+								<input id="wsFrameSize" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>최대 메시지 사이즈</div>
+							<div class="uk-text-right">
+								<input id="wsMessageSize" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+							</div>
+						</div>
 					</div>
 				</div>
+				<!-- E:SOPIA Setting -->
 			</div>
         </div>
 	</body>
