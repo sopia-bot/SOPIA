@@ -119,7 +119,7 @@
 			 * @param {String} str
 			 * 문자열로 받은 str을 console-output 에다가 추가를 한다.
 			 */
-			const logging = (str) => {
+			const logging = (str, lang = "javascript") => {
 				let row = document.createElement('div');
 				row.className = "row";
 				let colLeft = document.createElement('div');
@@ -130,7 +130,7 @@
 				p.style = "overflow:hidden; white-space: pre-wrap;";
 				
 				let code = document.createElement('code');
-				code.className = "javascript"
+				code.className = lang
 				code.innerText = str;
 				
 				hljs.highlightBlock(code);
@@ -147,23 +147,24 @@
 			};
 
 			/**
-			 * @function sofia.error
+			 * @function sopia.error
 			 * @param {UserException} obj
 			 * try ... catch 로 받은 error 을 출력한다.
 			 */
-			sofia.error = (obj) => {
+			sopia.error = (obj) => {
 				logging(`${obj.name} : ${obj.message}`);
 			};
 
 			/**
-			 * @function sofia.log
+			 * @function sopia.log
 			 * @param {*} obj
 			 * @param {String} cmd
 			 * console.log 와 비슷한 기능
 			 */
-			sofia.log = (obj, cmd = null) => {
+			sopia.log = (obj, cmd = null) => {
 				let code = "";
 				let flag = true;
+				let lang = "javascript";
 				if ( typeof obj === "object" ) {
 					code += JSON.stringify(obj, null, '\t');
 					flag = false;
@@ -171,12 +172,21 @@
 					if ( cmd ) {
 						if ( obj.match(/\[object \w+\]/) ) {
 							let s = obj.replace(/\W+\[object\ /, "").replace(/\]$/, "");
-							console.log(s);
 							switch (s.toLowerCase()) {
 								case "object": {
 									code += eval(`JSON.stringify(${cmd}, null, '\t');`);
 									flag = false;
 								} break;
+							}
+							if ( s.toLowerCase().match(/html.*element/)) {
+								code += eval(cmd).outerHTML;
+								flag = false;
+								lang = "html";
+							}
+
+							if ( flag ) {
+								//예외처리 안 된 항목
+								console.log(s);
 							}
 						}
 					}
@@ -186,7 +196,7 @@
 					code += obj + "";
 				}
 				
-				logging(code);
+				logging(code, lang);
 			};
 
 			/** 
@@ -201,10 +211,10 @@
 						return;
 					}
 					try{
-						sofia.log("< "+e.target.value);
-						sofia.log("= "+eval(e.target.value), e.target.value);
+						sopia.log("< "+e.target.value);
+						sopia.log("= "+eval(e.target.value), e.target.value);
 					} catch(err) {
-						sofia.error(err);
+						sopia.error(err);
 					}
 					if ( !window.command ) {
 						window.command = {

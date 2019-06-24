@@ -4,13 +4,13 @@ const { clipboard } = require('electron');
 const EventEmitter = require('events');
 
 /**
- * @sofia 의 객체를 생성한다.
+ * @sopia 의 객체를 생성한다.
  * 기본적으로 EventEmitter을 사용하여 스푼에서 받은 이벤트를 처리한다.
- * sofia.var 에선 sofia.var.save 함수를 사용하지 않는 한, sofia 재시작시 수정된 변수값을 초기화한다.
+ * sopia.var 에선 sopia.var.save 함수를 사용하지 않는 한, sopia 재시작시 수정된 변수값을 초기화한다.
  */
-const sofia = new EventEmitter();
-sofia.var = new Object();
-sofia.intval = new Object();
+const sopia = new EventEmitter();
+sopia.var = new Object();
+sopia.intval = new Object();
 
 /**
  * @function getPath
