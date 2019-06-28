@@ -76,7 +76,7 @@ HTMLElement.prototype.appendImport = function(target, query, cb) {
 	if ( t.import instanceof Document ) {
 		child = t.import.querySelector(query);
 		if ( child ) {
-			child = child.cloneNode(true);
+			//child = child.cloneNode(true);
 			this.appendChild(child);
 		}
 	}

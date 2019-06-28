@@ -23,7 +23,7 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
-									<button id="saveSopia" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									<button id="wsSettingSave" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
 								</div>
 							</div>
 						</div>
@@ -32,19 +32,19 @@
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>웹 소켓 포트</div>
 							<div class="uk-text-right">
-								<input id="wsPort" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+								<input id="wsPort" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>최대 프레임 사이즈</div>
 							<div class="uk-text-right">
-								<input id="wsFrameSize" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+								<input id="wsFrameSize" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>최대 메시지 사이즈</div>
 							<div class="uk-text-right">
-								<input id="wsMessageSize" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+								<input id="wsMessageSize" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
 							</div>
 						</div>
 					</div>
@@ -59,7 +59,7 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
-									<button class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									<button id="sofiaSettingSave" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
 								</div>
 							</div>
 						</div>
@@ -68,25 +68,117 @@
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>자동 매니저 멘트 시작</div>
 							<div class="uk-text-right">
-								<input id="wsPort" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+								<label class="switch">
+									<input type="checkbox">
+									<span class="slider round"></span>
+								</label>
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-							<div>최대 프레임 사이즈</div>
+							<div>본인 감지</div>
 							<div class="uk-text-right">
-								<input id="wsFrameSize" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+								<label class="switch">
+									<input type="checkbox">
+									<span class="slider round"></span>
+								</label>
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-							<div>최대 메시지 사이즈</div>
+							<div>매니저일때만 작동</div>
 							<div class="uk-text-right">
-								<input id="wsMessageSize" class="uk-input uk-input-spoon" onclick="this.focus();" type="text">
+								<label class="switch">
+									<input type="checkbox">
+									<span class="slider round"></span>
+								</label>
 							</div>
 						</div>
 					</div>
 				</div>
 				<!-- E:SOPIA Setting -->
+				<!-- S:Auto Login -->
+				<div class="uk-margin uk-card-default" style="width: 100%;">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">자동 로그인</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<button id="autoLoginSave" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="uk-card-body">
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>자동 로그인</div>
+							<div class="uk-text-right">
+								<label class="switch">
+									<input type="checkbox">
+									<span class="slider round"></span>
+								</label>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>자동 로그인 타입</div>
+							<div class="uk-text-right">
+								<div class="uk-inline">
+									<button id="autoLoginType" class="uk-button uk-button-default" data-type="phone" type="button">핸드폰 번호</button>
+									<div uk-dropdown="pos: top-right">
+										<ul id="altItems" class="uk-nav uk-dropdown-nav">
+											<li class="uk-active" onclick="altSelect(event);" name="autoLoginTypeItems" data-type="phone"><a href="#">핸드폰 번호</a></li>
+											<li class="uk-nav-divider"></li>
+											<li data-type="email" onclick="altSelect(event);" name="autoLoginTypeItems"><a href="#">이메일</a></li>
+											<li class="uk-nav-divider"></li>
+											<li data-type="facebook" onclick="altSelect(event);" name="autoLoginTypeItems"><a href="#">페이스북</a></li>
+											<li class="uk-nav-divider"></li>
+											<li data-type="gmail" onclick="altSelect(event);" name="autoLoginTypeItems"><a href="#">구글</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>자동 로그인 아이디</div>
+							<div class="uk-text-right">
+								<input id="autoLoginID" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="text">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>자동 로그인 비밀번호</div>
+							<div class="uk-text-right">
+								<input id="autoLoginPW" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="password">
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- E:Auto Login -->
 			</div>
-        </div>
+		</div>
+		<script type="text/javascript">
+			const altSelect = e => {
+				let alt = document.querySelector('#autoLoginType');
+				let li = e.target;
+				if ( li.tagName.toLowerCase() === "a" ) {
+					li = li.parentElement;
+				}
+
+				if ( alt ) {
+					alt.innerText = li.innerText;
+					alt.setAttribute('data-type', li.getAttribute('data-type'));
+
+					let selected = document.querySelector('#altItems>li.uk-active');
+					if ( selected.className !== li.className ) {
+						document.querySelectorAll('li[name="autoLoginTypeItems"]').forEach(element => {
+							if ( element.getAttribute('data-type') === li.getAttribute('data-type') ) {
+								element.className = "uk-active";
+							} else {
+								element.className = "";
+							}
+						});
+					}
+				}
+			};
+		</script>
 	</body>
 </html>

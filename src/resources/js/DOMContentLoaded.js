@@ -113,5 +113,4 @@ document.addEventListener('DOMContentLoaded', (evt) => {
         });
     });
     /*               E: MENU CLICK               */
-
 });
