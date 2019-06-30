@@ -2,10 +2,107 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<style>
+			#codeTable {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#treeDivParent {
+				position:absolute; 
+				left:0; 
+				width: 200px;
+				height: calc(100% - 80px);
+				background-color: rgb(255, 253, 246);
+				overflow: auto;
+			}
+			#codeDiv {
+				margin-left:200px; 
+				width: calc(100% - 200px); 
+				height: 100%;
+			}
+			#code-tools {
+				text-align: left;
+				background-color: rgb(248, 244, 231);
+				position: fixed;
+				/* padding 10 + width 190 = 200 */
+				width: 190px;
+				padding: 5px 5px 10px 5px;
+				z-index: 101;
+			}
+
+			#treeDivParent::-webkit-scrollbar {
+				display: none;
+			}
+		</style>
 	</head>
 	<body>
-		<div name="import-child" style="overflow: hidden;">
-            <div id="codeDiv" style="height: 100%; width:100%;"></div>
-        </div>
+		<div id="codeTable" name="import-child" style="overflow: hidden;">
+			<div id="treeDivParent">
+				<div id="code-tools">
+					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: push" uk-tooltip="프로젝트 폴더를 엽니다."></a>
+					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: file" uk-tooltip="선택한 폴더에 새로운 파일을 생성합니다."></a>
+					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: folder" uk-tooltip="선택한 폴더에 새로운 폴더를 생성합니다."></a>
+					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: pencil" uk-tooltip="선택한 파일 또는 폴더의 이름을 바꿉니다."></a>
+					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: trash" uk-tooltip="선택한 파일 또는 폴더를 삭제합니다."></a>
+				</div>
+				<div id="treeDiv">
+				</div>
+			</div>
+			<div id="codeDiv"></div>
+		</div>
+		<script type="text/javascript">
+			/**
+			 * @function createFolderTree
+			 * @param {Object} finfo
+			 * @param {Number} dl
+			 * readFolder의 결과값인 finfo 기준으로 읽은 폴더 트리 엘리먼트를 생성한다.
+			 * dl 은 현재 깊이를 나타낸다
+			 */
+			
+			window.folderIconHTML = '<span class="uk-icon uk-margin-small-right" uk-icon="icon: folder"></span>';
+			window.fileIconHTML = '<span class="uk-icon uk-margin-small-right" uk-icon="icon: file-text"></span>';
+			const createFolderTree = (finfo, dl = 0) => {
+				if ( typeof finfo === "object" ) {
+					let ulElement = document.createElement('ul');
+					if ( dl === 0 ) {
+						ulElement.className = "uk-nav-default uk-nav-parent-icon uk-margin-small-left uk-margin-small-right";
+						ulElement.style = "height:calc(100% - 39px); margin-top:39px";
+					} else {
+						ulElement.className = "uk-nav-sub uk-nav-parent-icon";
+					}
+					ulElement.setAttribute('uk-nav', 'multiple: true');
+					
+					/* 폴더를 먼저 그린다. */
+					Object.keys(finfo["folders"]).forEach(cpath => {
+						let folderElement = document.createElement('li');
+						folderElement.className = "uk-parent";
+
+						let aElement = document.createElement('a');
+						aElement.href = "#";
+						aElement.innerHTML = window.folderIconHTML + path.basename(cpath);
+
+						folderElement.appendChild(aElement);
+
+						let crtn = createFolderTree(finfo["folders"][cpath], dl+1);
+						folderElement.appendChild(crtn);
+
+						ulElement.appendChild(folderElement);
+					});
+					
+					/* 파일들 아이템을 그린다. */
+					finfo["files"].forEach(f => {
+						let fileElement = document.createElement('li');
+						let aElement = document.createElement('a');
+						aElement.innerHTML = window.fileIconHTML + path.basename(f);
+
+						ulElement.appendChild(fileElement);
+					});
+					return ulElement;
+				}
+			};
+		</script>
 	</body>
 </html>

@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
                     'vs': getPath('vs')
                 }
             })
-            monaco.editor.create(target.querySelector('div'), {
+            window.editor = monaco.editor.create(target.querySelector('#codeDiv'), {
                 value: "",
                 language: 'javascript',
                 theme: 'vs',
@@ -49,7 +49,15 @@ document.addEventListener('DOMContentLoaded', (evt) => {
             //     });
             // });
         });
+        
+        //폴더를 읽어서 트리를 생성한다.
+        let dirInfo = readFolder("./sopia");
+        let createInfo = createFolderTree(dirInfo);
+        if ( createInfo ) {
+            document.querySelector('#treeDiv').appendChild(createInfo);
+        }
     });
+    
 
     /**
      * live를 controls에 import 시킨다.
@@ -94,6 +102,13 @@ document.addEventListener('DOMContentLoaded', (evt) => {
                     if ( import_.getAttribute('data-target') && e.target.innerText &&
                     import_.getAttribute('data-target').toLowerCase && e.target.innerText.toLowerCase ) {
                         if ( import_.getAttribute('data-target').toLowerCase() === e.target.innerText.toLowerCase() ) {
+                            if ( import_.getAttribute('data-target').toLowerCase() === "code" ) {
+                                import_.style.overflow = "hidden";
+                                document.querySelector('#controls').style.overflow = "hidden";
+                            } else {
+                                import_.style.overflow = "auto";
+                                document.querySelector('#controls').style.overflow = "auto";
+                            }
                             import_.style.display = "table";
                         } else {
                             import_.style.display = "none";

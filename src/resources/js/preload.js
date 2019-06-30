@@ -1,4 +1,11 @@
+////////////////////////////////////////////////////////////////
+//  파일 : preload.js                                         //
+//  작성자 : mobbing                                          //
+//  주석 : DOM이 로드되기 전 처리할 스크립트                    //
+///////////////////////////////////////////////////////////////
+
 const path = require('path');
+const fs = require('fs');
 const app = require('electron').remote.app;
 const { clipboard } = require('electron');
 const EventEmitter = require('events');
@@ -23,6 +30,30 @@ const getPath = (path_) => {
 };
 
 /**
+ * @function readFolder
+ * @param {string} path_
+ * path_가 폴더라면 하위 폴더에 있는 내용까지 전부 탐색하여,
+ * 결과값을 반환한다.
+ */
+const readFolder = (path_ = app.getAppPath()) => {
+	let dir = fs.lstatSync(path_);
+	let rtn = {files: [], folders: {}};
+	if ( dir && dir.isDirectory() ) {
+		let dirInfo = fs.readdirSync(path_);
+		dirInfo.forEach(f => {
+			let p = path.join(path_,f);
+			let d = fs.lstatSync(p);
+			if ( d && d.isDirectory() ) {
+				rtn.folders[p] = readFolder(p);
+			} else {
+				rtn.files.push(p);
+			}
+		});
+	}
+	return rtn;
+};
+
+/**
  * @function copyAtag
  * @param {HTMLElement} element 
  * @param {boolean} skipFlag
@@ -33,16 +64,19 @@ const copyAtag = (element, skipFlag = false) => {
 	let text = element.innerText;
 	if ( text ) {
 		clipboard.writeText(text);
-		UIkit.notification({
-			message: '<span uk-icon="icon: check"></span>&nbsp;'+
+		if ( !skipFlag ) {
+			UIkit.notification({
+				message: '<span uk-icon="icon: check"></span>&nbsp;'+
 				'<label class="uk-text-small">복사되었습니다. <span class="uk-text-spoon">' + text + '</span></label>',
-			pos: 'bottom-left'
-		});
+				pos: 'bottom-left'
+			});
+		}
 	}
 };
 
 /**
  * NavBar의 사이즈를 panel의 크기에 맞게 재정비한다.
+ * +++ codeDiv 의 사이즈도 맞춘다.
  */
 const refreshNavSize = () => {
 	let nav = document.querySelector('nav');
@@ -50,6 +84,11 @@ const refreshNavSize = () => {
 
 	if ( nav && panel ) {
 		nav.style.width = panel.offsetWidth+"px";
+	}
+
+	let codeDiv = document.querySelector('#codeDiv');
+	if ( codeDiv ) {
+		codeDiv.style.width = (panel.offsetWidth - 200)+"px";
 	}
 };
 

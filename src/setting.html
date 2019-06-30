@@ -132,7 +132,7 @@
 											<li class="uk-nav-divider"></li>
 											<li data-type="facebook" onclick="altSelect(event);" name="autoLoginTypeItems"><a href="#">페이스북</a></li>
 											<li class="uk-nav-divider"></li>
-											<li data-type="gmail" onclick="altSelect(event);" name="autoLoginTypeItems"><a href="#">구글</a></li>
+											<li data-type="google" onclick="altSelect(event);" name="autoLoginTypeItems"><a href="#">구글</a></li>
 										</ul>
 									</div>
 								</div>
@@ -176,6 +176,21 @@
 								element.className = "";
 							}
 						});
+					}
+
+					switch ( li.getAttribute('data-type') ) {
+						case "phone":
+						case "email":
+							document.querySelector('#autoLoginID').disabled = false;
+							document.querySelector('#autoLoginPW').disabled = false;
+							break;
+						case "facebook":
+						case "google":
+							document.querySelector('#autoLoginID').disabled = true;
+							document.querySelector('#autoLoginPW').disabled = true;
+							break;
+						default:
+							console.log(li.getAttribute('data-type'));
 					}
 				}
 			};

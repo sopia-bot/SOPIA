@@ -18,7 +18,7 @@ window.addEventListener('resize', () => {
         window.ContainerPanel.setSizes([p, 100 - p]);
     } else {
     }
-    document.querySelector('nav').style.width = document.querySelector('#ContainerPanel>div[name="panel1"]').offsetWidth+"px";
+    refreshNavSize();
 });
 
 
