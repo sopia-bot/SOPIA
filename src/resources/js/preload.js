@@ -7,7 +7,7 @@
 const path = require('path');
 const fs = require('fs');
 const app = require('electron').remote.app;
-const { clipboard } = require('electron');
+const { clipboard, shell } = require('electron');
 const EventEmitter = require('events');
 
 /**
@@ -27,6 +27,34 @@ sopia.intval = new Object();
  */
 const getPath = (path_) => {
 	return path.join(app.getAppPath(), path_);
+};
+
+/**
+ * @type {Object}
+ * 좌측 하단에 정보를 띄웁니다.
+ */
+const noti = {
+	error : (errString) => {
+		UIkit.notification({
+			message: '<span uk-icon="icon: close"></span>&nbsp;'+
+			'<label class="uk-text-small">에러 : <span class="uk-text-danger">' + errString + '</span></label>',
+			pos: 'bottom-left'
+		});
+	},
+	success : (title, message) => {
+		UIkit.notification({
+			message: '<span uk-icon="icon: check"></span>&nbsp;'+
+			`<label class="uk-text-small">${title} : <span class="uk-text-success">${message}</span></label>`,
+			pos: 'bottom-left'
+		});
+	},
+	info : (title, message) => {
+		UIkit.notification({
+			message: '<span uk-icon="icon: plus-circle"></span>&nbsp;'+
+			`<label class="uk-text-small">${title} : <span class="uk-text-spoon">${message}</span></label>`,
+			pos: 'bottom-left'
+		});
+	}
 };
 
 /**
@@ -65,11 +93,7 @@ const copyAtag = (element, skipFlag = false) => {
 	if ( text ) {
 		clipboard.writeText(text);
 		if ( !skipFlag ) {
-			UIkit.notification({
-				message: '<span uk-icon="icon: check"></span>&nbsp;'+
-				'<label class="uk-text-small">복사되었습니다. <span class="uk-text-spoon">' + text + '</span></label>',
-				pos: 'bottom-left'
-			});
+			noti.info("복사되었습니다.", text);
 		}
 	}
 };

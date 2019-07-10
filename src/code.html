@@ -42,11 +42,11 @@
 		<div id="codeTable" name="import-child" style="overflow: hidden;">
 			<div id="treeDivParent">
 				<div id="code-tools">
-					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: push" uk-tooltip="프로젝트 폴더를 엽니다."></a>
-					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: file" uk-tooltip="선택한 폴더에 새로운 파일을 생성합니다."></a>
-					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: folder" uk-tooltip="선택한 폴더에 새로운 폴더를 생성합니다."></a>
-					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: pencil" uk-tooltip="선택한 파일 또는 폴더의 이름을 바꿉니다."></a>
-					<a href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: trash" uk-tooltip="선택한 파일 또는 폴더를 삭제합니다."></a>
+					<a id="openFolder"	href="#" onclick="openFolder();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: push" uk-tooltip="프로젝트 폴더를 엽니다."></a>
+					<a id="newFile"		href="#" onclick="newFile();"		class="uk-icon-link uk-margin-small-right" uk-icon="icon: file" uk-tooltip="선택한 폴더에 새로운 파일을 생성합니다."></a>
+					<a id="newFolder"	href="#" onclick="newFolder();"		class="uk-icon-link uk-margin-small-right" uk-icon="icon: folder" uk-tooltip="선택한 폴더에 새로운 폴더를 생성합니다."></a>
+					<a id="modifyName"	href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: pencil" uk-tooltip="선택한 파일 또는 폴더의 이름을 바꿉니다."></a>
+					<a id="deleteFile"	href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: trash" uk-tooltip="선택한 파일 또는 폴더를 삭제합니다."></a>
 				</div>
 				<div id="treeDiv">
 				</div>
@@ -54,6 +54,120 @@
 			<div id="codeDiv"></div>
 		</div>
 		<script type="text/javascript">
+			window.code = {
+				sopiaPath			: "sopia",
+				folderIconHTML		: '<span class="uk-icon uk-margin-small-right" uk-icon="icon: folder"></span>',
+				fileIconHTML		: '<span class="uk-icon uk-margin-small-right" uk-icon="icon: file-text"></span>',
+				nowSelectedTreeItem	: null,
+				folderSelected		: false,
+				seledtedDelay		: 500
+			};
+
+			/**
+			 * @function openFolder
+			 * 프로젝트 폴더를 탐색기로 연다.
+			 */
+			const openFolder = () => {
+				shell.openItem(getPath(window.code.sopiaPath));
+			};
+
+
+			/**
+			 * @function createTreeSelector
+			 * @param {Array} levels 파일 경로 레벨
+			 * @param {Number} deep 현재 딥 레벨
+			 * @param {String} rtn 반환될 쿼리
+			 * 
+			 * @deep 과 @rtn 은 호출할 때 사용하지 않는다.
+			 * ex) createTreeSelector(["src", "vendors", "js"])
+			 * 	   -> "ul>li[data-level="src"]>ul>li[data-level="vendors"]>ul>li[data-level="js"]"
+			 */
+			const createTreeSelector = (levels, deep = 0, rtn = "") => {
+				if ( Array.isArray(levels) && deep < levels.length ) {
+					rtn += `ul>li[data-level="${levels[deep]}"]`;
+				} else {
+					return rtn.substring(0, rtn.length-1);
+				}
+				return createTreeSelector(levels, deep+1, rtn + ">");
+			};
+
+			const treeItemSelect = (levels, deep = 0, dom = document.querySelector('#treeDiv')) => {
+				if ( Array.isArray(levels) && deep < levels.length ) {
+					let s = dom.querySelector(`ul>li[data-level="${levels[deep]}"]`);
+					if ( s ) {
+						s.classList.add("uk-open");
+						s.querySelector('ul').setAttribute('hidden', false);
+						treeItemSelect(levels, deep+1, s)
+					}
+				}
+			};
+
+			/**
+			 * @function newFile
+			 * 새로운 파일을 생성합니다.
+			 */
+			const newFile = () => {
+				UIkit.modal.prompt('New File Name', '').then(data => {
+					if ( data ) {
+						let fpath = window.code.sopiaPath;
+						if ( window.code.nowSelectedTreeItem ) {
+							fpath = window.code.nowSelectedTreeItem.getAttribute('data-path');
+						}
+						fpath = path.join(fpath, data);
+
+						if ( fs.existsSync(fpath) ) {
+							noti.error(`"${fpath}" 파일이 이미 있습니다!`);
+							return;
+						}
+
+						fs.writeFile(fpath, '', (err) => {
+							if ( err ) {
+								noti.error(err);
+							} else {
+								//파일 생성을 성공했을 때
+								loadingTree(window.code.sopiaPath);
+							}
+						});
+					}
+				});
+			};
+
+			/**
+			 * @function newFolder
+			 * 새로운 폴더를 생성합니다.
+			 */
+			 const newFolder = () => {
+				UIkit.modal.prompt('New Folder Name', '').then(data => {
+					if ( data ) {
+						let fpath = window.code.sopiaPath;
+						if ( window.code.nowSelectedTreeItem ) {
+							fpath = window.code.nowSelectedTreeItem.getAttribute('data-path');
+						}
+						fpath = path.join(fpath, data);
+
+						if ( fs.existsSync(fpath) ) {
+							noti.error(`"${fpath}" 폴더가 이미 있습니다!`);
+							return;
+						}
+
+						fs.mkdir(fpath, (err) => {
+							if ( err ) {
+								noti.error(err);
+							} else {
+								//폴더 생성을 성공했을 때
+								loadingTree(window.code.sopiaPath);
+								let spath = fpath.replace(window.code.sopiaPath+"\\", "");
+								console.log(spath, spath.split("\\"));
+								//treeItemSelect(spath.split("\\"));
+							}
+						});
+					}
+				});
+			};
+
+			const deleteFile = () => {
+				
+			};
 			/**
 			 * @function createFolderTree
 			 * @param {Object} finfo
@@ -62,8 +176,6 @@
 			 * dl 은 현재 깊이를 나타낸다
 			 */
 			
-			window.folderIconHTML = '<span class="uk-icon uk-margin-small-right" uk-icon="icon: folder"></span>';
-			window.fileIconHTML = '<span class="uk-icon uk-margin-small-right" uk-icon="icon: file-text"></span>';
 			const createFolderTree = (finfo, dl = 0) => {
 				if ( typeof finfo === "object" ) {
 					let ulElement = document.createElement('ul');
@@ -82,12 +194,31 @@
 
 						let aElement = document.createElement('a');
 						aElement.href = "#";
-						aElement.innerHTML = window.folderIconHTML + path.basename(cpath);
+						aElement.innerHTML = window.code.folderIconHTML + path.basename(cpath);
 
 						folderElement.appendChild(aElement);
+						folderElement.setAttribute('data-path', cpath);
+						folderElement.setAttribute('data-level', path.basename(cpath));
 
 						let crtn = createFolderTree(finfo["folders"][cpath], dl+1);
 						folderElement.appendChild(crtn);
+
+						folderElement.addEventListener('click', (e) => {
+							if ( window.code.folderSelected ) {
+								e.stopImmediatePropagation();
+								return;
+							}
+
+							if ( window.code.nowSelectedTreeItem && window.code.nowSelectedTreeItem.classList ) {
+								window.code.nowSelectedTreeItem.classList.remove("uk-active");
+							}
+							window.code.nowSelectedTreeItem = folderElement;
+							window.code.nowSelectedTreeItem.classList.add("uk-active");
+							window.code.folderSelected = true;
+							setTimeout(() => {
+								window.code.folderSelected = false;
+							}, window.code.seledtedDelay);
+						});
 
 						ulElement.appendChild(folderElement);
 					});
@@ -96,11 +227,40 @@
 					finfo["files"].forEach(f => {
 						let fileElement = document.createElement('li');
 						let aElement = document.createElement('a');
-						aElement.innerHTML = window.fileIconHTML + path.basename(f);
+						aElement.innerHTML = window.code.fileIconHTML + path.basename(f);
+
+						fileElement.appendChild(aElement);
+						fileElement.setAttribute('data-path', path.dirname(f));
+
+						fileElement.addEventListener('click', (e) => {
+							if ( window.code.nowSelectedTreeItem && window.code.nowSelectedTreeItem.classList ) {
+								window.code.nowSelectedTreeItem.classList.remove("uk-active");
+							}
+							window.code.nowSelectedTreeItem = fileElement;
+							window.code.nowSelectedTreeItem.classList.add("uk-active");
+							window.code.folderSelected = true;
+							setTimeout(() => {
+								window.code.folderSelected = false;
+							}, window.code.seledtedDelay);
+						});
 
 						ulElement.appendChild(fileElement);
 					});
 					return ulElement;
+				}
+			};
+			
+			const loadingTree = (path) => {
+				//폴더를 읽어서 트리를 생성한다.
+				let target = "#treeDiv";
+				if ( (tmp = document.querySelector(target+">ul")) ) {
+					document.querySelector(target).removeChild(tmp);
+				}
+
+				let dirInfo = readFolder(path);
+				let createInfo = createFolderTree(dirInfo);
+				if ( createInfo ) {
+					document.querySelector(target).appendChild(createInfo);
 				}
 			};
 		</script>

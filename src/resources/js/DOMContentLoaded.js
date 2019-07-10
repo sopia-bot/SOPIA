@@ -50,12 +50,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
             // });
         });
         
-        //폴더를 읽어서 트리를 생성한다.
-        let dirInfo = readFolder("./sopia");
-        let createInfo = createFolderTree(dirInfo);
-        if ( createInfo ) {
-            document.querySelector('#treeDiv').appendChild(createInfo);
-        }
+        loadingTree(window.code.sopiaPath);
     });
     
 
