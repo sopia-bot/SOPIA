@@ -187,5 +187,59 @@ String.prototype.htmlToElements = function() {
 	return dummy;
 };
 
+/**
+ * @function getObject
+ * @param {String} key
+ * '.' 를 기준으로 key 하위 오브젝트를 한 번에 반환한다.
+ */
+const getObject = (obj, key, midx=0, rtn = obj) => {
+	if ( Array.isArray(key) ) {
+		rtn = rtn[key.shift()];
+		if ( !rtn || key.length-midx == 0 ) {
+			if ( key.length > 0 ) {
+				return {d: rtn, k: key[0]};
+			}
+			return rtn;
+		}
+	} else if ( typeof key === "string" ) {
+		key = key.split('.');
+	}
+	return getObject(obj, key, midx, rtn);
+};
+
+/**
+ * @function fullStringify
+ * @param {Object} obj 문자열화 할 객체
+ * @param {String} rtn 사용되지 않음
+ * @description 오브젝트 전체를 문자열화 하여 보여준다.
+ * 함수, 그 안에 있는 객체까지도.
+ */
+const fullStringify = (obj, rtn = "{") => {
+	let oKeys = Object.keys(obj);
+	oKeys.forEach((k,i) => {
+		rtn += `"${k}":`;
+		switch ( typeof obj[k] ) {
+			case "object": {
+				if ( Array.isArray(obj[k]) ) {
+					rtn += JSON.stringify(obj[k]);
+				} else {
+					rtn += fullStringify(obj[k]);
+				}
+			} break;
+			case "string": {
+				rtn += `"${obj[k].toString()}"`;
+			} break;
+			default: {
+				rtn += obj[k].toString();
+			}
+		}
+		if ( i < oKeys.length-1 ) {
+			rtn += ',';
+		}
+	});
+	rtn += '}';
+	return rtn;
+}
+
 //sopia 객체 로딩
 const sopia = require(getPath('./src/resources/js/sopia.js'));

@@ -124,7 +124,7 @@
 					if ( e.target.value === "" ) {
 						return;
 					}
-					sopia.send("< "+e.target.value);
+					sopia.send(e.target.value);
 					if ( !window.chatting ) {
 						window.chatting = {
 							stack: [],
