@@ -81,7 +81,7 @@
 					<div class="uk-card-footer">
 						<div class="uk-inline" style="width: 100%;">
 							<span class="uk-form-icon uk-form-icon-flip uk-icon" uk-icon="icon: chevron-left"></span>
-							<input id="live-send" placeholder="대화를 입력하세요." class="uk-input uk-input-spoon" onclick="this.focus();" onkeydown="inputEvent(event);" type="text">
+							<input id="live-send" placeholder="대화를 입력하세요." class="uk-input uk-input-spoon" onclick="this.focus();" onkeydown="chatInputEvent(event);" type="text">
 						</div>
 					</div>
 				</div>
@@ -114,91 +114,57 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			/**
-			 * @function logging 
-			 * @param {String} str
-			 * 문자열로 받은 str을 console-output 에다가 추가를 한다.
+			/** 
+			 * 대화입력창에 대한 이벤트.
+			 * 엔터를 누르면 스크립트가 실행이 되고, 
+			 * 위 아래키로 이전 스크립트를 바로 사용할 수 있다.
 			 */
-			const logging = (str, lang = "javascript") => {
-				let row = document.createElement('div');
-				row.className = "row";
-				let colLeft = document.createElement('div');
-				colLeft.className = "col-12";
-
-				let p = document.createElement('pre');
-				p.className = "text-light";
-				p.style = "overflow:hidden; white-space: pre-wrap;";
-				
-				let code = document.createElement('code');
-				code.className = lang
-				code.innerText = str;
-				
-				hljs.highlightBlock(code);
-				
-				p.appendChild(code);
-				colLeft.appendChild(p);
-				row.appendChild(colLeft);
-				document.querySelector('#console-output').appendChild(row);
-				
-				if (document.querySelector('#console-scroll-fix').checked) {
-					document.querySelector('#console-output').scrollTop = 
-						document.querySelector('#console-output').scrollHeight;
-				}
-			};
-
-			/**
-			 * @function sopia.error
-			 * @param {UserException} obj
-			 * try ... catch 로 받은 error 을 출력한다.
-			 */
-			sopia.error = (obj) => {
-				logging(`${obj.name} : ${obj.message}`);
-			};
-
-			/**
-			 * @function sopia.log
-			 * @param {*} obj
-			 * @param {String} cmd
-			 * console.log 와 비슷한 기능
-			 */
-			sopia.log = (obj, cmd = null) => {
-				let code = "";
-				let flag = true;
-				let lang = "javascript";
-				if ( typeof obj === "object" ) {
-					code += JSON.stringify(obj, null, '\t');
-					flag = false;
-				} else if ( typeof obj === "string") {
-					if ( cmd ) {
-						if ( obj.match(/\[object \w+\]/) ) {
-							let s = obj.replace(/\W+\[object\ /, "").replace(/\]$/, "");
-							switch (s.toLowerCase()) {
-								case "object": {
-									code += eval(`JSON.stringify(${cmd}, null, '\t');`);
-									flag = false;
-								} break;
-							}
-							if ( s.toLowerCase().match(/html.*element/)) {
-								code += eval(cmd).outerHTML;
-								flag = false;
-								lang = "html";
-							}
-
-							if ( flag ) {
-								//예외처리 안 된 항목
-								console.log(s);
-							}
+			const chatInputEvent = (e) => {
+				if (e.which === 13) {
+					if ( e.target.value === "" ) {
+						return;
+					}
+					sopia.send("< "+e.target.value);
+					if ( !window.chatting ) {
+						window.chatting = {
+							stack: [],
+							idx: 0,
+							length: 0
+						};
+					} else {
+						if ( Array.isArray(window.chatting.stack) === false ) {
+							window.chatting.stack = [];
+						}
+						if ( typeof window.chatting.idx !== "number" ) {
+							window.chatting.idx = 0;
+						}
+						if ( typeof window.chatting.length !== "number" ) {
+							window.chatting.length = window.chatting.stack.length;
+						}
+					}
+					window.chatting.stack.push(e.target.value);
+					window.chatting.length = window.chatting.stack.length;
+					window.chatting.idx = window.chatting.length;
+					e.target.value = "";
+				} else if (e.which === 38 ) {
+					//arrow up
+					if ( window.chatting.idx > 0 ) {
+						window.chatting.idx--;
+						e.target.value = window.chatting.stack[window.chatting.idx];
+					}
+				} else if (e.which === 40 ) {
+					//arrow down
+					if ( window.chatting.idx < window.chatting.length ) {
+						window.chatting.idx++;
+						let val = window.chatting.stack[window.chatting.idx];
+						if ( val ) {
+							e.target.value = val;
+						} else {
+							e.target.value = "";
 						}
 					}
 				}
-
-				if ( flag ) {
-					code += obj + "";
-				}
-				
-				logging(code, lang);
-			};
-
+			}
 			/** 
 			 * console-input 에 대한 이벤트.
 			 * 엔터를 누르면 스크립트가 실행이 되고, 
@@ -207,36 +173,38 @@
 			const inputEvent = (e) => {
 				if (e.which === 13) {
 					//enter
-					if ( e.target.value.trim() === "" ) {
-						return;
-					}
-					try{
-						sopia.log("< "+e.target.value);
-						sopia.log("= "+eval(e.target.value), e.target.value);
-					} catch(err) {
-						sopia.error(err);
-					}
-					if ( !window.command ) {
-						window.command = {
-							stack: [],
-							idx: 0,
-							length: 0
-						};
-					} else {
-						if ( Array.isArray(window.command.stack) === false ) {
-							window.command.stack = [];
+					if ( e.target.id === "console-input" ) {
+						if ( e.target.value.trim() === "" ) {
+							return;
 						}
-						if ( typeof window.command.idx !== "number" ) {
-							window.command.idx = 0;
+						try{
+							sopia.log("< "+e.target.value);
+							sopia.log("= "+eval(e.target.value), e.target.value);
+						} catch(err) {
+							sopia.error(err);
 						}
-						if ( typeof window.command.length !== "number" ) {
-							window.command.length = window.command.stack.length;
+						if ( !window.command ) {
+							window.command = {
+								stack: [],
+								idx: 0,
+								length: 0
+							};
+						} else {
+							if ( Array.isArray(window.command.stack) === false ) {
+								window.command.stack = [];
+							}
+							if ( typeof window.command.idx !== "number" ) {
+								window.command.idx = 0;
+							}
+							if ( typeof window.command.length !== "number" ) {
+								window.command.length = window.command.stack.length;
+							}
 						}
+						window.command.stack.push(e.target.value);
+						window.command.length = window.command.stack.length;
+						window.command.idx = window.command.length;
+						e.target.value = "";
 					}
-					window.command.stack.push(e.target.value);
-					window.command.length = window.command.stack.length;
-					window.command.idx = window.command.length;
-					e.target.value = "";
 				} else if (e.which === 38 ) {
 					//arrow up
 					if ( window.command.idx > 0 ) {

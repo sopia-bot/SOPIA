@@ -9,15 +9,9 @@ const fs = require('fs');
 const app = require('electron').remote.app;
 const { clipboard, shell } = require('electron');
 const EventEmitter = require('events');
+const WebSocketServer = require('websocket').server;
+const http = require('http');
 
-/**
- * @sopia 의 객체를 생성한다.
- * 기본적으로 EventEmitter을 사용하여 스푼에서 받은 이벤트를 처리한다.
- * sopia.var 에선 sopia.var.save 함수를 사용하지 않는 한, sopia 재시작시 수정된 변수값을 초기화한다.
- */
-const sopia = new EventEmitter();
-sopia.var = new Object();
-sopia.intval = new Object();
 
 /**
  * @function getPath
@@ -27,6 +21,39 @@ sopia.intval = new Object();
  */
 const getPath = (path_) => {
 	return path.join(app.getAppPath(), path_);
+};
+
+
+/**
+* @function logging 
+* @param {String} str
+* 문자열로 받은 str을 console-output 에다가 추가를 한다.
+*/
+const logging = (str, lang = "javascript") => {
+	let row = document.createElement('div');
+	row.className = "row";
+	let colLeft = document.createElement('div');
+	colLeft.className = "col-12";
+	
+	let p = document.createElement('pre');
+	p.className = "text-light";
+	p.style = "overflow:hidden; white-space: pre-wrap;";
+	
+	let code = document.createElement('code');
+	code.className = lang
+	code.innerText = str;
+	
+	hljs.highlightBlock(code);
+	
+	p.appendChild(code);
+	colLeft.appendChild(p);
+	row.appendChild(colLeft);
+	document.querySelector('#console-output').appendChild(row);
+	
+	if (document.querySelector('#console-scroll-fix').checked) {
+		document.querySelector('#console-output').scrollTop = 
+		document.querySelector('#console-output').scrollHeight;
+	}
 };
 
 /**
@@ -40,6 +67,7 @@ const noti = {
 			'<label class="uk-text-small">에러 : <span class="uk-text-danger">' + errString + '</span></label>',
 			pos: 'bottom-left'
 		});
+		console.error(errString);
 	},
 	success : (title, message) => {
 		UIkit.notification({
@@ -148,3 +176,16 @@ HTMLElement.prototype.appendImport = function(target, query, cb) {
 		cb(this, child);
 	}
 };
+
+/**
+ * @function htmlToElements
+ * html문자열을 HTMLElement 타입으로 변환하여 반환한다.
+ */
+String.prototype.htmlToElements = function() {
+	let dummy = document.createElement('div');
+	dummy.innerHTML = this;
+	return dummy;
+};
+
+//sopia 객체 로딩
+const sopia = require(getPath('./src/resources/js/sopia.js'));

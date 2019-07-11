@@ -37,20 +37,18 @@ document.addEventListener('DOMContentLoaded', (evt) => {
                 theme: 'vs',
                 automaticLayout: true
             });
-            // window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function() {
-            //     fs.writeFile(getPath("s-bot/main.js"), window.editor.getValue(), {encoding: 'utf8'}, (err) => {
-            //         if ( err ) {
-            //             throw err;
-            //         }
-            //         window.save_variable = window.ObjClone(sbot.variable);
-            //         window.code = window.editor.getValue();
-            //         sbotInit();
-            //         loadScript();
-            //     });
-            // });
+            window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
+                if ( window.code.viewPath ) {
+                    fs.writeFile(window.code.viewPath, window.editor.getValue(), {encoding: 'utf8'}, (err) => {
+                        if ( err ) {
+                            throw err;
+                        }
+                        window.code.viewCode = window.editor.getValue();
+                    });
+                }
+            });
+            refreshTree(path.join(window.code.sopiaPath, "main.js"));
         });
-        
-        loadingTree(window.code.sopiaPath);
     });
     
 
@@ -70,6 +68,26 @@ document.addEventListener('DOMContentLoaded', (evt) => {
     document.querySelector('#controls').appendImport('#setting', (parent, target) => {
         target.style.display = "none";
         target.setAttribute('data-target', 'setting');
+        
+
+
+        // 설정 값 로딩
+
+        //웹서버 설정
+        document.querySelector('#wsPort').value = sopia.config.server.port;
+        document.querySelector('#wsFrameSize').value = sopia.config.server.maxReceivedFrameSize;
+        document.querySelector('#wsMessageSize').value = sopia.config.server.maxReceivedMessageSize;
+
+        //SOPIA 설정
+        document.querySelector('#autoManagerStart').checked = sopia.config.sopia.autostart;
+        document.querySelector('#detectMe').checked = sopia.config.sopia.detectme;
+        document.querySelector('#onlymanager').checked = sopia.config.sopia.onlymanager;
+
+        //자동 로그인 설정
+        document.querySelector('#autoLoginEnable').checked = sopia.config.autologin.enable;
+        document.querySelector('#autoLoginId').value = sopia.config.autologin.id;
+        document.querySelector('#autoLoginPw').value = sopia.config.autologin.pw;
+        document.querySelector(`#altItems>li[data-type="${sopia.config.autologin.type}"]>a`).click();
     });
 
 

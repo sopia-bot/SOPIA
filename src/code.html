@@ -13,14 +13,14 @@
 			#treeDivParent {
 				position:absolute; 
 				left:0; 
-				width: 200px;
+				width: 220px;
 				height: calc(100% - 80px);
 				background-color: rgb(255, 253, 246);
 				overflow: auto;
 			}
 			#codeDiv {
-				margin-left:200px; 
-				width: calc(100% - 200px); 
+				margin-left:220px; 
+				width: calc(100% - 220px); 
 				height: 100%;
 			}
 			#code-tools {
@@ -28,7 +28,7 @@
 				background-color: rgb(248, 244, 231);
 				position: fixed;
 				/* padding 10 + width 190 = 200 */
-				width: 190px;
+				width: 210px;
 				padding: 5px 5px 10px 5px;
 				z-index: 101;
 			}
@@ -45,8 +45,9 @@
 					<a id="openFolder"	href="#" onclick="openFolder();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: push" uk-tooltip="프로젝트 폴더를 엽니다."></a>
 					<a id="newFile"		href="#" onclick="newFile();"		class="uk-icon-link uk-margin-small-right" uk-icon="icon: file" uk-tooltip="선택한 폴더에 새로운 파일을 생성합니다."></a>
 					<a id="newFolder"	href="#" onclick="newFolder();"		class="uk-icon-link uk-margin-small-right" uk-icon="icon: folder" uk-tooltip="선택한 폴더에 새로운 폴더를 생성합니다."></a>
-					<a id="modifyName"	href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: pencil" uk-tooltip="선택한 파일 또는 폴더의 이름을 바꿉니다."></a>
-					<a id="deleteFile"	href="#" class="uk-icon-link uk-margin-small-right" uk-icon="icon: trash" uk-tooltip="선택한 파일 또는 폴더를 삭제합니다."></a>
+					<a id="modifyName"	href="#" onclick="modifyName();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: pencil" uk-tooltip="선택한 파일 또는 폴더의 이름을 바꿉니다."></a>
+					<a id="deleteFile"	href="#" onclick="deleteFile();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: trash" uk-tooltip="선택한 파일 또는 폴더를 삭제합니다."></a>
+					<a id="refreshTree"	href="#" onclick="refreshTree();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: refresh" uk-tooltip="폴더 트리를 새로고침합니다."></a>
 				</div>
 				<div id="treeDiv">
 				</div>
@@ -61,6 +62,21 @@
 				nowSelectedTreeItem	: null,
 				folderSelected		: false,
 				seledtedDelay		: 500
+			};
+
+			/**
+			 * @function refreshTree
+			 * @param {String} fpath 해당 경로의 아이템을 선택한다.
+			 * 폴더 트리를 새로고침 한다.
+			 */
+			const refreshTree = (fpath) => {	
+				loadingTree(window.code.sopiaPath);
+				if ( fpath ) {
+					let spath = fpath.replace(window.code.sopiaPath+"\\", "");
+					setTimeout(() => {
+						treeItemSelect(spath.split("\\"));
+					}, window.code.seledtedDelay);
+				}
 			};
 
 			/**
@@ -91,13 +107,23 @@
 				return createTreeSelector(levels, deep+1, rtn + ">");
 			};
 
+			/**
+			 * @function treeItemSelect
+			 * @param {Array} levels 파일 경로 레벨
+			 * @param {Number} deep 현재 딥 레벨
+			 * @dom   {HTMLElement} 현재 선택된 폴더 element
+			 * 
+			 * @deep과 @dom은 호출할 때 사용하지 않는다.
+			 * ex) treeItemSelect(["src", "vendors", "js"])
+			 */
 			const treeItemSelect = (levels, deep = 0, dom = document.querySelector('#treeDiv')) => {
 				if ( Array.isArray(levels) && deep < levels.length ) {
 					let s = dom.querySelector(`ul>li[data-level="${levels[deep]}"]`);
 					if ( s ) {
-						s.classList.add("uk-open");
-						s.querySelector('ul').setAttribute('hidden', false);
-						treeItemSelect(levels, deep+1, s)
+						s.querySelector('li>a').click();
+						setTimeout(() => {
+							treeItemSelect(levels, deep+1, s)
+						}, window.code.seledtedDelay);
 					}
 				}
 			};
@@ -125,7 +151,7 @@
 								noti.error(err);
 							} else {
 								//파일 생성을 성공했을 때
-								loadingTree(window.code.sopiaPath);
+								refreshTree(fpath);
 							}
 						});
 					}
@@ -155,19 +181,84 @@
 								noti.error(err);
 							} else {
 								//폴더 생성을 성공했을 때
-								loadingTree(window.code.sopiaPath);
-								let spath = fpath.replace(window.code.sopiaPath+"\\", "");
-								console.log(spath, spath.split("\\"));
-								//treeItemSelect(spath.split("\\"));
+								refreshTree(fpath);
 							}
 						});
 					}
 				});
 			};
 
-			const deleteFile = () => {
-				
+			/**
+			 * @function modifyName
+			 * 선택한 폴더 또는 파일의 이름을 변경한다.
+			 */
+			const modifyName = () => {
+				if ( window.code.nowSelectedTreeItem ) {
+					let oriFilename = window.code.nowSelectedTreeItem.getAttribute('data-fullPath');
+					UIkit.modal.prompt("파일 이름 변경", path.basename(oriFilename) )
+					.then(data => {
+						if ( data ) {
+							let dstPath = path.join(path.dirname(oriFilename), data);
+							fs.rename(oriFilename, dstPath, (err, d) => {
+								if ( err ) {
+									noti.error(err);
+								} else {
+									noti.success("파일이름 변경 성공!", data);
+									refreshTree(dstPath);
+								}
+							});
+						}
+					});
+				} else {
+					noti.error("파일이 선택되지 않았습니다.");
+				}
 			};
+
+			/**
+			 * @function deleteFolderRecursive
+			 * @param {String} path_ 삭제할 폴더 경로
+			 * 내용이 비어있지 않은 폴더까지 삭제한다.
+			 */
+			const deleteFolderRecursive = (path_) => {
+				if ( fs.existsSync(path_) ) {
+					fs.readdirSync(path_).forEach((file,index) => {
+						let curPath = path.join(path_,file);
+						if(fs.lstatSync(curPath).isDirectory()) { // recurse
+							deleteFolderRecursive(curPath);
+						} else { // delete file
+							fs.unlinkSync(curPath);
+						}
+					});
+					fs.rmdirSync(path_);
+				}
+			};
+
+			/**
+			 * @function deleteFile
+			 * 선택한 폴더 또는 파일을 삭제한다.
+			 */
+			const deleteFile = () => {
+				if ( window.code.nowSelectedTreeItem ) {
+					UIkit.modal.confirm(`[${window.code.nowSelectedTreeItem.innerText}]. 정말로 삭제하시겠습니까?`)
+					.then(d => {
+						let file = window.code.nowSelectedTreeItem.getAttribute('data-fullPath');
+						if (fs.lstatSync(file).isDirectory()) {
+							deleteFolderRecursive(file);
+						} else {
+							fs.unlinkSync(file);
+						}
+						window.code.nowSelectedTreeItem = null;
+						refreshTree(file);
+					})
+					.catch(d => {
+						
+					});
+				} else {
+					noti.error("파일이 선택되지 않았습니다.");
+				}
+			};
+
+
 			/**
 			 * @function createFolderTree
 			 * @param {Object} finfo
@@ -199,6 +290,7 @@
 						folderElement.appendChild(aElement);
 						folderElement.setAttribute('data-path', cpath);
 						folderElement.setAttribute('data-level', path.basename(cpath));
+						folderElement.setAttribute('data-fullPath', cpath);
 
 						let crtn = createFolderTree(finfo["folders"][cpath], dl+1);
 						folderElement.appendChild(crtn);
@@ -231,6 +323,8 @@
 
 						fileElement.appendChild(aElement);
 						fileElement.setAttribute('data-path', path.dirname(f));
+						fileElement.setAttribute('data-level', path.basename(f));
+						fileElement.setAttribute('data-fullPath', f);
 
 						fileElement.addEventListener('click', (e) => {
 							if ( window.code.nowSelectedTreeItem && window.code.nowSelectedTreeItem.classList ) {
@@ -242,6 +336,19 @@
 							setTimeout(() => {
 								window.code.folderSelected = false;
 							}, window.code.seledtedDelay);
+
+							if ( fs.existsSync(f) ) {
+								window.code.viewPath = f;
+								if ( window.editor && window.editor.setValue ) {
+									window.editor.setValue(fs.readFileSync(f, {encoding:"utf8"}));
+								} else {
+									setTimeout(() => {
+										if ( window.editor ) {
+											window.editor.setValue(fs.readFileSync(f));
+										} 
+									}, window.code.seledtedDelay);
+								}
+							}
 						});
 
 						ulElement.appendChild(fileElement);

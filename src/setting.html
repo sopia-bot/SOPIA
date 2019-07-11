@@ -23,7 +23,7 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
-									<button id="wsSettingSave" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									<button id="wsSettingSave" onclick="webSocketSettingSave();" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
 								</div>
 							</div>
 						</div>
@@ -59,7 +59,7 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
-									<button id="sofiaSettingSave" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									<button id="sofiaSettingSave" onclick="sopiaSettingSave();" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
 								</div>
 							</div>
 						</div>
@@ -69,25 +69,25 @@
 							<div>자동 매니저 멘트 시작</div>
 							<div class="uk-text-right">
 								<label class="switch">
-									<input type="checkbox">
+									<input id="autoManagerStart" type="checkbox">
 									<span class="slider round"></span>
 								</label>
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-							<div>본인 감지</div>
+							<div>이벤트 본인 감지</div>
 							<div class="uk-text-right">
 								<label class="switch">
-									<input type="checkbox">
+									<input id="detectMe" type="checkbox">
 									<span class="slider round"></span>
 								</label>
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-							<div>매니저일때만 작동</div>
+							<div>매니저일때만 매니저 멘트 작동</div>
 							<div class="uk-text-right">
 								<label class="switch">
-									<input type="checkbox">
+									<input id="onlymanager" type="checkbox">
 									<span class="slider round"></span>
 								</label>
 							</div>
@@ -104,7 +104,7 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
-									<button id="autoLoginSave" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									<button id="autoLoginSave" onclick="autoLoginSettingSave();" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
 								</div>
 							</div>
 						</div>
@@ -114,7 +114,7 @@
 							<div>자동 로그인</div>
 							<div class="uk-text-right">
 								<label class="switch">
-									<input type="checkbox">
+									<input id="autoLoginEnable" type="checkbox">
 									<span class="slider round"></span>
 								</label>
 							</div>
@@ -141,13 +141,13 @@
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>자동 로그인 아이디</div>
 							<div class="uk-text-right">
-								<input id="autoLoginID" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="text">
+								<input id="autoLoginId" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="text">
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>자동 로그인 비밀번호</div>
 							<div class="uk-text-right">
-								<input id="autoLoginPW" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="password">
+								<input id="autoLoginPw" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="password">
 							</div>
 						</div>
 					</div>
@@ -156,6 +156,59 @@
 			</div>
 		</div>
 		<script type="text/javascript">
+			/**
+			 * @function AllSettingSave
+			 * @param {Object} s [default sopia.config]
+			 * 소피아 설정을 config.json에 전체 저장한다.
+			 */
+			const AllSettingSave = (s = sopia.config) => {
+				fs.writeFile(getPath("./config.json"), JSON.stringify(s, null, '\t'), {encoding:'utf8'}, (err) => {
+					if ( err ) {
+						noti.error(err);
+					}
+				});
+			};
+
+			/**
+			 * @function webSocketSettingSave
+			 * 웹소켓 서버 설정에 대한 값을 변경하고 저장한다.
+			 */
+			const webSocketSettingSave = () => {
+				sopia.config.server.port = document.querySelector('#wsPort').value;
+				sopia.config.server.maxReceivedFrameSize = document.querySelector('#wsFrameSize').value;
+				sopia.config.server.maxReceivedMessageSize = document.querySelector('#wsMessageSize').value;
+				AllSettingSave();
+			};
+
+			/**
+			 * @function sopiaSettingSave
+			 * SOPIA 설정에 대한 값을 변경하고 저장한다.
+			 */
+			const sopiaSettingSave = () => {
+				sopia.config.sopia.autostart = document.querySelector('#autoManagerStart').checked;
+				sopia.config.sopia.detectme = document.querySelector('#detectMe').checked;
+				sopia.config.sopia.onlymanager = document.querySelector('#onlymanager').checked;
+				AllSettingSave();
+			};
+
+			/**
+			 * @function autoLoginSettingSave
+			 * 자동 로그인 설정에 대한 값을 변경하고 저장한다.
+			 */
+			const autoLoginSettingSave = () => {
+				sopia.config.autologin.enable = document.querySelector('#autoLoginEnable').checked;
+				sopia.config.autologin.id = document.querySelector('#autoLoginId').value;
+				sopia.config.autologin.pw = document.querySelector('#autoLoginPw').value;
+				sopia.config.autologin.type = document.querySelector('#autoLoginType').getAttribute('data-type');
+				AllSettingSave();
+			};
+
+
+			/**
+			 * @function altSelect
+			 * @param {MouseEvent} e
+			 * 로그인 타입 dropmenu를 선택하는 함수.
+			 */
 			const altSelect = e => {
 				let alt = document.querySelector('#autoLoginType');
 				let li = e.target;
@@ -181,13 +234,13 @@
 					switch ( li.getAttribute('data-type') ) {
 						case "phone":
 						case "email":
-							document.querySelector('#autoLoginID').disabled = false;
-							document.querySelector('#autoLoginPW').disabled = false;
+							document.querySelector('#autoLoginId').disabled = false;
+							document.querySelector('#autoLoginPw').disabled = false;
 							break;
 						case "facebook":
 						case "google":
-							document.querySelector('#autoLoginID').disabled = true;
-							document.querySelector('#autoLoginPW').disabled = true;
+							document.querySelector('#autoLoginId').disabled = true;
+							document.querySelector('#autoLoginPw').disabled = true;
 							break;
 						default:
 							console.log(li.getAttribute('data-type'));
