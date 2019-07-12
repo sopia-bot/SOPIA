@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		//자동 로그인 설정
 		document.querySelector('#autoLoginEnable').checked = sopia.config.autologin.enable;
 		document.querySelector('#autoLoginId').value = sopia.config.autologin.id;
-		document.querySelector('#autoLoginPw').value = sopia.config.autologin.pw;
+		document.querySelector('#autoLoginPw').value = sopia.config.autologin.passwd;
 		document.querySelector(`#altItems>li[data-type="${sopia.config.autologin.type}"]>a`).click();
 	});
 	

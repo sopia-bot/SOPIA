@@ -198,7 +198,7 @@
 			const autoLoginSettingSave = () => {
 				sopia.config.autologin.enable = document.querySelector('#autoLoginEnable').checked;
 				sopia.config.autologin.id = document.querySelector('#autoLoginId').value;
-				sopia.config.autologin.pw = document.querySelector('#autoLoginPw').value;
+				sopia.config.autologin.passwd = document.querySelector('#autoLoginPw').value;
 				sopia.config.autologin.type = document.querySelector('#autoLoginType').getAttribute('data-type');
 				AllSettingSave();
 			};

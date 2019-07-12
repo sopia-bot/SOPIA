@@ -22,12 +22,15 @@ sopia.storage = {
 	 */
 	save: function(key) {
 		if ( key ) {
-			let { d, k } = getObject(this.ori, key, 1);
-			delete this.ori;
+			let OriClone = Object.assign(this.ori);
+			let { d, k } = getObject(OriClone, key, 1);
 			let m = getObject(this.data, key);
+			
+			delete this.ori;
+			
 			d[k] = m;
-			let s = fullStringify(d);
-			fs.writeFile(getPath('storage', s, {encoding:'utf8'}), err => {
+			let s = fullStringify(OriClone);
+			fs.writeFile(getPath('storage.json'), s, {encoding:'utf8'}, err => {
 				if ( err ) {
 					noti.error(err);
 				}
@@ -35,7 +38,7 @@ sopia.storage = {
 		} else {
 			delete this.ori;
 			let s = fullStringify(this.data);
-			fs.writeFile(getPath('storage', s, {encoding:'utf8'}), err => {
+			fs.writeFile(getPath('storage.json'), s, {encoding:'utf8'}, err => {
 				if ( err ) {
 					noti.error(err);
 				}
@@ -67,12 +70,13 @@ sopia.storage = {
 				d[k] = val;
 			}
 			return this.data;
-		} catch {
+		} catch (err) {
+			console.error(err);
 			return false;
 		}
 	},
-	ori: require(getPath('storage.json')),
-	data: require(getPath('storage.json'))
+	data: eval(`(function(){ return ${fs.readFileSync(getPath('storage.json'), {encoding:'utf8'})} })()`),
+	ori: eval(`(function(){ return ${fs.readFileSync(getPath('storage.json'), {encoding:'utf8'})} })()`)
 };
 
 /**

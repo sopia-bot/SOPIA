@@ -194,12 +194,14 @@ String.prototype.htmlToElements = function() {
  */
 const getObject = (obj, key, midx=0, rtn = obj) => {
 	if ( Array.isArray(key) ) {
-		rtn = rtn[key.shift()];
-		if ( !rtn || key.length-midx == 0 ) {
+		if ( rtn === undefined || key.length-midx <= 0 ) {
 			if ( key.length > 0 ) {
+				console.log(key);
 				return {d: rtn, k: key[0]};
 			}
 			return rtn;
+		} else {
+			rtn = rtn[key.shift()];	
 		}
 	} else if ( typeof key === "string" ) {
 		key = key.split('.');
