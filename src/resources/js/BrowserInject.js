@@ -94,3 +94,23 @@ window.wsSend = (domain, data) => {
 		ws.send(JSON.stringify(obj));
 	}
 };
+
+function logging(a, b, c) {
+	let rtn = {
+		event: a,
+		data: c ? c : b,
+	};
+	console.info(JSON.stringify(rtn));
+};
+
+function setLogging() {
+	if ( console.log === logging ) {
+		return;
+	}
+	
+	console.log = logging;
+	setTimeout(() => {
+		setLogging();
+	}, 3000);
+};
+setLogging();

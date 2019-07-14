@@ -12,37 +12,72 @@
  */
 const sopia = new EventEmitter();
 
+sopia.modules = {
+	axios: require('axios'),
+	path: require('path'),
+	fs: require('fs')
+};
+
 sopia.var = new Object();
 sopia.storage = {
 	/**
 	 * @function save
 	 * @param {String} key 
+	 * @param {String} file
 	 * key가 있으면 해당 키값에 해당하는 변수만 저장한다.
 	 * 없으면 전체 storage를 저장한다.
 	 */
 	save: function(key) {
+		let file = "";
+		let OriClone = Object.assign(this.ori);
+		delete this.ori;
+		try {
+			if ( key ) {
+				let { d, k } = getObject(OriClone, key, 1);
+				let m = getObject(this.data, key);
+				
+				
+				if ( typeof m["__loaded_file__"] === "string" ) {
+					//해당 json만 저장해야함.
+					file = m["__loaded_file__"];
+					delete m["__loaded_file__"];
+					let s = fullStringify(m);
+					fs.writeFile(file, s, {encoding:'utf8'}, err => {
+						if ( err ) {
+							noti.error(err);
+						}
+					});
+					m["__loaded_file__"] = file;
+				} else {
+					d[k] = m;
+					let s = fullStringify(OriClone);
+					fs.writeFile(file, s, {encoding:'utf8'}, err => {
+						if ( err ) {
+							noti.error(err);
+						}
+					});
+				}
+			} else {
+				Object.keys(this.data).forEach(k => {
+					if ( typeof this.data[k]["__loaded_file__"] === "string" ) {
+						this.save(k);
+					}
+				});
+			}
+		} catch (err) {
+			console.error(err);
+		}
+		this.ori = OriClone;
+	},
+	/**
+	 * @function get
+	 * @param {String} key 
+	 * key가 있으면 해당 키값에 해당하는 데이터를 삭제한다.
+	 */
+	delete: function(key) {
 		if ( key ) {
-			let OriClone = Object.assign(this.ori);
-			let { d, k } = getObject(OriClone, key, 1);
-			let m = getObject(this.data, key);
-			
-			delete this.ori;
-			
-			d[k] = m;
-			let s = fullStringify(OriClone);
-			fs.writeFile(getPath('storage.json'), s, {encoding:'utf8'}, err => {
-				if ( err ) {
-					noti.error(err);
-				}
-			});
-		} else {
-			delete this.ori;
-			let s = fullStringify(this.data);
-			fs.writeFile(getPath('storage.json'), s, {encoding:'utf8'}, err => {
-				if ( err ) {
-					noti.error(err);
-				}
-			});
+			let { d, k } = getObject(this.data, key, 1);
+			delete d[k];
 		}
 	},
 	/**
@@ -75,8 +110,32 @@ sopia.storage = {
 			return false;
 		}
 	},
-	data: eval(`(function(){ return ${fs.readFileSync(getPath('storage.json'), {encoding:'utf8'})} })()`),
-	ori: eval(`(function(){ return ${fs.readFileSync(getPath('storage.json'), {encoding:'utf8'})} })()`)
+	/**
+	 * @function load
+	 * @param {String} key 
+	 * @param {String} file
+	 * file 을 읽어, this.data.key 값에 로딩을 한다.
+	 */
+	load: function(key, file) {
+		if ( typeof key === "string" && typeof file === "string" ) {
+			if ( fs.existsSync(file) ) {
+				fs.readFile(file, {encoding:'utf8'}, (err, data) => {
+					if ( err ) {
+						noti.error(err);
+						return;
+					}
+
+					let j = file2JSON(file);
+					j["__loaded_file__"] = file;
+					this.set(key, j);
+				});
+			} else {
+				noti.error("["+file+"] 파일이 없습니다.")
+			}
+		}
+	},
+	data: file2JSON(getPath('storage.json')),
+	ori: file2JSON(getPath('storage.json'))
 };
 
 /**
@@ -85,19 +144,26 @@ sopia.storage = {
  * sopia.itv.clear 로 관리대상을 삭제할 수 있습니다.
  */
 sopia.itv = {
-	add: function(key, func, itv) {
+	add: function(key, func, time) {
 		if (this[key]) {
 			return false;
 		}
 		this[key] = {
 			f: func,
-			itv: setInterval(func, itv)
+			t: time,
+			itv: setInterval(func, time)
 		};
 	},
 	clear: function(key) {
 		if ( this[key] ) {
 			clearInterval(this[key].itv);
 			delete this[key];
+		}
+	},
+	reload: function(key) {
+		if ( this[key] ) {
+			clearInterval(this[key].itv);
+			this[key].itv = setInterval(this[key].f, this[key].t);
 		}
 	}
 };
@@ -123,6 +189,7 @@ sopia.include = (path_) => {
 		eval(source);
 	} else {
 		// file not exists
+		noti.error(`[${file}] 파일을 열 수 없습니다.`);
 	}
 };
 
@@ -188,6 +255,18 @@ sopia.log = (obj, cmd = null) => {
 //                             live                              //
 ///////////////////////////////////////////////////////////////////
 
+sopia.on = false;			//현재 소피아가 !on 된 상태인가.
+sopia.isLoading = false;	//스크립트가 로딩되었는가.
+
+sopia.var.canSend = true;	//소피아가 채팅을 보낼 수 있는 상태인가.
+sopia.var.sendCount = 0;
+sopia.var.sendMaxCount = 5;
+sopia.var.sendIntervalTime = 5000;
+sopia.var.sendTimeoutTime = 5000;
+sopia.itv.add("sendInterval", () => {
+	sendCount = 0;
+});
+
 /**
  * @function send
  * @param {String} data
@@ -196,8 +275,110 @@ sopia.log = (obj, cmd = null) => {
  * 5초 이내에 채팅을 5번 이상 보내게 된다면, 그로부터 5초는 쉰다.
  */
 sopia.send = (data) => {
-	
-	webview.executeJavaScript(`SendChat(\`${data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$")}\`);`);
+	if ( sopia.var.sendCount >= sopia.var.sendMaxCount ) {
+		sopia.var.canSend = false;
+		sopia.var.sendDelayTimeout = setTimeout(() => {
+			sopia.var.canSend = true;
+		}, sopia.var.sendTimeoutTime);
+	} else {
+		if ( sopia.var.canSend ) {
+			webview.executeJavaScript(`SendChat(\`${data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$")}\`);`);
+		}
+	}
 };
+
+/**
+ * @function isManager
+ * @param {Object,Number} id
+ * 
+ * 해당 사용자가 매니저인 상태인지 검사한다.
+ */
+sopia.isManager = (id) => {
+	if ( typeof id === "object" ) {
+		if ( id.id ) {
+			id = id.id;
+		}
+	}
+
+	if ( sopia.live && Array.isArray(sopia.live.manager_ids) && Number.isInteger(id) ) {
+		return sopia.live.manager_ids.includes(id);
+	}
+	return false;
+};
+
+/**
+ * @function onmessage
+ * @param {Object} e 라이브 이벤트
+ * @description 라이브 이벤트를 받으면 main_process로 넘겨주는 함수
+ * HOME의 라이브 정보 갱신도 한다.
+ */
+sopia.onmessage = (e) => {
+	try {
+		let data = e.data;
+
+		if ( !sopia.me || !sopia.me.tag ) {
+			if ( e.event === "live_join" ) {
+				sopia.me = data.author;
+			}
+		}
+
+		let send_event = true;
+		if ( !sopia.config.sopia.detectme &&
+			e.data.author.tag === window.me.tag ) {
+			//detectme then, not send data sopia
+			send_event = false;
+		}
+		
+		e.event = e.event.replace("live_", "").trim();
+
+		if ( data.live && e.event !== "message" ) {
+			sopia.live = data.live;
+		}
+
+		if ( sopia.on === false ) {
+			if ( sopia.config.sopia.autostart ) {
+				send_event = true;
+			}
+		}
+
+		if ( ["join", "leave", "like", "present"].includes(e.event) === false ) {
+			if ( sopia.config.sopia.onlymanager ) {
+				send_event = false;
+			}
+		}
+
+		if ( sopia.isLoading === false ) {
+			eval
+		}
+
+		if ( send_event ) {
+			sopia.emit(e.event, data);
+		}
+		sopia.emit('all', e);
+
+		//라이브 정보
+		if ( data && data.live && e.event !== "message" ) {
+			let live = data.live;
+			document.querySelector('#liveTitle').innerText = live.title;
+			document.querySelector('#liveStartTime').innerText = new Date(live.created).toLocaleString();
+			document.querySelector('#liveBgUrl').innerText = live.img_url;
+
+			//비제이 정보
+			if ( live.author ) {
+				let author = live.author;
+				document.querySelector('#bjName').innerText = author.nickname;
+				document.querySelector('#bjTag').innerText = author.tag;
+				document.querySelector('#bjPID').innerText = author.id;
+				document.querySelector('#bjProfileUrl').innerText = author.profile_url;
+				document.querySelector('#bjDateJoined').innerText = 
+					new Date(author.date_joined).toLocaleString();
+			}
+		}
+
+	} catch ( err ) {
+		console.error(err);
+		console.log(e);
+	}
+}
 
 module.exports = sopia;

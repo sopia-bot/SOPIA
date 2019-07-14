@@ -34,6 +34,17 @@ div[name="import-child"] {
 	background-color:#d1d1d1;
 }
 
+div.uk-grid-divider>div.uk-text-right {
+	width: 80%;
+}
+div.uk-grid-divider>div.uk-text-right>a {
+	text-align: right;
+	text-transform: none;
+    text-overflow: ellipsis;
+	width: 100%;
+	overflow: hidden;
+    white-space: nowrap;
+}
 
 /* The switch - the box around the slider */
 .switch {

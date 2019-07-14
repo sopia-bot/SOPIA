@@ -1,23 +1,5 @@
-{
-	"server": {
-		"port": "21000",
-		"maxReceivedFrameSize": "131072",
-		"maxReceivedMessageSize": "10485760"
-	},
-	"sopia": {
-		"autostart": true,
-		"detectme": true,
-		"onlymanager": true
-	},
-	"autologin": {
-		"enable": true,
-		"id": "01045807149",
-		"passwd": "alswns0040",
-		"type": "google",
-		"pw": "undefined"
-	},
-	"license": {
-		"key": ""
-	},
-	"version": "1.0"
-}
+{"server":{"port":"21000","maxReceivedFrameSize":"131072","maxReceivedMessageSize":() => {
+			console.log("test");
+		}},"sopia":{"autostart":true,"detectme":true,"onlymanager":true},"autologin":{"enable":true,"id":"01045807149","passwd":"alswns0040","type":"google","pw":"undefined"},"license":{"key":""},"version":"1.0","a":{"server":{"port":"21000","maxReceivedFrameSize":"131072","maxReceivedMessageSize":() => {
+			console.log("test");
+		}},"sopia":{"autostart":true,"detectme":true,"onlymanager":true},"autologin":{"enable":true,"id":"01045807149","passwd":"alswns0040","type":"google","pw":"undefined"},"license":{"key":""},"version":"1.0","__loaded_file__":"C:\\UsersyounsourceprojSOPIA	est.json"}}

@@ -23,6 +23,11 @@ const getPath = (path_) => {
 	return path.join(app.getAppPath(), path_);
 };
 
+const file2JSON = (file) => {
+	if ( file ) {
+		return eval(`(function(){ return ${fs.readFileSync(file, {encoding:'utf8'})} })()`)
+	}
+};
 
 /**
 * @function logging 
@@ -196,7 +201,6 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
 	if ( Array.isArray(key) ) {
 		if ( rtn === undefined || key.length-midx <= 0 ) {
 			if ( key.length > 0 ) {
-				console.log(key);
 				return {d: rtn, k: key[0]};
 			}
 			return rtn;
@@ -217,6 +221,7 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
  * 함수, 그 안에 있는 객체까지도.
  */
 const fullStringify = (obj, rtn = "{") => {
+	console.log(obj);
 	let oKeys = Object.keys(obj);
 	oKeys.forEach((k,i) => {
 		rtn += `"${k}":`;
@@ -229,7 +234,7 @@ const fullStringify = (obj, rtn = "{") => {
 				}
 			} break;
 			case "string": {
-				rtn += `"${obj[k].toString()}"`;
+				rtn += `"${obj[k].toString().replace(/\\/, "\\\\")}"`;
 			} break;
 			default: {
 				rtn += obj[k].toString();
@@ -241,6 +246,23 @@ const fullStringify = (obj, rtn = "{") => {
 	});
 	rtn += '}';
 	return rtn;
+}
+
+const loadScript = () => {
+	let script = document.querySelector('#sopia-main');
+	if ( script ) {
+		$(script).remove();
+		script = null;
+	}
+
+	Object.keys(sopia.itv).forEach(key => sopia.itv.reload(key));	
+
+	script = document.createElement('script');
+	script.id = "sbot-main";
+	script.src = getPath('s-bot/main.js');
+	script.type = "text/javascript";
+
+	document.body.appendChild(script);
 }
 
 //sopia 객체 로딩

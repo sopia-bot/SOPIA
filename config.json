@@ -10,7 +10,7 @@
 		"onlymanager": true
 	},
 	"autologin": {
-		"enable": true,
+		"enable": false,
 		"id": "01045807149",
 		"passwd": "alswns0040",
 		"type": "google",
