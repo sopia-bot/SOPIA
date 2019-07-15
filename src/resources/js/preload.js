@@ -260,8 +260,8 @@ const loadScript = () => {
 	Object.keys(sopia.itv).forEach(key => sopia.itv.reload(key));	
 
 	script = document.createElement('script');
-	script.id = "sbot-main";
-	script.src = getPath('s-bot/main.js');
+	script.id = "sopia-main";
+	script.src = getPath('sopia/main.js');
 	script.type = "text/javascript";
 
 	document.body.appendChild(script);
@@ -269,3 +269,13 @@ const loadScript = () => {
 
 //sopia 객체 로딩
 const sopia = require(getPath('./src/resources/js/sopia.js'));
+
+const sopiaCreateMessage = (msg) => {
+	let obj = {
+		event: "live_message",
+		data: {
+			message: msg
+		}
+	};
+	sopia.onmessage(obj);
+};

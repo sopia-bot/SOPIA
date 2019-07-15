@@ -352,7 +352,7 @@ sopia.onmessage = (e) => {
 		}
 
 		if ( sopia.isLoading === false ) {
-			eval
+			loadScript();
 		}
 
 		if ( send_event ) {
