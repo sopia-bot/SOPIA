@@ -250,7 +250,12 @@ const fullStringify = (obj, rtn = "{") => {
 	return rtn;
 }
 
-const loadScript = () => {
+/**
+ * @function loadScript
+ * @param {function} callback 스크립트가 로딩된 후 실행될 함수
+ * @description sopia 프로젝트의 main.js 를 로딩한다.
+ */
+const loadScript = (callback) => {
 	let script = document.querySelector('#sopia-main');
 	if ( script ) {
 		$(script).remove();
@@ -263,6 +268,10 @@ const loadScript = () => {
 	script.id = "sopia-main";
 	script.src = getPath('sopia/main.js');
 	script.type = "text/javascript";
+
+	if ( callback ) {
+		script.onload = callback;
+	}
 
 	document.body.appendChild(script);
 }

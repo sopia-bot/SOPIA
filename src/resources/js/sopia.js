@@ -133,7 +133,11 @@ sopia.storage = {
 					this.set(key, j);
 				});
 			} else {
-				noti.error("["+file+"] 파일이 없습니다.")
+				if ( fs.existsSync(path.join("./sopia", file)) ) {
+					this.load(key, path.join("./sopia", file));
+				} else {
+					noti.error("["+file+"] 파일이 없습니다.")
+				}
 			}
 		}
 	},
@@ -259,7 +263,7 @@ sopia.log = (obj, cmd = null) => {
 //                             live                              //
 ///////////////////////////////////////////////////////////////////
 
-sopia.on = false;			//현재 소피아가 !on 된 상태인가.
+sopia.is_on = false;		//현재 소피아가 !on 된 상태인가.
 sopia.isLoading = false;	//스크립트가 로딩되었는가.
 
 sopia.var.canSend = true;	//소피아가 채팅을 보낼 수 있는 상태인가.
@@ -332,27 +336,28 @@ sopia.onmessage = (e) => {
 			//detectme then, not send data sopia
 			send_event = false;
 		}
-		
+
 		e.event = e.event.replace("live_", "").trim();
 
 		if ( data.live && e.event !== "message" ) {
 			sopia.live = data.live;
 		}
 
-		if ( sopia.on === false ) {
+		if ( sopia.is_on === false ) {
 			if ( sopia.config.sopia.autostart ) {
 				send_event = true;
 			}
 		}
 
-		if ( ["join", "leave", "like", "present"].includes(e.event) === false ) {
+		if ( ["join", "leave", "like", "present"].includes(e.event) ) {
 			if ( sopia.config.sopia.onlymanager ) {
 				send_event = false;
 			}
 		}
 
 		if ( sopia.isLoading === false ) {
-			loadScript();
+			sopia.isLoading = true;
+			loadScript(() => {sopia.onmessage(e)});
 		}
 
 		if ( send_event ) {
