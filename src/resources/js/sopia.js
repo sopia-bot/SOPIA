@@ -29,11 +29,8 @@ sopia.storage = {
 	 */
 	save: function(key) {
 		let file = "";
-		let OriClone = Object.assign(this.ori);
-		delete this.ori;
 		try {
 			if ( key ) {
-				let { d, k } = getObject(OriClone, key, 1);
 				let m = getObject(this.data, key);
 				
 				
@@ -48,26 +45,20 @@ sopia.storage = {
 						}
 					});
 					m["__loaded_file__"] = file;
-				} else {
-					d[k] = m;
-					let s = fullStringify(OriClone);
-					fs.writeFile(file, s, {encoding:'utf8'}, err => {
-						if ( err ) {
-							noti.error(err);
-						}
-					});
 				}
 			} else {
+				let OriClone = Object.assign(this.ori);
+				delete this.ori;
 				Object.keys(this.data).forEach(k => {
 					if ( typeof this.data[k]["__loaded_file__"] === "string" ) {
 						this.save(k);
 					}
 				});
+				this.ori = OriClone;
 			}
 		} catch (err) {
 			console.error(err);
 		}
-		this.ori = OriClone;
 	},
 	/**
 	 * @function get
@@ -88,7 +79,11 @@ sopia.storage = {
 	 */
 	get: function(key) { 
 		if ( key ) {
-			return getObject(this.data, key);
+			let rtn = getObject(this.data, key);
+			if ( rtn === undefined && this.data.default ) {
+				rtn = getObject(this.data.default, key);
+			}
+			return rtn;
 		}
 		return this.data;
 	},
@@ -98,11 +93,17 @@ sopia.storage = {
 	 * @param {*} val
 	 * 해당 키값에 value를 할당한다.
 	 */
-	set: function(key, val) {
+	set: function(key, val, obj = this.data) {
 		try {
 			if ( key && val !== undefined ) {
-				let { d, k } = getObject(this.data, key, 1);
-				d[k] = val;
+				let o = getObject(obj, key, 1);
+				if ( o === undefined && obj.default ) {
+					let { d, k } = getObject(obj.default, key, 1)
+					d[k] = val;
+				} else {
+					let { d, k } = o;
+					d[k] = val;
+				}
 			}
 			return this.data;
 		} catch (err) {
@@ -126,6 +127,8 @@ sopia.storage = {
 					}
 
 					let j = file2JSON(file);
+					
+					this.set(key, j, this.ori);
 					j["__loaded_file__"] = file;
 					this.set(key, j);
 				});
@@ -134,9 +137,10 @@ sopia.storage = {
 			}
 		}
 	},
-	data: file2JSON(getPath('storage.json')),
-	ori: file2JSON(getPath('storage.json'))
+	data: {},
+	ori: {}
 };
+sopia.storage.load('default', getPath('default.json'));
 
 /**
  * 소피아의 반복 동작 (interval)을 관리합니다.

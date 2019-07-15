@@ -205,7 +205,10 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
 			}
 			return rtn;
 		} else {
-			rtn = rtn[key.shift()];	
+			rtn = rtn[key.shift()];
+			if ( rtn === undefined ) {
+				return undefined;
+			}
 		}
 	} else if ( typeof key === "string" ) {
 		key = key.split('.');
@@ -221,7 +224,6 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
  * 함수, 그 안에 있는 객체까지도.
  */
 const fullStringify = (obj, rtn = "{") => {
-	console.log(obj);
 	let oKeys = Object.keys(obj);
 	oKeys.forEach((k,i) => {
 		rtn += `"${k}":`;
