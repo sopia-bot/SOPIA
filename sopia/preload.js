@@ -18,7 +18,7 @@ String.prototype.sprintf = function() {
 };
 
 //초 단위
-var s2hms = (s) => {
+window.s2hms = (s) => {
 	let h = (parseInt(s/3600)).toString();
 	let m = (parseInt((s - (h*3600)) / 60)).toString();
 	let sc = (parseInt((s - (h*3600) - (m*60)))).toString();
@@ -40,10 +40,10 @@ var s2hms = (s) => {
 	};
 };
 
-var makePlaybar = (current, max) => {
+window.makePlaybar = (current, max) => {
 	const playbar = 
-	`{0} {1} {2}\n`+
-	`     ㅤㅤㅤㅤㅤ ◁ㅤㅤ❚❚ㅤㅤ▷ㅤㅤㅤㅤㅤ↻ ⇆`;
+	'{0} {1} {2}\n'+
+	'     ㅤㅤㅤㅤㅤ ◁ㅤㅤ❚❚ㅤㅤ▷ㅤㅤㅤㅤㅤ↻ ⇆';
 	const bar = '────────────';
 	const parseCurrent = s2hms(current);
 	const parseMax = s2hms(max);
@@ -56,7 +56,7 @@ var makePlaybar = (current, max) => {
 	`${parseMax.h}:${parseMax.m}:${parseMax.s}`);
 };
 
-function updateProps() {
+window.updateProps = () => {
 	document.querySelector('#webview').executeJavaScript('getProps()')
 	.then(d => {
 		sopia.var.props = d;

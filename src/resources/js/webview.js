@@ -56,7 +56,7 @@ document.querySelectorAll('webview').forEach((element, idx) => {
                 } break;
                 case 0: {
                     let obj = JSON.parse(e.message);
-                    if ( obj.event && typeof e.event === "string" && obj.event.indexOf("live_") === 0 ) {
+                    if ( typeof obj.event === "string" && obj.event.indexOf("live_") == 0 ) {
                         sopia.onmessage(obj);
                     } else {
                     }

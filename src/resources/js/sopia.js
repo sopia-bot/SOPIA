@@ -194,7 +194,7 @@ sopia.include = (path_) => {
 	let file = getPath(path.join(window.code.sopiaPath, path_));
 	if ( fs.existsSync(file) ) {
 		let source = fs.readFileSync(file, {encoding: 'utf8'});
-		eval(source);
+		return eval(source);
 	} else {
 		// file not exists
 		noti.error(`[${file}] 파일을 열 수 없습니다.`);

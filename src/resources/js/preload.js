@@ -262,6 +262,7 @@ const loadScript = (callback) => {
 		script = null;
 	}
 
+	sopia.removeAllListeners();
 	Object.keys(sopia.itv).forEach(key => sopia.itv.reload(key));	
 
 	script = document.createElement('script');
