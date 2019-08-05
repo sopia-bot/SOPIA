@@ -319,7 +319,8 @@ sopia.isManager = (id) => {
 };
 
 sopia.me = {
-	tag: 'a.i_sopia'
+	tag: 'a.i_sopia',
+	id: 4324890
 };
 
 /**
@@ -359,8 +360,7 @@ sopia.onmessage = (e) => {
 		
 		if ( ["join", "leave", "like", "present"].includes(e.event) ) {
 			if ( sopia.config.sopia.onlymanager ) {
-				if ( sopia.live.manager_ids.includes(sopia.me.tag) == false &&
-					 sopia.live.author.tag !== sopia.me.tag &&
+				if ( sopia.live.manager_ids.includes(sopia.me.id) == false &&
 					 send_event ) {
 					send_event = false;
 				}

@@ -1,7 +1,7 @@
 {
 	"안녕?": (e) => {
 		let rtn = null;
-		let num = sbot.variable.global_hello_stack[e.author.tag];
+		let num = sopia.var.global_hello_stack[e.author.tag];
 		if ( num ) {
 			num = parseInt(num, 10);
 			switch(num++) {
@@ -18,10 +18,10 @@
 					rtn = '흥!';
 				} break;
 			}
-			sbot.variable.global_hello_stack[e.author.tag] = num;
+			sopia.var.global_hello_stack[e.author.tag] = num;
 		} else {
 			// first
-			sbot.variable.global_hello_stack[e.author.tag] = 1;
+			sopia.var.global_hello_stack[e.author.tag] = 1;
 			rtn = `안녕하세요. ${e.author.nickname} 님!`;
 		}
 		return rtn;
@@ -34,20 +34,20 @@
 			"VLYPZL": "알아. 사랑해.", //은정
 			"angel__25": e => {
 				setTimeout(() => {
-					sbot.send("내가 더 많이. 하늘만큼 땅만큼 우주만큼 사랑해.");
+					sopia.send("내가 더 많이. 하늘만큼 땅만큼 우주만큼 사랑해.");
 				}, 10000);
 				return "나도";
 			},
 			"11_11": e => {
 				setTimeout(() => {
-					sbot.send("그러니까 빨리 축구단 만들러 가자.");
+					sopia.send("그러니까 빨리 축구단 만들러 가자.");
 				}, 1000);
 				return "나도 사랑해";
 			},
 			"3.hee": "야. 가라.",
 			"2soo_______": e => {
 				if ( isMySOPIA(e.author.id) ) {
-					sbot.variable.personalMessages["쪼아"] = "쪼아가 젤 쪼아";
+					sopia.var.personalMessages["쪼아"] = "쪼아가 젤 쪼아";
 					return "웅. 나도 쪼아해."
 				} else {
 					return "마이에 내가 없는데...?"
@@ -78,13 +78,13 @@
 		let str = null;
 		if ( data.length > 1 ) {
 			if ( data[1] === "제거" ) {
-				str = sbot.variable.global_stack.shift() + "가 신청곡에서 제거되었습니다.";
+				str = sopia.var.global_stack.shift() + "가 신청곡에서 제거되었습니다.";
 			} else {
-				sbot.variable.global_stack.push(data.slice(1).join(' '));
+				sopia.var.global_stack.push(data.slice(1).join(' '));
 				str = data.slice(1).join(' ') + "가 신청곡에 추가되었습니다.";
 			}
 		} else {
-			str = sbot.variable.global_stack.join("\n");
+			str = sopia.var.global_stack.join("\n");
 		}
 		return str;
 	},
@@ -110,7 +110,7 @@
 			let name = one.querySelector('span.name').innerText.trim();
 
 			let str = `소피아의 음악 추천은~ 멜론 실시간 ${rank}위인 ${name} - ${title} 입니다.`;
-			sbot.send(str);
+			sopia.send(str);
 		});
 	},
 	"국어사전": e => {
@@ -148,7 +148,7 @@
 			value.innerHTML = mean.value;
 			let vText = value.innerText;
 
-			sbot.send(`${word}[${pos}]: ${vText}`);
+			sopia.send(`${word}[${pos}]: ${vText}`);
 		});
 		return null;
 	},
