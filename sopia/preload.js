@@ -2,6 +2,7 @@
 sopia.var.created = null;                   //방송 만들어진 시간
 sopia.var.global_stack = [];				//신청곡
 sopia.var.global_hello_stack = {};			//한 번 인사한 사람.
+sopia._send = sopia.send;					//send함수 백업
 
 String.prototype.replaceAt=function(index, replacement) {
 	return this.substr(0, index) + replacement+ this.substr(index + replacement.length);

@@ -1,10 +1,35 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, session} = require('electron')
 const path = require('path')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+
+try {
+	session.defaultSession.cookies.flushStore();
+	session.webContents.session.clearCache();
+	session.webContents.session.clearStorageData([]);
+	session.webContents.session.flushStorageData();
+	
+	session.defaultSession.cookies.get({}, (error, cookies) => {
+		cookies.forEach((cookie) => {
+			let url = '';
+			// get prefix, like https://www.
+			url += cookie.secure ? 'https://' : 'http://';
+			url += cookie.domain.charAt(0) === '.' ? 'www' : '';
+			// append domain and path
+			url += cookie.domain;
+			url += cookie.path;
+			
+			session.defaultSession.cookies.remove(url, cookie.name, (error) => {
+				if (error) console.log(`error removing cookie ${cookie.name}`, error);
+			});
+		});
+	});
+} catch {
+
+}
 
 function createWindow () {
 	// Create the browser window.
@@ -24,7 +49,7 @@ function createWindow () {
 	mainWindow.loadFile('src/index.html')
 	
 	// Open the DevTools.
-	mainWindow.webContents.openDevTools()
+	//mainWindow.webContents.openDevTools()
 	
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {

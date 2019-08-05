@@ -283,6 +283,10 @@ sopia.itv.add("sendInterval", () => {
  * 5초 이내에 채팅을 5번 이상 보내게 된다면, 그로부터 5초는 쉰다.
  */
 sopia.send = (data) => {
+	if ( data.trim() === "" ) {
+		return;
+	}
+
 	if ( sopia.var.sendCount >= sopia.var.sendMaxCount ) {
 		sopia.var.canSend = false;
 		sopia.var.sendDelayTimeout = setTimeout(() => {
@@ -314,6 +318,10 @@ sopia.isManager = (id) => {
 	return false;
 };
 
+sopia.me = {
+	tag: 'a.i_sopia'
+};
+
 /**
  * @function onmessage
  * @param {Object} e 라이브 이벤트
@@ -332,26 +340,30 @@ sopia.onmessage = (e) => {
 
 		let send_event = true;
 		if ( !sopia.config.sopia.detectme &&
-			e.data.author.tag === window.me.tag ) {
+			e.data.author.tag === sopia.me.tag ) {
 			//detectme then, not send data sopia
 			send_event = false;
 		}
-
+		
 		e.event = e.event.replace("live_", "").trim();
 
 		if ( data.live && e.event !== "message" ) {
 			sopia.live = data.live;
 		}
 
-		if ( sopia.is_on === false ) {
+		if ( sopia.is_on === false && send_event ) {
 			if ( sopia.config.sopia.autostart ) {
 				send_event = true;
 			}
 		}
-
+		
 		if ( ["join", "leave", "like", "present"].includes(e.event) ) {
 			if ( sopia.config.sopia.onlymanager ) {
-				send_event = false;
+				if ( sopia.live.manager_ids.includes(sopia.me.tag) == false &&
+					 sopia.live.author.tag !== sopia.me.tag &&
+					 send_event ) {
+					send_event = false;
+				}
 			}
 		}
 

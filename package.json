@@ -4,7 +4,32 @@
 	"description": "A Spooncast manager A.I Program",
 	"main": "main.js",
 	"scripts": {
-		"start": "electron ."
+		"start": "electron .",
+		"build:win32": "build --win --ia32"
+	},
+	"build" : {
+		"productName": "SOPIA",
+		"appId": "com.electron.sopia",
+		"asar": true,
+		"protocols": {
+			"name" : "sopia",
+			"schemes" : ["helloSOPIA"]
+		},
+		"win": {
+			"target": [
+				"zip",
+				"nsis"
+			],
+			"icon": "./icon.ico"
+		},
+		"nsis": {
+			"oneClick": false,
+			"allowToChangeInstallationDirectory": true
+		},
+		"directories": {
+			"output": "dist/",
+			"app": "."
+		}
 	},
 	"repository": "https://github.com/mobbing/SOPIA",
 	"keywords": [],

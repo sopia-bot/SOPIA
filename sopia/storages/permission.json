@@ -70,8 +70,8 @@
 	},
 	"eval": (e) => {
 		if (e.message === "eval") {
-			eval(sbot.variable.evalString);
-			sbot.variable.evalString = "";
+			eval(sopia.var.evalString);
+			sopia.var.evalString = "";
 		} else {
 			let cmd = e.message.replace("eval ", "");
 			eval(cmd);
@@ -84,14 +84,16 @@
 		return rtn;
 	},
 	"evals": (e) => {
-		sbot.variable.evalString += data.replace('evals ');
+		sopia.var.evalString += data.replace('evals ');
 	},
 	"off": (e) => {
-		sbot.send("소피아의 동작이 중지됩니다.\n!on 명령을 사용하여 킬 수 있습니다.");
-		sbot.send = () => {};
+		sopia.send("소피아의 동작이 중지됩니다.\n!on 명령을 사용하여 킬 수 있습니다.");
+		sopia.send = () => {};
+		sopia.is_on = false;
 	},
 	"on": (e) => {
-		sbot.send = sbot._send;
-		sbot.send("소피아가 동작합니다.\n!off 명령어를 사용하여 종료할 수 있습니다.");
+		sopia.send = sbot._send;
+		sopia.send("소피아가 동작합니다.\n!off 명령어를 사용하여 종료할 수 있습니다.");
+		sopia.is_on = true;
 	}
 };

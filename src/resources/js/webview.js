@@ -18,7 +18,7 @@ document.querySelectorAll('webview').forEach((element, idx) => {
     element.httpServer.on('error', (err) => {
         if ( err.code === "EADDRINUSE" ) {
             element.serverPort += 100;
-            server.listen(element.serverPort, () => {});
+            element.httpServer.listen(element.serverPort, () => {});
         }
     });
     element.httpServer.listen(element.serverPort, () => {});

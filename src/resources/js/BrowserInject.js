@@ -109,8 +109,9 @@ function setLogging() {
 	}
 	
 	console.log = logging;
-	setTimeout(() => {
-		setLogging();
-	}, 3000);
 };
-setLogging();
+var logIntervalTime = 2;
+var logInterval = setInterval(() => {
+	setLogging();
+	logIntervalTime *= logIntervalTime;
+}, logIntervalTime * 1000);
