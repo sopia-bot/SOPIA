@@ -5,15 +5,18 @@
 	"main": "main.js",
 	"scripts": {
 		"start": "electron .",
-		"build:win32": "build --win --ia32"
+		"build:win32": "build --win --ia32",
+		"pbuild:win32": "electron-packager . SOPIA --overwrite --asar=true --platform=win32 --arch=ia32 --out=release-builds"
 	},
-	"build" : {
+	"build": {
 		"productName": "SOPIA",
 		"appId": "com.electron.sopia",
 		"asar": true,
 		"protocols": {
-			"name" : "sopia",
-			"schemes" : ["helloSOPIA"]
+			"name": "sopia",
+			"schemes": [
+				"helloSOPIA"
+			]
 		},
 		"win": {
 			"target": [
@@ -36,10 +39,12 @@
 	"author": "mobbing",
 	"license": "CC0-1.0",
 	"devDependencies": {
-		"electron": "^5.0.4"
+		"electron": "^5.0.4",
+		"electron-builder": "^21.2.0"
 	},
 	"dependencies": {
 		"axios": "^0.19.0",
+		"electron-packager": "^14.0.6",
 		"websocket": "^1.0.29"
 	}
 }

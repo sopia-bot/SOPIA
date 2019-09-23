@@ -359,7 +359,10 @@ sopia.onmessage = (e) => {
 		}
 		
 		if ( ["join", "leave", "like", "present"].includes(e.event) ) {
-			if ( sopia.config.sopia.onlymanager ) {
+			console.log("is manager event!");
+			console.log("only manager ", sopia.config.sopia.onlymanager)
+			if ( sopia.config.sopia.onlymanager === true ) {
+				console.log(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
 				if ( sopia.live.manager_ids.includes(sopia.me.id) == false &&
 					 send_event ) {
 					send_event = false;
@@ -372,7 +375,9 @@ sopia.onmessage = (e) => {
 			loadScript(() => {sopia.onmessage(e)});
 		}
 
-		if ( send_event ) {
+		console.log("send event", send_event);
+		if ( send_event === true ) {
+			console.log('event', e.event)
 			sopia.emit(e.event, data);
 		}
 		sopia.emit('all', e);

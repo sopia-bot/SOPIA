@@ -156,5 +156,5 @@
 	"멍청이": "무지개반사~",
 	"나이": "SOPIA는 2019년 6월 20일 프로젝트가 생성되었습니다.",
 	"개발자": "소피아의 아빠는 개발자 윤군입니다. 그러나 스접을 했으며, 프로그램은 모르에게 양도 되었습니다.",
-	"명령어": e => Object.keys(sbot.variable.messages).join(', ')
+	"명령어": e => Object.keys(sopia.var.messages).join(', ')
 }

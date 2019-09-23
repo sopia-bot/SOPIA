@@ -11,6 +11,8 @@ sopia.storage.load('like',			'./storages/like.json');
 sopia.storage.load('shadowjoin',	'./storages/shadowjoin.json');
 sopia.storage.load('present',		'./storages/present.json');
 
+//"!개발자" 이런 문장이 왔을 때, 감지를 해내고
+//!를 삭제하여 "개발자"로 만듦
 isCmd = (e) => {
 	let msg = e.message;
 	if ( msg.indexOf("!") === 0 ) {
@@ -33,13 +35,15 @@ isBlack = (tag = "") => {
 isAdmin = (author = "") => {
 	let a = sopia.storage.get('admins');
 	if ( a.indexOf(author.tag) !== -1 ) {
-		return true;
+		return true; //참/거짓 할때의 참.
 	}
 
 	if ( sopia.var.live && Array.isArray(sopia.var.live.manager_ids) ) {
-		if ( sopia.var.live.manager_ids.includes(author.id) ) {
-			return true;
-		}
+		return true;
+	}
+
+	if ( sopia.var.live.author.id == author.id ) {
+		return true;
 	}
 	return false;
 };
@@ -111,10 +115,14 @@ sopia.on('message', (e) => {
 });
 
 sopia.on('join', (e) => {
+	// 지식에서 join 이라는 지식 안에 default라는 지식을 찾는다.
 	let j = sopia.storage.get('join.default');
-	let sendStr = runCmd(j, e);
+	//runCmd(j,e) 부분은 찾은 지식(명령어) 를 실행
+	let sendStr = runCmd(j, e);	//sendStr에 실행된 명령어를 저장.
+	//ex) e.author.nickname 이 "MOR" 라고 가정하면, 결과 : "MOR님이 등장했노라."
 
 	if ( typeof sendStr === "string" ) {
+		//sopia.send 가 채팅을 보낸다.
 		sopia.send(sendStr);
 	}
 });

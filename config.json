@@ -5,16 +5,15 @@
 		"maxReceivedMessageSize": "10485760"
 	},
 	"sopia": {
-		"autostart": true,
-		"detectme": true,
+		"autostart": false,
+		"detectme": false,
 		"onlymanager": true
 	},
 	"autologin": {
-		"enable": false,
-		"id": "01045807149",
-		"passwd": "alswns0040",
-		"type": "google",
-		"pw": "undefined"
+		"enable": true,
+		"id": "",
+		"passwd": "",
+		"type": "google"
 	},
 	"license": {
 		"key": ""

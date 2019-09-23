@@ -18,9 +18,16 @@ const http = require('http');
  * @param {string} path_ 
  * 현재 프로그램이 시작된 경로를 기준으로,
  * @path_ 의 절대 경로를 반환한다.
+ * @cur true 면 electron.exe 검사를 안 한다.
  */
-const getPath = (path_) => {
-	return path.join(app.getAppPath(), path_);
+const getPath = (path_, cur = false) => {
+	let exePath = app.getPath('exe');
+	let exe = path.basename(exePath);
+	let p = app.getAppPath();
+	if ( exe !== "electron.exe" && cur === false ) {
+		p = path.dirname(exePath);
+	}
+	return path.join(p, path_);
 };
 
 const file2JSON = (file) => {
@@ -278,7 +285,7 @@ const loadScript = (callback) => {
 }
 
 //sopia 객체 로딩
-const sopia = require(getPath('./src/resources/js/sopia.js'));
+const sopia = require(getPath('./src/resources/js/sopia.js', true));
 
 const sopiaCreateMessage = (msg) => {
 	let obj = {

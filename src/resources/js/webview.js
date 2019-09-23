@@ -84,7 +84,7 @@ document.querySelectorAll('webview').forEach((element, idx) => {
         }, 3000);
 
 
-        fs.readFile(getPath("src/resources/js/BrowserInject.js"), {encoding: "utf8"}, (err, data) => {
+        fs.readFile(getPath("src/resources/js/BrowserInject.js", true), {encoding: "utf8"}, (err, data) => {
             if ( err ) {
                 throw err;
             }

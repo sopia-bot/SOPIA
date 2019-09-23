@@ -6,18 +6,18 @@
 		nickname = nickname.join(' ');
 		switch ( s[1] ) {
 			case "추가": {
-				let p = sbot.variable.peoples[nickname];
+				let p = sopia.var.peoples[nickname];
 				if ( p ) {
-					sbot.variable.black_list.push(p.tag);
+					sopia.var.black_list.push(p.tag);
 					str = `${p.nickname}(id:${p.tag})님이 블랙리스트에 추가되었습니다.`;
 				}
 			} break;
 			case "제거": {
-				let p = sbot.variable.peoples[nickname];
+				let p = sopia.var.peoples[nickname];
 				if ( p ) {
-					let idx = sbot.variable.black_list.indexOf(p.tag);
+					let idx = sopia.var.black_list.indexOf(p.tag);
 					if ( idx >= 0 ) {
-						sbot.variable.black_list.splice(idx, 1);
+						sopia.var.black_list.splice(idx, 1);
 						str = `${p.nickname}(id:${p.tag})님이 블랙리스트에서 해제되었습니다.`;
 					}
 				}
@@ -26,7 +26,7 @@
 		return str;
 	},
 	//업타임에서 평균 15초 딜레이가 있다
-	"업타임": e => makePlaybar(parseInt((new Date().getTime() - sbot.variable.created.getTime()) / 1000), 7200),
+	"업타임": e => makePlaybar(parseInt((new Date().getTime() - sopia.var.created.getTime()) / 1000), 7200),
 	"투표": e => {
 		let entry = e.message.split('\n');
 		let title = entry[0].split(' ');
@@ -35,35 +35,35 @@
 		title = title.join(' ');
 
 		if ( s[1] === "등록" ) {
-			sbot.vote = new Object();
-			sbot.vote.user = new Object();
+			sopia.vote = new Object();
+			sopia.vote.user = new Object();
 			for ( let i = 1;i < entry.length;i++ ) {
-				sbot.vote[entry[i]] = 0;
+				sopia.vote[entry[i]] = 0;
 			}
-			sbot.variable.messages["투표"] = e => {
+			sopia.var.messages["투표"] = e => {
 				let split = e.message.split(' ');
 				if ( split.length >= 2 ) {
 					let target = split.splice(1, split.length).join(' ');
-					if ( sbot.vote.user[e.author.tag] === undefined &&
-						 typeof sbot.vote[target] === "number" ) {
-						sbot.vote[target] += 1;
-						sbot.vote.user[e.author.tag] = true;
+					if ( sopia.vote.user[e.author.tag] === undefined &&
+						 typeof sopia.vote[target] === "number" ) {
+						sopia.vote[target] += 1;
+						sopia.vote.user[e.author.tag] = true;
 					}
 				}
 				return "";
 			};
 			str = title + " 투표가 등록되었습니다.";
 		} else if ( s[1] === "마감" ) {
-			if ( sbot.vote ) {
-				let entries = Object.entries(sbot.vote);
+			if ( sopia.vote ) {
+				let entries = Object.entries(sopia.vote);
 				entries.sort((a, b) => b[1] - a[1]);
 				str = title + " 결과\n";
 				entries.forEach((element, idx) => {
 					entries[idx] = element.join(':');
 				});
 				str += entries.join('\n');
-				delete sbot.variable.messages["투표"];
-				sbot.vote = null;
+				delete sopia.var.messages["투표"];
+				sopia.vote = null;
 			}
 		}
 		return str;
