@@ -45,6 +45,11 @@ isAdmin = (author = "") => {
 	if ( sopia.var.live.author.id == author.id ) {
 		return true;
 	}
+
+	if ( sopia.var.live && sopia.var.live.author.id == author.id ) {
+		return true;
+	}
+
 	return false;
 };
 
