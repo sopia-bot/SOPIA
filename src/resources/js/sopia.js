@@ -246,7 +246,7 @@ sopia.log = (obj, cmd = null) => {
 				
 				if ( flag ) {
 					//예외처리 안 된 항목
-					console.log(s);
+					sopia.debug(s);
 				}
 			}
 		}
@@ -323,6 +323,9 @@ sopia.me = {
 	id: 4324890
 };
 
+sopia.debug = () => {};
+sopia.error = () => {};
+
 /**
  * @function onmessage
  * @param {Object} e 라이브 이벤트
@@ -359,10 +362,10 @@ sopia.onmessage = (e) => {
 		}
 		
 		if ( ["join", "leave", "like", "present"].includes(e.event) ) {
-			console.log("is manager event!");
-			console.log("only manager ", sopia.config.sopia.onlymanager)
+			sopia.debug("is manager event!");
+			sopia.debug("only manager ", sopia.config.sopia.onlymanager)
 			if ( sopia.config.sopia.onlymanager === true ) {
-				console.log(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
+				sopia.debug(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
 				if ( sopia.live.manager_ids.includes(sopia.me.id) == false &&
 					 send_event ) {
 					send_event = false;
@@ -375,9 +378,9 @@ sopia.onmessage = (e) => {
 			loadScript(() => {sopia.onmessage(e)});
 		}
 
-		console.log("send event", send_event);
+		sopia.debug("send event", send_event);
 		if ( send_event === true ) {
-			console.log('event', e.event)
+			sopia.debug('event', e.event)
 			sopia.emit(e.event, data);
 		}
 		sopia.emit('all', e);
@@ -402,8 +405,7 @@ sopia.onmessage = (e) => {
 		}
 
 	} catch ( err ) {
-		console.error(err);
-		console.log(e);
+		sopia.error(err, e);
 	}
 }
 

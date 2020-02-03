@@ -67,12 +67,21 @@ window.autoLogin = (type, id, pw) => {
 	}
 };
 
+var token;
 window.SendChat = (str) => {
 	let props = getProps();
 	if ( props ) {
+		if ( !token ) {
+			if ( props.authKey ) {
+				token = props.authKey.replace("Token ");
+			}
+		}
 		props.SocketActions.socketLiveMessage({
 			"message":str,
-			"event":"live_message"
+			"event":"live_message",
+			"appversion": props.appVersion,
+			"useragent": "Web",
+			"token": token
 		});
 	}
 };

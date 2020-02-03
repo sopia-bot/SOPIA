@@ -1,6 +1,6 @@
 {
 	"name": "sopia",
-	"version": "1.0.0",
+	"version": "1.0.5",
 	"description": "A Spooncast manager A.I Program",
 	"main": "main.js",
 	"scripts": {
@@ -34,9 +34,9 @@
 			"app": "."
 		}
 	},
-	"repository": "https://github.com/mobbing/SOPIA",
+	"repository": "https://github.com/tree-some/SOPIA",
 	"keywords": [],
-	"author": "mobbing",
+	"author": "tree-some",
 	"license": "CC0-1.0",
 	"devDependencies": {
 		"electron": "^5.0.4",
