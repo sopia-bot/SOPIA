@@ -15,8 +15,10 @@ const sopia = new EventEmitter();
 sopia.modules = {
 	axios: require('axios'),
 	path: require('path'),
-	fs: require('fs')
+	fs: require('fs'),
 };
+
+sopia.tts = require(getPath('/speech.js')).tts;
 
 sopia.var = new Object();
 sopia.storage = {
@@ -136,7 +138,12 @@ sopia.storage = {
 				if ( fs.existsSync(path.join("./sopia", file)) ) {
 					this.load(key, path.join("./sopia", file));
 				} else {
-					noti.error("["+file+"] 파일이 없습니다.")
+					try { 
+						noti.error("["+file+"] 파일이 없습니다.")
+					} catch (err) {
+						console.log("cannot find file", file);
+						console.error(err);
+					}
 				}
 			}
 		}
@@ -144,6 +151,7 @@ sopia.storage = {
 	data: {},
 	ori: {}
 };
+
 sopia.storage.load('default', getPath('default.json'));
 
 /**
@@ -202,7 +210,7 @@ sopia.include = (path_) => {
 };
 
 //설정파일 로딩
-sopia.config = require(getPath('./config.json'));
+sopia.config = sopia.require(getPath('./config.json'));
 
 
 
@@ -294,7 +302,8 @@ sopia.send = (data) => {
 		}, sopia.var.sendTimeoutTime);
 	} else {
 		if ( sopia.var.canSend ) {
-			webview.executeJavaScript(`SendChat(\`${data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$")}\`);`);
+			const chat = data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$");
+			webview.executeJavaScript(`SendChat(\`${chat}\`);`);
 		}
 	}
 };

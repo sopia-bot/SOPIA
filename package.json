@@ -43,6 +43,7 @@
 		"electron-builder": "^21.2.0"
 	},
 	"dependencies": {
+		"@google-cloud/text-to-speech": "^2.2.0",
 		"axios": "^0.19.0",
 		"electron-packager": "^14.0.6",
 		"websocket": "^1.0.29"

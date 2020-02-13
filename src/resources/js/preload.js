@@ -12,7 +12,6 @@ const EventEmitter = require('events');
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 
-
 /**
  * @function getPath
  * @param {string} path_ 
@@ -24,7 +23,7 @@ const getPath = (path_, cur = false) => {
 	let exePath = app.getPath('exe');
 	let exe = path.basename(exePath);
 	let p = app.getAppPath();
-	if ( exe !== "electron.exe" && cur === false ) {
+	if ( !exe.match("electron") && cur === false ) {
 		p = path.dirname(exePath);
 	}
 	return path.join(p, path_);
