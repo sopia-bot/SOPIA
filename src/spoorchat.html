@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="UTF-8">
+        <style>
+            #spoorDiv {
+                width: 100%;
+                height: 100%;
+                padding: 1.5rem;
+                display: table-cell;
+            }
+        </style>
+	</head>
+	<body>
+		<div name="import-child">
+            <div id="spoorDiv" style="height: 100%; width:100%;">
+                <!-- S:Spoorchat Setting -->
+				<div class="uk-margin uk-card-default" style="width: 100%;">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">Spoor Chat 설정</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<button id="spoorChat-save"" onclick="spoorChatSave();" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="uk-card-body">
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>Spoor Chat 사용</div>
+							<div class="uk-text-right">
+								<label class="switch">
+									<input id="enableSpoorChat" type="checkbox">
+									<span class="slider round"></span>
+								</label>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>목소리의 형태</div>
+							<div class="uk-text-right">
+								<div class="uk-inline">
+									<button id="voiceType" class="uk-button uk-button-default" data-type="random" type="button">랜덤</button>
+									<div uk-dropdown="pos: bottom-right">
+										<ul id="voiceTypeItem" class="uk-nav uk-dropdown-nav">
+											<li class="uk-active" onclick="voiceTypeSelect(event);" name="voiceTypeItems" data-type="random"><a href="#">랜덤</a></li>
+                                            <li class="uk-nav-divider"></li>
+											<li data-type="minji" onclick="voiceTypeSelect(event);" name="voiceTypeItems"><a href="#">민지</a></li>
+											<li class="uk-nav-divider"></li>
+											<li data-type="minjung" onclick="voiceTypeSelect(event);" name="voiceTypeItems"><a href="#">민정</a></li>
+											<li class="uk-nav-divider"></li>
+											<li data-type="minsu" onclick="voiceTypeSelect(event);" name="voiceTypeItems"><a href="#">민수</a></li>
+											<li class="uk-nav-divider"></li>
+                                            <li data-type="minsang" onclick="voiceTypeSelect(event);" name="voiceTypeItems"><a href="#">민상</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>최소 요구 스푼</div>
+							<div class="uk-text-right">
+								<input id="minimumSpoon" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
+							</div>
+						</div>
+					</div>
+				</div>
+                <!-- S:Spoorchat Setting -->
+            </div>
+        </div>
+        <script type="text/javascript">
+            /**
+			 * @function AllSettingSave
+			 * @param {Object} s [default sopia.config]
+			 * 소피아 설정을 config.json에 전체 저장한다.
+			 */
+             if ( typeof AllSettingSave === 'undefined' ) {
+                const AllSettingSave = (s = sopia.config) => {
+                    console.log(getPath('./config.json'));
+                    fs.writeFile(getPath("./config.json"), JSON.stringify(s, null, '\t'), {encoding:'utf8'}, (err) => {
+                        if ( err ) {
+                            noti.error(err);
+                        }
+                    });
+                };
+            }
+            
+            /**
+			 * @function spoorChatSave
+			 * SpoorChat 설정에 대한 값을 변경하고 저장한다.
+			 */
+			const spoorChatSave = () => {
+				sopia.config.spoor.enable = document.querySelector('#enableSpoorChat').value === "on";
+				sopia.config.spoor.type = document.querySelector('#voiceType').dataset.type;
+				sopia.config.spoor.minspoon = document.querySelector('#minimumSpoon').value;
+				console.log(sopia.config.spoor, "save");
+				AllSettingSave();
+            };
+            
+            /**
+            * @function voiceTypeSelect
+            * @param {MouseEvent} e
+            * Spoorchat 목소리 타입 dropmenu을 선택하는 함수.
+            */
+            const voiceTypeSelect = (e) => {
+                let voice = document.querySelector('#voiceType');
+                let li = e.target;
+                if ( li.tagName.toLowerCase() === "a" ) {
+                    li = li.parentElement;
+                }
+                
+                if ( voice ) {
+                    voice.innerText = li.innerText;
+                    voice.setAttribute('data-type', li.getAttribute('data-type'));
+                    
+                    let selected = document.querySelector('#voiceTypeItem>li.uk-active');
+                    if ( selected.className !== li.className ) {
+                        document.querySelectorAll('li[name="voiceTypeItems"]').forEach(element => {
+                            if ( element.getAttribute('data-type') === li.getAttribute('data-type') ) {
+                                element.className = "uk-active";
+                            } else {
+                                element.className = "";
+                            }
+                        });
+                    }
+                }
+            };
+        </script>
+	</body>
+</html>

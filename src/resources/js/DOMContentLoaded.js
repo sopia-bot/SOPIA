@@ -53,12 +53,19 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	
 	
 	/**
-	* live를 controls에 import 시킨다.
+	* spoorchat을 controls에 import 시킨다.
 	* display는 nonde으로 둔다.
 	*/
-	document.querySelector('#controls').appendImport('#live', (parent, target) => {
+	document.querySelector('#controls').appendImport('#spoorchat', (parent, target) => {
 		target.style.display = "none";
-		target.setAttribute('data-target', 'live');
+		target.setAttribute('data-target', 'spoorchat');
+
+
+		// 설정값 로딩
+
+		document.querySelector('#enableSpoorChat').checked = sopia.config.spoor.enable;
+		document.querySelector('#minimumSpoon').value = sopia.config.spoor.minspoon;
+		document.querySelector(`#voiceTypeItem>li[data-type="${sopia.config.spoor.type}"]`).click();
 	});
 	
 	/**
@@ -141,4 +148,6 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		});
 	});
 	/*               E: MENU CLICK               */
+
+	document.querySelector('#spoorchat-tab').click();1
 });

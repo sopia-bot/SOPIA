@@ -1,5 +1,5 @@
 const projectId='silken-avatar-268104';
-const keyfile='./sopia-tts.json'; //---1) 
+const keyfile='./sopia-tts.json';
 const { ipcMain, ipcRenderer } = require('electron');
 
 let client = null;
@@ -21,6 +21,13 @@ const StrToSpeech = (str, type = "minji") => {
 	return new Promise((resolve, reject) => {
 		if ( !str ) reject(new Error('str is undefined'));
 
+		if ( type === "random" ) {
+			let voiceList = Object.keys(voices);
+			let idx = Math.floor(Math.random() * (voiceList.length));
+
+			type = voiceList[idx];
+		}
+
 		const request = {
 			input: { text: str },
 			voice: voices[type],
@@ -31,7 +38,6 @@ const StrToSpeech = (str, type = "minji") => {
 			if (err) {		
 				reject(err);
 			}
-
 			resolve(response.audioContent.toB64Str());
 		});
 	});
@@ -53,11 +59,11 @@ const tts = (text, type) => {
 const mainInit = () => {
 	let isBrowser = typeof window !== 'undefined';
 	if ( !isBrowser ) {
-		const textToSpeech = require('@google-cloud/text-to-speech');//---2)
+		const textToSpeech = require('@google-cloud/text-to-speech');
 		client = new textToSpeech.TextToSpeechClient({
 			projectId:projectId,
 			keyFilename: keyfile,
-		}); //---3)
+		});
 
 		ipcMain.on('text-to-speech-req', (event, options) => {
 			StrToSpeech(options.text, options.type).

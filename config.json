@@ -18,5 +18,10 @@
 	"license": {
 		"key": ""
 	},
+	"spoor": {
+		"enable": true,
+		"type": "random",
+		"minspoon": "1"
+	},
 	"version": "1.0"
 }

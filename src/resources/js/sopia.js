@@ -335,6 +335,44 @@ sopia.me = {
 sopia.debug = () => {};
 sopia.error = () => {};
 
+// spoor chat 관리
+sopia.ttsStackUser = [];
+sopia.ttsStack = [];
+sopia.isRunTTS = false;
+sopia.itv.add('spoorchat', () => {
+	if ( sopia.isRunTTS ) return;
+
+	if ( sopia.ttsStack.length > 0 ) {
+		let fs = sopia.modules.fs;
+		let chatData = sopia.ttsStack.shift();
+		fs.readFile(getPath('/media/SpoorChatNoti.mp3'), { encoding: 'base64' }, (err, data) => {
+			if ( err ) {
+				sopia.error(err);
+				sopia.isRunTTS = false;
+				return;
+			}
+
+			let voiceType = sopia.config.spoor.type;
+			let notiSnd = new Audio("data:audio/mp3;base64," + data);
+			notiSnd.volume = 0.4;
+			notiSnd.onpause = function() {
+				sopia.tts(chatData.message, voiceType).then(res => {
+					let spoorChatSnd = new Audio(res);
+					spoorChatSnd.volume = 1;
+					spoorChatSnd.onpause = () => {
+						sopia.isRunTTS = false;
+						spoorChatSnd.remove();
+					};
+					spoorChatSnd.play();
+					noti.info('SpoorChat', chatData.message);
+				});
+				notiSnd.remove();
+			};
+			notiSnd.play();
+		});
+	}
+}, 1000);
+
 /**
  * @function onmessage
  * @param {Object} e 라이브 이벤트
@@ -362,6 +400,15 @@ sopia.onmessage = (e) => {
 
 		if ( data.live && e.event !== "message" ) {
 			sopia.live = data.live;
+		} else if ( e.event === "message" ) {
+			// spoorchat
+			let idx = sopia.ttsStackUser.indexOf(data.author.id);
+			if ( idx >= 0 ) {
+				sopia.ttsStackUser.splice(idx, 1);
+				sopia.ttsStack.push({
+					message: data.message
+				});
+			}
 		}
 
 		if ( sopia.is_on === false && send_event ) {
@@ -410,6 +457,13 @@ sopia.onmessage = (e) => {
 				document.querySelector('#bjProfileUrl').innerText = author.profile_url;
 				document.querySelector('#bjDateJoined').innerText = 
 					new Date(author.date_joined).toLocaleString();
+			}
+		}
+
+		// spoor chat
+		if ( sopia.config.spoor.enable && e.event === "present" ) {
+			if ( (data.amount * data.combo) >= sopia.config.spoor.minspoon ) {
+				sopia.ttsStackUser.push(data.author.id);
 			}
 		}
 
