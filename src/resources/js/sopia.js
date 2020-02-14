@@ -327,10 +327,7 @@ sopia.isManager = (id) => {
 	return false;
 };
 
-sopia.me = {
-	tag: 'a.i_sopia',
-	id: 4324890
-};
+sopia.me = null;
 
 sopia.debug = () => {};
 sopia.error = () => {};
@@ -373,6 +370,8 @@ sopia.itv.add('spoorchat', () => {
 	}
 }, 1000);
 
+const nextTick = [];
+
 /**
  * @function onmessage
  * @param {Object} e 라이브 이벤트
@@ -383,9 +382,20 @@ sopia.onmessage = (e) => {
 	try {
 		let data = e.data;
 
-		if ( !sopia.me || !sopia.me.tag ) {
-			if ( e.event === "live_join" ) {
+		if ( nextTick.length > 0 ) {
+			let func = nextTick.shift();
+			if ( typeof func === "function" ) {
+				func(e);
+			}
+		}
+
+		if ( sopia.me === null || !sopia.me.tag ) {
+			if ( e.event.trim() === "live_join" ) {
 				sopia.me = data.author;
+				nextTick.push(function(e) {
+					let data = e.data;
+					sopia.me = data.author;
+				});
 			}
 		}
 

@@ -11,6 +11,7 @@ const { clipboard, shell } = require('electron');
 const EventEmitter = require('events');
 const WebSocketServer = require('websocket').server;
 const http = require('http');
+const orgRequire = require;
 
 /**
  * @function getPath
@@ -34,6 +35,73 @@ const file2JSON = (file) => {
 		return eval(`(function(){ return ${fs.readFileSync(file, {encoding:'utf8'})} })()`)
 	}
 };
+
+// 사용자 컴퓨터의 UUID를 생성한다.
+function generateUUID() {
+	generateUUID.tail = generateUUID.tail || (function(nics) {
+		var nic, index, addr, retn;
+		for (nic in nics) { // try to obtain the MAC address from the IPv6 scope-local address
+			for (index in nics[nic]) {
+				addr = nics[nic][index];
+				if (!addr.internal) {
+					if (addr.address.indexOf('fe80::') === 0) { // found scope-local
+						retn = retn || addr.address.slice(6).split(/:/).map(function(v, i, a) {
+							return parseInt(v, 16);
+						});
+					}
+				}
+			}
+		}
+		if (!retn) { // no IPv6 so generate random MAC with multicast bit set
+			index = Math.pow(2, 16);
+			retn = [1, 2, 3, 4];
+		}
+		retn[3] = 0x10000 | retn[3];
+		retn[2] = 0x10000 | retn[1] & 0xff00 | retn[2] & 0x00ff; // eliminate FFFE from xxxx:xxFF:FExx:xxxx
+		retn[1] = 0x10000 | retn[0] ^ 0x0200; // invert bit#41
+		retn = retn.map(function(v, i, a) {
+			return v.toString(16).slice(1)
+		});
+		return retn[0] + '-' + retn[1] + retn[2] + retn[3];
+	})(require('os').networkInterfaces());
+	
+	var head = [5, 6];
+	return head.concat(generateUUID.tail).join('-');
+};
+
+
+// license 인증 확인
+const checkLicenseSOPIA = () => {
+	const config = orgRequire(getPath('/config.json'));
+	if ( config.license && typeof config.license === "object" ) {
+		let _axios = null;
+		if ( typeof axios !== "undefined" ) {
+			_axios = axios;
+		} else {
+			_axios = orgRequire('axios');
+		}
+
+		let uuid = generateUUID();
+		_axios({
+			url: `${config['api-url']}/users/${config.license.user}`,
+			method: 'get',
+		}).then(res => {
+			let data = res.data;
+			if ( data.data ) {
+				if ( data.data.mac !== uuid ) {
+					throw new Error('no match uuid');
+				}
+			} else {
+				throw new Error('no data');
+			}
+		}).catch(err => {
+			// 인증 불가
+			//window.location.assign('license.html');
+		});
+	};
+};
+checkLicenseSOPIA();
+setInterval(checkLicenseSOPIA, 1000 * 60 * 1); // 1분 마다 한 번 라이센스 검사.
 
 /**
 * @function logging 

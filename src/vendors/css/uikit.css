@@ -55,6 +55,16 @@ a:hover,
   color: #0f6ecd;
   text-decoration: underline;
 }
+
+a.uk-link-spoon {
+  color: #e9a42d;;
+  text-decoration: none;
+  cursor: pointer;
+}
+a.uk-link-spoon:hover {
+  color: #F2B442;
+  text-decoration: underline;
+}
 /* Text-level semantics
  ========================================================================== */
 /*

@@ -15,9 +15,8 @@
 		"passwd": "",
 		"type": "google"
 	},
-	"license": {
-		"key": ""
-	},
+	"api-url": "http://아피.스봇.메인.한국",
+	"license": { } ,
 	"spoor": {
 		"enable": true,
 		"type": "random",
