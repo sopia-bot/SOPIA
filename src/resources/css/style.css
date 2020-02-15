@@ -105,3 +105,23 @@ input:checked + .slider:before {
 .slider.round:before {
 	border-radius: 50%;
 }
+
+
+::-webkit-scrollbar {
+	width: 5px;  /* 세로축 스크롤바 길이 */
+	position: absolute;
+}
+::-webkit-scrollbar-track {
+	background-color: transparent;
+	width: 10px;
+	position: absolute;
+}
+::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background-color: rgba(128, 128, 128, 0.2);
+	position: absolute;
+}
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-button {
+	display: none;
+}

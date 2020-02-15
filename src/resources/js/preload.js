@@ -63,7 +63,7 @@ function generateUUID() {
 			return v.toString(16).slice(1)
 		});
 		return retn[0] + '-' + retn[1] + retn[2] + retn[3];
-	})(require('os').networkInterfaces());
+	})(orgRequire('os').networkInterfaces());
 	
 	var head = [5, 6];
 	return head.concat(generateUUID.tail).join('-');
@@ -83,20 +83,24 @@ const checkLicenseSOPIA = () => {
 
 		let uuid = generateUUID();
 		_axios({
-			url: `${config['api-url']}/users/${config.license.user}`,
+			url: `${config['api-url']}/users/${config.license.id}`,
 			method: 'get',
 		}).then(res => {
 			let data = res.data;
 			if ( data.data ) {
 				if ( data.data.mac !== uuid ) {
-					throw new Error('no match uuid');
+					throw new Error('인증 정보 uuid와 PC의 uuid가 다릅니다.');
 				}
 			} else {
-				throw new Error('no data');
+				if ( data.desc.length > 0 ) {
+					throw new Error(data.desc);
+				} else {
+					throw new Error('인증데이터가 없습니다.');
+				}
 			}
 		}).catch(err => {
 			// 인증 불가
-			//window.location.assign('license.html');
+			window.location.assign(`license.html?noti=${err.message}`);
 		});
 	};
 };
@@ -354,6 +358,7 @@ const loadScript = (callback) => {
 //sopia 객체 로딩
 const sopia = require(getPath('./src/resources/js/sopia.js', true));
 
+// 디버그용 함수. 메시지를 발생시킨다.
 const sopiaCreateMessage = (msg) => {
 	let obj = {
 		event: "live_message",

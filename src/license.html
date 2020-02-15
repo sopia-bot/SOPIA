@@ -164,26 +164,62 @@
             function signSOPIA() {
                 let user = document.querySelector('#id').value;
                 let key = document.querySelector('#key').value;
+                let now = new Date();
+                let expire = new Date();
+                expire.setDate(expire.getDate() + 365);
 
                 axios({
                     url: `${config['api-url']}/users/sign/${user}`,
                     method: 'patch',
                     data: {
                         mac: generateUUID(),
+                        created: now,
+                        expire_date: expire,
                         serial: key
                     }
                 }).then(res => {
                     console.log(res);
                     let data = res.data;
                     if ( data.success ) {
-                        window.location.assign('index.html');
+                        const fs = require('fs');
+                        console.log(data);
+                        config.license = {
+                            "id": data.data.spoon_id,
+                            "key": data.data.serial
+                        };
+                        const save = JSON.stringify(config, null, '\t');
+                        fs.writeFile(getPath('/config.json'), save, (err) => {
+                            if ( err ) {
+                                noti.error(err.message);
+                                return;
+                            }
+                            window.location.assign('index.html');
+                        });
                     } else {
                         throw new Error(data.desc);
                     }
                 }).catch(err => {
-                    noti.error(err.toString());
+                    noti.error(err.message);
                 })
             }
+
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.search;
+                name = name.replace(/[\[\]]/g, '\\$&');
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+
+			// onload 이벤트
+			document.addEventListener('DOMContentLoaded', (evt) => {
+                const notification = getParameterByName('noti');
+                if ( notification ) {
+                    noti.error(notification);
+                }
+			});
         </script>
     </body>
 </html>

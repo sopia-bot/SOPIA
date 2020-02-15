@@ -8,21 +8,27 @@
 			#homeDiv {
 				width: 100%;
 				height: 100%;
-				margin: 1.5rem;
-				display: initial;
+				padding-top: 1.5rem;
+				display: table-cell;
 			}
 			#console-output {
 				width: 100%; 
 				height:100%; 
 				overflow-y: auto;
 			}
+
+			.spoor-card {
+				width: 90%;
+				margin: auto;
+				margin-bottom: 20px;
+			}
 		</style>
 	</head>
 	<body>
-		<div name="import-child" style="display: table;">
-			<div id="homeDiv">
+		<div name="import-child">
+			<div id="homeDiv" class="uk-animation-fade">
 				<!-- S:LIVE INFO -->
-				<div class="uk-card uk-card-default" style="width: 100%;">
+				<div class="uk-card uk-card-default spoor-card">
 					<div class="uk-card-header">
 						<h3 class="uk-card-title uk-margin-remove-bottom">라이브 정보</h3>
 					</div>
@@ -87,7 +93,7 @@
 				</div>
 				<!-- E:LIVE INFO -->
 				<!-- S:CONSOLE -->
-				<div class="uk-margin uk-card-default" style="width: 100%;">
+				<div class="uk-margin uk-card-default spoor-card">
 					<div class="uk-card-header">
 						<div uk-grid>
 							<div class="uk-width-1-2">

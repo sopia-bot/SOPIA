@@ -39,6 +39,18 @@ window.ContainerPanel = Split(['#ContainerPanel>div[name="panel1"]', '#Container
     },
 });
 
+/** 
+* 위에서 제스쳐가 끝난 후 마우스 오른쪽 버튼을 떼면,
+* @gesture 에 맞는 동작을 실행한다.
+*/
+document.querySelector('.gutter').addEventListener('mousemove', (e) => {
+    refreshNavSize();
+});
+
+
+// 2020. 02. 15 잘 사용하지 않는 제스쳐 사용을 지운다.
+// input range 가 동작하지 않기 때문.
+if ( 0 ) {
 /**
  * @region 에 마우스클릭 후 제스쳐했을 때의 이벤트를 추가한다.
  * @evt 의 @buttons 가 2면 오른쪽 클릭이므로, 그 때만 @gesture 를 등록한다.
@@ -86,4 +98,6 @@ document.querySelectorAll('*').forEach(e => {
         });
     }
 });
+} // if ( 0 )
+
 refreshNavSize();

@@ -340,6 +340,8 @@ sopia.itv.add('spoorchat', () => {
 	if ( sopia.isRunTTS ) return;
 
 	if ( sopia.ttsStack.length > 0 ) {
+		sopia.isRunTTS = true;
+
 		let fs = sopia.modules.fs;
 		let chatData = sopia.ttsStack.shift();
 		fs.readFile(getPath('/media/SpoorChatNoti.mp3'), { encoding: 'base64' }, (err, data) => {
@@ -351,11 +353,11 @@ sopia.itv.add('spoorchat', () => {
 
 			let voiceType = sopia.config.spoor.type;
 			let notiSnd = new Audio("data:audio/mp3;base64," + data);
-			notiSnd.volume = 0.4;
+			notiSnd.volume = (sopia.config.spoor.effectvolume * 0.01) || 0.5;
 			notiSnd.onpause = function() {
 				sopia.tts(chatData.message, voiceType).then(res => {
 					let spoorChatSnd = new Audio(res);
-					spoorChatSnd.volume = 1;
+					spoorChatSnd.volume = (sopia.config.spoor.ttsvolume * 0.01) || 1;
 					spoorChatSnd.onpause = () => {
 						sopia.isRunTTS = false;
 						spoorChatSnd.remove();
@@ -367,6 +369,14 @@ sopia.itv.add('spoorchat', () => {
 			};
 			notiSnd.play();
 		});
+
+		// spoor logging
+		// replay가 아니라면 추가.
+		if ( !chatData.replay ) {
+			if ( typeof spoorLog === 'function' ) {
+				spoorLog(chatData);
+			}
+		}
 	}
 }, 1000);
 
@@ -396,6 +406,12 @@ sopia.onmessage = (e) => {
 					let data = e.data;
 					sopia.me = data.author;
 				});
+			}
+		} else {
+			// sopia.me 가 존재할 때
+			if ( sopia.me.tag !== config.license.id ) {
+				// 라이센스 id 와 로그인 한 id가 다르다면,
+				window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
 			}
 		}
 

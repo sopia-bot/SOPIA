@@ -1,7 +1,8 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, session} = require('electron')
+const {app, BrowserWindow, session, ipcMain} = require('electron')
 const path = require('path')
 const TextToSpeech = require('./speech.js');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -45,6 +46,12 @@ function createWindow () {
 			preload: ''
 		},
 	})
+
+	ipcMain.on('openDevTool', () => {
+		mainWindow.webContents.openDevTools();
+	});
+
+	mainWindow.setMenu(null);
 	
 	// and load the index.html of the app.
 	mainWindow.loadFile('src/index.html')

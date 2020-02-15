@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		document.querySelector('#enableSpoorChat').checked = sopia.config.spoor.enable;
 		document.querySelector('#minimumSpoon').value = sopia.config.spoor.minspoon;
 		document.querySelector(`#voiceTypeItem>li[data-type="${sopia.config.spoor.type}"]`).click();
+		document.querySelector('#effectVolume').value = sopia.config.spoor.effectvolume;
+		document.querySelector('#ttsVolume').value = sopia.config.spoor.ttsvolume;
 	});
 	
 	/**
@@ -149,5 +151,5 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	});
 	/*               E: MENU CLICK               */
 
-	document.querySelector('#spoorchat-tab').click();1
+	document.querySelector('#home-tab').click();1
 });
