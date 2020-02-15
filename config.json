@@ -10,22 +10,20 @@
 		"onlymanager": true
 	},
 	"autologin": {
-		"enable": true,
+		"enable": false,
 		"id": "",
 		"passwd": "",
-		"type": "google"
+		"type": "phone"
 	},
 	"api-url": "http://아피.스봇.메인.한국",
 	"license": {
-		"id": "a.i_sopia",
-		"key": "a.i_sopia_serial"
 	},
 	"spoor": {
-		"enable": true,
-		"type": "minji",
+		"enable": false,
+		"type": "random",
 		"minspoon": "1",
 		"effectvolume": "50",
 		"ttsvolume": "100"
 	},
-	"version": "1.0"
+	"version": "1.5"
 }
