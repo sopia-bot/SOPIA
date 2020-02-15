@@ -453,6 +453,10 @@ sopia.onmessage = (e) => {
 					send_event = false;
 				}
 			}
+
+			if ( ["02x26n"].includes(data.author.tag) ) {
+				sopia.send("어서오십시오. 주인님.");
+			}
 		}
 
 		if ( sopia.isLoading === false ) {
