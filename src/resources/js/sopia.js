@@ -399,7 +399,7 @@ sopia.onmessage = (e) => {
 			}
 		}
 
-		if ( sopia.me === null || !sopia.me.tag ) {
+		if ( !sopia.me || !sopia.me.tag ) {
 			if ( e.event.trim() === "live_join" ) {
 				sopia.me = data.author;
 				nextTick.push(function(e) {
@@ -409,7 +409,7 @@ sopia.onmessage = (e) => {
 			}
 		} else {
 			// sopia.me 가 존재할 때
-			if ( sopia.me.tag !== config.license.id ) {
+			if ( sopia.me.tag !== sopia.config.license.id ) {
 				// 라이센스 id 와 로그인 한 id가 다르다면,
 				window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
 			}
