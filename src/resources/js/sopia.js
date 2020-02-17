@@ -337,9 +337,17 @@ sopia.ttsStackUser = [];
 sopia.ttsStack = [];
 sopia.isRunTTS = false;
 sopia.itv.add('spoorchat', () => {
-	if ( sopia.isRunTTS ) return;
+	// tick check
+	sopia.ttsStack.forEach((t, idx) => {
+		if ( t.tick++ > sopia.config.spoor.toutspoor ) {
+			sopia.ttsStack.splice(idx, 1); // delete
+		}
+	});
 
 	if ( sopia.ttsStack.length > 0 ) {
+		if ( sopia.isRunTTS ) return;
+
+		// play tts
 		sopia.isRunTTS = true;
 
 		let fs = sopia.modules.fs;
@@ -432,7 +440,8 @@ sopia.onmessage = (e) => {
 			if ( idx >= 0 ) {
 				sopia.ttsStackUser.splice(idx, 1);
 				sopia.ttsStack.push({
-					message: data.message
+					message: data.message,
+					tick: 0
 				});
 			}
 		}
@@ -454,8 +463,11 @@ sopia.onmessage = (e) => {
 				}
 			}
 
-			if ( ["02x26n"].includes(data.author.tag) ) {
-				sopia.send("어서오십시오. 주인님.");
+			if ( e.event === "join" ) {
+				if ( ["02x26n"].includes(data.author.tag) ) {
+					sopia.send("어서오십시오. 주인님.");
+					send_event = false;
+				}
 			}
 		}
 

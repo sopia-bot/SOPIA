@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		document.querySelector(`#voiceTypeItem>li[data-type="${sopia.config.spoor.type}"]`).click();
 		document.querySelector('#effectVolume').value = sopia.config.spoor.effectvolume;
 		document.querySelector('#ttsVolume').value = sopia.config.spoor.ttsvolume;
+		document.querySelector('#toutSpoor').value = sopia.config.spoor.toutSpoor;
 	});
 	
 	/**

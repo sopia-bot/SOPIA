@@ -53,7 +53,7 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
-									<button id="spoorChat-save"" onclick="spoorChatSave();" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									<button id="spoorChat-save" onclick="spoorChatSave();" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
 								</div>
 							</div>
 						</div>
@@ -107,6 +107,12 @@
 								<input id="ttsVolume" class="uk-range uk-text-right" oninput="this.setAttribute('value',this.value)" min="0" value="100" max="100" type="range">
 							</div>
 						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>Spoor 대기 시간 (초)</div>
+							<div class="uk-text-right">
+								<input id="toutSpoor" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
+							</div>
+						</div>
 					</div>
 				</div>
 				<!-- S:Spoorchat Setting -->
@@ -120,7 +126,7 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
-									<button id="spoorChat-clear"" onclick="spoorChatClear();" class="uk-button uk-button-spoon uk-button-small">CLEAR</button>
+									<button id="spoorChat-clear" onclick="spoorChatClear();" class="uk-button uk-button-spoon uk-button-small">CLEAR</button>
 								</div>
 							</div>
 						</div>
@@ -158,6 +164,7 @@
 				sopia.config.spoor.minspoon = document.querySelector('#minimumSpoon').value;
 				sopia.config.spoor.effectvolume = document.querySelector('#effectVolume').value;
 				sopia.config.spoor.ttsvolume = document.querySelector('#ttsVolume').value;
+				sopia.config.spoor.toutspoor = document.querySelector('#toutSpoor').value;
 				console.log(sopia.config.spoor, "save");
 				AllSettingSave();
             };

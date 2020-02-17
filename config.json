@@ -23,7 +23,8 @@
 		"type": "random",
 		"minspoon": "1",
 		"effectvolume": "50",
-		"ttsvolume": "100"
+		"ttsvolume": "100",
+		"toutspoor": "30"
 	},
 	"version": "1.5"
 }
