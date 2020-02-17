@@ -338,9 +338,9 @@ sopia.ttsStack = [];
 sopia.isRunTTS = false;
 sopia.itv.add('spoorchat', () => {
 	// tick check
-	sopia.ttsStack.forEach((t, idx) => {
+	sopia.ttsStackUser.forEach((t, idx) => {
 		if ( t.tick++ > sopia.config.spoor.toutspoor ) {
-			sopia.ttsStack.splice(idx, 1); // delete
+			const deletedItem = sopia.ttsStackUser.splice(idx, 1); // delete
 		}
 	});
 
@@ -441,7 +441,6 @@ sopia.onmessage = (e) => {
 				sopia.ttsStackUser.splice(idx, 1);
 				sopia.ttsStack.push({
 					message: data.message,
-					tick: 0
 				});
 			}
 		}
@@ -505,7 +504,7 @@ sopia.onmessage = (e) => {
 		// spoor chat
 		if ( sopia.config.spoor.enable && e.event === "present" ) {
 			if ( (data.amount * data.combo) >= sopia.config.spoor.minspoon ) {
-				sopia.ttsStackUser.push(data.author.id);
+				sopia.ttsStackUser.push({ id: data.author.id, tick: 0 });
 			}
 		}
 
