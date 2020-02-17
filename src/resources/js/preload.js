@@ -83,20 +83,17 @@ const checkLicenseSOPIA = () => {
 
 		let uuid = generateUUID();
 		_axios({
-			url: `${config['api-url']}/users/${config.license.id}`,
+			url: `${config['api-url']}/users/${config.license.key}.json`,
 			method: 'get',
 		}).then(res => {
+			console.log(res);
 			let data = res.data;
-			if ( data.data ) {
-				if ( data.data.mac !== uuid ) {
+			if ( data && data.mac ) {
+				if ( data.mac !== uuid ) {
 					throw new Error('인증 정보 uuid와 PC의 uuid가 다릅니다.');
 				}
 			} else {
-				if ( data.desc.length > 0 ) {
-					throw new Error(data.desc);
-				} else {
-					throw new Error('인증데이터가 없습니다.');
-				}
+				throw new Error('인증데이터가 없습니다.');
 			}
 		}).catch(err => {
 			// 인증 불가

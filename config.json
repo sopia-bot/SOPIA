@@ -15,7 +15,7 @@
 		"passwd": "",
 		"type": "phone"
 	},
-	"api-url": "http://아피.스봇.메인.한국",
+	"api-url": "https://sopia-bot.firebaseio.com",
 	"license": {
 	},
 	"spoor": {
