@@ -45,14 +45,15 @@ const StrToSpeech = (str, type = "minji") => {
 
 const tts = (text, type) => {
 	return new Promise((resolve, reject) => {
-		ipcRenderer.once('text-to-speech-res', (event, res) => {
+		const resKey = `text-to-speech-res-${new Date().getTime()}`;
+		ipcRenderer.once(resKey, (event, res) => {
 			if ( res.result === 'success' ) {
 				resolve(res.data);
 			} else {
 				reject(res.data);
 			}
 		});
-		ipcRenderer.send('text-to-speech-req', { text, type });
+		ipcRenderer.send('text-to-speech-req', { text, type, resKey });
 	});
 };
 
@@ -68,10 +69,10 @@ const mainInit = () => {
 		ipcMain.on('text-to-speech-req', (event, options) => {
 			StrToSpeech(options.text, options.type).
 				then(b64Audio => {
-					event.reply('text-to-speech-res', { result: 'success', data: b64Audio });
+					event.reply(options.resKey, { result: 'success', data: b64Audio });
 				}).
 				catch(err => {
-					event.reply('text-to-speech-res', { result: 'fail', data: err });
+					event.reply(options.resKey, { result: 'fail', data: err });
 				});
 		});
 	}
@@ -79,5 +80,6 @@ const mainInit = () => {
 
 module.exports = {
 	init: mainInit,
-	tts,
+	read: tts,
+	voices,
 };

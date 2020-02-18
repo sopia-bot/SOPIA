@@ -98,6 +98,7 @@ const checkLicenseSOPIA = () => {
 		}).catch(err => {
 			// 인증 불가
 			window.location.assign(`license.html?noti=${err.message}`);
+			console.error(err);
 		});
 	};
 };
