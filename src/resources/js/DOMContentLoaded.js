@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	/**
 	* code를 controls에 import 시킨다.
 	* 그와 동시에 monaco editor를 세팅한다.
-	* display는 nonde으로 둔다.
+	* display는 none으로 둔다.
 	*/
 	document.querySelector('#controls').appendImport('#code', (parent, target) => {
 		target.style.display = "none";
@@ -44,6 +44,18 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 							throw err;
 						}
 						window.code.viewCode = window.editor.getValue();
+						try {
+							file2JSON(window.code.viewPath);
+							if ( noti ) {
+								noti.success('파일 저장에 성공했습니다.', path.basename(window.code.viewPath));
+							}
+						} catch(err) {
+							const modal = document.querySelector('#code-modal');
+							if ( modal ) {
+								document.querySelector('#message').innerText = err.toString();
+								UIkit.modal(modal).show();
+							}
+						}
 					});
 				}
 			});

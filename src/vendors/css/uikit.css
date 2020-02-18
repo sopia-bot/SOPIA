@@ -7285,6 +7285,9 @@ ul.uk-nav-sub {
 .uk-text-danger {
   color: #f0506e !important;
 }
+.uk-text-white {
+  color: #FFFFFF !important;
+}
 /* Background modifier
  ========================================================================== */
 /*
@@ -7607,6 +7610,9 @@ iframe.uk-cover {
 }
 .uk-background-spoon {
   background-color: #F2B442;
+}
+.uk-background-sopia {
+	background-color: #DCD5F2;
 }
 .uk-background-secondary {
   background-color: #222;

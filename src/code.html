@@ -40,6 +40,19 @@
 	</head>
 	<body>
 		<div id="codeTable" name="import-child" class="uk-animation-fade" style="overflow: hidden;">
+			<!-- S:Modal -->
+			<div id="code-modal" class="uk-flex-top" uk-modal>
+				<div class="uk-modal-dialog uk-margin-auto-vertical">
+					<button class="uk-modal-close-default" type="button" uk-close></button>
+					<div class="uk-modal-header uk-background-sopia">
+						<h2 class="uk-modal-title uk-text-white">알림</h3>
+					</div>
+					<div class="uk-modal-body">
+						<pre id="message" class="uk-text-emphasis"></pre>
+					</div>
+				</div>
+			</div>
+			<!-- E:Modal -->
 			<div id="treeDivParent">
 				<div id="code-tools">
 					<a id="openFolder"	href="#" onclick="openFolder();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: push" uk-tooltip="프로젝트 폴더를 엽니다."></a>
