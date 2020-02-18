@@ -427,9 +427,21 @@ sopia.itv.add('spoorchat', () => {
 						} else {
 							clearInterval(speechItv);
 							sopia.tts.isrun = false;
-							sopia.debug('speech finish');
+							soipa.debug('speech finish');
 						}
 					}, 100); // thick 1ms
+				} else {
+					// string. no have signature
+					sopia.tts.read(argv, voiceType).then(res => {
+						let spoorChatSnd = new Audio(res);
+						spoorChatSnd.volume = (sopia.config.spoor.ttsvolume * 0.01) || 1;
+						spoorChatSnd.onpause = () => {
+							sopia.tts.isrun = false;
+							spoorChatSnd.remove();
+						};
+						spoorChatSnd.play();
+						noti.info('SpoorChat', argv);
+					});
 				}
 
 				notiSnd.remove();
