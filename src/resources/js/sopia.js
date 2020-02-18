@@ -436,7 +436,7 @@ sopia.onmessage = (e) => {
 			sopia.live = data.live;
 		} else if ( e.event === "message" ) {
 			// spoorchat
-			let idx = sopia.ttsStackUser.indexOf(data.author.id);
+			let idx = sopia.ttsStackUser.findIndex(item => item.id === data.author.id);
 			if ( idx >= 0 ) {
 				sopia.ttsStackUser.splice(idx, 1);
 				sopia.ttsStack.push({
