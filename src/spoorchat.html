@@ -44,6 +44,34 @@
 	<body>
 		<div name="import-child">
             <div id="spoorDiv" class="uk-animation-fade">
+				<!-- S:Modal -->
+				<div id="spoor-modal" class="uk-flex-top" uk-modal="bg-close: false;">
+					<div class="uk-modal-dialog uk-margin-auto-vertical">
+						<button class="uk-modal-close-default" type="button" uk-close></button>
+						<div class="uk-modal-header uk-background-sopia">
+							<h2 class="uk-modal-title uk-text-white">시그니처 추가</h2>
+						</div>
+						<div class="uk-modal-body">
+							<div class="uk-text-center uk-margin-bottom">
+								<a href="#" class="uk-icon-button" onclick="selectFile()" uk-icon="icon: folder"></a>
+								<a href="#" class="uk-icon-button uk-text-danger" onclick="" uk-icon="icon: microphone"></a>
+							</div>
+							<div class="uk-text-center">
+								<code id="selected-file">
+									<i>파일을 선택해 주세요.</i>
+								</code>
+							</div>
+						</div>
+						<div class="uk-modal-footer">
+							<div class="uk-text-right uk-flex-wrap-around">
+								<span uk-icon="icon: info" class="uk-margin-small-right" uk-tooltip="도네이션 텍스트에서 대체될 음성의 문장을 설정합니다."></span>
+								<input type="text" id="signature-text" class="uk-input uk-input-spoon uk-text-right uk-width-1-2" placeholder="시그니처 텍스트">
+								<button type="button" class="uk-button uk-button-spoon uk-modal-close" onclick="addSignature()">등록</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- E:Modal -->
                 <!-- S:Spoorchat Setting -->
 				<div class="uk-margin uk-card-default spoor-card">
 					<div class="uk-card-header">
@@ -118,6 +146,47 @@
 					</div>
 				</div>
 				<!-- S:Spoorchat Setting -->
+
+				<!-- S:Spoorchat Signature -->
+				<div class="uk-margin uk-card-default spoor-card">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">Spoor Signature</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<a href="#" name="toggle-body" class="uk-icon-link" uk-icon="icon: triangle-down; ratio: 1.5" data-view="true" data-target="#spoor-signature-body"></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- S:Card Body -->
+					<div id="spoor-signature-body" class="uk-card-body uk-animation-slide-bottom-small">
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div class="uk-text-middle">Spoor 대기 시간 (초)</div>
+							<div class="uk-text-right">
+								<input class="uk-input uk-form-width-medium" type="text" placeholder="hahaha.mp3" disabled>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div class="uk-text-middle">Spoor 대기 시간 (초)</div>
+							<div class="uk-text-right">
+								<div uk-form-custom="target: true">
+									<input type="file">
+									<input class="uk-input uk-form-width-medium" type="text" placeholder="hahaha.mp3" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- E:Card Body -->
+					<div class="uk-card-footer">
+						<div class="uk-inline uk-text-right" style="width: 100%;">
+							<a href="#" class="uk-icon-button" onclick="openSignatureModal()" uk-icon="icon: plus"></a>
+						</div>
+					</div>
+				</div>
+				<!-- E:Spoorchat Signature -->
 				
 				<!-- S:Spoorchat Log -->
 				<div class="uk-margin uk-card-default spoor-card">
@@ -142,7 +211,90 @@
                 <!-- S:Spoorchat Log -->
             </div>
         </div>
-        <script type="text/javascript">
+		<script type="text/javascript">
+			/**
+			 * @function selectFile
+			 * @ 로컬 컴퓨터에 있는 mp3 파일을 선택한다.
+			 */
+			const selectFile = () => {
+				const files = dialog.showOpenDialog({
+					title: 'TTTT',
+					filters: [
+						{ name: 'mp3', extensions: ['mp3']}
+					],
+					properties: [ 'openFile' ]
+				});
+				if ( files.length > 0 ) {
+					const file = files[0];
+					const selected = document.querySelector('#selected-file');
+					selected.innerText = file;
+					selected.dataset.file = file;
+				}
+			};
+
+			/**
+			 * @function addSignature
+			 * 시그니처 아이템을 추가한다.
+			 */
+			const addSignature = () => {
+				const selected = document.querySelector('#selected-file');
+				const file = selected.dataset.file;
+				const sigInput = document.querySelector('#signature-text');
+				const sigName = sigInput.value;
+
+				sigInput.value = "";
+				selected.dataset.file = null;
+				selected.innerHTML = '<i>파일을 선택해 주세요.</i>';
+				if ( file ) {
+					//TODO: 오른쪽 경로 UI를 Form 형태로 변형 및
+					//클릭시 수정가능한 모달 추가.
+					const grid = document.createElement('div');
+					grid.className = "uk-grid-divider uk-child-width-expand@s";
+					grid.setAttribute('uk-grid', true);
+
+					const leftText = document.createElement('div');
+					leftText.innerText = sigName;
+					//leftText.className = "uk-width-3-4";
+
+					const rightDiv = document.createElement('div');
+					//rightDiv.className = "uk-width-1-4 uk-text-right";
+					rightDiv.className = "uk-text-right";
+					rightDiv.innerText = path.basename(file);
+
+					/*
+					const span = document.createElement('p');
+					span.innerText = path.basename(file);
+					span.className = "uk-margin-small-right uk-width-1-3";
+
+					const del = document.createElement('a');
+					del.href="#";
+					del.className = "uk-icon-button";
+					del.setAttribute('uk-icon', 'trash');
+					
+					rightDiv.appendChild(span);
+					rightDiv.appendChild(del);
+					*/
+
+					grid.appendChild(leftText);
+					grid.appendChild(rightDiv);
+
+					document.querySelector('#spoor-signature-body').appendChild(grid);
+				}
+			};
+
+			/**
+			 * @function openSignatureModal
+			 * @param {event}
+			 * @시그니처를 추가하는 모달을 보여준다.
+			 */
+			const openSignatureModal = () => {
+				const modal = document.querySelector('#spoor-modal');
+				if ( modal ) {
+					UIkit.modal(modal).show();
+				}
+			};
+
+
             /**
 			 * @function AllSettingSave
 			 * @param {Object} s [default sopia.config]

@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, session, ipcMain} = require('electron')
+const {app, BrowserWindow, session, ipcMain, dialog} = require('electron')
 const path = require('path')
 const TextToSpeech = require('./speech.js');
 

@@ -6,7 +6,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const app = require('electron').remote.app;
+const { app, dialog } = require('electron').remote;
 const { clipboard, shell } = require('electron');
 const EventEmitter = require('events');
 const http = require('http');

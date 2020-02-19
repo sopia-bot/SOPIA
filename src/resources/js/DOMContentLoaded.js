@@ -65,57 +65,6 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	
 	
 	/**
-	* spoorchat을 controls에 import 시킨다.
-	* display는 nonde으로 둔다.
-	*/
-	document.querySelector('#controls').appendImport('#spoorchat', (parent, target) => {
-		target.style.display = "none";
-		target.setAttribute('data-target', 'spoorchat');
-
-
-		// 설정값 로딩
-
-		document.querySelector('#enableSpoorChat').checked = sopia.config.spoor.enable;
-		document.querySelector('#minimumSpoon').value = sopia.config.spoor.minspoon;
-		document.querySelector(`#voiceTypeItem>li[data-type="${sopia.config.spoor.type}"]`).click();
-		document.querySelector('#effectVolume').value = sopia.config.spoor.effectvolume;
-		document.querySelector('#ttsVolume').value = sopia.config.spoor.ttsvolume;
-		document.querySelector('#toutSpoor').value = sopia.config.spoor.toutspoor;
-		
-		// button event setting
-		document.getElementsByName('toggle-body').forEach((element) => {
-			element.addEventListener('click', (evt) => {
-				let aButton = evt.target;
-				if ( aButton.tagName.toLowerCase() !== "a" ) {
-					aButton = aButton.parentElement;
-				}
-				if ( aButton.tagName.toLowerCase() !== "a" ) {
-					aButton = aButton.parentElement;
-				}
-				const targetBody = document.querySelector(aButton.dataset.target);
-				const visible = aButton.dataset.view;
-
-				console.log(targetBody, visible, evt, aButton.dataset);
-				if ( targetBody ) {
-					if ( visible === "true" ) {
-						// hide body
-						aButton.setAttribute('uk-icon', 'icon: triangle-left; ratio: 1.5');
-						aButton.dataset.view = "false";
-						targetBody.className = "uk-card-body uk-animation-slide-bottom-small";
-						targetBody.style.display = "none";
-					} else {
-						// show body
-						aButton.setAttribute('uk-icon', 'icon: triangle-down; ratio: 1.5');
-						aButton.dataset.view = "true";
-						targetBody.className = "uk-card-body uk-animation-slide-top-small";
-						targetBody.style.display = "block";
-					}
-				}
-			});
-		});
-	});
-	
-	/**
 	* setting을 controls에 import 시킨다.
 	* display는 nonde으로 둔다.
 	*/
