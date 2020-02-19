@@ -127,11 +127,6 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		
 		// 설정 값 로딩
 		
-		//웹서버 설정
-		document.querySelector('#wsPort').value = sopia.config.server.port;
-		document.querySelector('#wsFrameSize').value = sopia.config.server.maxReceivedFrameSize;
-		document.querySelector('#wsMessageSize').value = sopia.config.server.maxReceivedMessageSize;
-		
 		//SOPIA 설정
 		document.querySelector('#autoManagerStart').checked = sopia.config.sopia.autostart;
 		document.querySelector('#detectMe').checked = sopia.config.sopia.detectme;

@@ -9,7 +9,6 @@ const fs = require('fs');
 const app = require('electron').remote.app;
 const { clipboard, shell } = require('electron');
 const EventEmitter = require('events');
-const WebSocketServer = require('websocket').server;
 const http = require('http');
 const orgRequire = require;
 

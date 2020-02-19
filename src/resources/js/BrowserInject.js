@@ -86,24 +86,6 @@ window.SendChat = (str) => {
 	}
 };
 
-var ws = null;
-window.connect_ws = (port) => {
-	if ( ws === null ) {
-		if ( port && port > 0 && port < 65535 ) {
-			ws = new WebSocket(`ws://127.0.0.1:${port}`);
-		}
-	}
-};
-window.wsSend = (domain, data) => {
-	if ( ws ) {
-		let obj = {
-			"domain": domain,
-			"data": data
-		};
-		ws.send(JSON.stringify(obj));
-	}
-};
-
 function logging(a, b, c) {
 	let rtn = {
 		event: a,
