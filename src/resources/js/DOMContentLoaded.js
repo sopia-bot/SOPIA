@@ -81,6 +81,38 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		document.querySelector('#effectVolume').value = sopia.config.spoor.effectvolume;
 		document.querySelector('#ttsVolume').value = sopia.config.spoor.ttsvolume;
 		document.querySelector('#toutSpoor').value = sopia.config.spoor.toutspoor;
+		
+		// button event setting
+		document.getElementsByName('toggle-body').forEach((element) => {
+			element.addEventListener('click', (evt) => {
+				let aButton = evt.target;
+				if ( aButton.tagName.toLowerCase() !== "a" ) {
+					aButton = aButton.parentElement;
+				}
+				if ( aButton.tagName.toLowerCase() !== "a" ) {
+					aButton = aButton.parentElement;
+				}
+				const targetBody = document.querySelector(aButton.dataset.target);
+				const visible = aButton.dataset.view;
+
+				console.log(targetBody, visible, evt, aButton.dataset);
+				if ( targetBody ) {
+					if ( visible === "true" ) {
+						// hide body
+						aButton.setAttribute('uk-icon', 'icon: triangle-left; ratio: 1.5');
+						aButton.dataset.view = "false";
+						targetBody.className = "uk-card-body uk-animation-slide-bottom-small";
+						targetBody.style.display = "none";
+					} else {
+						// show body
+						aButton.setAttribute('uk-icon', 'icon: triangle-down; ratio: 1.5');
+						aButton.dataset.view = "true";
+						targetBody.className = "uk-card-body uk-animation-slide-top-small";
+						targetBody.style.display = "block";
+					}
+				}
+			});
+		});
 	});
 	
 	/**
