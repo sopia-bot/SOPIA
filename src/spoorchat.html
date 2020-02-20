@@ -156,29 +156,15 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
+									<button id="signature-save" onclick="AllSettingSave()" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									&nbsp;
 									<a href="#" name="toggle-body" class="uk-icon-link" uk-icon="icon: triangle-down; ratio: 1.5" data-view="true" data-target="#spoor-signature-body"></a>
 								</div>
 							</div>
 						</div>
 					</div>
 					<!-- S:Card Body -->
-					<div id="spoor-signature-body" class="uk-card-body uk-animation-slide-bottom-small">
-						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-							<div class="uk-text-middle">Spoor 대기 시간 (초)</div>
-							<div class="uk-text-right">
-								<input class="uk-input uk-form-width-medium" type="text" placeholder="hahaha.mp3" disabled>
-							</div>
-						</div>
-						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-							<div class="uk-text-middle">Spoor 대기 시간 (초)</div>
-							<div class="uk-text-right">
-								<div uk-form-custom="target: true">
-									<input type="file">
-									<input class="uk-input uk-form-width-medium" type="text" placeholder="hahaha.mp3" disabled>
-								</div>
-							</div>
-						</div>
-					</div>
+					<div id="spoor-signature-body" class="uk-card-body uk-animation-slide-bottom-small"></div>
 					<!-- E:Card Body -->
 					<div class="uk-card-footer">
 						<div class="uk-inline uk-text-right" style="width: 100%;">
@@ -216,25 +202,79 @@
 			 * @function selectFile
 			 * @ 로컬 컴퓨터에 있는 mp3 파일을 선택한다.
 			 */
-			const selectFile = () => {
+			const selectFile = (skip = false) => {
 				const files = dialog.showOpenDialog({
-					title: 'TTTT',
+					title: 'Select Signature Audio',
 					filters: [
 						{ name: 'mp3', extensions: ['mp3']}
 					],
 					properties: [ 'openFile' ]
 				});
-				if ( files.length > 0 ) {
+				if ( Array.isArray(files) && files.length > 0 ) {
 					const file = files[0];
-					const selected = document.querySelector('#selected-file');
-					selected.innerText = file;
-					selected.dataset.file = file;
+
+					if ( skip === false ) {
+						const selected = document.querySelector('#selected-file');
+						selected.innerText = file;
+						selected.dataset.file = file;
+					}
+
+					return file;
 				}
 			};
 
 			/**
+			 * @function appendSignature
+			 * 시그니처 아이템을 만들어 추가한다.
+			 */
+			const appendSignature = (sigName, file) => {
+
+				//TODO: 오른쪽 경로 UI를 Form 형태로 변형 및
+				//클릭시 수정가능한 모달 추가.
+				const grid = document.createElement('div');
+				grid.className = "uk-grid-divider uk-child-width-expand@s";
+				grid.setAttribute('uk-grid', true);
+
+				const leftText = document.createElement('div');
+				leftText.innerText = sigName;
+
+				const rightDiv = document.createElement('div');
+				rightDiv.className = "uk-text-right";
+				rightDiv.addEventListener('click', (evt) => {
+					const newFile = selectFile(true);
+					input.placeholder = path.basename(newFile);
+					sopia.config.spoor.signature[sigName] = newFile;
+				});
+
+				const input = document.createElement('input');
+				input.className = "uk-margin-small-right uk-input uk-width-3-4";
+				input.disabled = true;
+				input.type = "text"
+				input.placeholder = path.basename(file);
+
+				const del = document.createElement('a');
+				del.href="#";
+				del.className = "uk-icon-button uk-text-danger";
+				del.setAttribute('uk-icon', 'trash');
+				del.style="width: 36px;";
+				del.addEventListener('click', (evt) => {
+					delete sopia.config.spoor.signature[sigName];
+					grid.remove();
+					evt.stopPropagation();
+				});
+
+				rightDiv.appendChild(input);
+				rightDiv.appendChild(del);
+
+				grid.appendChild(leftText);
+				grid.appendChild(rightDiv);
+
+				document.querySelector('#spoor-signature-body').appendChild(grid);
+			};
+
+			/**
 			 * @function addSignature
-			 * 시그니처 아이템을 추가한다.
+			 * 시그니처 설정을 추가한다.
 			 */
 			const addSignature = () => {
 				const selected = document.querySelector('#selected-file');
@@ -246,39 +286,8 @@
 				selected.dataset.file = null;
 				selected.innerHTML = '<i>파일을 선택해 주세요.</i>';
 				if ( file ) {
-					//TODO: 오른쪽 경로 UI를 Form 형태로 변형 및
-					//클릭시 수정가능한 모달 추가.
-					const grid = document.createElement('div');
-					grid.className = "uk-grid-divider uk-child-width-expand@s";
-					grid.setAttribute('uk-grid', true);
-
-					const leftText = document.createElement('div');
-					leftText.innerText = sigName;
-					//leftText.className = "uk-width-3-4";
-
-					const rightDiv = document.createElement('div');
-					//rightDiv.className = "uk-width-1-4 uk-text-right";
-					rightDiv.className = "uk-text-right";
-					rightDiv.innerText = path.basename(file);
-
-					/*
-					const span = document.createElement('p');
-					span.innerText = path.basename(file);
-					span.className = "uk-margin-small-right uk-width-1-3";
-
-					const del = document.createElement('a');
-					del.href="#";
-					del.className = "uk-icon-button";
-					del.setAttribute('uk-icon', 'trash');
-					
-					rightDiv.appendChild(span);
-					rightDiv.appendChild(del);
-					*/
-
-					grid.appendChild(leftText);
-					grid.appendChild(rightDiv);
-
-					document.querySelector('#spoor-signature-body').appendChild(grid);
+					appendSignature(sigName, file);
+					sopia.config.spoor.signature[sigName] = file;
 				}
 			};
 
