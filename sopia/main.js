@@ -38,7 +38,8 @@ isAdmin = (author = "") => {
 		return true; //참/거짓 할때의 참.
 	}
 
-	if ( sopia.var.live && Array.isArray(sopia.var.live.manager_ids) ) {
+	if ( sopia.var.live && Array.isArray(sopia.var.live.manager_ids) && 
+            sopia.var.live.manager_ids.includes(author.id) ) {
 		return true;
 	}
 

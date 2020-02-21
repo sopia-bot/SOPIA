@@ -33,6 +33,35 @@ try {
 
 }
 
+
+function recordWindow () {
+	rcWindow = new BrowserWindow({
+		width: 600,
+		height: 300,
+		minWidth: 500,
+		minHeight: 300,
+		webPreferences: {
+			webviewTag: true,
+			nodeIntegration: true,
+			preload: ''
+		},
+	});
+	
+	rcWindow.setMenu(null);
+	rcWindow.loadFile('src/recoder.html');
+	rcWindow.on('closed', function (cb, d) {
+		rcWindow = null;
+	});
+}
+
+ipcMain.on('openRecordWindow', (event) => {
+	ipcMain.once('RecordReturnValue', (e, file) => {
+		event.reply('RecordReturnValue', file);
+	});
+	recordWindow();
+});
+
+
 function createWindow () {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({

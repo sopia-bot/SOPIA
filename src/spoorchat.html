@@ -54,7 +54,7 @@
 						<div class="uk-modal-body">
 							<div class="uk-text-center uk-margin-bottom">
 								<a href="#" class="uk-icon-button" onclick="selectFile()" uk-icon="icon: folder"></a>
-								<a href="#" class="uk-icon-button uk-text-danger" onclick="" uk-icon="icon: microphone"></a>
+								<a href="#" class="uk-icon-button uk-text-danger" onclick="recordFile()" uk-icon="icon: microphone"></a>
 							</div>
 							<div class="uk-text-center">
 								<code id="selected-file">
@@ -156,7 +156,7 @@
 							</div>
 							<div class="uk-width-1-2 uk-text-right">
 								<div class="uk-margin" style="margin-top: 5px;">
-									<button id="signature-save" onclick="AllSettingSave()" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									<button id="signature-save" onclick="AllSettingSave(sopia.config.tts)" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
 									&nbsp;
 									<a href="#" name="toggle-body" class="uk-icon-link" uk-icon="icon: triangle-down; ratio: 1.5" data-view="true" data-target="#spoor-signature-body"></a>
 								</div>
@@ -198,6 +198,16 @@
             </div>
         </div>
 		<script type="text/javascript">
+			const recordFile = () => {
+				ipcRenderer.send('openRecordWindow');
+				ipcRenderer.once('RecordReturnValue', (event, file) => {
+					console.log(file);
+					const selected = document.querySelector('#selected-file');
+					selected.dataset.file = file;
+					selected.innerText = file;
+				});
+			};
+
 			/**
 			 * @function selectFile
 			 * @ 로컬 컴퓨터에 있는 mp3 파일을 선택한다.

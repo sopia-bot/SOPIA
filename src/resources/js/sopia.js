@@ -338,7 +338,7 @@ sopia.tts.stack = [];
 sopia.tts.isrun = false;
 sopia.tts.signature = {};
 sopia.tts.parser = (tts = "", signature = []) => {
-	if ( signature.length <= 0 ) return tts;
+	if ( signature.length <= 0 ) return [ tts ];
 
 	let reStr = "(";
 	signature.forEach((s) => {
@@ -383,7 +383,7 @@ sopia.itv.add('spoorchat', () => {
 			let notiSnd = new Audio("data:audio/mp3;base64," + data);
 			notiSnd.volume = (sopia.config.spoor.effectvolume * 0.01) || 0.5;
 			notiSnd.onpause = function() {
-				const sigKeys = Object.keys(sopia.tts.signature);
+				const sigKeys = Object.keys(sopia.config.spoor.signature);
 				const argv = sopia.tts.parser(chatData.message, sigKeys);
 				const readStack = new Array(argv.length);
 				sopia.debug(argv);
@@ -399,22 +399,30 @@ sopia.itv.add('spoorchat', () => {
 				if ( Array.isArray(argv) ) {
 					// make sound array
 					argv.forEach((arg, idx) => {
-						if ( sopia.tts.signature[arg] ) {
+						if ( sopia.config.spoor.signature[arg] ) {
 							// has signature
-							const buf = fs.readFileSync(getPath(sopia.tts.signature[arg])).toB64Str();
+							sopia.debug("signature! ", sopia.config.spoor.signature[arg]);
+							const buf = fs.readFileSync(sopia.config.spoor.signature[arg]).toB64Str();
 							readStack[idx] = buf;
 						} else {
-							sopia.tts.read(arg, voiceType).then(buf => {
-								readStack[idx] = buf;
-							});
+							if ( arg.trim() !== "" ) {
+								sopia.debug("Run tts", arg.trim());
+								sopia.tts.read(arg.trim(), voiceType).then(buf => {
+									readStack[idx] = buf;
+								});
+							} else {
+								readStack[idx] = "no run";
+							}
 						}
 					});
 
 					// read all array
 					let speechRun = false;
 					let speechItv = setInterval(() => {
-						if ( readStack.length > 0 ) {
-							if ( speechRun === false && readStack[0] ) {
+						if ( readStack.length > 0 && speechRun === false ) {
+							if ( readStack[0] === "no run" ) {
+								readStack.shift();
+							} else if ( readStack[0] ) {
 								speechRun = true;
 								let b64snd = readStack.shift();
 								let spoorChatSnd = new Audio(b64snd);
@@ -427,21 +435,9 @@ sopia.itv.add('spoorchat', () => {
 						} else {
 							clearInterval(speechItv);
 							sopia.tts.isrun = false;
-							soipa.debug('speech finish');
+							sopia.debug('speech finish');
 						}
 					}, 100); // thick 1ms
-				} else {
-					// string. no have signature
-					sopia.tts.read(argv, voiceType).then(res => {
-						let spoorChatSnd = new Audio(res);
-						spoorChatSnd.volume = (sopia.config.spoor.ttsvolume * 0.01) || 1;
-						spoorChatSnd.onpause = () => {
-							sopia.tts.isrun = false;
-							spoorChatSnd.remove();
-						};
-						spoorChatSnd.play();
-						noti.info('SpoorChat', argv);
-					});
 				}
 
 				notiSnd.remove();
@@ -490,7 +486,7 @@ sopia.onmessage = (e) => {
 			// sopia.me 가 존재할 때
 			if ( sopia.me.tag !== sopia.config.license.id ) {
 				// 라이센스 id 와 로그인 한 id가 다르다면,
-				window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
+				//window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
 			}
 		}
 

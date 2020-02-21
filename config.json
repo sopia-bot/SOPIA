@@ -16,10 +16,9 @@
 		"type": "phone"
 	},
 	"api-url": "https://sopia-bot.firebaseio.com",
-	"license": {
-	},
+	"license": {},
 	"spoor": {
-		"enable": false,
+		"enable": true,
 		"type": "random",
 		"minspoon": "1",
 		"effectvolume": "50",

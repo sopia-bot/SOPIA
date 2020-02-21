@@ -7,7 +7,7 @@
 const path = require('path');
 const fs = require('fs');
 const { app, dialog } = require('electron').remote;
-const { clipboard, shell } = require('electron');
+const { clipboard, shell, ipcRenderer } = require('electron');
 const EventEmitter = require('events');
 const http = require('http');
 const orgRequire = require;
@@ -96,7 +96,7 @@ const checkLicenseSOPIA = () => {
 			}
 		}).catch(err => {
 			// 인증 불가
-			window.location.assign(`license.html?noti=${err.message}`);
+			//window.location.assign(`license.html?noti=${err.message}`);
 			console.error(err);
 		});
 	};
