@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	/*               E: IMPORT               */
 	
 	/*               S: MENU CLICK               */
-	document.querySelectorAll('ul.uk-navbar-nav>li').forEach(element => {
+	document.querySelectorAll('ul.uk-navbar-nav>li>a').forEach(element => {
 		element.addEventListener('click', (evt) => {
 			//e.target이 a 태그가 아닐 경우, 그 부모를 탐색하여 a 태그를 찾는다.
 			let checkAtag = true;
@@ -174,9 +174,9 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			if ( checkAtag ) {
 				document.querySelectorAll('#controls>div').forEach(import_ => {
 					//보일 것은 display: table 로, 아닌 것은 숨긴다.
-					if ( import_.getAttribute('data-target') && e.target.innerText &&
-					import_.getAttribute('data-target').toLowerCase && e.target.innerText.toLowerCase ) {
-						if ( import_.getAttribute('data-target').toLowerCase() === e.target.innerText.toLowerCase() ) {
+					if ( import_.getAttribute('data-target') && e.target.getAttribute('value') &&
+					import_.getAttribute('data-target').toLowerCase && e.target.getAttribute('value').toLowerCase ) {
+						if ( import_.getAttribute('data-target').toLowerCase() === e.target.getAttribute('value').toLowerCase() ) {
 							if ( import_.getAttribute('data-target').toLowerCase() === "code" ) {
 								import_.style.overflow = "hidden";
 								document.querySelector('#controls').style.overflow = "hidden";
@@ -191,8 +191,9 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 					}
 					
 					//active class 설정
-					document.querySelectorAll('ul.uk-navbar-nav>li').forEach(li => {
-						if ( e.target.innerText === li.innerText ) {
+					document.querySelectorAll('ul.uk-navbar-nav>li>a').forEach(a => {
+						let li = a.parentNode;
+						if ( e.target.getAttribute('value') === a.getAttribute('value') ) {
 							li.className = "uk-active";
 						} else {
 							li.className = "";

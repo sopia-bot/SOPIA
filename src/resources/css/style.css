@@ -125,3 +125,9 @@ input:checked + .slider:before {
 ::-webkit-scrollbar-button {
 	display: none;
 }
+
+ul.sopia-tab > li.uk-active > a::after,
+ul.sopia-tab > li > a:hover::after {
+	margin-left: 0.7rem;
+	content: attr(value);
+}
