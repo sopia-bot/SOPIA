@@ -423,10 +423,12 @@ sopia.itv.add('spoorchat', () => {
 
 					// read all array
 					let speechRun = false;
+					let noRuned = false;
 					let speechItv = setInterval(() => {
 						if (  speechRun === false ) {
 							if ( readStack.length > 0 ) {
 								if ( readStack[0] === "no run" ) {
+									noRuned = true;
 									readStack.shift();
 								} else if ( readStack[0] ) {
 									speechRun = true;
@@ -437,6 +439,11 @@ sopia.itv.add('spoorchat', () => {
 										spoorChatSnd.remove();
 									};
 									spoorChatSnd.play();
+								} else {
+									if ( noRuned && !readStack[0] ) {
+										noRuned = false;
+										readStack.shift();
+									}
 								}
 							} else {
 								clearInterval(speechItv);
