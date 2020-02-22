@@ -39,15 +39,6 @@
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-							<div>이벤트 본인 감지</div>
-							<div class="uk-text-right">
-								<label class="switch">
-									<input id="detectMe" type="checkbox">
-									<span class="slider round"></span>
-								</label>
-							</div>
-						</div>
-						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>매니저일때만 매니저 멘트 작동</div>
 							<div class="uk-text-right">
 								<label class="switch">
@@ -140,7 +131,6 @@
 			 */
 			const sopiaSettingSave = () => {
 				sopia.config.sopia.autostart = document.querySelector('#autoManagerStart').checked;
-				sopia.config.sopia.detectme = document.querySelector('#detectMe').checked;
 				sopia.config.sopia.onlymanager = document.querySelector('#onlymanager').checked;
 				console.log(sopia.config.sopia, "save");
 				AllSettingSave();

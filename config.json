@@ -6,7 +6,6 @@
 	},
 	"sopia": {
 		"autostart": false,
-		"detectme": false,
 		"onlymanager": true
 	},
 	"autologin": {

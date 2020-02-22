@@ -134,7 +134,6 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		
 		//SOPIA 설정
 		document.querySelector('#autoManagerStart').checked = sopia.config.sopia.autostart;
-		document.querySelector('#detectMe').checked = sopia.config.sopia.detectme;
 		document.querySelector('#onlymanager').checked = sopia.config.sopia.onlymanager;
 		
 		//자동 로그인 설정
