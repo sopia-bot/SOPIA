@@ -242,14 +242,14 @@
 				//TODO: 오른쪽 경로 UI를 Form 형태로 변형 및
 				//클릭시 수정가능한 모달 추가.
 				const grid = document.createElement('div');
-				grid.className = "uk-grid-divider uk-child-width-expand@s";
-				grid.setAttribute('uk-grid', true);
+				grid.className = "uk-flex uk-flex-colum uk-width-1-1 spoor-log";
 
 				const leftText = document.createElement('div');
+				leftText.className = "uk-width-1-4";
 				leftText.innerText = sigName;
 
 				const rightDiv = document.createElement('div');
-				rightDiv.className = "uk-text-right";
+				rightDiv.className = "uk-text-right uk-width-3-4";
 				rightDiv.addEventListener('click', (evt) => {
 					const newFile = selectFile(true);
 					input.placeholder = path.basename(newFile);
@@ -257,10 +257,36 @@
 				});
 
 				const input = document.createElement('input');
-				input.className = "uk-margin-small-right uk-input uk-width-3-4";
+				input.className = "uk-margin-small-right uk-input uk-width-3-5";
 				input.disabled = true;
 				input.type = "text"
 				input.placeholder = path.basename(file);
+
+
+				const play = document.createElement('a');
+				play.href = "#";
+				play.className = "uk-icon-button uk-text-success uk-margin-small-right";
+				play.style="width: 36px;";
+				play.setAttribute('uk-icon', 'play');
+				play.addEventListener('click', (evt) => {
+					if ( sopia ) {
+						const buf = fs.readFileSync(file);
+						let audioBuf = null;
+						if ( path.extname(file) === ".base64" ) {
+							audioBuf = buf.toString('utf8')
+						} else {
+							audioBuf = buf.toB64Str();
+						}
+						
+						let audio = new Audio(audioBuf);
+						audio.onpause = () => {
+							audio.remove();
+							delete audio;
+						};
+						audio.play();
+					}
+					evt.stopPropagation();
+				});
 
 				const del = document.createElement('a');
 				del.href="#";
@@ -274,6 +300,7 @@
 				});
 
 				rightDiv.appendChild(input);
+				rightDiv.appendChild(play);
 				rightDiv.appendChild(del);
 
 				grid.appendChild(leftText);

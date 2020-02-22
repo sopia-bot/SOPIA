@@ -35,7 +35,7 @@ navigator.mediaDevices.getUserMedia({ audio: true }).
     then(localMediaStream => {
         const mediaRecorder = new MediaRecorder(localMediaStream);
         const FReader = new FileReader();
-        const audioChunk = [];
+        let audioChunk = [];
         
         let isRun = false;
         let audioBlob = null;
@@ -49,6 +49,7 @@ navigator.mediaDevices.getUserMedia({ audio: true }).
                 audioBlob = null;
                 audioUrl = null;
                 audioStream = null;
+                audioChunk = [];
                 
                 startRecord.classList.add('uk-text-danger');
                 mediaRecorder.start();
@@ -107,13 +108,14 @@ navigator.mediaDevices.getUserMedia({ audio: true }).
             const saveFile = dialog.showSaveDialog({
                 title: '시그니처 저장',
                 filters: [
-                    { name: 'mp3', extensions: ['mp3']}
+                    { name: 'base64 Audio', extensions: ['base64']}
                 ]
             });
             
-            FReader.readAsBinaryString(audioBlob);
+            //FReader.readAsBinaryString(audioBlob);
+            FReader.readAsDataURL(audioBlob);
             FReader.onloadend = () => {
-                fs.writeFile(saveFile, FReader.result, 'binary', (err, data) => {
+                fs.writeFile(saveFile, FReader.result, (err, data) => {
                     if ( err ) {
                         console.error(err);
                         return;

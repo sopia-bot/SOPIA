@@ -63,7 +63,7 @@ sopia.storage = {
 		}
 	},
 	/**
-	 * @function get
+	 * @function delete
 	 * @param {String} key 
 	 * key가 있으면 해당 키값에 해당하는 데이터를 삭제한다.
 	 */
@@ -399,11 +399,16 @@ sopia.itv.add('spoorchat', () => {
 				if ( Array.isArray(argv) ) {
 					// make sound array
 					argv.forEach((arg, idx) => {
-						if ( sopia.config.spoor.signature[arg] ) {
+						let sigFile = sopia.config.spoor.signature[arg];
+						if ( sigFile ) {
 							// has signature
-							sopia.debug("signature! ", sopia.config.spoor.signature[arg]);
-							const buf = fs.readFileSync(sopia.config.spoor.signature[arg]).toB64Str();
-							readStack[idx] = buf;
+							sopia.debug("signature! ", sigFile);
+							const buf = fs.readFileSync(sigFile);
+							if ( path.extname(sigFile) === '.base64' ) {
+								readStack[idx] = buf.toString('utf8');
+							} else {
+								readStack[idx] = buf.toB64Str();
+							}
 						} else {
 							if ( arg.trim() !== "" ) {
 								sopia.debug("Run tts", arg.trim());
@@ -419,23 +424,25 @@ sopia.itv.add('spoorchat', () => {
 					// read all array
 					let speechRun = false;
 					let speechItv = setInterval(() => {
-						if ( readStack.length > 0 && speechRun === false ) {
-							if ( readStack[0] === "no run" ) {
-								readStack.shift();
-							} else if ( readStack[0] ) {
-								speechRun = true;
-								let b64snd = readStack.shift();
-								let spoorChatSnd = new Audio(b64snd);
-								spoorChatSnd.onpause = () => {
-									speechRun = false;
-									spoorChatSnd.remove();
-								};
-								spoorChatSnd.play();
+						if (  speechRun === false ) {
+							if ( readStack.length > 0 ) {
+								if ( readStack[0] === "no run" ) {
+									readStack.shift();
+								} else if ( readStack[0] ) {
+									speechRun = true;
+									let b64snd = readStack.shift();
+									let spoorChatSnd = new Audio(b64snd);
+									spoorChatSnd.onpause = () => {
+										speechRun = false;
+										spoorChatSnd.remove();
+									};
+									spoorChatSnd.play();
+								}
+							} else {
+								clearInterval(speechItv);
+								sopia.tts.isrun = false;
+								sopia.debug('speech finish');
 							}
-						} else {
-							clearInterval(speechItv);
-							sopia.tts.isrun = false;
-							sopia.debug('speech finish');
 						}
 					}, 100); // thick 1ms
 				}
