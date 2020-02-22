@@ -59,6 +59,15 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 					});
 				}
 			});
+			window.editor.addCommand(monaco.KeyCode.F5, () => {
+				if ( sopia.isLoading === true ) {
+					loadScript(() => {
+						noti.success('리로딩', '코드가 적용되었습니다.');
+					});
+				} else {
+					noti.success('리로딩', '방송에 입장하면 저장된 코드가 적용됩니다.')
+				}
+			});
 			refreshTree(path.join(window.code.sopiaPath, "main.js"));
 		});
 	});

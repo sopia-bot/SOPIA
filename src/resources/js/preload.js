@@ -96,7 +96,7 @@ const checkLicenseSOPIA = () => {
 			}
 		}).catch(err => {
 			// 인증 불가
-			//window.location.assign(`license.html?noti=${err.message}`);
+			window.location.assign(`license.html?noti=${err.message}`);
 			console.error(err);
 		});
 	};
@@ -333,7 +333,7 @@ const fullStringify = (obj, rtn = "{") => {
 const loadScript = (callback) => {
 	let script = document.querySelector('#sopia-main');
 	if ( script ) {
-		$(script).remove();
+		script.remove();
 		script = null;
 	}
 
