@@ -9,7 +9,7 @@ const fs = require('fs');
 const { app, dialog } = require('electron').remote;
 const { clipboard, shell, ipcRenderer } = require('electron');
 const EventEmitter = require('events');
-const http = require('http');
+const axios = require('axios');
 const orgRequire = require;
 
 /**
@@ -27,6 +27,25 @@ const getPath = (path_, cur = false) => {
 		p = path.dirname(exePath);
 	}
 	return path.join(p, path_);
+};
+
+
+/**
+* @function AllSettingSave
+* @param {Object} s [default sopia.config]
+* @param {function} cb
+* 소피아 설정을 config.json에 전체 저장한다.
+*/
+const AllSettingSave = (s = sopia.config, cb) => {
+	console.log(getPath('./config.json'));
+	fs.writeFile(getPath("./config.json"), JSON.stringify(s, null, '\t'), {encoding:'utf8'}, (err) => {
+		if ( err ) {
+			noti.error(err);
+		}
+		if ( typeof cb === "function" ) {
+			cb();
+		}
+	});
 };
 
 const file2JSON = (file) => {
@@ -85,7 +104,6 @@ const checkLicenseSOPIA = () => {
 			url: `${config['api-url']}/users/${config.license.key}.json`,
 			method: 'get',
 		}).then(res => {
-			console.log(res);
 			let data = res.data;
 			if ( data && data.mac ) {
 				if ( data.mac !== uuid ) {
@@ -97,7 +115,7 @@ const checkLicenseSOPIA = () => {
 		}).catch(err => {
 			// 인증 불가
 			window.location.assign(`license.html?noti=${err.message}`);
-			console.error(err);
+			sopia.error(err);
 		});
 	};
 };
@@ -345,8 +363,23 @@ const loadScript = (callback) => {
 	script.src = getPath('sopia/main.js');
 	script.type = "text/javascript";
 
-	if ( callback ) {
-		script.onload = callback;
+	
+
+	script.onload = () => {
+		if ( typeof callback === "function" ) {
+			callback();
+		}
+
+		// bundle
+		if ( typeof sopia.config.bundle === "object" ) {
+			let keys = Object.keys(sopia.config.bundle);
+			keys.forEach((k) => {
+				const bundle = sopia.config.bundle[k];
+				const bundlePath = getPath(bundle, true);
+				sopia.debug("bundle init", bundlePath);
+				sopia.require(bundlePath);
+			});
+		}
 	}
 
 	document.body.appendChild(script);

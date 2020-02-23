@@ -111,19 +111,6 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			/**
-			 * @function AllSettingSave
-			 * @param {Object} s [default sopia.config]
-			 * 소피아 설정을 config.json에 전체 저장한다.
-			 */
-			const AllSettingSave = (s = sopia.config) => {
-				console.log(getPath('./config.json'));
-				fs.writeFile(getPath("./config.json"), JSON.stringify(s, null, '\t'), {encoding:'utf8'}, (err) => {
-					if ( err ) {
-						noti.error(err);
-					}
-				});
-			};
 
 			/**
 			 * @function sopiaSettingSave

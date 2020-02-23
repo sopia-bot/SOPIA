@@ -280,7 +280,7 @@ sopia.var.sendMaxCount = 5;
 sopia.var.sendIntervalTime = 5000;
 sopia.var.sendTimeoutTime = 5000;
 sopia.itv.add("sendInterval", () => {
-	sendCount = 0;
+	sopia.var.sendCount = 0;
 });
 
 /**

@@ -19,6 +19,7 @@ isCmd = (e) => {
 		msg = msg.replace("!", ""); // ! 삭제
 		e.message = msg;
 		e.cmd = msg.split(' ')[0];
+		e.isCmd = true;
 		return true;
 	}
 	return false;
@@ -162,7 +163,7 @@ sopia.on('present', (e) => {
 });
 
 sopia.on('all', (e) => {
-	console.log(e);
+	sopia.debug(e);
 
 	if ( e && e.data && e.data.live && e.data.live.created ) {
 		sopia.var.created = new Date(e.data.live.created);

@@ -151,6 +151,150 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		document.querySelector('#autoLoginPw').value = sopia.config.autologin.passwd;
 		document.querySelector(`#altItems>li[data-type="${sopia.config.autologin.type}"]>a`).click();
 	});
+
+	/**
+	* bundle을 controls에 import 시킨다.
+	* display는 nonde으로 둔다.
+	*/
+	document.querySelector('#controls').appendImport('#bundle', (parent, target) => {
+		target.style.display = "none";
+		target.setAttribute('data-target', 'bundle');
+		
+		const apeendCardItem = (name, bundle, isUsing) => {
+			if ( !bundle ) return;
+
+			const parentItem = document.createElement('div');
+
+			const item = document.createElement('div');
+			item.className = "uk-card uk-card-default uk-card-hover";
+
+			const body = document.createElement('div');
+			body.className = "uk-card-body";
+			body.style = "min-height: 150px";
+
+			const permission = document.createElement('div');
+
+			if ( bundle.permission === "all" ) {
+				permission.className = "uk-card-badge uk-label uk-label-spoon";
+				permission.innerText = "청취자";
+			} else if ( bundle.permission === "manager" ) {
+				permission.className = "uk-card-badge uk-label uk-label-danger";
+				permission.innerText = "매니저";
+			} else if ( bundle.permission === "admin" ) {
+				permission.className = "uk-card-badge uk-label uk-label-black";
+				permission.innerText = "관리자";
+			}
+			
+			
+			const title = document.createElement('h3');
+			title.className = "uk-card-title";
+			title.innerText = bundle.cmd;
+
+			const desc = document.createElement('p');
+			desc.innerText = bundle.desc;
+
+			const footer = document.createElement('div');
+			footer.className = "uk-card-footer uk-text-right";
+			footer.style = "padding-right: 27px";
+
+			const maker = document.createElement('span');
+			maker.className = "uk-margin-small-right";
+			maker.innerText = bundle.maker;
+
+			const useButton = document.createElement('button');
+
+			const uninstall = (evt) => {
+				if ( bundle.href ) {
+					fs.unlinkSync(getPath(`sopia/bundles/${name}.js`));
+					useButton.className = "uk-button uk-button-small uk-button-primary";
+					useButton.innerText = "사용";
+					useButton.removeEventListener('click', uninstall);
+					useButton.addEventListener('click', install);
+
+					delete sopia.config.bundle[name];
+					AllSettingSave(sopia.config, () => {
+						noti.success(name, "번들 삭제.");
+						if ( sopia.isLoading ) {
+							loadScript();
+						}
+					});
+				}
+			};
+
+			const install = (evt) => {
+				if ( bundle.href ) {
+					axios({
+						url: bundle.href,
+						method: 'get'
+					}).then(res => {
+						const data = res.data;
+						const bundlePath = `sopia/bundles/${name}.js`;
+						const target = getPath(bundlePath, true);
+						sopia.debug(target, data);
+						if ( !fs.existsSync(path.dirname(target)) ) {
+							sopia.debug("no exist target");
+							fs.mkdirSync(path.dirname(target));
+						}
+						fs.writeFileSync(target, data, {encoding: 'utf8'});
+						useButton.innerText = "삭제";
+						useButton.className = "uk-button uk-button-small uk-button-danger uk-button";
+						useButton.removeEventListener('click', install);
+						useButton.addEventListener('click', uninstall);
+
+						if ( typeof sopia.config.bundle !== "object" ) {
+							sopia.config.bundle = {};
+						}
+
+						sopia.config.bundle[name] = bundlePath;
+						AllSettingSave(sopia.config, () => {
+							noti.success(name, "번들 추가.");
+							if ( sopia.isLoading ) {
+								loadScript();
+							}
+						});
+					});
+				}
+			};
+			if ( isUsing ) {
+				useButton.className = "uk-button uk-button-small uk-button-danger uk-button";
+				useButton.innerText = "삭제";
+				useButton.addEventListener('click', uninstall);
+			} else {
+				useButton.className = "uk-button uk-button-small uk-button-primary";
+				useButton.innerText = "사용";
+				useButton.addEventListener('click', install);
+			}
+
+			body.appendChild(permission);
+			body.appendChild(title);
+			body.appendChild(desc);
+
+			footer.appendChild(maker);
+			footer.appendChild(useButton);
+
+			item.appendChild(body);
+			item.appendChild(footer);
+			parentItem.appendChild(item);
+
+			document.querySelector('#bundleList').appendChild(parentItem);
+		};
+		
+		// 번들 리스트 로딩
+
+		const bundleURL = sopia.config['api-url'] + '/bundle.json';
+		axios({
+			url: bundleURL,
+			method: 'get',
+		}).then((res) => {
+			const data = res.data;
+			const keys = Object.keys(data);
+			keys.forEach(k => {
+				const bundle = data[k];
+				const isUsing = sopia.config.bundle[k] ? true : false;
+				apeendCardItem(k, bundle, isUsing);
+			})
+		});
+	});
 	
 	
 	/*               E: IMPORT               */
@@ -194,9 +338,9 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 					document.querySelectorAll('ul.uk-navbar-nav>li>a').forEach(a => {
 						let li = a.parentNode;
 						if ( e.target.getAttribute('value') === a.getAttribute('value') ) {
-							li.className = "uk-active";
+							li.classList.add("uk-active");
 						} else {
-							li.className = "";
+							li.classList.remove("uk-active");
 						}
 					});
 				});
@@ -205,5 +349,5 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	});
 	/*               E: MENU CLICK               */
 
-	document.querySelector('#home-tab').click();1
+	document.querySelector('#home-tab').click();
 });

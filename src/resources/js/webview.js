@@ -9,11 +9,6 @@
 //각 프로그램 당 port의 차이는 100 으로 둔다.
 //ex) 21000 / 21100 / 21200 ...
 document.querySelectorAll('webview').forEach((element, idx) => {
-    // create http server
-    element.httpServer = http.createServer((req, res) => {
-        res.writeHead(404);
-        res.end();
-    });
 
     //webview에서 받은 콘솔로그를 출력하지만, 그것이 라이브의 이벤트일 경우는 라이브 이벤트로 처리한다.
     element.addEventListener('console-message', (e) => {
@@ -28,12 +23,13 @@ document.querySelectorAll('webview').forEach((element, idx) => {
                         sopia.onmessage(obj);
                     } else {
                     }
+                    obj = null;
                 } break;
                 case 1: {
-                    console.warn(e.message);
+                    //console.warn(e.message);
                 } break;
                 case 2: {
-                    console.error(e.message);
+                    //console.error(e.message);
                 } break;
             }
         } catch (err) {

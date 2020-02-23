@@ -3394,6 +3394,32 @@ select.uk-form-width-xsmall {
   text-decoration: none;
   outline: none;
 }
+
+.uk-badge-spoon {
+  box-sizing: border-box;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 500px;
+  vertical-align: middle;
+  /* 1 */
+  background: rgb(204, 149, 46);
+  color: #fff;
+  font-size: 0.875rem;
+  /* 2 */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+/*
+ * Required for `a`
+ */
+.uk-badge-spoon:hover,
+.uk-badge-spoon:focus {
+  color: #fff;
+  text-decoration: none;
+  outline: none;
+}
 /* ========================================================================
    Component: Label
  ========================================================================== */
@@ -3430,6 +3456,10 @@ select.uk-form-width-xsmall {
  */
 .uk-label-danger {
   background-color: #f0506e;
+  color: #fff;
+}
+.uk-label-spoon {
+  background-color: #F2B442;
   color: #fff;
 }
 /* ========================================================================
