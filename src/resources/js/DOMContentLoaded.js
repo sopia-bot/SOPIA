@@ -205,7 +205,9 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 			const uninstall = (evt) => {
 				if ( bundle.href ) {
-					fs.unlinkSync(getPath(`sopia/bundles/${name}.js`));
+					if ( fs.existsSync(getPath(`sopia/bundles/${name}.js`)) ) {
+						fs.unlinkSync(getPath(`sopia/bundles/${name}.js`));
+					}
 					useButton.className = "uk-button uk-button-small uk-button-primary";
 					useButton.innerText = "사용";
 					useButton.removeEventListener('click', uninstall);
