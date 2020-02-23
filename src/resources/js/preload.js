@@ -395,7 +395,7 @@ const loadScript = (callback) => {
 			let keys = Object.keys(sopia.config.bundle);
 			keys.forEach((k) => {
 				const bundle = sopia.config.bundle[k];
-				const bundlePath = getPath(bundle, true);
+				const bundlePath = getPath(bundle);
 				sopia.debug("bundle init", bundlePath);
 				sopia.require(bundlePath);
 			});

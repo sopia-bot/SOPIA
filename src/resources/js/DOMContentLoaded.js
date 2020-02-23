@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 					}).then(res => {
 						const data = res.data;
 						const bundlePath = `sopia/bundles/${name}.js`;
-						const target = getPath(bundlePath, true);
+						const target = getPath(bundlePath);
 						sopia.debug(target, data);
 						if ( !fs.existsSync(path.dirname(target)) ) {
 							sopia.debug("no exist target");
