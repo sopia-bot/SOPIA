@@ -4,3 +4,4 @@ yarn.lock
 release-builds
 *.swp
 media
+test
