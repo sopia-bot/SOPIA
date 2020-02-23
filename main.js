@@ -3,6 +3,16 @@ const {app, BrowserWindow, session, ipcMain, dialog} = require('electron')
 const path = require('path')
 const TextToSpeech = require('./speech.js');
 
+global.DEBUG_MODE = false;
+process.argv.forEach((arg) => {
+	if ( arg === "DEBUG" ) {
+		let exePath = app.getPath('exe');
+		let exe = path.basename(exePath);
+		if ( exe.match("electron") ) {
+			global.DEBUG_MODE = true;
+		}
+	}
+})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -80,7 +90,9 @@ function createWindow () {
 		mainWindow.webContents.openDevTools();
 	});
 
-	mainWindow.setMenu(null);
+	if ( !global.DEBUG_MODE ) {
+		mainWindow.setMenu(null);
+	}
 	
 	// and load the index.html of the app.
 	mainWindow.loadFile('src/index.html')
