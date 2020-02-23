@@ -6,11 +6,22 @@
 
 const path = require('path');
 const fs = require('fs');
-const { app, dialog } = require('electron').remote;
+const { app, dialog, process } = require('electron').remote;
 const { clipboard, shell, ipcRenderer } = require('electron');
 const EventEmitter = require('events');
 const axios = require('axios');
 const orgRequire = require;
+
+window.DEBUG_MODE = false;
+process.argv.forEach((arg) => {
+	if ( arg === "DEBUG" ) {
+		let exePath = app.getPath('exe');
+		let exe = path.basename(exePath);
+		if ( exe.match("electron") ) {
+			window.DEBUG_MODE = true;
+		}
+	}
+})
 
 /**
  * @function getPath
@@ -114,8 +125,10 @@ const checkLicenseSOPIA = () => {
 			}
 		}).catch(err => {
 			// 인증 불가
-			window.location.assign(`license.html?noti=${err.message}`);
-			sopia.error(err);
+			if ( !window.DEBUG_MODE ) {
+				window.location.assign(`license.html?noti=${err.message}`);
+				sopia.error(err);
+			}
 		});
 	};
 };
