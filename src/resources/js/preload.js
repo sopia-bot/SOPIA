@@ -11,6 +11,7 @@ const { clipboard, shell, ipcRenderer } = require('electron');
 const EventEmitter = require('events');
 const axios = require('axios');
 const orgRequire = require;
+const jsonMerger = require('json-merger');
 
 window.DEBUG_MODE = false;
 process.argv.forEach((arg) => {
@@ -329,16 +330,20 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
  * @description 오브젝트 전체를 문자열화 하여 보여준다.
  * 함수, 그 안에 있는 객체까지도.
  */
-const fullStringify = (obj, rtn = "{") => {
+const fullStringify = (obj, deep = 1, rtn = "{\n",) => {
 	let oKeys = Object.keys(obj);
 	oKeys.forEach((k,i) => {
-		rtn += `"${k}":`;
+		rtn += `${'\t'.repeat(deep)}"${k}": `;
 		switch ( typeof obj[k] ) {
 			case "object": {
-				if ( Array.isArray(obj[k]) ) {
+				if ( obj[k] === null ) {
+					rtn += "null";
+				} else if ( obj[k] === undefined ) {
+					rtn += "undefined";
+				} else if ( Array.isArray(obj[k]) ) {
 					rtn += JSON.stringify(obj[k]);
 				} else {
-					rtn += fullStringify(obj[k]);
+					rtn += fullStringify(obj[k], deep + 1);
 				}
 			} break;
 			case "string": {
@@ -351,7 +356,9 @@ const fullStringify = (obj, rtn = "{") => {
 		if ( i < oKeys.length-1 ) {
 			rtn += ',';
 		}
+		rtn += "\n";
 	});
+	rtn += '\t'.repeat(deep-1);
 	rtn += '}';
 	return rtn;
 }

@@ -47,6 +47,12 @@
 								</label>
 							</div>
 						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>설정 불러오기</div>
+							<div class="uk-text-right">
+								<button class="uk-button uk-button-spoon uk-button-small" onclick="loadSetting()">파일 찾기</button>
+							</div>
+						</div>
 					</div>
 				</div>
 				<!-- E:SOPIA Setting -->
@@ -111,6 +117,58 @@
 			</div>
 		</div>
 		<script type="text/javascript">
+			/**
+			 * @function loadSetting
+			 * 다른 폴더의 SOPIA 설정 파일을 불러온다.
+			 */
+			const loadSetting = () => {
+				const result = dialog.showOpenDialog({
+					properties: ['openDirectory'],
+					title: '설정 값 불러오기',
+				});
+				if ( result.length > 0 ) {
+					const folder = result[0];
+					const old2New = [
+					];
+					const new2Old = [
+						"/config.json",
+						"/sopia/storages/admins.json", 
+						"/sopia/storages/join.json", 
+						"/sopia/storages/like.json", 
+						"/sopia/storages/messages.json", 
+						"/sopia/storages/permission.json", 
+						"/sopia/storages/present.json", 
+						"/sopia/storages/shadowjoin.json", 
+					];
+
+					old2New.forEach(f => {
+						const oldF = path.join(folder, f);
+						const newF = getPath(f);
+
+						const oldJson = file2JSON(oldF);
+						const newJson = file2JSON(newF);
+
+						const result = jsonMerger.mergeObjects([newJson, oldJson]);
+						const resToStr = fullStringify(result);
+						fs.writeFileSync(newF, resToStr, {encoding: 'utf8'});
+					});
+
+					new2Old.forEach(f => {
+						const oldF = path.join(folder, f);
+						const newF = getPath(f);
+
+						const oldJson = file2JSON(oldF);
+						const newJson = file2JSON(newF);
+
+						console.log(f);
+						const result = jsonMerger.mergeObjects([newJson, oldJson]);
+						const resToStr = fullStringify(result);
+						fs.writeFileSync(newF, resToStr, {encoding: 'utf8'});
+					});
+
+					noti.success('설정', '불러오기 성공');
+				}
+			};
 
 			/**
 			 * @function sopiaSettingSave
