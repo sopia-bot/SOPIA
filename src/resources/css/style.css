@@ -23,6 +23,12 @@ div[name="panel1"] {
 	padding-top: 80px;
 }
 
+#controls {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
 /* import 된 유사템플릿을 부모에 전체로 채운다. */
 div[name="import-child"] {
 	width: 100%;

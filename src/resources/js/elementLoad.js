@@ -47,6 +47,29 @@ document.querySelector('.gutter').addEventListener('mousemove', (e) => {
     refreshNavSize();
 });
 
+/**
+ * 서버에서 app 관련 설정, 정보를 가져온다.
+ * sopia config 가 불리지 않았으면 1초 뒤 다시 실행한다.
+ */
+let completeLoading = false;
+let loadingInterval = setInterval(() => {
+    if ( completeLoading === true ) {
+        clearInterval(loadingInterval);
+        return;
+    }
+
+    if ( typeof sopia === "object" && sopia.config && sopia.config["api-url"] ) {
+        axios({
+            url: `${sopia.config["api-url"]}/app.json`,
+            method: 'get'
+        }).then(res => {
+            sopia.app = res.data;
+            const controls = document.querySelector('#controls');
+            controls.style.backgroundImage = `url("${sopia.app["main-bg"]}")`;
+            loadingInterval = true;
+        });
+    }
+}, 1000);
 
 // 2020. 02. 15 잘 사용하지 않는 제스쳐 사용을 지운다.
 // input range 가 동작하지 않기 때문.
