@@ -381,7 +381,7 @@ sopia.itv.add('spoorchat', () => {
 
 			let voiceType = sopia.config.spoor.type;
 			let notiSnd = new Audio("data:audio/mp3;base64," + data);
-			notiSnd.volume = (sopia.config.spoor.effectvolume * 0.01) || 0.5;
+			notiSnd.volume = (sopia.config.spoor.effectvolume * 0.01);
 			notiSnd.onpause = function() {
 				const sigKeys = Object.keys(sopia.config.spoor.signature);
 				const argv = sopia.tts.parser(chatData.message, sigKeys);
@@ -438,6 +438,7 @@ sopia.itv.add('spoorchat', () => {
 										speechRun = false;
 										spoorChatSnd.remove();
 									};
+									spoorChatSnd.volume = (sopia.config.spoor.ttsvolume * 0.01);
 									spoorChatSnd.play();
 								} else {
 									if ( noRuned && !readStack[0] ) {
@@ -585,7 +586,7 @@ sopia.onmessage = (e) => {
 		}
 
 		// spoor chat
-		if ( sopia.config.spoor.enable && e.event === "present" ) {
+		if ( sopia.config.spoor.enable === true && e.event === "present" ) {
 			if ( (data.amount * data.combo) >= sopia.config.spoor.minspoon ) {
 				sopia.tts.user.push({ id: data.author.id, tick: 0 });
 			}

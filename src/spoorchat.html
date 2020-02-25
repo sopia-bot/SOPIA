@@ -361,7 +361,7 @@
 			 * SpoorChat 설정에 대한 값을 변경하고 저장한다.
 			 */
 			const spoorChatSave = () => {
-				sopia.config.spoor.enable = document.querySelector('#enableSpoorChat').value === "on";
+				sopia.config.spoor.enable = document.querySelector('#enableSpoorChat').checked === "on";
 				sopia.config.spoor.type = document.querySelector('#voiceType').dataset.type;
 				sopia.config.spoor.minspoon = document.querySelector('#minimumSpoon').value;
 				sopia.config.spoor.effectvolume = document.querySelector('#effectVolume').value;
