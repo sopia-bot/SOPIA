@@ -13,6 +13,12 @@ sopia.on('message', (e) => {
 			} else if ( e.message.match(/^반복/) ) {
 				let msg = e.message.replace("반복 ", "");
 				let time = parseInt(msg.match(/^[0-9]+/g)[0], 10);
+
+				if ( time === 0 ) {
+					sopia.send("0 초는 반복으로 설정할 수 없습니다.");
+					return;
+				}
+
 				msg = msg.replace(time.toString()+" ", "");
 
 
