@@ -70,7 +70,7 @@ sopia.on('message', (e) => {
 			}
 			
 			if ( onoff === "on" ) {
-				if ( sopia.var.onoff === true ) {
+				if ( sopia.var.onoff[key] === true ) {
 					sopia.send("이미 on 상태입니다.");
 					return;
 				}
@@ -78,7 +78,7 @@ sopia.on('message', (e) => {
 				sopia.var.onoff[key] = true;
 				sopia.prependListener(key, sopia.var.onoffFunc[key]);
 			} else if ( onoff === "off" ) {
-				if ( sopia.var.onoff === false ) {
+				if ( sopia.var.onoff[key] === false ) {
 					sopia.send("이미 off 상태입니다.");
 					return;
 				}
