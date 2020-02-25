@@ -164,6 +164,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			if ( !bundle ) return;
 
 			const parentItem = document.createElement('div');
+			parentItem.className = "uk-margin-small-bottom";
 
 			const item = document.createElement('div');
 			item.className = "uk-card uk-card-default uk-card-hover";

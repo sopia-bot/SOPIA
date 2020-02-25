@@ -296,21 +296,27 @@ sopia.send = (msg) => {
 	if ( typeof msg === "string" ) {
 		if ( msg.length > 0 ) {
 			const limit = 100;
-			if ( sopia.config.sopia.limit_off === true ) {
+			sopia.debug("=============== sopia send ===============");
+			if ( sopia.config.sopia.limitoff === true ) {
 				while ( msg.length > 0 ) {
 					if ( msg.length > limit ) {
 						const ridx = msg.rMatch(limit);
 						const l = (ridx !== -1) ? ridx : limit;
 						const m = msg.substring(0, l);
+
+						sopia.debug(`message push ${m}`);
 						sopia.msgQ.push(m);
 						msg = msg.splice(0, l);
 					} else {
+						sopia.debug(`message last push ${msg}`);
 						sopia.msgQ.push(msg);
 						msg = "";
 					}
 				}
 			} else {
-				sopia.msgQ.push(msg.substring(0, limit));
+				const smsg = msg.substring(0, limit);
+				sopia.debug(`limit_off is ${sopia.config.sopia.limitoff}.\npush messge ${smsg}`);
+				sopia.msgQ.push(smsg);
 			}
 			sopia.RealSendChat();
 		}
@@ -323,35 +329,17 @@ sopia.RealSendChat = () => {
 		sopia.isSending = true;
 		while ( sopia.msgQ.length > 0 ) {
 			//let msg = ws.msgQ.shift().toString().trim().replace(/^\n+|\n+$/g, "").replace(/\"/g, "\\\"");
-			const msg = sopia.msgQ.shift().trim().replace(/`/g, "\\`");
-			if ( msgData ) {
+			const msg = sopia.msgQ.shift().trim().replace(/\`/g, "\\\`").replace(/\$/g, "\\$");
+			if ( typeof msg === "string" && msg.length > 0 ) {
 				//sopia.send(msgData);
 				//const chat = data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$");
+				sopia.debug("real send chat", msg);
 				webview.executeJavaScript(`SendChat(\`${msg}\`);`);
 			}
 		}
 		sopia.isSending = false;
 	}
 };
-/*
-sopia.send = (data) => {
-	if ( data.trim() === "" ) {
-		return;
-	}
-
-	if ( sopia.var.sendCount >= sopia.var.sendMaxCount ) {
-		sopia.var.canSend = false;
-		sopia.var.sendDelayTimeout = setTimeout(() => {
-			sopia.var.canSend = true;
-		}, sopia.var.sendTimeoutTime);
-	} else {
-		if ( sopia.var.canSend ) {
-			const chat = data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$");
-			webview.executeJavaScript(`SendChat(\`${chat}\`);`);
-		}
-	}
-};
-*/
 
 /**
  * @function isManager

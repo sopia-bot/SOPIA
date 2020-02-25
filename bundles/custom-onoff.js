@@ -50,7 +50,12 @@ sopia.on('message', (e) => {
 		if ( isAdmin(e.author) ) {
 			//![command]
 			let command = e.cmd;
-			let sendStr = null;
+
+			const key = sopia.var.onoffKey[command];
+
+			if ( typeof key === "undefined" ) {
+				return;
+			}
 
 			let onoff = e.message.split(' ');
 			if ( onoff.length <= 1 ) {
@@ -60,9 +65,10 @@ sopia.on('message', (e) => {
 
 			onoff = onoff[1];
 			if ( onoff !== "on" && onoff !== "off" ) {
+				onoffHelp();
+				return;
 			}
-
-			const key = sopia.var.onoffKey[command];
+			
 			if ( onoff === "on" ) {
 				if ( sopia.var.onoff === true ) {
 					sopia.send("이미 on 상태입니다.");
@@ -80,7 +86,6 @@ sopia.on('message', (e) => {
 				sopia.var.onoff[key] = false;
 				sopia.removeListener(key, sopia.var.onoffFunc[key]);
 			} else {
-				onoffHelp();
 				return;
 			}
 

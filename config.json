@@ -1,12 +1,8 @@
 {
-	"server": {
-		"port": "21000",
-		"maxReceivedFrameSize": "131072",
-		"maxReceivedMessageSize": "10485760"
-	},
 	"sopia": {
 		"autostart": false,
-		"onlymanager": true
+		"onlymanager": true,
+		"limitoff": false
 	},
 	"autologin": {
 		"enable": false,
@@ -26,5 +22,5 @@
 		"signature": {}
 	},
 	"bundle": {},
-	"version": "1.2.2"
+	"version": "1.2.3"
 }
