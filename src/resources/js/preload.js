@@ -25,6 +25,44 @@ process.argv.forEach((arg) => {
 })
 
 /**
+ * @function splice
+ * @param {Number} index
+ * @param {Number} count
+ * index 부터 count 만큼을 제외한 문자열을 반환한다.
+ */
+String.prototype.splice= function(index, count) {
+    // We cannot pass negative indexes directly to the 2nd slicing operation.
+    str = this;
+    if (index < 0) {
+        index = str.length + index;
+        if (index < 0) {
+            index = 0;
+        }
+    }
+
+    return str.slice(0, index) + str.slice(index + count);
+};
+
+/**
+ * @function rMatch
+ * @param {Number} limit
+ * 글자수 제한이 걸릴 때 예쁘게 보이기 위하여
+ * 넉넉하게 잡더라도 마지막 개행에서 끊는다.
+ * from bboddolie
+ */
+String.prototype.rMatch = function(limit = 100) {
+    const len = this.length;
+    const m = parseInt(this.length-limit);
+    for ( let i = len-m-1;i>0;i-- ) {
+        //if ( this[i] === '\\' && this[i+1] === 'n' ) {
+        if ( this[i] === '\n' ) {
+            return i;
+        }
+    }
+    return -1;
+};
+
+/**
  * @function getPath
  * @param {string} path_ 
  * 현재 프로그램이 시작된 경로를 기준으로,

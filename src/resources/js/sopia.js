@@ -283,13 +283,57 @@ sopia.itv.add("sendInterval", () => {
 	sopia.var.sendCount = 0;
 });
 
+sopia.msgQ = [];
 /**
  * @function send
- * @param {String} data
+ * @param {String} msg 
  * 
  * 라이브에서 채팅을 보낸다.
- * 5초 이내에 채팅을 5번 이상 보내게 된다면, 그로부터 5초는 쉰다.
+ * 이 함수는 Message Queue 만 담아두며, 실제 전송하는 것은 sopia.RealMessageSend 에서 다룬다.
+ * from bboddolie
  */
+sopia.send = (msg) => {
+	if ( typeof msg === "string" ) {
+		if ( msg.length > 0 ) {
+			const limit = 100;
+			if ( sopia.config.sopia.limit_off === true ) {
+				while ( msg.length > 0 ) {
+					if ( msg.length > limit ) {
+						const ridx = msg.rMatch(limit);
+						const l = (ridx !== -1) ? ridx : limit;
+						const m = msg.substring(0, l);
+						sopia.msgQ.push(m);
+						msg = msg.splice(0, l);
+					} else {
+						sopia.msgQ.push(msg);
+						msg = "";
+					}
+				}
+			} else {
+				sopia.msgQ.push(msg.substring(0, limit));
+			}
+			sopia.RealSendChat();
+		}
+	}
+};
+
+sopia.isSending = false;
+sopia.RealSendChat = () => {
+	if ( sopia.isSending === false ) {
+		sopia.isSending = true;
+		while ( sopia.msgQ.length > 0 ) {
+			//let msg = ws.msgQ.shift().toString().trim().replace(/^\n+|\n+$/g, "").replace(/\"/g, "\\\"");
+			const msg = sopia.msgQ.shift().trim().replace(/`/g, "\\`");
+			if ( msgData ) {
+				//sopia.send(msgData);
+				//const chat = data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$");
+				webview.executeJavaScript(`SendChat(\`${msg}\`);`);
+			}
+		}
+		sopia.isSending = false;
+	}
+};
+/*
 sopia.send = (data) => {
 	if ( data.trim() === "" ) {
 		return;
@@ -307,6 +351,7 @@ sopia.send = (data) => {
 		}
 	}
 };
+*/
 
 /**
  * @function isManager
