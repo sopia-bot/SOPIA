@@ -526,8 +526,38 @@ sopia.onmessage = (e) => {
 			if ( e.event.trim() === "live_join" ) {
 				sopia.me = data.author;
 				nextTick.push(function(e) {
-					let data = e.data;
+					const data = e.data;
 					sopia.me = data.author;
+
+					const nowDate = new Date();
+					const nDay = nowDate.yyyymmdd('-');
+					const nTime = nowDate.hhMMss('-') + '-' + nowDate.getMilliseconds();
+
+					const live = data.live;
+					const roomData = {
+						title: live.title,
+						img_url: live.img_url,
+						created: live.created,
+						nickname: live.author.nickname,
+						tag: live.author.tag,
+						room: live.id
+					};
+
+					// send join data to firebase server.
+					sopia.debug("================== send join data to firebase server ==================");
+					axios({
+						url: `${sopia.config['api-url']}/join-log/${nDay}/${nTime}.json`,
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						data: roomData
+					}).then(res => {
+						sopia.debug("success!");
+					}).catch(err => {
+						sopia.debug("fail!");
+						sopia.error(err);
+					});
 				});
 			}
 		} else {

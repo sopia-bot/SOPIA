@@ -24,6 +24,24 @@ process.argv.forEach((arg) => {
 	}
 })
 
+//"yyyymmdd"
+Date.prototype.yyyymmdd = function(flag_) {
+	const flag = flag_ ? flag_ : "";
+    const yyyy = this.getFullYear().toString();
+    const mm = (this.getMonth()+1).toString();
+    const dd  = this.getDate().toString();
+    return `${yyyy}${flag}${mm[1] ? mm : 0+mm[0]}${flag}${dd[1] ? dd : 0+dd[0]}`; 
+};
+
+//"hhMMss"
+Date.prototype.hhMMss = function(flag_) {
+	const flag = flag_ ? flag_ : "";
+    const hh = (this.getHours()).toString();
+    const MM = (this.getMinutes()).toString();
+    const ss = (this.getSeconds()).toString();
+    return `${hh[1] ? hh : "0"+hh[0]}${flag}${MM[1] ? MM : "0"+MM[0]}${flag}${ss[1] ? ss : "0"+ss[0]}`;
+};
+
 /**
  * @function splice
  * @param {Number} index
