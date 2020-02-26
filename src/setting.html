@@ -140,7 +140,7 @@
 						"/sopia/storages/shadowjoin.json", 
 					];
 					const overWrite = [
-						"/sopia/storages/admins.json", 
+						"/sopia/storages/admins.json",
 					];
 
 					old2New.forEach(f => {
@@ -169,6 +169,16 @@
 
 					overWrite.forEach(f => {
 						const oldF = path.join(folder, f);
+						const newF = getPath(f);
+
+						fs.copyFileSync(oldF, newF, fs.constants.COPYFILE_FICLONE_FORCE);
+					});
+
+					//bundle copy
+					const bundles = Object.keys(sopia.config.bundle);
+					bundles.forEach((b) => {
+						const k = sopia.config.bundle[b];
+						const oldF = path.join(folder, k);
 						const newF = getPath(f);
 
 						fs.copyFileSync(oldF, newF, fs.constants.COPYFILE_FICLONE_FORCE);
