@@ -403,10 +403,10 @@ const fullStringify = (obj, deep = 1, rtn = "{\n",) => {
 				}
 			} break;
 			case "string": {
-				rtn += `"${obj[k].toString().replace(/\\/, "\\\\")}"`;
+				rtn += `"${obj[k].toString().replace(/\\/, "\\\\").replace(/`/g, '\\`').replace(/\n/g, '\\n')}"`;
 			} break;
 			default: {
-				rtn += obj[k].toString();
+				rtn += obj[k].toString().replace(/`/g, '\\`').replace(/\n/g, '\\n');
 			}
 		}
 		if ( i < oKeys.length-1 ) {
