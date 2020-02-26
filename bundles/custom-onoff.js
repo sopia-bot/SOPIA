@@ -30,6 +30,7 @@ evtKeys.forEach((k) => {
 		}
 
 		sopia.var.onoffFunc[k] = func;
+		sopia.removeListener(k, func);
 	}
 });
 
