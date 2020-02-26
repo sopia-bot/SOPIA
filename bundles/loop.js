@@ -5,7 +5,7 @@ sopia.on('message', (e) => {
 		if ( isAdmin(e.author) ) {
 			if ( e.message.match(/반복\ (삭제|제거)/g) ) {
 				if ( sopia.var.intvCnt > 0 ) {
-					sopia.itv.clear('intv' + (sopia.var.intvCnt - 1));
+					sopia.itv.clear('intv' + (sopia.var.intvCnt-- - 1));
 					sopia.send("가장 마지막 반복 작업을 제거했습니다.");
 				} else {
 					sopia.send("제거할 반복 작업이 없습니다.");
