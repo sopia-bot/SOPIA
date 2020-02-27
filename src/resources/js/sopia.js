@@ -315,7 +315,7 @@ sopia.send = (msg) => {
 				}
 			} else {
 				const smsg = msg.substring(0, limit);
-				sopia.debug(`limit_off is ${sopia.config.sopia.limitoff}.\npush messge ${smsg}`);
+				sopia.debug(`limit_off is ${sopia.config.sopia.limitoff}.\npush message ${smsg}`);
 				sopia.msgQ.push(smsg);
 			}
 			sopia.RealSendChat();
@@ -329,7 +329,7 @@ sopia.RealSendChat = () => {
 		sopia.isSending = true;
 		while ( sopia.msgQ.length > 0 ) {
 			//let msg = ws.msgQ.shift().toString().trim().replace(/^\n+|\n+$/g, "").replace(/\"/g, "\\\"");
-			const msg = sopia.msgQ.shift().trim().replace(/\`/g, "\\\`").replace(/\$/g, "\\$");
+			const msg = sopia.msgQ.shift().trim().replace(/\`/g, "\\\`").replace(/\$/g, "\\$").replace(/\./g, "\\.");
 			if ( typeof msg === "string" && msg.length > 0 ) {
 				//sopia.send(msgData);
 				//const chat = data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$");
