@@ -143,46 +143,62 @@
 						"/sopia/storages/admins.json",
 					];
 
-					old2New.forEach(f => {
-						const oldF = path.join(folder, f);
-						const newF = getPath(f);
+					try {
+						old2New.forEach(f => {
+							const oldF = path.join(folder, f);
+							const newF = getPath(f);
+							
+							const oldJson = file2JSON(oldF);
+							const newJson = file2JSON(newF);
+							
+							const result = jsonMerger.mergeObjects([newJson, oldJson]);
+							const resToStr = fullStringify(result);
+							fs.writeFileSync(newF, resToStr, {encoding: 'utf8'});
+						});
+					} catch(err) {
+						sopia.error(err);
+					}
 
-						const oldJson = file2JSON(oldF);
-						const newJson = file2JSON(newF);
+					try {
+						new2Old.forEach(f => {
+							const oldF = path.join(folder, f);
+							const newF = getPath(f);
 
-						const result = jsonMerger.mergeObjects([newJson, oldJson]);
-						const resToStr = fullStringify(result);
-						fs.writeFileSync(newF, resToStr, {encoding: 'utf8'});
-					});
+							const oldJson = file2JSON(oldF);
+							const newJson = file2JSON(newF);
 
-					new2Old.forEach(f => {
-						const oldF = path.join(folder, f);
-						const newF = getPath(f);
+							const result = jsonMerger.mergeObjects([newJson, oldJson]);
+							const resToStr = fullStringify(result);
+							fs.writeFileSync(newF, resToStr, {encoding: 'utf8'});
+						});
+					} catch(err) {
+						sopia.error(err);
+					}
 
-						const oldJson = file2JSON(oldF);
-						const newJson = file2JSON(newF);
+					try {
+						overWrite.forEach(f => {
+							const oldF = path.join(folder, f);
+							const newF = getPath(f);
 
-						const result = jsonMerger.mergeObjects([newJson, oldJson]);
-						const resToStr = fullStringify(result);
-						fs.writeFileSync(newF, resToStr, {encoding: 'utf8'});
-					});
+							fs.copyFileSync(oldF, newF, fs.constants.COPYFILE_FICLONE_FORCE);
+						});
+					} catch (err) {
+						sopia.error(err);
+					}
 
-					overWrite.forEach(f => {
-						const oldF = path.join(folder, f);
-						const newF = getPath(f);
+					try {
+						//bundle copy
+						const bundles = Object.keys(sopia.config.bundle);
+						bundles.forEach((b) => {
+							const k = sopia.config.bundle[b];
+							const oldF = path.join(folder, k);
+							const newF = getPath(f);
 
-						fs.copyFileSync(oldF, newF, fs.constants.COPYFILE_FICLONE_FORCE);
-					});
-
-					//bundle copy
-					const bundles = Object.keys(sopia.config.bundle);
-					bundles.forEach((b) => {
-						const k = sopia.config.bundle[b];
-						const oldF = path.join(folder, k);
-						const newF = getPath(f);
-
-						fs.copyFileSync(oldF, newF, fs.constants.COPYFILE_FICLONE_FORCE);
-					});
+							fs.copyFileSync(oldF, newF, fs.constants.COPYFILE_FICLONE_FORCE);
+						});
+					} catch(err) {
+						sopia.error(err);
+					}
 
 					noti.success('설정', '불러오기 성공');
 				}
