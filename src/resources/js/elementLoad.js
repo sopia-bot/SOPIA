@@ -50,12 +50,14 @@ document.querySelector('.gutter').addEventListener('mousemove', (e) => {
 /**
  * 서버에서 app 관련 설정, 정보를 가져온다.
  * sopia config 가 불리지 않았으면 1초 뒤 다시 실행한다.
+ * 제대로 로딩이 됐으면, 1분마다 받아온다.
  */
 let completeLoading = false;
+let callAppTime = 1;
 let loadingInterval = setInterval(() => {
     if ( completeLoading === true ) {
         clearInterval(loadingInterval);
-        return;
+		callAppTime = 60;
     }
 
     if ( typeof sopia === "object" && sopia.config && sopia.config["api-url"] ) {
@@ -66,7 +68,7 @@ let loadingInterval = setInterval(() => {
             sopia.app = res.data;
             const controls = document.querySelector('#controls');
             controls.style.backgroundImage = `url("${sopia.app["main-bg"]}")`;
-            loadingInterval = true;
+            completeLoading = true;
         });
     }
 }, 1000);

@@ -167,6 +167,15 @@ const checkLicenseSOPIA = () => {
 			_axios = orgRequire('axios');
 		}
 
+		if ( typeof config.license.key !== "string" ) {
+			// 정보 없음
+			if ( !window.DEBUG_MODE ) {
+				window.location.assign(`license.html?noti=${err.message}`);
+				sopia.error(err);
+			}
+			return;
+		}
+
 		let uuid = generateUUID();
 		_axios({
 			url: `${config['api-url']}/users/${config.license.key}.json`,
