@@ -50,14 +50,14 @@ document.querySelector('.gutter').addEventListener('mousemove', (e) => {
 /**
  * 서버에서 app 관련 설정, 정보를 가져온다.
  * sopia config 가 불리지 않았으면 1초 뒤 다시 실행한다.
- * 제대로 로딩이 됐으면, 1분마다 받아온다.
+ * 제대로 로딩이 됐으면, 5분마다 받아온다.
  */
 let completeLoading = false;
 let callAppTime = 1;
 let loadingInterval = setInterval(() => {
     if ( completeLoading === true ) {
         clearInterval(loadingInterval);
-		callAppTime = 60;
+		callAppTime = 60 * 5;
     }
 
     if ( typeof sopia === "object" && sopia.config && sopia.config["api-url"] ) {
@@ -67,11 +67,16 @@ let loadingInterval = setInterval(() => {
         }).then(res => {
             sopia.app = res.data;
             const controls = document.querySelector('#controls');
-            controls.style.backgroundImage = `url("${sopia.app["main-bg"]}")`;
+
+            if ( window.DEBUG_MODE && sopia.app["test-bg"] ) {
+                controls.style.backgroundImage = `url("${sopia.app["test-bg"]}")`;
+            } else {
+                controls.style.backgroundImage = `url("${sopia.app["main-bg"]}")`;
+            }
             completeLoading = true;
         });
     }
-}, 1000);
+}, 1000 * callAppTime);
 
 // 2020. 02. 15 잘 사용하지 않는 제스쳐 사용을 지운다.
 // input range 가 동작하지 않기 때문.
