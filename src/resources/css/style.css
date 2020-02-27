@@ -33,6 +33,7 @@ div[name="panel1"] {
 div[name="import-child"] {
 	width: 100%;
 	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
 }
 
 .gutter.gutter-horizontal {
@@ -136,4 +137,48 @@ ul.sopia-tab > li.uk-active > a::after,
 ul.sopia-tab > li > a:hover::after {
 	margin-left: 0.7rem;
 	content: attr(value);
+}
+
+.spoor-card {
+	width: 90%;
+	margin: auto;
+	margin-bottom: 20px;
+	background: rgba(100, 100, 100, 0.1) !important;
+	border: 1px solid white !important;
+	color: white;
+	box-shadow: 0 5px 15px rgba(150, 150, 150, 0.8) !important;
+}
+
+.spoor-card .uk-card-title {
+	color: white;
+}
+
+.spoor-card .uk-button-text,
+.spoor-card .uk-button-text:hover {
+	color: white;
+}
+
+.spoor-card .uk-button-text::before {
+	border-bottom: 1px solid white;
+}
+
+.spoor-card .uk-input,
+.spoor-card .uk-select,
+.spoor-card .uk-button-default,
+.spoor-card .uk-textarea {
+	background: rgba(70, 70, 70, 0.5);
+	color: white;
+}
+
+.spoor-card .uk-input:focus,
+.spoor-card .uk-select:focus,
+.spoor-card .uk-textarea:focus {
+	background: rgba(120, 120, 120, 0.5);
+	color: white;
+}
+
+.spoor-card .uk-icon-button {
+	background: rgba(0, 0, 0, 0);
+	color: #cfcfcf;
+	border: 1px solid;
 }
