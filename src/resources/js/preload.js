@@ -170,7 +170,7 @@ const checkLicenseSOPIA = () => {
 		if ( typeof config.license.key !== "string" ) {
 			// 정보 없음
 			if ( !window.DEBUG_MODE ) {
-				window.location.assign(`license.html?noti=${err.message}`);
+				window.location.assign(`license.html?noti=인증데이터가 없습니다.`);
 				sopia.error(err);
 			}
 			return;
@@ -412,10 +412,10 @@ const fullStringify = (obj, deep = 1, rtn = "{\n",) => {
 				}
 			} break;
 			case "string": {
-				rtn += `"${obj[k].toString().replace(/\\/, "\\\\").replace(/`/g, '\\`').replace(/\n/g, '\\n')}"`;
+				rtn += `"${obj[k].toString().replace(/\\/, "\\\\")}"`;
 			} break;
 			default: {
-				rtn += obj[k].toString().replace(/`/g, '\\`').replace(/\n/g, '\\n');
+				rtn += obj[k].toString().replace(/\\/g, '\\\\');
 			}
 		}
 		if ( i < oKeys.length-1 ) {
