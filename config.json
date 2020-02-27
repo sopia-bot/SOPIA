@@ -2,7 +2,7 @@
 	"sopia": {
 		"autostart": false,
 		"onlymanager": true,
-		"limitoff": false
+		"limitoff": true
 	},
 	"autologin": {
 		"enable": false,
@@ -13,7 +13,7 @@
 	"api-url": "https://sopia-bot.firebaseio.com",
 	"license": {},
 	"spoor": {
-		"enable": true,
+		"enable": false,
 		"type": "random",
 		"minspoon": "1",
 		"effectvolume": "50",
