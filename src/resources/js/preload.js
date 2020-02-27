@@ -412,10 +412,10 @@ const fullStringify = (obj, deep = 1, rtn = "{\n",) => {
 				}
 			} break;
 			case "string": {
-				rtn += `"${obj[k].toString().replace(/\\/, "\\\\")}"`;
+				rtn += `"${obj[k].toString().replace(/\\/, "\\")}"`;
 			} break;
 			default: {
-				rtn += obj[k].toString().replace(/\\/g, '\\\\');
+				rtn += obj[k].toString().replace(/\\/g, '\\');
 			}
 		}
 		if ( i < oKeys.length-1 ) {
