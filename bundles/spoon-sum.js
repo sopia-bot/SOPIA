@@ -40,9 +40,9 @@ sopia.on('present', (e) => {
     const num = (e.combo * e.amount);
 
     if ( typeof sopia.spoon.sum[name] !== "number" ) {
-        sopia.spoon.sum[name] = num;
+        sopia.spoon.sum[name] = e.combo;
     } else {
-        sopia.spoon.sum[name] += num;
+        sopia.spoon.sum[name] += e.combo;
     }
 
     sopia.spoon.sum["전체"] += num;
