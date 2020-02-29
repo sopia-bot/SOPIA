@@ -36,7 +36,7 @@ if ( typeof sopia.spoon !== "object" ) {
 
 sopia.on('present', (e) => {
     const key = sopia.spoon.list[e.sticker] ? e.sticker : "default";
-    const name = sopia.spoon.list[p];
+    const name = sopia.spoon.list[key];
     const num = (e.combo * e.amount);
 
     if ( typeof sopia.spoon.sum[name] !== "number" ) {
