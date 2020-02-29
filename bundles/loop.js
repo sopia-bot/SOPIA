@@ -1,11 +1,11 @@
-sopia.var.intvCnt = 0;
+sopia.var.intvCnt = -1;
 
 sopia.on('message', (e) => {
 	if ( e.isCmd || isCmd(e) ) {
 		if ( isAdmin(e.author) ) {
 			if ( e.message.match(/반복\ (삭제|제거)/g) ) {
-				if ( sopia.var.intvCnt > 0 ) {
-					sopia.itv.clear('intv' + (sopia.var.intvCnt-- - 1));
+				if ( sopia.var.intvCnt >= 0 ) {
+					sopia.itv.clear('intv' + (sopia.var.intvCnt--));
 					sopia.send("가장 마지막 반복 작업을 제거했습니다.");
 				} else {
 					sopia.send("제거할 반복 작업이 없습니다.");
@@ -22,7 +22,7 @@ sopia.on('message', (e) => {
 				msg = msg.replace(time.toString()+" ", "");
 
 
-				const key = 'intv' + (sopia.var.intvCnt++);
+				const key = 'intv' + (++sopia.var.intvCnt);
 				sopia.itv.add(key, () => {
 					sopia.send(msg);
 				}, (time * 1000));
