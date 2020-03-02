@@ -428,6 +428,7 @@ const fullStringify = (obj, deep = 1, rtn = "{\n",) => {
 	return rtn;
 }
 
+const bundleList = {};
 /**
  * @function loadScript
  * @param {function} callback 스크립트가 로딩된 후 실행될 함수
@@ -436,6 +437,7 @@ const fullStringify = (obj, deep = 1, rtn = "{\n",) => {
 const loadScript = (callback) => {
 	let script = document.querySelector('#sopia-main');
 	if ( script ) {
+		console.log("remove script tag");
 		script.remove();
 		script = null;
 	}
@@ -461,8 +463,22 @@ const loadScript = (callback) => {
 			keys.forEach((k) => {
 				const bundle = sopia.config.bundle[k];
 				const bundlePath = getPath(bundle);
-				sopia.debug("bundle init", bundlePath);
-				sopia.require(bundlePath);
+
+				let bscript = document.querySelector('#' + k);
+				if ( bscript ) {
+					bscript.remove();
+					bscript = null;
+				}
+
+				bscript = document.createElement('script');
+				bscript.id = k;
+				bscript.src = bundlePath;
+				bscript.type = "text/javascript";
+				bscript.onload = () => {
+					sopia.debug("bundle init", bundlePath);
+				};
+
+				document.body.appendChild(bscript);
 			});
 		}
 	}
