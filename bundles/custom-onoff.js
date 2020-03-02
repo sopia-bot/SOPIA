@@ -1,4 +1,4 @@
-const evtKeys = Object.keys(sopia._events);
+sopia.var.evtKeys = Object.keys(sopia._events);
 
 
 sopia.var.onoffFunc = {
@@ -21,7 +21,7 @@ sopia.var.onoffKey = {
 	'선물': 'present',
 };
 
-evtKeys.forEach((k) => {
+sopia.var.evtKeys.forEach((k) => {
 	// 함수들을 저장해서 on off 할 때 사용하면 됨.
 	if ( [ "join", "like", "shadowjoin", "present" ].includes(k) ) {
 		let func = sopia._events[k];
