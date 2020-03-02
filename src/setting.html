@@ -211,7 +211,7 @@
 			const sopiaSettingSave = () => {
 				sopia.config.sopia.autostart = document.querySelector('#autoManagerStart').checked;
 				sopia.config.sopia.onlymanager = document.querySelector('#onlymanager').checked;
-				console.log(sopia.config.sopia, "save");
+				sopia.debug(sopia.config.sopia, "save");
 				AllSettingSave();
 			};
 
@@ -224,7 +224,7 @@
 				sopia.config.autologin.id = document.querySelector('#autoLoginId').value;
 				sopia.config.autologin.passwd = document.querySelector('#autoLoginPw').value;
 				sopia.config.autologin.type = document.querySelector('#autoLoginType').getAttribute('data-type');
-				console.log(sopia.config.autologin, "save");
+				sopia.debug(sopia.config.autologin, "save");
 				AllSettingSave();
 			};
 
@@ -268,7 +268,7 @@
 							document.querySelector('#autoLoginPw').disabled = true;
 							break;
 						default:
-							console.log(li.getAttribute('data-type'));
+							sopia.error(li.getAttribute('data-type'));
 					}
 				}
 			};

@@ -192,7 +192,6 @@
                         throw new Error('시리얼 키에 대한 정보가 없습니다.');
                     }
                 }).then(res => {
-                    console.log(res)
                     if ( res.status === 200 && res.data ) {
                         const fs = require('fs');
                         config.license = {
@@ -213,41 +212,6 @@
                 }).catch(err => {
                     noti.error(err.message);
                 });
-
-
-
-                // axios({
-                //     method: 'patch',
-                //     data: {
-                //         mac: generateUUID(),
-                //         created: now,
-                //         expire_date: expire,
-                //         serial: key
-                //     }
-                // }).then(res => {
-                //     console.log(res);
-                //     let data = res.data;
-                //     if ( data.success ) {
-                //         const fs = require('fs');
-                //         console.log(data);
-                //         config.license = {
-                //             "id": data.data.spoon_id,
-                //             "key": data.data.serial
-                //         };
-                //         const save = JSON.stringify(config, null, '\t');
-                //         fs.writeFile(getPath('/config.json'), save, (err) => {
-                //             if ( err ) {
-                //                 noti.error(err.message);
-                //                 return;
-                //             }
-                //             window.location.assign('index.html');
-                //         });
-                //     } else {
-                //         throw new Error(data.desc);
-                //     }
-                // }).catch(err => {
-                //     noti.error(err.message);
-                // })
             }
 
             function getParameterByName(name, url) {

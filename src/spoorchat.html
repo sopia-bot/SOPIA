@@ -195,7 +195,6 @@
 			const recordFile = () => {
 				ipcRenderer.send('openRecordWindow');
 				ipcRenderer.once('RecordReturnValue', (event, file) => {
-					console.log(file);
 					const selected = document.querySelector('#selected-file');
 					selected.dataset.file = file;
 					selected.innerText = file;
@@ -361,7 +360,7 @@
 				sopia.config.spoor.effectvolume = document.querySelector('#effectVolume').value;
 				sopia.config.spoor.ttsvolume = document.querySelector('#ttsVolume').value;
 				sopia.config.spoor.toutspoor = document.querySelector('#toutSpoor').value;
-				console.log(sopia.config.spoor, "save");
+				sopia.debug(sopia.config.spoor, "save");
 				AllSettingSave();
             };
             

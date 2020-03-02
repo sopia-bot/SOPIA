@@ -103,7 +103,6 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 				const targetBody = document.querySelector(aButton.dataset.target);
 				const visible = aButton.dataset.view;
 
-				console.log(targetBody, visible, evt, aButton.dataset);
 				if ( targetBody ) {
 					if ( visible === "true" ) {
 						// hide body
@@ -131,7 +130,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 	/**
 	* setting을 controls에 import 시킨다.
-	* display는 nonde으로 둔다.
+	* display는 none으로 둔다.
 	*/
 	document.querySelector('#controls').appendImport('#setting', (parent, target) => {
 		target.style.display = "none";
@@ -154,7 +153,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 	/**
 	* bundle을 controls에 import 시킨다.
-	* display는 nonde으로 둔다.
+	* display는 none으로 둔다.
 	*/
 	document.querySelector('#controls').appendImport('#bundle', (parent, target) => {
 		target.style.display = "none";

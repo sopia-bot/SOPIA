@@ -105,7 +105,9 @@ const getPath = (path_, cur = false) => {
 * 소피아 설정을 config.json에 전체 저장한다.
 */
 const AllSettingSave = (s = sopia.config, cb) => {
-	console.log(getPath('./config.json'));
+	if ( typeof sopia.debug === "function" ) {
+		sopia.debug(getPath('./config.json'));
+	}
 	fs.writeFile(getPath("./config.json"), JSON.stringify(s, null, '\t'), {encoding:'utf8'}, (err) => {
 		if ( err ) {
 			noti.error(err);
@@ -437,7 +439,6 @@ const bundleList = {};
 const loadScript = (callback) => {
 	let script = document.querySelector('#sopia-main');
 	if ( script ) {
-		console.log("remove script tag");
 		script.remove();
 		script = null;
 	}

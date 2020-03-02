@@ -141,7 +141,6 @@ sopia.storage = {
 					try { 
 						noti.error("["+file+"] 파일이 없습니다.")
 					} catch (err) {
-						console.log("cannot find file", file);
 						console.error(err);
 					}
 				}
