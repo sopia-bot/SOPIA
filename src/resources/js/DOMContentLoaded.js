@@ -349,7 +349,14 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			}
 		});
 	});
+
 	/*               E: MENU CLICK               */
 
 	document.querySelector('#home-tab').click();
+
+	if ( sopia.config ) {
+		if ( sopia.config.version ) {
+			document.title = `SOPIA - ${sopia.config.version}`;
+		}
+	}
 });
