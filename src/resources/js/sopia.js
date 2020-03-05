@@ -570,11 +570,13 @@ sopia.onmessage = (e) => {
 		}
 
 		let send_event = true;
+		/*
 		if ( !sopia.config.sopia.detectme &&
 			e.data.author.tag === sopia.me.tag ) {
 			//detectme then, not send data sopia
 			send_event = false;
 		}
+		*/
 		
 		e.event = e.event.replace("live_", "").trim();
 
