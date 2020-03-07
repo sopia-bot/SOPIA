@@ -20,6 +20,7 @@ isCmd = (e) => {
 		e.message = msg;
 		e.cmd = msg.split(' ')[0];
 		e.isCmd = true;
+		e.content = msg.replace(e.cmd, "");
 		return true;
 	}
 	return false;
