@@ -240,28 +240,49 @@ const logging = (str, lang = "javascript") => {
  * 좌측 하단에 정보를 띄웁니다.
  */
 const noti = {
-	error : (errString) => {
-		UIkit.notification({
+	error : (errString, options = {}) => {
+		const obj = {
 			message: '<span uk-icon="icon: close"></span>&nbsp;'+
 			'<label class="uk-text-small">에러 : <span class="uk-text-danger">' + errString + '</span></label>',
-			pos: 'bottom-left'
+			pos: 'bottom-left',
+		};
+
+		const keys = Object.keys(options);
+		keys.forEach(k => {
+			obj[k] = options[k];
 		});
+
+		UIkit.notification(obj);
 		console.error(errString);
 	},
-	success : (title, message) => {
-		UIkit.notification({
+	success : (title, message, options = {}) => {
+		const obj = {
 			message: '<span uk-icon="icon: check"></span>&nbsp;'+
 			`<label class="uk-text-small">${title} : <span class="uk-text-success">${message}</span></label>`,
-			pos: 'bottom-left'
+			pos: 'bottom-left',
+		};
+
+		const keys = Object.keys(options);
+		keys.forEach(k => {
+			obj[k] = options[k];
 		});
+
+		UIkit.notification(obj);
 	},
-	info : (title, message) => {
-		UIkit.notification({
+	info : (title, message, options = {}) => {
+		const obj = {
 			message: '<span uk-icon="icon: plus-circle"></span>&nbsp;'+
 			`<label class="uk-text-small">${title} : <span class="uk-text-spoon">${message}</span></label>`,
-			pos: 'bottom-left'
+			pos: 'bottom-left',
+		};
+
+		const keys = Object.keys(options);
+		keys.forEach(k => {
+			obj[k] = options[k];
 		});
-	}
+
+		UIkit.notification(obj);
+	},
 };
 
 /**

@@ -416,13 +416,26 @@
 				logElement.setAttribute('name', `spoor-log`);
 
 				const leftDiv = document.createElement('div');
-				leftDiv.className = "uk-width-3-4";
+				leftDiv.className = "uk-width-3-5";
 
 				const leftDivP = document.createElement('p');
 				leftDivP.innerText = chatData.message;
 
 				const rightDiv = document.createElement('div');
-				rightDiv.className = "uk-width-1-4 uk-text-right";
+				rightDiv.className = "uk-width-2-5 uk-text-right";
+
+				const pauseButton = document.createElement('a');
+				pauseButton.href = "#";
+				pauseButton.className = "uk-icon-button uk-text-warning uk-margin-small-right";
+				pauseButton.setAttribute('uk-icon', 'ban');
+				pauseButton.setAttribute('name', 'play-pause');
+				pauseButton.addEventListener('click', (evt) => {
+					if ( sopia ) {
+						if ( typeof sopia.tts.stop === "function" ) {
+							sopia.tts.stop();
+						}
+					}
+				});
 				
 				const playButton = document.createElement('a');
 				playButton.href = "#";
@@ -431,7 +444,8 @@
 				playButton.addEventListener('click', (evt) => {
 					if ( sopia ) {
 						chatData.replay = true;
-						sopia.ttsStack.push(chatData);
+						sopia.tts.stack.push(chatData);
+						pauseButton.style="display: inline-flex";
 					}
 				});
 
@@ -444,6 +458,7 @@
 				});
 
 				leftDiv.appendChild(leftDivP);
+				rightDiv.appendChild(pauseButton);
 				rightDiv.appendChild(playButton);
 				rightDiv.appendChild(deleteButton);
 				logElement.appendChild(leftDiv);

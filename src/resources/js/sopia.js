@@ -396,13 +396,14 @@ sopia.itv.add('spoorchat', () => {
 	});
 
 	if ( sopia.tts.stack.length > 0 ) {
+		// mutex
 		if ( sopia.tts.isrun ) return;
 
 		// play tts
 		sopia.tts.isrun = true;
 
-		let fs = sopia.modules.fs;
-		let chatData = sopia.tts.stack.shift();
+		const fs = sopia.modules.fs;
+		const chatData = sopia.tts.stack.shift();
 		sopia.debug("============= Spoor Chat =============");
 		fs.readFile(getPath('/media/SpoorChatNoti.mp3'), { encoding: 'base64' }, (err, data) => {
 			if ( err ) {
@@ -412,7 +413,7 @@ sopia.itv.add('spoorchat', () => {
 			}
 
 			let voiceType = sopia.config.spoor.type;
-			let notiSnd = new Audio("data:audio/mp3;base64," + data);
+			const notiSnd = new Audio("data:audio/mp3;base64," + data);
 			notiSnd.volume = (sopia.config.spoor.effectvolume * 0.01);
 			notiSnd.onpause = function() {
 				const sigKeys = Object.keys(sopia.config.spoor.signature);
@@ -472,6 +473,11 @@ sopia.itv.add('spoorchat', () => {
 									};
 									spoorChatSnd.volume = (sopia.config.spoor.ttsvolume * 0.01);
 									spoorChatSnd.play();
+
+									sopia.tts.stop = () => {
+										readStack.splice(0, readStack.length);
+										spoorChatSnd.pause();
+									};
 								} else {
 									if ( noRuned && !readStack[0] ) {
 										noRuned = false;
@@ -482,6 +488,10 @@ sopia.itv.add('spoorchat', () => {
 								clearInterval(speechItv);
 								sopia.tts.isrun = false;
 								sopia.debug('speech finish');
+								sopia.tts.stop = null;
+								document.querySelectorAll('a[name="play-pause"]').forEach((element) => {
+									element.style = "display: none";
+								});
 							}
 						}
 					}, 100); // thick 1ms
