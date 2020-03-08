@@ -35,7 +35,10 @@ window.getReactInstance = (element) => {
 };
 
 window.getProps = () => {
-	let instance = getReactInstance(document.querySelector('div.app-container'))
+	let instance = getReactInstance(document.querySelector('div.live-detail-container'));
+	if ( !instance ) {
+		instance = getReactInstance(document.querySelector('div.app-container'));
+	}
 	return instance?instance.return.stateNode.props:null;
 };
 
@@ -82,6 +85,12 @@ window.SendChat = (str) => {
 			"appversion": props.appVersion,
 			"useragent": "Web",
 			"token": token
+		});
+
+		props.LiveDetailActions.addLiveComment({
+			"type": "message",
+			"author": props.userInfo,
+			"message": str
 		});
 	}
 };
