@@ -701,8 +701,10 @@ sopia.onmessage = (e) => {
 			sopia.debug("only manager ", sopia.config.sopia.onlymanager)
 			if ( sopia.config.sopia.onlymanager === true ) {
 				sopia.debug(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
-				if ( sopia.live.manager_ids.includes(sopia.me.id) == false &&
+				if ( (sopia.live.manager_ids.includes(sopia.me.id) === false &&
+					 sopia.me.id !== sopia.live.author.id) &&
 					 send_event ) {
+					sopia.debug("I'm not manager or dj. Do not send this event.");
 					send_event = false;
 				}
 			}
