@@ -34,10 +34,15 @@ window.getReactInstance = (element) => {
 	return null;
 };
 
-window.getProps = () => {
-	let instance = getReactInstance(document.querySelector('div.live-detail-container'));
+window.getProps = (type = "live") => {
+	const selectors = {
+		"live": "div.live-detail-container",
+		"app": "div.app-container"
+	};
+
+	let instance = getReactInstance(document.querySelector(selectors[type]));
 	if ( !instance ) {
-		instance = getReactInstance(document.querySelector('div.app-container'));
+		instance = getReactInstance(document.querySelector(selectors['app']));
 	}
 	return instance?instance.return.stateNode.props:null;
 };
@@ -95,6 +100,100 @@ window.SendChat = (str) => {
 		});
 	}
 };
+
+var userId;
+window.searchDataObj = (nodes, key) => {
+	if ( !Array.isArray(nodes) ) {
+		nodes = nodes._root;
+		if ( nodes ) {
+			nodes = nodes.nodes;
+		}
+	}
+
+
+    for(let i=0;i<nodes.length;i++) {
+		n = nodes[i];
+		if ( typeof n !== "object" ) continue;
+
+        if ( Array.isArray(n.entry) ) {
+            if ( n.entry.includes(key) ) {
+                return n.entry[n.entry.indexOf(key)+1];
+            }
+        } else {
+            if( Array.isArray(n.nodes) ) {
+                let snode = n.nodes;
+                for(j=0;j<snode.length;j++) {
+                    sn = snode[j]
+                    if ( Array.isArray(sn.entry) ) {
+                        if ( sn.entry.indexOf(key) !== -1 ) {
+                            return sn.entry[sn.entry.indexOf(key)+1];
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
+
+var userInfo = 
+window.getUserInfo = (id) => {
+	let props = getProps('app');
+	try {
+		if ( props ) {
+			if ( !id ) {
+				id = searchDataObj(props.userInfo, 'id');
+			}
+
+			props.AuthActions.getUserInfo(id).
+				then(res => {
+					const data = res.data;
+					userInfo = data.results[0];
+				}).
+				catch(err => {
+					setTimeout(() => {
+						window.getUserInfo(id);
+					}, 1000);
+				});
+		} else {
+			throw new Error('no have props');
+		}
+	} catch(err) {
+		setTimeout(() => {
+			window.getUserInfo(id);
+		}, 1000);
+	}
+};
+getUserInfo();
+
+var liveInfo;
+window.getLiveInfo = (id) => {
+	let props = getProps('live');
+	try {
+		if ( props ) {
+			if ( !id ) {
+				id = searchDataObj(props.liveData, 'id');
+			}
+
+			props.LiveDetailActions.getLivesDetailData(id).
+				then(res => {
+					const data = res.data;
+					liveInfo = data.results[0];
+				}).
+				catch(err => {
+					setTimeout(() => {
+						window.getLiveInfo(id);
+					}, 1000);
+				})
+		} else {
+			throw new Error('no have live props');
+		}
+	} catch(err) {
+		setTimeout(() => {
+			window.getLiveInfo(id);
+		}, 1000);
+	}
+};
+getLiveInfo();
 
 function logging(a, b, c) {
 	let rtn = {
