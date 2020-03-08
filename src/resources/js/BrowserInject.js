@@ -76,7 +76,7 @@ window.SendChat = (str) => {
 	if ( props ) {
 		if ( !token ) {
 			if ( props.authKey ) {
-				token = props.authKey.replace("Token ");
+				token = props.authKey.replace("Token ", "");
 			}
 		}
 		props.SocketActions.socketLiveMessage({
@@ -84,7 +84,8 @@ window.SendChat = (str) => {
 			"event":"live_message",
 			"appversion": props.appVersion,
 			"useragent": "Web",
-			"token": token
+			"token": token,
+			"type":"live_rpt",
 		});
 
 		props.LiveDetailActions.addLiveComment({
