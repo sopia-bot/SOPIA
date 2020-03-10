@@ -359,6 +359,15 @@ sopia.isManager = (id) => {
 	return false;
 };
 
+const ttsMessgeWrapper = (str) => {
+	return str.toString().
+		replace(/\\/g, "").
+		replace(/\./g, "").
+		replace(/\+/g, "+").
+		replace(/\n/g, " ").
+		replace(/\ /g, "");
+};
+
 sopia.me = null;
 
 sopia.debug = () => {};
@@ -371,6 +380,8 @@ sopia.tts.isrun = false;
 sopia.tts.signature = {};
 sopia.tts.parser = (tts = "", signature = []) => {
 	if ( signature.length <= 0 ) return [ tts ];
+
+	tts = ttsMessgeWrapper(tts);
 
 	let reStr = "(";
 	signature.forEach((s) => {
@@ -445,8 +456,19 @@ sopia.itv.add('spoorchat', () => {
 						} else {
 							if ( arg.trim() !== "" ) {
 								sopia.debug("Run tts", arg.trim());
+
+
 								sopia.tts.read(arg.trim(), voiceType).then(buf => {
-									readStack[idx] = buf;
+									if ( !readStack.includes(buf) ) {
+										readStack[idx] = buf;
+									} else {
+										// 이전과 동일한 tts로 나올 시 1회만 더 실행
+										sopia.debug("I find matched file. 1 time retry. idx", idx);
+										sopia.tts.read(arg.trim(), voiceType).then(buf => {
+											sopia.debug("success get buf. idx", idx);
+											readStack[idx] = buf;
+										});
+									}
 								});
 							} else {
 								readStack[idx] = "no run";
@@ -457,18 +479,20 @@ sopia.itv.add('spoorchat', () => {
 					// read all array
 					let speechRun = false;
 					let noRuned = false;
+					let speechIdx = 0;
 					let speechItv = setInterval(() => {
 						if (  speechRun === false ) {
-							if ( readStack.length > 0 ) {
-								if ( readStack[0] === "no run" ) {
+							speechRun = true; // mutex
+							if ( speechIdx < readStack.length ) {
+								if ( readStack[speechIdx] === "no run" ) {
 									noRuned = true;
-									readStack.shift();
-								} else if ( readStack[0] ) {
-									speechRun = true;
-									let b64snd = readStack.shift();
+									speechRun = false;
+								} else if ( readStack[speechIdx] ) {
+									let b64snd = readStack[speechIdx];
 									let spoorChatSnd = new Audio(b64snd);
 									spoorChatSnd.onpause = () => {
 										speechRun = false;
+										speechIdx++;
 										spoorChatSnd.remove();
 									};
 									spoorChatSnd.volume = (sopia.config.spoor.ttsvolume * 0.01);
@@ -479,14 +503,16 @@ sopia.itv.add('spoorchat', () => {
 										spoorChatSnd.pause();
 									};
 								} else {
-									if ( noRuned && !readStack[0] ) {
+									speechRun = false;
+									if ( noRuned && !readStack[speechIdx] ) {
 										noRuned = false;
-										readStack.shift();
+										speechIdx++;
 									}
 								}
 							} else {
 								clearInterval(speechItv);
 								sopia.tts.isrun = false;
+								readStack.splice(0, readStack.length);
 								sopia.debug('speech finish');
 								sopia.tts.stop = null;
 								document.querySelectorAll('a[name="play-pause"]').forEach((element) => {
