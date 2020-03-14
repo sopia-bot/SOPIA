@@ -143,6 +143,10 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		//SOPIA 설정
 		document.querySelector('#autoManagerStart').checked = sopia.config.sopia.autostart;
 		document.querySelector('#onlymanager').checked = sopia.config.sopia.onlymanager;
+		document.querySelector('#default-url').value = sopia.config.sopia['default-url'];
+
+		const webview = window.webview || document.querySelector('#webview');
+		webview.src = sopia.config.sopia['default-url'];
 		
 		//자동 로그인 설정
 		document.querySelector('#autoLoginEnable').checked = sopia.config.autologin.enable;

@@ -53,6 +53,12 @@
 								<button class="uk-button uk-button-spoon uk-button-small" onclick="loadSetting()">파일 찾기</button>
 							</div>
 						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>기본 스푼 Url</div>
+							<div class="uk-text-right">
+								<input id="default-url" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="text">
+							</div>
+						</div>
 					</div>
 				</div>
 				<!-- E:SOPIA Setting -->
@@ -211,6 +217,7 @@
 			const sopiaSettingSave = () => {
 				sopia.config.sopia.autostart = document.querySelector('#autoManagerStart').checked;
 				sopia.config.sopia.onlymanager = document.querySelector('#onlymanager').checked;
+				sopia.config.sopia['default-url'] = document.querySelector('#default-url').value;
 				sopia.debug(sopia.config.sopia, "save");
 				AllSettingSave();
 			};

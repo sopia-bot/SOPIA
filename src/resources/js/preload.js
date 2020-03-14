@@ -117,6 +117,7 @@ const AllSettingSave = (s = sopia.config, cb) => {
 		if ( typeof cb === "function" ) {
 			cb();
 		}
+		noti.success("성공", "설정을 저장했습니다.");
 	});
 };
 

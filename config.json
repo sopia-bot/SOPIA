@@ -2,7 +2,8 @@
 	"sopia": {
 		"autostart": false,
 		"onlymanager": true,
-		"limitoff": true
+		"limitoff": true,
+		"default-url": "https://spooncast.net"
 	},
 	"autologin": {
 		"enable": false,
