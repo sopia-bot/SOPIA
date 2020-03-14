@@ -12,6 +12,8 @@ const EventEmitter = require('events');
 const axios = require('axios');
 const orgRequire = require;
 const jsonMerger = require('json-merger');
+const http = require('http');
+const https = require('https');
 
 window.DEBUG_MODE = false;
 process.argv.forEach((arg) => {
@@ -323,6 +325,56 @@ const copyAtag = (element, skipFlag = false) => {
 		if ( !skipFlag ) {
 			noti.info("복사되었습니다.", text);
 		}
+	}
+};
+
+const parseVersion = (ver) => {
+	if ( typeof ver !== "string" ) return false;
+
+	const sVer = ver.split('.');
+	if ( sVer.length === 3 ) {
+		return {
+			app:   parseInt(sVer[0], 10),
+			major: parseInt(sVer[1], 10),
+			minor: parseInt(sVer[2], 10),
+		};
+	}
+	return false;
+};
+
+/** 
+ * @function verCompaire
+ * @param {String} ver1
+ * @param {String} ver2
+ * @returns -1: ver1 < ver2 0: ver1 = ver2 1: ver1 > ver2
+ */
+const verCompaire = (ver1, ver2) => {
+	const v1 = parseVersion(ver1);
+	const v2 = parseVersion(ver2);
+	
+	if ( v1 === false || v2 === false ) return;
+	
+	if ( v1.app === v2.app ) {
+		if ( v1.major === v2.major ) {
+			if ( v1.minor === v2.minor ) {
+				return 0;
+			} else {
+				return (v1.minor < v2.minor ? -1 : 1);
+			}
+		} else {
+			return (v1.major < v2.major ? -1 : 1);
+		}
+	} else {
+		return (v1.app < v2.app ? -1 : 1);
+	}
+};
+
+const alertModal = (title, message) => {
+	const alert = document.querySelector('#alert-modal');
+	if ( alert ) {
+		alert.querySelector('h2[name="title"]').innerText = title;
+		alert.querySelector('pre[name="message"]').innerText = message;
+		UIkit.modal(alert).show();
 	}
 };
 

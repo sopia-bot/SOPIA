@@ -224,6 +224,17 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			};
 
 			const install = (evt) => {
+				if ( bundle.reqVer ) {
+					if ( verCompaire(sopia.config.version, bundle.reqVer) < 0 ) {
+						let msg = '버전 정보가 맞지 않습니다.\n';
+						msg += `프로그램을 업데이트 해주시기 바랍니다.\n\n`;
+						msg += `현재 버전: ${sopia.config.version}\n`;
+						msg += `요구 버전: ${bundle.reqVer}`;
+						alertModal('알림', msg);
+						return;
+					}
+				}
+
 				if ( bundle.href ) {
 					axios({
 						url: bundle.href,
@@ -255,6 +266,31 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 							}
 						});
 					});
+
+
+					// download dependency
+					if ( bundle.dep ) {
+						const deps = bundle.dep[process.arch];
+						if ( Array.isArray(deps) ) {
+							deps.forEach((d) => {
+								const depPath = `sopia/bundles/${d.name}`;
+								const target = getPath(depPath);
+									
+								sopia.debug(target);
+								if ( !fs.existsSync(path.dirname(target)) ) {
+									sopia.debug("no exist target");
+									fs.mkdirSync(path.dirname(target));
+								}
+
+								const file = fs.createWriteStream(target);
+								https.get(d.href, (res) => {
+									res.pipe(file);
+								});
+							});
+						}
+					}
+				} else {
+					noti.error('다운로드 정보가 없습니다.');
 				}
 			};
 			if ( isUsing ) {
@@ -286,6 +322,22 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		const bundleURL = sopia.config['api-url'] + '/bundle.json';
 		axios({
 			url: bundleURL,
+			method: 'get',
+		}).then((res) => {
+			const data = res.data;
+			const keys = Object.keys(data);
+			keys.forEach(k => {
+				const bundle = data[k];
+				const isUsing = sopia.config.bundle[k] ? true : false;
+				apeendCardItem(k, bundle, isUsing);
+			})
+		});
+
+		// 번들 리스트 로딩
+
+		const bundleDebugURL = sopia.config['api-url'] + '/debug-server/bundle.json';
+		axios({
+			url: bundleDebugURL,
 			method: 'get',
 		}).then((res) => {
 			const data = res.data;
