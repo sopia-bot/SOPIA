@@ -1,13 +1,22 @@
-sopia.modules.getMelonCaption = require('./get-melon-caption').getMelonCaption;
+sopia.modules.getMelonCaption = sopia.require(getPath('./sopia/bundles/get-melon-caption')).getMelonCaption;
 
 sopia.var.cpation = sopia.modules.getMelonCaption();
 
 sopia.on('message', (e) => {
+	console.log(e);
 	if ( e.isCmd || isCmd(e) ) {
-		const caption = sopia.modules.getMelonCaption();
-		const delMelonCaption = caption.replace(/melon$/i, '').trim();
-		const title = delMelonCaption.replace(/-$/, '').trim();
+		if ( e.cmd === "현재곡" ) {
+			const caption = sopia.modules.getMelonCaption().trim();
 
-		sopia.send(`🔊현재 곡 정보🎶\n${title}`);
+			if ( caption === "" ) {
+				sopia.send("현재 곡 정보를 가져올 수 없습니다.");
+				return;
+			}
+
+			const delMelonCaption = caption.replace(/melon$/i, '').trim();
+			const title = delMelonCaption.replace(/-$/, '').trim();
+
+			sopia.send(`🔊현재 곡 정보🎶\n${title}`);
+		}
 	}
 });
