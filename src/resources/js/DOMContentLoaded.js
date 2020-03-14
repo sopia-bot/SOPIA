@@ -339,19 +339,21 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 		// 번들 리스트 로딩
 
-		const bundleDebugURL = sopia.config['api-url'] + '/debug-server/bundle.json';
-		axios({
-			url: bundleDebugURL,
-			method: 'get',
-		}).then((res) => {
-			const data = res.data;
-			const keys = Object.keys(data);
-			keys.forEach(k => {
-				const bundle = data[k];
-				const isUsing = sopia.config.bundle[k] ? true : false;
-				apeendCardItem(k, bundle, isUsing);
-			})
-		});
+		if ( window.DEBUG_MODE ) {
+			const bundleDebugURL = sopia.config['api-url'] + '/debug-server/bundle.json';
+			axios({
+				url: bundleDebugURL,
+				method: 'get',
+			}).then((res) => {
+				const data = res.data;
+				const keys = Object.keys(data);
+				keys.forEach(k => {
+					const bundle = data[k];
+					const isUsing = sopia.config.bundle[k] ? true : false;
+					apeendCardItem(k, bundle, isUsing);
+				})
+			});
+		}
 	});
 	
 	
