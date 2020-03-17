@@ -18,6 +18,31 @@ sopia.modules = {
 	fs: require('fs'),
 };
 
+sopia.api = {
+	getMembers = (liveid = sopia.live.id) => {
+		return new Promise((resolve, reject) => {
+			let members = [];
+			const reqMembers = (url) => {
+				sopia.modules.axios({
+					url,
+					headers: {
+						'user-agent': "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+					}
+				}).then(res => {
+					const data = res.data;
+					members = members.concat(data.results);
+					if ( data.next ) {
+						reqMembers(data.next);
+					} else {
+						resolve(members);
+					}
+				});
+			};
+			reqMembers(`https://api.spooncast.net/lives/${liveid}/members/`);
+		});
+	},
+};
+
 sopia.tts = require(getPath('/speech.js'));
 
 sopia.var = new Object();
