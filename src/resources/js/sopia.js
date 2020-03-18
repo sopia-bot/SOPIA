@@ -19,7 +19,8 @@ sopia.modules = {
 };
 
 sopia.api = {
-	getMembers = (liveid = sopia.live.id) => {
+	rand: (num=0, min=0) => Math.floor(Math.random() * (num)) + min,
+	getMembers: (liveid = sopia.live.id) => {
 		return new Promise((resolve, reject) => {
 			let members = [];
 			const reqMembers = (url) => {
@@ -40,6 +41,25 @@ sopia.api = {
 			};
 			reqMembers(`https://api.spooncast.net/lives/${liveid}/members/`);
 		});
+	},
+	blockUser: (id, tidx=0) => {
+		if ( Number.isInteger(id) ) {
+			if ( sopia.props && sopia.props.authKey ) {
+				if ( sopia.live && sopia.live.id ) {
+					sopia.modules.axios({
+						headers: {
+							'user-agent': "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+							"authorization": sopia.props.authKey
+						},
+						method: 'post',
+						url: `https://api.spooncast.net/lives/${sopia.live.id}/block/`,
+						data: {
+							block_user_id: id
+						}
+					});
+				}
+			}
+		}
 	},
 };
 
@@ -603,7 +623,6 @@ const devMessage = (data, event) => {
 			}
 
 			if ( isCmd(e) ) {
-				console.log("is cmd", e);
 				if ( e.cmd === "tts" ) {
 					sopia.tts.stack.push({ message: e.content });
 					rtn = false;
@@ -701,6 +720,12 @@ sopia.onmessage = (e) => {
 					}).catch(err => {
 						sopia.debug("fail!");
 						sopia.error(err);
+					});
+
+					// update props
+					document.querySelector('#webview').executeJavaScript('getProps()')
+					.then(d => {
+						sopia.props = d;
 					});
 				});
 			}

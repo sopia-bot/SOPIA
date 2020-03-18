@@ -3,7 +3,6 @@ sopia.modules.getMelonCaption = sopia.require(getPath('./sopia/bundles/get-melon
 sopia.var.cpation = sopia.modules.getMelonCaption();
 
 sopia.on('message', (e) => {
-	console.log(e);
 	if ( e.isCmd || isCmd(e) ) {
 		if ( e.cmd === "현재곡" ) {
 			const caption = sopia.modules.getMelonCaption().trim();
