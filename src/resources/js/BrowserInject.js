@@ -135,6 +135,16 @@ window.searchDataObj = (nodes, key) => {
     }
 };
 
+window.toggleMute = () => {
+	/*
+	let props = getProps();
+	if ( props ) {
+		props.LivePlayerActions.toggleMute();
+	}
+	*/
+	document.querySelector('button.btn-control.btn-volume').click();
+};
+
 var userInfo = 
 window.getUserInfo = (id) => {
 	let props = getProps('app');

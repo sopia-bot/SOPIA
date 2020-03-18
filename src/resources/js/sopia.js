@@ -723,10 +723,15 @@ sopia.onmessage = (e) => {
 					});
 
 					// update props
-					document.querySelector('#webview').executeJavaScript('getProps()')
+					webview.executeJavaScript('getProps()')
 					.then(d => {
 						sopia.props = d;
 					});
+
+					// mute sound
+					setTimeout(() => {
+						webview.executeJavaScript('toggleMute()');
+					}, 100)
 				});
 			}
 		} else {
