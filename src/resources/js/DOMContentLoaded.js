@@ -346,12 +346,15 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 				method: 'get',
 			}).then((res) => {
 				const data = res.data;
-				const keys = Object.keys(data);
-				keys.forEach(k => {
-					const bundle = data[k];
-					const isUsing = sopia.config.bundle[k] ? true : false;
-					apeendCardItem(k, bundle, isUsing);
-				})
+				
+				if ( data ) {
+					const keys = Object.keys(data);
+					keys.forEach(k => {
+						const bundle = data[k];
+						const isUsing = sopia.config.bundle[k] ? true : false;
+						apeendCardItem(k, bundle, isUsing);
+					})
+				}
 			});
 		}
 	});
