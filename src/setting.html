@@ -173,7 +173,7 @@
 							const oldJson = file2JSON(oldF);
 							const newJson = file2JSON(newF);
 
-							const result = jsonMerger.mergeObjects([newJson, oldJson]);
+							const result = jsonMerger.mergeObjects([oldJson, newJson]);
 							const resToStr = fullStringify(result);
 							fs.writeFileSync(newF, resToStr, {encoding: 'utf8'});
 						});
