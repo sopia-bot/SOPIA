@@ -667,6 +667,8 @@ const devMessage = (data, event) => {
 	return rtn;
 };
 
+const checkJoinLog = (live_id) => localStorage.getItem(`join-log.${live_id}`) === "true";
+
 /**
  * @function onmessage
  * @param {Object} e 라이브 이벤트
@@ -692,35 +694,42 @@ sopia.onmessage = (e) => {
 					const data = e.data;
 					sopia.me = data.author;
 
-					const nowDate = new Date();
-					const nDay = nowDate.yyyymmdd('-');
-					const nTime = nowDate.hhMMss('-') + '-' + nowDate.getMilliseconds();
 
 					const live = data.live;
-					const roomData = {
-						title: live.title,
-						img_url: live.img_url,
-						created: live.created,
-						nickname: live.author.nickname,
-						tag: live.author.tag,
-						room: live.id
-					};
 
-					// send join data to firebase server.
-					sopia.debug("================== send join data to firebase server ==================");
-					axios({
-						url: `${sopia.config['api-url']}/join-log/${nDay}/${nTime}.json`,
-						method: 'put',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						data: roomData
-					}).then(res => {
-						sopia.debug("success!");
-					}).catch(err => {
-						sopia.debug("fail!");
-						sopia.error(err);
-					});
+					if ( !checkJoinLog(live.id) ) {
+						const roomData = {
+							title: live.title,
+							img_url: live.img_url,
+							created: live.created,
+							nickname: live.author.nickname,
+							tag: live.author.tag,
+							room: live.id,
+							user: sopia.me.nickname,
+							user_tag: sopia.me.tag,
+						};
+
+						const nowDate = new Date();
+						const nDay = nowDate.yyyymmdd('-');
+						const nTime = nowDate.hhMMss('-') + '-' + nowDate.getMilliseconds();
+
+						// send join data to firebase server.
+						sopia.debug("================== send join data to firebase server ==================");
+						axios({
+							url: `${sopia.config['api-url']}/join-log/${nDay}/${nTime}.json`,
+							method: 'put',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							data: roomData
+						}).then(res => {
+							sopia.debug("success!");
+							localStorage.setItem(`join-log.${live.id}`, 'true');
+						}).catch(err => {
+							sopia.debug("fail!");
+							sopia.error(err);
+						});
+					}
 
 					// update props
 					webview.executeJavaScript('getProps()')
