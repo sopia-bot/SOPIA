@@ -204,7 +204,7 @@ const checkLicenseSOPIA = () => {
 	};
 };
 checkLicenseSOPIA();
-setInterval(checkLicenseSOPIA, 1000 * 60 * 1); // 1분 마다 한 번 라이센스 검사.
+//setInterval(checkLicenseSOPIA, 1000 * 60 * 1); // 1분 마다 한 번 라이센스 검사.
 
 /**
 * @function logging 
