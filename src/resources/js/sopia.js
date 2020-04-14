@@ -692,6 +692,13 @@ sopia.onmessage = (e) => {
 					const data = e.data;
 					sopia.me = data.author;
 
+					if ( sopia.me.tag !== sopia.config.license.id ) {
+						// 라이센스 id 와 로그인 한 id가 다르다면,
+						if ( !window.DEBUG_MODE ) {
+							window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
+						}
+					}
+
 					const nowDate = new Date();
 					const nDay = nowDate.yyyymmdd('-');
 					const nTime = nowDate.hhMMss('-') + '-' + nowDate.getMilliseconds();
@@ -736,12 +743,14 @@ sopia.onmessage = (e) => {
 			}
 		} else {
 			// sopia.me 가 존재할 때
+			/*
 			if ( sopia.me.tag !== sopia.config.license.id ) {
 				// 라이센스 id 와 로그인 한 id가 다르다면,
 				if ( !window.DEBUG_MODE ) {
 					window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
 				}
 			}
+			*/
 		}
 
 		let send_event = true;
