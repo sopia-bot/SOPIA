@@ -561,6 +561,8 @@ const loadScript = (callback) => {
 	document.body.appendChild(script);
 }
 
+
+const speech = require(getPath('/speech.js'));
 //sopia 객체 로딩
 const sopia = require(getPath('./src/resources/js/sopia.js', true));
 
