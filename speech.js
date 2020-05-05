@@ -17,6 +17,23 @@ String.prototype.toB64Str = function() {
 	return "data:audio/mp3;base64," + Buffer.from(buf).toString('base64');
 };
 
+const createPapagoData = (text, options) => {
+	const data = {
+		pitch: 0,
+		speaker: "kyuri",
+		speed: 0,
+		text: "",
+	};
+	data.text = text || "";
+	Object.entries(data).forEach(([key, value]) => {
+		data[key] = value;
+	});
+
+    const prepare = Buffer.from('\xaeU\xae\xa1C\x9b,Uzd\xf8\xef', 'binary').toString('base64');
+    const body = `pitch":${data.pitch},"speaker":"${data.speaker}","speed": ${data.speed},"text":"${data.text.replace('"', "")}"}`;
+	return `data=${prepare}${Buffer.from(body, 'utf8').toString('base64')}`;
+};
+
 const voices = {
     "minji": {
 		url: 'https://naveropenapi.apigw.ntruss.com/voice/v1/tts',
@@ -92,6 +109,14 @@ const voices = {
 		type: 'kakao',
 		label: "닉",
 	},
+	"kyuri": {
+		url: [
+			'https://papago.naver.com/apis/tts/makeID',
+			'https://papago.naver.com/apis/tts/',
+		],
+		type: 'papago',
+		label: '규리',
+	},
 };
 
 
@@ -106,13 +131,15 @@ const StrToSpeech = (str, type = "minji") => {
 			type = voiceList[idx];
 		}
 
-		switch ( voices[type].type ) {
+		const voice = voices[type];
+		switch ( voice.type ) {
 			case 'google': 
+			{
 				const request = {
 					input: { text: str },
 					voice: {
-						languageCode: voices[type].languageCode,
-						name: voices[type].name,
+						languageCode: voice.languageCode,
+						name: voice.name,
 						ssmlGender: 'MALE',
 					},
 					audioConfig: {audioEncoding: 'MP3'},
@@ -125,9 +152,9 @@ const StrToSpeech = (str, type = "minji") => {
 					resolve(response.audioContent.toB64Str());
 				});
 				break;
+			} // google
 			case 'kakao': 
 			{
-				const voice = voices[type];
 				const text = `<speak><voice name="${voice.name}">${str}</voice></speak>`;
 				const options = {
 					url: voice.url,
@@ -160,10 +187,9 @@ const StrToSpeech = (str, type = "minji") => {
 					resolve(str.toB64Str());
 				});
 				break;
-			}
+			} // kakao
 			case 'clova':
 			{
-				const voice = voices[type];
 				const options = {
 					url: voice.url,
 					method: 'post',
@@ -198,7 +224,34 @@ const StrToSpeech = (str, type = "minji") => {
 					resolve(str.toB64Str());
 				});
 				break;
-			}
+			} // clova
+			case "papago": 
+			{
+				const options = {
+					url: voice.url[0],
+					method: 'post',
+					body: createPapagoData(str),
+				};
+
+				httpReq(options, (err, res, body) => {
+					const b = JSON.parse(body);
+
+
+					const fname = "clova-tts-" + new Date().getTime() + new Date().getMilliseconds() + '.mp3';
+					const writable = fs.createWriteStream(fname);
+					req = httpReq({
+						url: `${voice.url[1]}${b.id}`,
+						method: 'get',
+					}, (err, res, body) => {});
+					req.pipe(writable);
+					writable.on('close', () => {
+						const str = fs.readFileSync(fname);
+						fs.unlinkSync(fname);
+						resolve(str.toB64Str());
+					});
+				});
+				break;
+			} // papago
 		}
 
 	});
