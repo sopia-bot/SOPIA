@@ -3,6 +3,7 @@ const keyfile='./sopia-tts.json';
 const { ipcMain, ipcRenderer } = require('electron');
 const httpReq = require('request');
 const fs = require('fs');
+const axios = require('axios');
 
 
 let client = null;
@@ -72,42 +73,49 @@ const voices = {
 		speed: '0',
 		type: 'clova',
 		label: "진호",
+		premium: true,
 	},
 	"mijin": {
 		url: 'https://naveropenapi.apigw.ntruss.com/voice/v1/tts',
 		speed: '0',
 		type: 'clova',
 		label: "미진",
+		premium: true,
 	},
 	"nara": {
 		url: 'https://naveropenapi.apigw.ntruss.com/voice-premium/v1/tts',
 		speed: '0',
 		type: 'clova',
 		label: "나라",
+		premium: true,
 	},
 	"spring": {
 		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
 		name: 'WOMAN_READ_CALM',
 		type: 'kakao',
 		label: "봄",
+		premium: true,
 	},
 	"ryan": {
 		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
 		name: 'MAN_READ_CALM',
 		type: 'kakao',
 		label: "라이언",
+		premium: true,
 	},
 	"naomi": {
 		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
 		name: 'WOMAN_DIALOG_BRIGHT',
 		type: 'kakao',
 		label: "나오미",
+		premium: true,
 	},
 	"nick": {
 		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
 		name: 'MAN_DIALOG_BRIGHT',
 		type: 'kakao',
 		label: "닉",
+		premium: true,
 	},
 	"kyuri": {
 		url: [
@@ -116,12 +124,14 @@ const voices = {
 		],
 		type: 'papago',
 		label: '규리',
+		premium: true,
 	},
 };
 
+let gUserInfo = null;
 
 const StrToSpeech = (str, type = "minji") => {
-	return new Promise((resolve, reject) => {
+	return new Promise(async (resolve, reject) => {
 		if ( !str ) reject(new Error('str is undefined'));
 
 		if ( type === "random" ) {
@@ -132,6 +142,38 @@ const StrToSpeech = (str, type = "minji") => {
 		}
 
 		const voice = voices[type];
+
+		if ( voice.premium ) {
+			const config = require('./config.json');
+
+			if ( !gUserInfo ) {
+				const res = await axios({
+					url: `${config['api-url']}/users/${config.license.key}.json`,
+					method: 'get',
+				});
+				gUserInfo = res.data;
+			}
+
+			if ( !gUserInfo['is-premium'] ) {
+				reject(new Error('프리미엄 계정이 아닙니다.'));
+				return;
+			}
+
+
+			httpReq({
+				url: 'https://us-central1-sopia-bot.cloudfunctions.net/premium/tts',
+				method: 'put',
+				body: JSON.stringify({
+					serial: config.license.key,
+					type: voice.type,
+				}),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}, (err, res, body) => {
+			});
+		}
+
 		switch ( voice.type ) {
 			case 'google': 
 			{
@@ -286,7 +328,7 @@ const mainInit = () => {
 					event.reply(options.resKey, { result: 'success', data: b64Audio });
 				}).
 				catch(err => {
-					event.reply(options.resKey, { result: 'fail', data: err });
+					event.reply(options.resKey, { result: 'fail', data: err.message });
 				});
 		});
 	}
