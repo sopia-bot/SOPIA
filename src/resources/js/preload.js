@@ -562,7 +562,7 @@ const loadScript = (callback) => {
 }
 
 
-const speech = require(getPath('/speech.js'));
+const speech = require(getPath('./src/resources/js/speech.js', true));
 //sopia 객체 로딩
 const sopia = require(getPath('./src/resources/js/sopia.js', true));
 

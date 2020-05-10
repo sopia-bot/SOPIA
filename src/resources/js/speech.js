@@ -1,10 +1,28 @@
 const projectId='silken-avatar-268104';
 const keyfile='./sopia-tts.json';
-const { ipcMain, ipcRenderer } = require('electron');
+const { ipcMain, ipcRenderer, remote } = require('electron');
+const { app } = remote;
 const httpReq = require('request');
-const fs = require('fs');
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
+/**
+ * @function getPath
+ * @param {string} path_ 
+ * 현재 프로그램이 시작된 경로를 기준으로,
+ * @path_ 의 절대 경로를 반환한다.
+ * @cur true 면 electron.exe 검사를 안 한다.
+ */
+const getPath = (path_, cur = false) => {
+	let exePath = app.getPath('exe');
+	let exe = path.basename(exePath);
+	let p = app.getAppPath();
+	if ( !exe.match("electron") && cur === false ) {
+		p = path.dirname(exePath);
+	}
+	return path.join(p, path_);
+};
 
 let client = null;
 
@@ -15,7 +33,7 @@ Buffer.prototype.toB64Str = function() {
 
 String.prototype.toB64Str = function() {
 	let buf = this;
-	return "data:audio/mp3;base64," + Buffer.from(buf).toString('base64');
+	return "data:audio/mp3;base64," + buf.toString('base64');
 };
 
 const createPapagoData = (text, options) => {
@@ -130,6 +148,21 @@ const voices = {
 
 let gUserInfo = null;
 
+let apiKey = "";
+let getApiKeyMutex = false;
+const getApiKey = () => {
+    if ( getApiKeyMutex ) return;
+    getApiKeyMutex = true;
+    axios.get('https://sopia-bot.firebaseio.com/11-app/plugins/speech/api-key.json')
+        .then(res => {
+            apiKey = res.data;
+        })
+        .finally(() => {
+            getApiKeyMutex = false;
+        });
+}
+getApiKey();
+
 const StrToSpeech = (str, type = "minji") => {
 	return new Promise(async (resolve, reject) => {
 		if ( !str ) reject(new Error('str is undefined'));
@@ -144,14 +177,20 @@ const StrToSpeech = (str, type = "minji") => {
 		const voice = voices[type];
 
 		if ( voice.premium ) {
-			const config = require('./config.json');
+			const config = orgRequire(getPath('config.json'));
 
 			if ( !gUserInfo ) {
-				const res = await axios({
-					url: `${config['api-url']}/users/${config.license.key}.json`,
-					method: 'get',
-				});
-				gUserInfo = res.data;
+				try {
+					const res = await axios({
+						url: `${config['api-url']}/users/${config.license.key}.json`,
+						method: 'get',
+					});
+					gUserInfo = res.data;
+				} catch(err) {
+					console.error(err);
+					reject(err);
+					return;
+				}
 			}
 
 			if ( !gUserInfo['is-premium'] ) {
@@ -177,22 +216,41 @@ const StrToSpeech = (str, type = "minji") => {
 		switch ( voice.type ) {
 			case 'google': 
 			{
-				const request = {
-					input: { text: str },
-					voice: {
-						languageCode: voice.languageCode,
-						name: voice.name,
-						ssmlGender: 'MALE',
+				axios({
+					url: `https://texttospeech.googleapis.com/v1/text:synthesize`,
+					params: {
+						key: apiKey,
+						alt: 'json',
 					},
-					audioConfig: {audioEncoding: 'MP3'},
-				};
-		
-				client.synthesizeSpeech(request, (err, response) => {	
-					if (err) {		
-						reject(err);
+					method: 'post',
+					data: {
+						"input": {
+							"text": str,
+						},
+						"voice": {
+							languageCode: voice.languageCode,
+							name: voice.name,
+							ssmlGender: 'MALE',
+						},
+						"audioConfig": {
+							"audioEncoding": 'MP3',
+						},
+					},
+				}).then(res => {
+					if ( res ) {
+						if ( res.data ) {
+							if ( res.data.audioContent ) {
+								resolve(res.data.audioContent.toB64Str());
+							} else {
+								reject(new Error('invalid audioContent'));
+							}
+						} else {
+							reject(new Error('invalid res data'));
+						}
+					} else {
+						reject(new Error('invalid axios response'));
 					}
-					resolve(response.audioContent.toB64Str());
-				});
+				}).catch(reject);
 				break;
 			} // google
 			case 'kakao': 
@@ -331,11 +389,16 @@ const mainInit = () => {
 					event.reply(options.resKey, { result: 'fail', data: err.message });
 				});
 		});
+
+		ipcMain.once('init-http', (event, funcs) => {
+			httpReq = func.request;
+			axios = func.axios;
+		});
 	}
 };
 
 module.exports = {
 	init: mainInit,
-	read: tts,
+	read: StrToSpeech,
 	voices,
 };
