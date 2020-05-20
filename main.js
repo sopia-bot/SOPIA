@@ -1,16 +1,13 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, session, ipcMain, dialog} = require('electron')
 const path = require('path')
-const TextToSpeech = require('./speech.js');
 
 global.DEBUG_MODE = false;
 process.argv.forEach((arg) => {
 	if ( arg === "DEBUG" ) {
 		let exePath = app.getPath('exe');
 		let exe = path.basename(exePath);
-		if ( exe.match("electron") ) {
-			global.DEBUG_MODE = true;
-		}
+		global.DEBUG_MODE = true;
 	}
 })
 
@@ -110,8 +107,6 @@ function createWindow () {
 		mainWindow = null
 	})
 }
-
-TextToSpeech.init();
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

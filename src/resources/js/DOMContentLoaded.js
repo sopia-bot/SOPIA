@@ -80,6 +80,27 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		target.style.display = "none";
 		target.setAttribute('data-target', 'spoorchat');
 
+		
+		Object.entries(speech.voices)
+		.forEach(([name, obj]) => {
+			const divider = document.createElement('li');
+			divider.className = "uk-nav-divider";
+
+
+
+			const li = document.createElement('li');
+			li.dataset.type = name;
+			li.addEventListener('click', voiceTypeSelect);
+			li.setAttribute('name', 'voiceTypeItems');
+
+			const a = document.createElement('a');
+			a.href = '#';
+			a.innerText = obj.label;
+
+			li.appendChild(a);
+			//document.querySelector('#voiceTypeItem').appendChild(divider);
+			document.querySelector('#voiceTypeItem').appendChild(li);
+		});
 
 		// 설정값 로딩
 

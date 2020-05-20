@@ -63,7 +63,7 @@ sopia.api = {
 	},
 };
 
-sopia.tts = require(getPath('/speech.js'));
+sopia.tts = speech;
 
 sopia.var = new Object();
 sopia.storage = {
@@ -505,6 +505,10 @@ sopia.itv.add('spoorchat', () => {
 											readStack[idx] = buf;
 										});
 									}
+								}).catch((err) => {
+									sopia.tts.isrun = false;
+									console.error(err);
+									return;
 								});
 							} else {
 								readStack[idx] = "no run";
@@ -517,6 +521,16 @@ sopia.itv.add('spoorchat', () => {
 					let noRuned = false;
 					let speechIdx = 0;
 					let speechItv = setInterval(() => {
+						if ( sopia.tts.isrun === false ) {
+							clearInterval(speechItv);
+							readStack.splice(0, readStack.length);
+							sopia.debug('speech finish');
+							sopia.tts.stop = null;
+							document.querySelectorAll('a[name="play-pause"]').forEach((element) => {
+								element.style = "display: none";
+							});
+						}
+
 						if (  speechRun === false ) {
 							speechRun = true; // mutex
 							if ( speechIdx < readStack.length ) {
