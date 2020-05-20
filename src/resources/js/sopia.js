@@ -692,7 +692,7 @@ sopia.onmessage = (e) => {
 					const data = e.data;
 					sopia.me = data.author;
 
-					if ( sopia.me.tag !== sopia.config.license.id ) {
+					if ( sopia.me.tag.toString() !== sopia.config.license.id.toString() ) {
 						// 라이센스 id 와 로그인 한 id가 다르다면,
 						if ( !window.DEBUG_MODE ) {
 							window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
