@@ -86,64 +86,6 @@ const voices = {
 		type: 'google',
 		label: "민상",
 	},
-	"jinho": {
-		url: 'https://naveropenapi.apigw.ntruss.com/voice/v1/tts',
-		speed: '0',
-		type: 'clova',
-		label: "진호",
-		premium: true,
-	},
-	"mijin": {
-		url: 'https://naveropenapi.apigw.ntruss.com/voice/v1/tts',
-		speed: '0',
-		type: 'clova',
-		label: "미진",
-		premium: true,
-	},
-	"nara": {
-		url: 'https://naveropenapi.apigw.ntruss.com/voice-premium/v1/tts',
-		speed: '0',
-		type: 'clova',
-		label: "나라",
-		premium: true,
-	},
-	"spring": {
-		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
-		name: 'WOMAN_READ_CALM',
-		type: 'kakao',
-		label: "봄",
-		premium: true,
-	},
-	"ryan": {
-		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
-		name: 'MAN_READ_CALM',
-		type: 'kakao',
-		label: "라이언",
-		premium: true,
-	},
-	"naomi": {
-		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
-		name: 'WOMAN_DIALOG_BRIGHT',
-		type: 'kakao',
-		label: "나오미",
-		premium: true,
-	},
-	"nick": {
-		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
-		name: 'MAN_DIALOG_BRIGHT',
-		type: 'kakao',
-		label: "닉",
-		premium: true,
-	},
-	"kyuri": {
-		url: [
-			'https://papago.naver.com/apis/tts/makeID',
-			'https://papago.naver.com/apis/tts/',
-		],
-		type: 'papago',
-		label: '규리',
-		premium: true,
-	},
 };
 
 let gUserInfo = null;
