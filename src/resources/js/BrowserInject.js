@@ -225,3 +225,8 @@ var logInterval = setInterval(() => {
 	setLogging();
 	logIntervalTime *= logIntervalTime;
 }, logIntervalTime * 1000);
+
+
+setTimeout(() => {
+	document.querySelector('iframe[name="us-entrypoint-buttonV2"]').remove();
+}, 3000);
