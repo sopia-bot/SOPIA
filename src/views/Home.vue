@@ -1,18 +1,19 @@
+<!--
+ * Home.vue
+ * Created on Sun Aug 02 2020
+ *
+ * Copyright (c) TreeSome. Licensed under the MIT License.
+-->
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+	<v-main>
+		Hello World
+	</v-main>
 </template>
+<script lang="ts">
+import { Component, Mixins } from 'vue-property-decorator';
+import GlobalMixins from '../plugins/mixins';
 
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
-export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
+@Component
+export default class Home extends Mixins(GlobalMixins) {
 }
 </script>

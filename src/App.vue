@@ -1,32 +1,40 @@
+<!--
+ * App.vue
+ * Created on Sat Jul 18 2020
+ *
+ * Copyright (c) TreeSome. Licensed under the MIT License.
+-->
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+	<v-app style="padding-left: 56px">
+		<side-menu />
+		<v-sheet id="router-view" tile>
+			<transition name="scroll-y-reverse-transition">
+			<router-view />
+			</transition>
+		</v-sheet>
+	</v-app>
 </template>
+<script lang="ts">
+import { Component, Mixins } from 'vue-property-decorator';
+import GlobalMixins from './plugins/mixins';
+import SideMenu from './views/SideMenu.vue';
+import { LoginType, User } from 'sopia-core';
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+declare global {
+	interface Window {
+		user: User;
+	}
 }
 
-#nav {
-  padding: 30px;
+@Component({
+	components: {
+		SideMenu,
+	},
+})
+export default class App extends Mixins(GlobalMixins) {
+	public async mounted() {
+		window.user = await this.$sopia.login(localStorage.id, localStorage.pw, LoginType.PHONE);
+		this.$evt.$emit('user', window.user);
+	}
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+</script>
