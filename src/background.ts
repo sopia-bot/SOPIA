@@ -20,9 +20,11 @@ protocol.registerSchemesAsPrivileged([
 	{ scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
 
-declare module NodeJS {
-	interface Global {
-		startTime: Date;
+declare global {
+	namespace NodeJS {
+		interface Global {
+			startTime: string;
+		}
 	}
 }
 

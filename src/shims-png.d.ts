@@ -5,7 +5,7 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
  */
 
-declare module "*.png" {
+declare module '*.png' {
 	const value: string;
 	export default value;
 }

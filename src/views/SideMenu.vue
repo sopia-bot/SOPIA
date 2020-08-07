@@ -66,9 +66,6 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 		profileUrl: require('../assets/default-profile.png'),
 	});
 
-	public created() {
-	}
-
 	public mounted() {
 		this.$evt.$on('user', (user: User) => {
 			if ( user.nickname ) {
