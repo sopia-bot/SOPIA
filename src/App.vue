@@ -9,7 +9,7 @@
 		<side-menu />
 		<v-sheet id="router-view" tile>
 			<transition name="scroll-y-reverse-transition">
-			<router-view />
+				<router-view />
 			</transition>
 		</v-sheet>
 	</v-app>
