@@ -85,14 +85,16 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		Object.entries(speech.voices)
 		.forEach(async ([name, obj]) => {
 			try {
-				const res = await axios({
-					url: `${config['api-url']}/users/${config.license.key}.json`,
-					method: 'get',
-				});
-				gUserInfo = res.data;
+				if ( !window.DEBUG_MODE ) {
+					const res = await axios({
+						url: `${config['api-url']}/users/${config.license.key}.json`,
+						method: 'get',
+					});
+					gUserInfo = res.data;
 
-				if ( obj.premium && !gUserInfo['is-premium'] ) {
-					return;
+					if ( obj.premium && !gUserInfo['is-premium'] ) {
+						return;
+					}
 				}
 			} catch(err) {
 				console.error(err);
