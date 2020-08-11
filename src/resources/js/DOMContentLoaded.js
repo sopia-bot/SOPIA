@@ -6,6 +6,7 @@
 
 
 document.addEventListener('DOMContentLoaded', (evt) => {
+	const config = orgRequire(getPath('/config.json'));
 	
 	/*               S: IMPORT               */
 	
@@ -82,11 +83,25 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 		
 		Object.entries(speech.voices)
-		.forEach(([name, obj]) => {
+		.forEach(async ([name, obj]) => {
+			try {
+				const res = await axios({
+					url: `${config['api-url']}/users/${config.license.key}.json`,
+					method: 'get',
+				});
+				gUserInfo = res.data;
+
+				if ( obj.premium && !gUserInfo['is-premium'] ) {
+					return;
+				}
+			} catch(err) {
+				console.error(err);
+				reject(err);
+				return;
+			}
+
 			const divider = document.createElement('li');
 			divider.className = "uk-nav-divider";
-
-
 
 			const li = document.createElement('li');
 			li.dataset.type = name;

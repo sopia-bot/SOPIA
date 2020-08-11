@@ -142,7 +142,6 @@ const voices = {
 		],
 		type: 'papago',
 		label: '규리',
-		premium: true,
 	},
 };
 
