@@ -63,3 +63,33 @@ window.updateProps = () => {
 		sopia.var.props = d;
 	});
 };
+
+
+
+const presentPath = getPath('sopia/storages/present.json');
+if ( fs.existsSync(presentPath) ) {
+    const present = file2JSON(presentPath).default;
+    axios.get(`https://static.spooncast.net/kr/stickers/index.json`)
+        .then((res) => {
+            const result = res.data;
+            const categories = result.categories;
+
+            const stickers = {};
+            categories.forEach((category) => {
+                if ( !category.is_used ) return;
+
+                for ( sticker of category.stickers ) {
+                    if ( !sticker.is_used ) continue;
+                    stickers[sticker.name] = `${sticker.title}: ${sticker.description}`;
+                }
+            });
+            const mergedSticker = stickers;
+            for( [key, react] of Object.entries(present) ) {
+                if ( react ) {
+                    mergedSticker[key] = react;
+                }
+            }
+
+            fs.writeFileSync(presentPath, fullStringify(mergedSticker), {encoding: 'utf8'});
+        });
+}

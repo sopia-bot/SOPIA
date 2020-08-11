@@ -1,34 +1,6 @@
 if ( typeof sopia.spoon !== "object" ) {
     sopia.spoon = new Object();
-    sopia.spoon.list = {
-		"sticker_like": "하트",
-		"sticker_kr_juice": "쥬스",
-		"sticker_kr_icecream": "아이스크림",
-		"sticker_kr_coke": "콜라",
-		"sticker_kr_rose": "장미",
-		"sticker_kr_clap": "박수",
-		"sticker_kr_bubbletea": "버블티",
-		"sticker_kr_snack11": "빼빼로",
-		"sticker_kr_potatochip": "감자튀김",
-		"sticker_kr_hotdog": "핫도그",
-		"sticker_kr_hamburger": "햄버거",
-		"sticker_kr_lip": "입술",
-		"sticker_kr_coffee_donut": "커피도넛",
-		"sticker_kr_chicken": "치킨",
-		"sticker_kr_cake": "케이크",
-		"sticker_kr_crown": "왕관",
-		"sticker_kr_pizza": "피자",
-		"sticker_kr_bearflower": "곰꽃",
-		"sticker_kr_vday": "발렌타인",
-		"sticker_kr_clover": "클로버",
-		"sticker_kr_ohohoh": "555",
-		"sticker_kr_jackpot": "잭팟",
-		"sticker_kr_angel": "천사",
-		"sticker_kr_santa": "산타",
-        "sticker_kr_airplane": "비행기",
-		"sticker_myheart": "선물상자",
-        "default": "Unkown"
-    };
+    sopia.spoon.list = {};
     sopia.spoon.sum = {
         "전체": 0,
     };
@@ -64,3 +36,22 @@ sopia.on('message', (e) => {
         }
     }
 });
+
+axios.get(`https://static.spooncast.net/kr/stickers/index.json`)
+    .then((res) => {
+        const result = res.data;
+        const categories = result.categories;
+
+        const stickers = {};
+        categories.forEach((category) => {
+            if ( !category.is_used ) return;
+
+            for ( sticker of category.stickers ) {
+                if ( !sticker.is_used ) continue;
+                if ( !sticker.title ) continue;
+
+                stickers[sticker.name] = sticker.title;
+            }
+        });
+        sopia.spoon.list = stickers;
+    });
