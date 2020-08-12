@@ -80,7 +80,7 @@ if ( fs.existsSync(presentPath) ) {
 
                 for ( sticker of category.stickers ) {
                     if ( !sticker.is_used ) continue;
-                    stickers[sticker.name] = `${sticker.title}: ${sticker.description}`;
+                    stickers[sticker.name] = eval(`e => \`${sticker.title}: ${sticker.description}\``);
                 }
             });
             const mergedSticker = stickers;
@@ -90,6 +90,9 @@ if ( fs.existsSync(presentPath) ) {
                 }
             }
 
-            fs.writeFileSync(presentPath, fullStringify(mergedSticker), {encoding: 'utf8'});
+            const rtn = {
+                'default': mergedSticker,
+            };
+            fs.writeFileSync(presentPath, fullStringify(rtn), {encoding: 'utf8'});
         });
 }
