@@ -162,8 +162,8 @@
             const axios = require('axios');
             const config = require(getPath('/config.json'));
             function signSOPIA() {
-                let user = document.querySelector('#id').value;
-                let key = document.querySelector('#key').value;
+                let user = document.querySelector('#id').value.trim();
+                let key = document.querySelector('#key').value.trim();
                 let now = new Date();
                 let expire = new Date();
                 expire.setDate(expire.getDate() + 365);
