@@ -459,5 +459,5 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		}
 	}
 
-	INJECT.complete();
+	INJECTORS.forEach((injector) => injector.complete());
 });

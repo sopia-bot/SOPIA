@@ -576,13 +576,12 @@ const sopiaCreateMessage = (msg) => {
 	sopia.onmessage(obj);
 };
 
-const injectFilePath = getPath('./sopia/inject/index.js');
-window.INJECT = {
-	preload: () => {},
-	loading: () => {},
-	complete: () => {},
-};
-if ( fs.existsSync(injectFilePath) ) {
-	INJECT = require(injectFilePath);
-	INJECT.preload();
+const injectPath = getPath('./sopia/inject/');
+window.INJECTORS = [];
+if ( fs.existsSync(injectPath) ) {
+	const scripts = fs.readdirSync(injectPath);
+	scripts.forEach((scr) => {
+		INJECTORS.push(require(path.join(injectPath, scr)));
+	});
+	INJECTORS.forEach((injector) => injector.preload());
 }
