@@ -2,8 +2,8 @@ const projectId='silken-avatar-268104';
 const keyfile='./sopia-tts.json';
 const { ipcMain, ipcRenderer, remote } = require('electron');
 const { app } = remote;
-const httpReq = require('request');
-const axios = require('axios');
+let httpReq = require('request');
+let axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
@@ -159,7 +159,7 @@ const getApiKey = () => {
         .finally(() => {
             getApiKeyMutex = false;
         });
-}
+};
 getApiKey();
 
 const StrToSpeech = (str, type = "minji") => {

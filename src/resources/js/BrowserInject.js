@@ -4,7 +4,7 @@ function sprintf() {
 	for (let i = 1;i < arguments.length;i++) {
 		let element = arguments[i];
 		format = format.replace(`{${i-1}}`, element);
-	};
+	}
 	return format;
 }
 
@@ -123,7 +123,7 @@ window.searchDataObj = (nodes, key) => {
             if( Array.isArray(n.nodes) ) {
                 let snode = n.nodes;
                 for(j=0;j<snode.length;j++) {
-                    sn = snode[j]
+                    sn = snode[j];
                     if ( Array.isArray(sn.entry) ) {
                         if ( sn.entry.indexOf(key) !== -1 ) {
                             return sn.entry[sn.entry.indexOf(key)+1];
@@ -193,7 +193,7 @@ window.getLiveInfo = (id) => {
 					setTimeout(() => {
 						window.getLiveInfo(id);
 					}, 1000);
-				})
+				});
 		} else {
 			throw new Error('no have live props');
 		}
@@ -211,7 +211,7 @@ function logging(a, b, c) {
 		data: c ? c : b,
 	};
 	console.info(JSON.stringify(rtn));
-};
+}
 
 function setLogging() {
 	if ( console.log === logging ) {
@@ -219,7 +219,7 @@ function setLogging() {
 	}
 	
 	console.log = logging;
-};
+}
 var logIntervalTime = 2;
 var logInterval = setInterval(() => {
 	setLogging();

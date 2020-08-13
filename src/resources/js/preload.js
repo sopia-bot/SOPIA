@@ -24,7 +24,7 @@ process.argv.forEach((arg) => {
 			window.DEBUG_MODE = true;
 		}
 	}
-})
+});
 
 //"yyyymmdd"
 Date.prototype.yyyymmdd = function(flag_) {
@@ -106,7 +106,7 @@ const getPath = (path_, cur = false) => {
 * @param {function} cb
 * 소피아 설정을 config.json에 전체 저장한다.
 */
-const AllSettingSave = (s = sopia.config, cb) => {
+const AllSettingSave = (s = sopia.config, cb = null) => {
 	if ( typeof sopia.debug === "function" ) {
 		sopia.debug(getPath('./config.json'));
 	}
@@ -123,7 +123,7 @@ const AllSettingSave = (s = sopia.config, cb) => {
 
 const file2JSON = (file) => {
 	if ( file ) {
-		return eval(`(function(){ return ${fs.readFileSync(file, {encoding:'utf8'})} })()`)
+		return eval(`(function(){ return ${fs.readFileSync(file, {encoding:'utf8'})} })()`);
 	}
 };
 
@@ -151,14 +151,14 @@ function generateUUID() {
 		retn[2] = 0x10000 | retn[1] & 0xff00 | retn[2] & 0x00ff; // eliminate FFFE from xxxx:xxFF:FExx:xxxx
 		retn[1] = 0x10000 | retn[0] ^ 0x0200; // invert bit#41
 		retn = retn.map(function(v, i, a) {
-			return v.toString(16).slice(1)
+			return v.toString(16).slice(1);
 		});
 		return retn[0] + '-' + retn[1] + retn[2] + retn[3];
 	})(orgRequire('os').networkInterfaces());
 	
 	var head = [5, 6];
 	return head.concat(generateUUID.tail).join('-');
-};
+}
 
 
 // license 인증 확인
@@ -201,7 +201,7 @@ const checkLicenseSOPIA = () => {
 				sopia.error(err);
 			}
 		});
-	};
+	}
 };
 checkLicenseSOPIA();
 //setInterval(checkLicenseSOPIA, 1000 * 60 * 1); // 1분 마다 한 번 라이센스 검사.
@@ -222,7 +222,7 @@ const logging = (str, lang = "javascript") => {
 	p.style = "overflow:hidden; white-space: pre-wrap;";
 	
 	let code = document.createElement('code');
-	code.className = lang
+	code.className = lang;
 	code.innerText = str;
 	
 	hljs.highlightBlock(code);
@@ -502,7 +502,7 @@ const fullStringify = (obj, deep = 1, rtn = "{\n",) => {
 	rtn += '\t'.repeat(deep-1);
 	rtn += '}';
 	return rtn;
-}
+};
 
 const bundleList = {};
 /**
@@ -555,10 +555,10 @@ const loadScript = (callback) => {
 				document.body.appendChild(bscript);
 			});
 		}
-	}
+	};
 
 	document.body.appendChild(script);
-}
+};
 
 
 window.speech = require(getPath('./src/resources/js/speech.js', true));

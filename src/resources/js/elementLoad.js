@@ -35,7 +35,7 @@ window.ContainerPanel = Split(['#ContainerPanel>div[name="panel1"]', '#Container
             //분할자를 가로 3px로 고정시킨다.
             'width': '3px',
             'z-index': '1001'
-        }
+        };
     },
 });
 

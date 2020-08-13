@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 				paths: {
 					'vs': getPath('vs')
 				}
-			})
+			});
 			window.editor = monaco.editor.create(target.querySelector('#codeDiv'), {
 				value: "",
 				language: 'javascript',
@@ -50,10 +50,10 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 							if ( noti ) {
 								noti.success('파일 저장에 성공했습니다.', path.basename(window.code.viewPath));
 							}
-						} catch(err) {
+						} catch(error) {
 							const modal = document.querySelector('#code-modal');
 							if ( modal ) {
-								document.querySelector('#message').innerText = err.toString();
+								document.querySelector('#message').innerText = error.toString();
 								UIkit.modal(modal).show();
 							}
 						}
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 						noti.success('리로딩', '코드가 적용되었습니다.');
 					});
 				} else {
-					noti.success('리로딩', '방송에 입장하면 저장된 코드가 적용됩니다.')
+					noti.success('리로딩', '방송에 입장하면 저장된 코드가 적용됩니다.');
 				}
 			});
 			refreshTree(path.join(window.code.sopiaPath, "main.js"));
@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 				const bundle = data[k];
 				const isUsing = sopia.config.bundle[k] ? true : false;
 				apeendCardItem(k, bundle, isUsing);
-			})
+			});
 		});
 
 		// 번들 리스트 로딩
@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 						const bundle = data[k];
 						const isUsing = sopia.config.bundle[k] ? true : false;
 						apeendCardItem(k, bundle, isUsing);
-					})
+					});
 				}
 			});
 		}

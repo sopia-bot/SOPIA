@@ -88,7 +88,6 @@ navigator.mediaDevices.getUserMedia({ audio: true }).
                     
                     playRecord.classList.remove('uk-text-warning');
                     audio.remove();
-                    delete audio;
                 };
                 
                 playRecord.classList.add('uk-text-warning');
@@ -123,6 +122,6 @@ navigator.mediaDevices.getUserMedia({ audio: true }).
                     ipcRenderer.send('RecordReturnValue', saveFile);
                     window.close();
                 });
-            }
+            };
         });
     });

@@ -65,7 +65,7 @@ sopia.api = {
 
 sopia.tts = speech;
 
-sopia.var = new Object();
+sopia.var = {};
 sopia.storage = {
 	/**
 	 * @function save
@@ -145,7 +145,7 @@ sopia.storage = {
 			if ( key && val !== undefined ) {
 				let o = getObject(obj, key, 1);
 				if ( o === undefined && obj.default ) {
-					let { d, k } = getObject(obj.default, key, 1)
+					let { d, k } = getObject(obj.default, key, 1);
 					d[k] = val;
 				} else {
 					let { d, k } = o;
@@ -184,7 +184,7 @@ sopia.storage = {
 					this.load(key, path.join("./sopia", file));
 				} else {
 					try { 
-						noti.error("["+file+"] 파일이 없습니다.")
+						noti.error("["+file+"] 파일이 없습니다.");
 					} catch (err) {
 						console.error(err);
 					}
@@ -616,7 +616,7 @@ const devMessage = (data, event) => {
 	}
 
 	if ( isDeveloper ) {
-		sopia.debug("developer in", e, event)
+		sopia.debug("developer in", e, event);
 		if ( event === "join" ) {
 			sopia.send(`어서오십시오. 주인님.\n현재 버전은 ${sopia.config.version} 입니다.`);
 			rtn = false;
@@ -676,7 +676,7 @@ const devMessage = (data, event) => {
 		}
 	}
 
-	sopia.debug("================ dev message check finish ================")
+	sopia.debug("================ dev message check finish ================");
 
 	return rtn;
 };
@@ -752,7 +752,7 @@ sopia.onmessage = (e) => {
 					// mute sound
 					setTimeout(() => {
 						webview.executeJavaScript('toggleMute()');
-					}, 100)
+					}, 100);
 				});
 			}
 		} else {
@@ -799,7 +799,7 @@ sopia.onmessage = (e) => {
 		
 		if ( ["join", "leave", "like", "present"].includes(e.event) ) {
 			sopia.debug("is manager event!", e.event);
-			sopia.debug("only manager ", sopia.config.sopia.onlymanager)
+			sopia.debug("only manager ", sopia.config.sopia.onlymanager);
 			if ( sopia.config.sopia.onlymanager === true ) {
 				sopia.debug(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
 				if ( (sopia.live.manager_ids.includes(sopia.me.id) === false &&
@@ -820,12 +820,12 @@ sopia.onmessage = (e) => {
 
 		if ( sopia.isLoading === false ) {
 			sopia.isLoading = true;
-			loadScript(() => {sopia.onmessage(e)});
+			loadScript(() => sopia.onmessage(e));
 		}
 
 		sopia.debug("send event", send_event);
 		if ( send_event === true ) {
-			sopia.debug('event', e.event)
+			sopia.debug('event', e.event);
 			sopia.emit(e.event, data);
 		}
 		sopia.emit('all', e);
@@ -859,6 +859,6 @@ sopia.onmessage = (e) => {
 	} catch ( err ) {
 		sopia.error(err, e);
 	}
-}
+};
 
 module.exports = sopia;
