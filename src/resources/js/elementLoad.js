@@ -78,6 +78,8 @@ let loadingInterval = setInterval(() => {
     }
 }, 1000 * callAppTime);
 
+INJECT.loading();
+
 // 2020. 02. 15 잘 사용하지 않는 제스쳐 사용을 지운다.
 // input range 가 동작하지 않기 때문.
 if ( 0 ) {

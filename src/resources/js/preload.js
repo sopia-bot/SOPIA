@@ -518,14 +518,13 @@ const loadScript = (callback) => {
 	}
 
 	sopia.removeAllListeners();
-	Object.keys(sopia.itv).forEach(key => sopia.itv.reload(key));	
+	Object.keys(sopia.itv).forEach(key => sopia.itv.reload(key));
 
 	script = document.createElement('script');
 	script.id = "sopia-main";
 	script.src = getPath('sopia/main.js');
 	script.type = "text/javascript";
 
-	
 
 	script.onload = () => {
 		if ( typeof callback === "function" ) {
@@ -562,9 +561,9 @@ const loadScript = (callback) => {
 }
 
 
-const speech = require(getPath('./src/resources/js/speech.js', true));
+window.speech = require(getPath('./src/resources/js/speech.js', true));
 //sopia 객체 로딩
-const sopia = require(getPath('./src/resources/js/sopia.js', true));
+window.sopia = require(getPath('./src/resources/js/sopia.js', true));
 
 // 디버그용 함수. 메시지를 발생시킨다.
 const sopiaCreateMessage = (msg) => {
@@ -576,3 +575,14 @@ const sopiaCreateMessage = (msg) => {
 	};
 	sopia.onmessage(obj);
 };
+
+const injectFilePath = getPath('./sopia/inject/index.js');
+window.INJECT = {
+	preload: () => {},
+	loading: () => {},
+	complete: () => {},
+};
+if ( fs.existsSync(injectFilePath) ) {
+	INJECT = require(injectFilePath);
+	INJECT.preload();
+}

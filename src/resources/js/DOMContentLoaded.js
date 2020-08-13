@@ -458,4 +458,6 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			document.title = `SOPIA - ${sopia.config.version}`;
 		}
 	}
+
+	INJECT.complete();
 });
