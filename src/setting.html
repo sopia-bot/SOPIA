@@ -59,6 +59,12 @@
 								<input id="default-url" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="text">
 							</div>
 						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>개발자 도구</div>
+							<div class="uk-text-right">
+								<button class="uk-button uk-button-spoon uk-button-small" onclick="openDeveloperTools()">열기</button>
+							</div>
+						</div>
 					</div>
 				</div>
 				<!-- E:SOPIA Setting -->
@@ -278,6 +284,14 @@
 							sopia.error(li.getAttribute('data-type'));
 					}
 				}
+			};
+
+			/**
+			 * @function openDeveloperTools
+			 * 개발자도구를 연다.
+			 */
+			const openDeveloperTools = (e) => {
+				ipcRenderer.send('openDevTool');
 			};
 		</script>
 	</body>
