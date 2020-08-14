@@ -7,9 +7,9 @@
 
 document.addEventListener('DOMContentLoaded', (evt) => {
 	const config = orgRequire(getPath('/config.json'));
-	
+
 	/*               S: IMPORT               */
-	
+
 	/**
 	* dashboard를 controls에 import 시킨다.
 	* display: block으로 둔다.
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	document.querySelector('#controls').appendImport('#home', (parent, target) => {
 		target.setAttribute('data-target', 'home');
 	});
-	
+
 	/**
 	* code를 controls에 import 시킨다.
 	* 그와 동시에 monaco editor를 세팅한다.
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			refreshTree(path.join(window.code.sopiaPath, "main.js"));
 		});
 	});
-	
+
 	/**
 	 * spoorchat을 controls에 import 시킨다.
 	 * display는 nonde으로 둔다.
@@ -81,27 +81,9 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		target.style.display = "none";
 		target.setAttribute('data-target', 'spoorchat');
 
-		
+
 		Object.entries(speech.voices)
-		.forEach(async ([name, obj]) => {
-			try {
-				if ( !window.DEBUG_MODE ) {
-					const res = await axios({
-						url: `${config['api-url']}/users/${config.license.key}.json`,
-						method: 'get',
-					});
-					gUserInfo = res.data;
-
-					if ( obj.premium && !gUserInfo['is-premium'] ) {
-						return;
-					}
-				}
-			} catch(err) {
-				console.error(err);
-				reject(err);
-				return;
-			}
-
+		.forEach(([name, obj]) => {
 			const divider = document.createElement('li');
 			divider.className = "uk-nav-divider";
 
@@ -173,11 +155,11 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	document.querySelector('#controls').appendImport('#setting', (parent, target) => {
 		target.style.display = "none";
 		target.setAttribute('data-target', 'setting');
-		
-		
-		
+
+
+
 		// 설정 값 로딩
-		
+
 		//SOPIA 설정
 		document.querySelector('#autoManagerStart').checked = sopia.config.sopia.autostart;
 		document.querySelector('#onlymanager').checked = sopia.config.sopia.onlymanager;
@@ -185,7 +167,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 		const webview = window.webview || document.querySelector('#webview');
 		webview.src = sopia.config.sopia['default-url'];
-		
+
 		//자동 로그인 설정
 		document.querySelector('#autoLoginEnable').checked = sopia.config.autologin.enable;
 		document.querySelector('#autoLoginId').value = sopia.config.autologin.id;
@@ -200,7 +182,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	document.querySelector('#controls').appendImport('#bundle', (parent, target) => {
 		target.style.display = "none";
 		target.setAttribute('data-target', 'bundle');
-		
+
 		const apeendCardItem = (name, bundle, isUsing) => {
 			if ( !bundle ) return;
 
@@ -226,8 +208,8 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 				permission.className = "uk-card-badge uk-label uk-label-black";
 				permission.innerText = "관리자";
 			}
-			
-			
+
+
 			const title = document.createElement('h3');
 			title.className = "uk-card-title";
 			title.innerText = bundle.cmd;
@@ -317,7 +299,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 							deps.forEach((d) => {
 								const depPath = `sopia/bundles/${d.name}`;
 								const target = getPath(depPath);
-									
+
 								sopia.debug(target);
 								if ( !fs.existsSync(path.dirname(target)) ) {
 									sopia.debug("no exist target");
@@ -358,7 +340,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 			document.querySelector('#bundleList').appendChild(parentItem);
 		};
-		
+
 		// 번들 리스트 로딩
 
 		const bundleURL = sopia.config['api-url'] + '/bundle.json';
@@ -384,7 +366,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 				method: 'get',
 			}).then((res) => {
 				const data = res.data;
-				
+
 				if ( data ) {
 					const keys = Object.keys(data);
 					keys.forEach(k => {
@@ -396,10 +378,8 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			});
 		}
 	});
-	
-	
 	/*               E: IMPORT               */
-	
+
 	/*               S: MENU CLICK               */
 	document.querySelectorAll('ul.uk-navbar-nav>li>a').forEach(element => {
 		element.addEventListener('click', (evt) => {
@@ -415,7 +395,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 					e.target = e.target.parentNode;
 				}
 			}
-			
+
 			if ( checkAtag ) {
 				document.querySelectorAll('#controls>div').forEach(import_ => {
 					//보일 것은 display: table 로, 아닌 것은 숨긴다.
@@ -434,7 +414,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 							import_.style.display = "none";
 						}
 					}
-					
+
 					//active class 설정
 					document.querySelectorAll('ul.uk-navbar-nav>li>a').forEach(a => {
 						let li = a.parentNode;
