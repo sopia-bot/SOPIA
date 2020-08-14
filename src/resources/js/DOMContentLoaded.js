@@ -229,8 +229,8 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 			const uninstall = (evt) => {
 				if ( bundle.href ) {
-					if ( fs.existsSync(getPath(`sopia/bundles/${name}.js`)) ) {
-						fs.unlinkSync(getPath(`sopia/bundles/${name}.js`));
+					if ( fs.existsSync(getPath(sopia.config.bundle[name])) ) {
+						fs.unlinkSync(getPath(sopia.config.bundle[name]));
 					}
 					useButton.className = "uk-button uk-button-small uk-button-primary";
 					useButton.innerText = "사용";
@@ -265,7 +265,8 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 						method: 'get'
 					}).then(res => {
 						const data = res.data;
-						const bundlePath = `sopia/bundles/${name}.js`;
+
+						const bundlePath = `sopia/${bundle.type || 'bundles'}/${name}.js`;
 						const target = getPath(bundlePath);
 						sopia.debug(target, data);
 						if ( !fs.existsSync(path.dirname(target)) ) {
@@ -273,6 +274,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 							fs.mkdirSync(path.dirname(target));
 						}
 						fs.writeFileSync(target, data, {encoding: 'utf8'});
+
 						useButton.innerText = "삭제";
 						useButton.className = "uk-button uk-button-small uk-button-danger uk-button";
 						useButton.removeEventListener('click', install);
@@ -297,7 +299,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 						const deps = bundle.dep[process.arch];
 						if ( Array.isArray(deps) ) {
 							deps.forEach((d) => {
-								const depPath = `sopia/bundles/${d.name}`;
+								const depPath = `sopia/${bundle.type || 'bundles'}/${d.name}`;
 								const target = getPath(depPath);
 
 								sopia.debug(target);
