@@ -84,7 +84,7 @@ String.prototype.rMatch = function(limit = 100) {
 
 /**
  * @function getPath
- * @param {string} path_ 
+ * @param {string} path_
  * 현재 프로그램이 시작된 경로를 기준으로,
  * @path_ 의 절대 경로를 반환한다.
  * @cur true 면 electron.exe 검사를 안 한다.
@@ -97,6 +97,21 @@ const getPath = (path_, cur = false) => {
 		p = path.dirname(exePath);
 	}
 	return path.join(p, path_);
+};
+
+/**
+ * @function popPath
+ * @param {string} path_
+ * 현재 프로그램이 시작된 경로를 제외하고 반환한다
+ */
+const popPath = (path_) => {
+	let exePath = app.getPath('exe');
+	let exe = path.basename(exePath);
+	let p = app.getAppPath();
+	if ( !exe.match("electron") && cur === false ) {
+		p = path.dirname(exePath);
+	}
+	return path_.replace(p, '').replace(/^file\:\/\//, '');
 };
 
 
@@ -561,6 +576,25 @@ const loadScript = (callback) => {
 };
 
 
+const logDirPath = getPath('./logs');
+if ( !fs.existsSync(logDirPath) ) {
+	fs.mkdirSync(logDirPath);
+}
+
+const now = new Date();
+const logFilePath = path.join(logDirPath, `${now.yyyymmdd()}-${now.hhMMss()}.log`);
+
+fs.writeFileSync(logFilePath, `~~~~~~~~~~~~~~~~~~ Created ${path.basename(logFilePath)} ~~~~~~~~~~~~~~~~~~\r\n`, { encoding: 'utf8' });
+if ( fs.existsSync('now.log') ) {
+	fs.unlinkSync('now.log');
+}
+fs.symlinkSync(logFilePath, 'now.log');
+
+const writeLog = (level, ...args) => {
+	const time = new Date().hhMMss(':');
+	fs.appendFileSync(logFilePath, `[${time}] [${level}] ${args.join(', ')}\r\n`, { encoding: 'utf8' });
+};
+
 window.speech = require(getPath('./src/resources/js/speech.js', true));
 //sopia 객체 로딩
 window.sopia = require(getPath('./src/resources/js/sopia.js', true));
@@ -585,3 +619,9 @@ if ( fs.existsSync(injectPath) ) {
 	});
 	INJECTORS.forEach((injector) => injector.preload());
 }
+
+window.addEventListener('error', (err) => {
+	sopia.wlog('ERROR', `${err.error.message} -> ${popPath(err.filename)}:${err.lineno}`);
+});
+a = {};
+a.b.c;

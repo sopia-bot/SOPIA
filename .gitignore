@@ -5,3 +5,5 @@ release-builds
 *.swp
 media
 test
+logs
+now.log
