@@ -39,7 +39,7 @@ sopia.api = {
 					}
 				});
 			};
-			reqMembers(`https://api.spooncast.net/lives/${liveid}/members/`);
+			reqMembers(`https://kr-api.spooncast.net/lives/${liveid}/members/`);
 		});
 	},
 	blockUser: (id, tidx=0) => {
@@ -52,7 +52,7 @@ sopia.api = {
 							"authorization": sopia.props.authKey
 						},
 						method: 'post',
-						url: `https://api.spooncast.net/lives/${sopia.live.id}/block/`,
+						url: `https://kr-api.spooncast.net/lives/${sopia.live.id}/block/`,
 						data: {
 							block_user_id: id
 						}
@@ -454,6 +454,7 @@ sopia.itv.add('spoorchat', () => {
 		const fs = sopia.modules.fs;
 		const chatData = sopia.tts.stack.shift();
 		sopia.debug("============= Spoor Chat =============");
+		sopia.wlog('INFO', `Run spoor chat (${chatData.message})`);
 		fs.readFile(getPath('/media/SpoorChatNoti.mp3'), { encoding: 'base64' }, (err, data) => {
 			if ( err ) {
 				sopia.error(err);
@@ -567,6 +568,7 @@ sopia.itv.add('spoorchat', () => {
 								sopia.tts.isrun = false;
 								readStack.splice(0, readStack.length);
 								sopia.debug('speech finish');
+								sopia.wlog('SUCCESS', 'Finish spoor chat');
 								sopia.tts.stop = null;
 								document.querySelectorAll('a[name="play-pause"]').forEach((element) => {
 									element.style = "display: none";
@@ -704,9 +706,12 @@ sopia.onmessage = (e) => {
 		if ( !sopia.me || !sopia.me.tag ) {
 			if ( e.event.trim() === "live_join" ) {
 				sopia.me = data.author;
+				sopia.wlog('SUCCESS', `Login success (${sopia.me.id})`);
 				nextTick.push(function(e) {
 					const data = e.data;
 					sopia.me = data.author;
+					
+					sopia.wlog('SUCCESS', `Live join success (${live.id})`);
 
 					if ( sopia.me.tag.toString() !== sopia.config.license.id.toString() ) {
 						// 라이센스 id 와 로그인 한 id가 다르다면,

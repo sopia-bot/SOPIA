@@ -595,9 +595,11 @@ const writeLog = (level, ...args) => {
 	fs.appendFileSync(logFilePath, `[${time}] [${level}] ${args.join(', ')}\r\n`, { encoding: 'utf8' });
 };
 
-window.speech = require(getPath('./src/resources/js/speech.js', true));
 //sopia 객체 로딩
+window.speech = require(getPath('./src/resources/js/speech.js', true));
+writeLog('INFO', 'speech module import done.');
 window.sopia = require(getPath('./src/resources/js/sopia.js', true));
+sopia.wlog('INFO', 'sopia module import done.');
 
 // 디버그용 함수. 메시지를 발생시킨다.
 const sopiaCreateMessage = (msg) => {
@@ -623,5 +625,3 @@ if ( fs.existsSync(injectPath) ) {
 window.addEventListener('error', (err) => {
 	sopia.wlog('ERROR', `${err.error.message} -> ${popPath(err.filename)}:${err.lineno}`);
 });
-a = {};
-a.b.c;

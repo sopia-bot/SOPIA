@@ -440,4 +440,5 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	}
 
 	INJECTORS.forEach((injector) => injector.complete());
+	sopia.wlog('SUCCESS', 'DOMContentLoad complete');
 });

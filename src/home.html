@@ -24,7 +24,16 @@
 				<!-- S:LIVE INFO -->
 				<div class="uk-card uk-card-default spoor-card">
 					<div class="uk-card-header">
-						<h3 class="uk-card-title uk-margin-remove-bottom">라이브 정보</h3>
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">라이브 정보</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<button class="uk-button uk-button-spoon uk-button-small" onclick="openDeveloperTools()">개발자 도구</button>
+								</div>
+							</div>
+						</div>
 					</div>
 					<!-- S:LIVE INFO BODY -->
 					<div class="uk-card-body">
@@ -223,6 +232,14 @@
 						}
 					}
 				}
+			};
+
+			/**
+			 * @function openDeveloperTools
+			 * 개발자도구를 연다.
+			 */
+			const openDeveloperTools = (e) => {
+				ipcRenderer.send('openDevTool');
 			};
 		</script>
 	</body>

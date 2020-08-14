@@ -47,6 +47,7 @@ document.querySelectorAll('webview').forEach((element, idx) => {
             element.isLoaded = false;
         }, 3000);
 
+		sopia.wlog('INFO', 'Webview dom-ready.');
 
         fs.readFile(getPath("src/resources/js/BrowserInject.js", true), {encoding: "utf8"}, (err, data) => {
             if ( err ) {
