@@ -585,10 +585,6 @@ const now = new Date();
 const logFilePath = path.join(logDirPath, `${now.yyyymmdd()}-${now.hhMMss()}.log`);
 
 fs.writeFileSync(logFilePath, `~~~~~~~~~~~~~~~~~~ Created ${path.basename(logFilePath)} ~~~~~~~~~~~~~~~~~~\r\n`, { encoding: 'utf8' });
-if ( fs.existsSync('now.log') ) {
-	fs.unlinkSync('now.log');
-}
-fs.symlinkSync(logFilePath, 'now.log');
 
 const writeLog = (level, ...args) => {
 	const time = new Date().hhMMss(':');
