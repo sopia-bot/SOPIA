@@ -692,7 +692,7 @@ const devMessage = (data, event) => {
  * HOME의 라이브 정보 갱신도 한다.
  */
 const nextTick = [];
-sopia.onmessage = (e) => {
+sopia.onmessage = async (e) => {
 	try {
 		let data = e.data;
 
@@ -704,14 +704,13 @@ sopia.onmessage = (e) => {
 		}
 
 		if ( !sopia.me || !sopia.me.tag ) {
-			if ( e.event.trim() === "live_join" ) {
+			const userInfoStr = await webview.executeJavaScript('sessionStorage.SPOONCAST_userInfo');
+			sopia.me = JSON.parse(userInfoStr);
+			if ( e.event.trim() === "live_join" && data.author ) {
 				sopia.me = data.author;
 				sopia.wlog('SUCCESS', `Login success (${sopia.me.id})`);
 				nextTick.push(function(e) {
 					const data = e.data;
-					sopia.me = data.author;
-					
-					sopia.wlog('SUCCESS', `Live join success (${live.id})`);
 
 					if ( sopia.me.tag.toString() !== sopia.config.license.id.toString() ) {
 						// 라이센스 id 와 로그인 한 id가 다르다면,
@@ -733,6 +732,7 @@ sopia.onmessage = (e) => {
 						tag: live.author.tag,
 						room: live.id
 					};
+					sopia.wlog('SUCCESS', `Live join success (${live.id})`);
 
 					// send join data to firebase server.
 					sopia.debug("================== send join data to firebase server ==================");
