@@ -78,14 +78,14 @@ if ( fs.existsSync(presentPath) ) {
             categories.forEach((category) => {
                 if ( !category.is_used ) return;
 
-                for ( sticker of category.stickers ) {
+                for ( const sticker of category.stickers ) {
                     if ( !sticker.is_used ) continue;
                     stickers[sticker.name] = eval(`e => \`${sticker.title}: ${sticker.description}\``);
                 }
             });
             const mergedSticker = stickers;
-            for( [key, react] of Object.entries(present) ) {
-                if ( react ) {
+            for( const [key, react] of Object.entries(present) ) {
+                if ( typeof react !== 'undefined' ) {
                     mergedSticker[key] = react;
                 }
             }
