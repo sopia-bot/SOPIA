@@ -4,5 +4,8 @@
  *
  * Copyright (c) TreeSome. Licensed under the MIT License.
  */
+import home from './home';
 
-export default {};
+export default {
+	home,
+};
