@@ -5,7 +5,7 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
 <template>
-	<v-main class="indigo lighten-5" style="max-height: 100vh">
+	<v-main class="indigo lighten-5">
 		<v-row v-if="liveList" class="ma-0" align="center">
 			<v-col
 				v-for="(live, idx) in liveList"
@@ -36,7 +36,7 @@
 								></v-img>
 
 							<v-card-text>
-								{{ live.title }}
+								<h3>{{ live.title }}</h3>
 							</v-card-text>
 
 							<v-card-actions>
@@ -46,7 +46,7 @@
 											:src="live.author.profileUrl"></v-img>
 									</v-list-item-avatar>
 
-									<v-list-item-content>
+									<v-list-item-content style="min-width: 80px">
 										<v-list-item-title>{{ live.author.nickname }}</v-list-item-title>
 									</v-list-item-content>
 
@@ -54,7 +54,6 @@
 										align="center"
 										justify="end"
 										>
-										<span class="mr-1">·</span>
 										<v-icon class="mr-1">mdi-account</v-icon>
 										<span class="subheading mr-2">{{ live.memberCount }}</span>
 										<v-icon class="mr-1">mdi-heart</v-icon>
