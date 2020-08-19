@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from './plugins/mixins';
-import SideMenu from './views/SideMenu.vue';
+import SideMenu from './views/SideMenu/Index.vue';
 import { LoginType, User } from 'sopia-core';
 
 declare global {

@@ -1,5 +1,5 @@
 <!--
- * Login.vue
+ * Index.vue
  * Created on Sat Jul 18 2020
  *
  * Copyright (c) TreeSome. Licensed under the MIT License.
@@ -72,7 +72,7 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
-import GlobalMixins from '../plugins/mixins';
+import GlobalMixins from '../../plugins/mixins';
 
 @Component
 export default class Login extends Mixins(GlobalMixins) {
