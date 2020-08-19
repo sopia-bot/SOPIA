@@ -20,7 +20,11 @@
 			"dom",
 			"dom.iterable",
 			"scripthost"
-		]
+		],
+		"paths": {
+			"assets/*": [ "src/assets/*" ],
+			"@/*": [ "src/*" ]
+		}
 	},
 	"include": [
 		"src/**/*.ts",

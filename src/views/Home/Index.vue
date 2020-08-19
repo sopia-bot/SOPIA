@@ -81,7 +81,7 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
-import GlobalMixins from '../../plugins/mixins';
+import GlobalMixins from '@/plugins/mixins';
 import { ApiManager, ApiRequest, Play } from 'sopia-core';
 import InfiniteLoading from 'vue-infinite-loading';
 import { StateChanger } from 'vue-infinite-loading';
@@ -116,22 +116,18 @@ export default class Home extends Mixins(GlobalMixins) {
 				this.liveManager = await this.liveManager.next();
 				this.liveList = this.liveList.concat(this.liveManager.data);
 			}
-
-			if ( this.liveManager.response.next === '' ) {
-				state?.complete();
-			} else {
-				state?.loaded();
-			}
 		} else {
 			this.liveManager = await this.$sopia.liveManager.livePopular();
 			this.liveList = this.liveManager.data;
 		}
 
-		this.asyncMutex = false;
-	}
+		state?.loaded();
 
-	public async mounted() {
-		await this.getNextLiveList();
+		if ( this.liveManager.response.next === '' ) {
+			state?.complete();
+		}
+
+		this.asyncMutex = false;
 	}
 }
 </script>

@@ -54,16 +54,16 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
-import GlobalMixins from '../../plugins/mixins';
+import GlobalMixins from '@/plugins/mixins';
 import { User } from 'sopia-core';
 
 @Component
 export default class SideMenu extends Mixins(GlobalMixins) {
 
-	private user: User = User.deserialize({
+	public user: User = User.deserialize({
 		nickname: 'Not Login',
 		tag: 'Not Login',
-		profileUrl: require('../../assets/default-profile.png'),
+		profile_url: require('assets/default-profile.png'),
 	});
 
 	public mounted() {

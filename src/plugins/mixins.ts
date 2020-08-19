@@ -7,7 +7,7 @@
 
 import Vue from 'vue';
 import { Component, Vue as VueDecorator } from 'vue-property-decorator';
-import Vuetify from '..//plugins/vuetify';
+import Vuetify from '@/plugins/vuetify';
 
 @Component
 export default class Mixin extends VueDecorator {

@@ -72,7 +72,7 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
-import GlobalMixins from '../../plugins/mixins';
+import GlobalMixins from '@/plugins/mixins';
 
 @Component
 export default class Login extends Mixins(GlobalMixins) {

@@ -15,12 +15,12 @@ import { v4 as uuidv4 } from 'uuid';
 const electron = window.require('electron');
 
 // custom modules
-import router from './router';
-import store from './store';
-import vuetify from './plugins/vuetify';
-import Logger from './plugins/logger';
+import router from '@/router';
+import store from '@/store';
+import vuetify from '@/plugins/vuetify';
+import Logger from '@/plugins/logger';
 
-import App from './App.vue';
+import App from '@/App.vue';
 const { remote } = electron;
 const { app } = remote;
 
