@@ -8,7 +8,7 @@
 	<v-hover>
 		<template v-slot="{ hover }">
 			<v-card
-				max-width="300"
+				max-width="320"
 				height="400"
 				flat
 				tile
@@ -18,7 +18,7 @@
 				:elevation="hover ? 24 : 6"
 				>
 				<v-img
-					width="300"
+					width="100%"
 					height="250"
 					aspect-ratio="1.4"
 					class="elevation-0"
