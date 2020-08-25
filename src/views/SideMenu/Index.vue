@@ -27,28 +27,21 @@
 
 			<v-divider></v-divider>
 
-			<v-list
-				nav
-				dense
-				>
-				<v-list-item link>
-					<v-list-item-icon>
-						<v-icon>mdi-folder</v-icon>
-					</v-list-item-icon>
-					<v-list-item-title>My Files</v-list-item-title>
-				</v-list-item>
-				<v-list-item link>
-					<v-list-item-icon>
-						<v-icon>mdi-account-multiple</v-icon>
-					</v-list-item-icon>
-					<v-list-item-title>Shared with me</v-list-item-title>
-				</v-list-item>
-				<v-list-item link>
-					<v-list-item-icon>
-						<v-icon>mdi-star</v-icon>
-					</v-list-item-icon>
-					<v-list-item-title>Starred</v-list-item-title>
-				</v-list-item>
+			<v-list>
+				<v-list-item-group
+					color="indigo darken-1"
+					v-model="$route.path">
+					<v-list-item
+						v-for="route in Routes"
+						:key="route.name"
+						@click="$assign(route.path)"
+						link>
+						<v-list-item-icon>
+							<v-icon>{{ route.icon }}</v-icon>
+						</v-list-item-icon>
+						<v-list-item-title>{{ route.name }}</v-list-item-title>
+					</v-list-item>
+				</v-list-item-group>
 			</v-list>
 		</v-navigation-drawer>
 </template>
@@ -56,9 +49,12 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { User } from 'sopia-core';
+import { routes } from '@/router/';
 
 @Component
 export default class SideMenu extends Mixins(GlobalMixins) {
+
+	public readonly Routes: any = routes;
 
 	public user: User = User.deserialize({
 		nickname: 'Not Login',
@@ -81,5 +77,6 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			}
 		});
 	}
+
 }
 </script>
