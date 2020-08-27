@@ -14,6 +14,14 @@
 		</v-sheet>
 	</v-app>
 </template>
+<style>
+.h-100v {
+	height: 100vh;
+}
+html {
+	overflow-y: auto;
+}
+</style>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';

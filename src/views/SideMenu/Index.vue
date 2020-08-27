@@ -109,7 +109,6 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 				this.user.profileUrl = user.profileUrl;
 			}
 		});
-		console.log(this.CurPath, this.Routes);
 	}
 
 	public isSelectGroup(key: string) {

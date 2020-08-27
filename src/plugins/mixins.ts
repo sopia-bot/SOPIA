@@ -9,6 +9,10 @@ import Vue from 'vue';
 import { Component, Vue as VueDecorator } from 'vue-property-decorator';
 import Vuetify from '@/plugins/vuetify';
 
+import path from 'path';
+const { remote } = window.require('electron');
+const { app } = remote;
+
 @Component
 export default class Mixin extends VueDecorator {
 	public $t(key: string) {
@@ -41,5 +45,9 @@ export default class Mixin extends VueDecorator {
 				router.push({ path: url });
 			}
 		}
+	}
+
+	public $path(type: any, ...args: any) {
+		return path.resolve(app.getPath(type), ...args);
 	}
 }
