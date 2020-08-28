@@ -705,12 +705,22 @@ sopia.onmessage = (e) => {
 
 		if ( !sopia.me || !sopia.me.tag ) {
 			if ( e.event.trim() === "live_join" ) {
-				sopia.me = data.author;
 				sopia.wlog('SUCCESS', `Login success (${sopia.me.id})`);
+
+				// update me
+				webview.executeJavaScript('getProps().userInfo.toJSON()').
+						then((info) => {
+							sopia.me = info;
+						});
 				nextTick.push(function(e) {
 					const data = e.data;
-					sopia.me = data.author;
-					
+
+					// update props
+					webview.executeJavaScript('getProps()')
+					.then(d => {
+						sopia.props = d;
+					});
+
 					sopia.wlog('SUCCESS', `Live join success (${live.id})`);
 
 					if ( sopia.me.tag.toString() !== sopia.config.license.id.toString() ) {
@@ -748,12 +758,6 @@ sopia.onmessage = (e) => {
 					}).catch(err => {
 						sopia.debug("fail!");
 						sopia.error(err);
-					});
-
-					// update props
-					webview.executeJavaScript('getProps()')
-					.then(d => {
-						sopia.props = d;
 					});
 
 					// mute sound
