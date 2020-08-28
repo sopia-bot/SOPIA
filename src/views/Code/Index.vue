@@ -11,24 +11,10 @@
 				<v-row class="ma-0" style="border-bottom: 1px solid #E8EAF6;">
 					<v-col cols="12" align="center">
 						<!-- S:Toolbar -->
-						<v-tooltip
+						<tool-button
 							v-for="btn in buttons"
 							:key="btn.name"
-							bottom>
-							<template v-slot:activator="{ on, attrs }">
-								<v-btn
-									icon
-									color="indigo lighten-1"
-									class="mx-1"
-									v-bind="attrs"
-									v-on="on"
-									@click="btn.func"
-									>
-									<v-icon>{{ btn.icon }}</v-icon>
-								</v-btn>
-							</template>
-							<span>{{ btn.name }}</span>
-						</v-tooltip>
+							:btn="btn"/>
 						<!-- E:Toolbar -->
 					</v-col>
 				</v-row>
@@ -58,17 +44,12 @@ import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import MonacoEditor from 'vue-monaco';
 import TreeView from './TreeView.vue';
+import ToolButton, { ToolButtonInterface } from './ToolButton.vue';
 
 declare global {
 	interface Window {
 		monaco: any;
 	}
-}
-
-interface MenuButton {
-	icon: string;
-	name: string;
-	func: (...args: any) => void;
 }
 
 interface ContextMenu {
@@ -83,6 +64,7 @@ interface ContextMenu {
 	components: {
 		MonacoEditor,
 		TreeView,
+		ToolButton,
 	},
 })
 export default class Code extends Mixins(GlobalMixins) {
@@ -108,7 +90,7 @@ export default class Code extends Mixins(GlobalMixins) {
 		},
 	};
 
-	public buttons: MenuButton[] = [
+	public buttons: ToolButtonInterface[] = [
 		{
 			icon: 'mdi-file-document-multiple',
 			name: this.$t('code.menu.new-file'),
