@@ -22,6 +22,8 @@
 					<!-- S:Folder Tree -->
 					<tree-view
 						v-if="treeRenderer"
+						@contextmenu="openContextmenu"
+						@selected="selectedItem"
 						/>
 					<!-- E:Folder Tree -->
 				</v-row>
@@ -45,6 +47,8 @@ import GlobalMixins from '@/plugins/mixins';
 import MonacoEditor from 'vue-monaco';
 import TreeView from './TreeView.vue';
 import ToolButton, { ToolButtonInterface } from './ToolButton.vue';
+const fs = window.require('fs');
+const path = window.require('path');
 
 declare global {
 	interface Window {
@@ -127,8 +131,97 @@ export default class Code extends Mixins(GlobalMixins) {
 		});
 	}
 
+	public openContextmenu(event: any, node: any) {
+		console.log('openContextmenu', event, node);
+	}
+
+	public getLanguage(ext: string) {
+		switch (ext.toLowerCase()) {
+			case '.ts': return 'typescript';
+			case '.js': return 'javascript';
+			case '.json': return 'json';
+			case '.md': return 'markdown';
+			case '.vue':
+			case '.html':
+				return 'html';
+		}
+		return 'javascript';
+	}
+
 	public save(editor: any) {
-		// empty
+		try {
+			//const ext = path.extname(file);
+			let rtn = { result: true, line: 0 };
+			const ext = '.js';
+			switch ( ext ) {
+				case '.js':
+				{
+					rtn = this.jsSyntax(editor.getValue());
+					break;
+				}
+				case '.json':
+				{
+					rtn = this.jsSyntax(`JSON.parse(\n${editor.getValue()}\n)`);
+					rtn.line -= 1;
+					break;
+				}
+			}
+			if ( !rtn.result ) {
+				this.$modal({
+					title: rtn.msg,
+					content: `At line ${rtn.line}.<br>${rtn.syntax}`,
+				});
+				return;
+			}
+
+			//fs.writeFileSync(this.selectPath, editor.getValue(), {encoding: 'utf8'});
+					/*
+			this.$notify({
+				type: 'primary',
+				message: this.$t('code.noti.save-success'),
+				horizontalAlign: 'right',
+				verticalAlign: 'bottom',
+			});
+			*/
+		} catch(err) {
+			/*
+			this.$notify({
+				type: 'danger',
+				message: err.message,
+				horizontalAlign: 'right',
+				verticalAlign: 'bottom',
+			});
+			*/
+			console.error(err);
+		}
+	}
+
+	public selectedItem(node: any) {
+		if ( node.data.isFolder ) {
+			// folder something to do.
+		} else {
+			const file = node.data.value;
+
+			/*
+			TODO: Manifualting open tab
+			const idx = this.openedTabs.findIndex((tab) => tab.data.value === file);
+			if ( idx === -1 ) {
+				this.openedTabs.push(node);
+			}
+			*/
+			if ( fs.existsSync(file) ) {
+				const data = fs.readFileSync(file, { encoding: 'utf-8' });
+				this.editor.code = data;
+				this.editor.language = this.getLanguage(path.extname(file));
+
+				node.select();
+
+				//localStorage.setItem(`${this.targetFolder}-last-select`, file);
+				this.$emit('selected', node);
+			} else {
+				this.$logger.warn(file, 'not exists');
+			}
+		}
 	}
 
 	public mounted() {
@@ -153,53 +246,5 @@ export default class Code extends Mixins(GlobalMixins) {
 .editor > .monaco-editor > .overflow-guard {
 	margin: 0;
 	width: 100% !important;
-}
-
-.custom .fa-js {
-	color: #ffff59;
-}
-
-.custom .fa-vuejs {
-	color: #41B883;
-}
-
-.custom .fa-markdown {
-	color: #ff7657;
-}
-
-.custom .fa-bullseye {
-	color: #5e72e4;
-}
-
-.custom .tree-arrow.has-child:after {
-	border: 1.5px solid #263238;
-    position: absolute;
-    border-left: 0;
-    border-top: 0;
-    left: 9px;
-    top: 50%;
-    height: 9px;
-    width: 9px;
-    transform: rotate(-45deg) translateY(-50%) translateX(0);
-    transition: transform .25s;
-    transform-origin: center;
-}
-
-.custom .tree-anchor .tree-text {
-	color: #263238;
-}
-.custom .tree-node.selected>.tree-content .tree-text {
-}
-
-.custom .tree-node:not(.selected)>.tree-content:hover {
-	background: #ECEFF1;
-}
-
-.custom .tree-node.selected>.tree-content {
-	background: #CFD8DC;
-}
-
-.custom .tree-arrow {
-	margin-left: 0px;
 }
 </style>

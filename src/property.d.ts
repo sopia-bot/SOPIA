@@ -11,6 +11,7 @@ declare module 'vue/types/vue' {
 	interface Vue {
 		$sopia: spoon.Client;
 		$evt: Vue;
+		$logger: any;
 	}
 }
 

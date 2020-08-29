@@ -15,7 +15,7 @@
 			<span class="tree-text" slot-scope="{ node }">
 				<!-- S:Folder -->
 				<template v-if="node.hasChildren()">
-					<div @contextmenu.stop="itemContextMenu($event, node)">
+					<div @contextmenu.stop="$emit('contextmenu', $event, node)">
 						{{ node.text }}
 					</div>
 				</template>
@@ -23,7 +23,7 @@
 
 				<!-- S:File -->
 				<template v-else>
-					<div @contextmenu.stop="itemContextMenu($event, node)">
+					<div @contextmenu.stop="$emit('contextmenu', $event, node)">
 						<i :class="node.data.icon"></i>
 						{{ node.text }}
 					</div>
@@ -91,59 +91,19 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 	public iconFinder(ext: string) {
 		switch (ext.toLowerCase()) {
-			case '.md': return 'fab fa-markdown';
-			case '.js': return 'fab fa-js';
-			case '.vue': return 'fab fa-vuejs';
-			case '.json': return 'fas fa-bullseye';
-			case '.html': return 'fab fa-html5';
+			case '.md': return 'mdi mdi-language-markdown';
+			case '.js': return 'mdi mdi-language-javascript';
+			case '.ts': return 'mdi mdi-language-typescript';
+			case '.vue': return 'mdi mdi-vuejs';
+			case '.json': return 'mdi mdi-code-json';
+			case '.html': return 'mdi mdi-language-html5';
 		}
-		return 'fa fa-file';
-	}
-
-	public getLanguage(ext: string) {
-		switch (ext.toLowerCase()) {
-			case '.ts': return 'typescript';
-			case '.js': return 'javascript';
-			case '.json': return 'json';
-			case '.md': return 'markdown';
-			case '.vue':
-			case '.html':
-				return 'html';
-		}
-		return 'javascript';
-	}
-
-	public FitemClick(node: any) {
-		if ( node.data.isFolder ) {
-			// folder something to do.
-		} else {
-			const file = node.data.value;
-
-			/*
-			TODO: Manifualting open tab
-			const idx = this.openedTabs.findIndex((tab) => tab.data.value === file);
-			if ( idx === -1 ) {
-				this.openedTabs.push(node);
-			}
-			*/
-			if ( fs.existsSync(file) ) {
-				const data = fs.readFileSync(file, { encoding: 'utf-8' });
-				//this.editor.code = data;
-				//this.editor.language = this.getLanguage(path.extname(file));
-				this.selectPath = file;
-
-				node.select();
-
-				localStorage.setItem(`${this.targetFolder}-last-select`, file);
-			} else {
-				console.warn(file, 'not exists');
-			}
-		}
+		return 'mdi mdi-file-document';
 	}
 
 	public treeReload(cb: (...args: any) => any = () => {/* empty */}) {
-		const treeRef = this.$refs.tree as any;
-		const tree = treeRef.tree;
+		let treeRef = this.$refs.tree as any;
+		let tree = treeRef.tree;
 		this.oriFolderTree = tree.model;
 		this.treeRenderer = false;
 		this.folderTree = this.buildFolderTree(this.$path('userData', this.targetFolder));
@@ -155,7 +115,13 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 				this.$nextTick()
 					.then(() => {
-						treeRef.$on('node:selected', this.FitemClick);
+						treeRef = this.$refs.tree as any;
+						tree = treeRef.tree;
+						treeRef.$on('node:selected', (node: any) => {
+							const file = node.data.value;
+							this.selectPath = file;
+							this.$emit('selected', node);
+						});
 
 						if ( this.selectPath ) {
 							const node = this.searchNode(tree.model, this.selectPath);
@@ -259,3 +225,56 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 }
 </script>
+<style scope>
+.custom .tree-arrow.has-child:after {
+	border: 1.5px solid #263238;
+    position: absolute;
+    border-left: 0;
+    border-top: 0;
+    left: 9px;
+    top: 50%;
+    height: 9px;
+    width: 9px;
+    transform: rotate(-45deg) translateY(-50%) translateX(0);
+    transition: transform .25s;
+    transform-origin: center;
+}
+
+.custom .tree-anchor .tree-text {
+	color: #263238;
+}
+.custom .tree-node.selected>.tree-content .tree-text {
+}
+
+.custom .tree-node:not(.selected)>.tree-content:hover {
+	background: #ECEFF1;
+}
+
+.custom .tree-node.selected>.tree-content {
+	background: #CFD8DC;
+}
+
+.custom .tree-arrow {
+	margin-left: 0px;
+}
+
+.custom .mdi-language-javascript {
+	color: #e8ba00;
+}
+
+.custom .mdi-vuejs {
+	color: #41B883;
+}
+
+.custom .mdi-code-json {
+	color: #a86200;
+}
+
+.custom .mdi-language-typescript {
+	color: #007ACD;
+}
+
+.custom .mdi-language-html5 {
+	color: #E75212;
+}
+</style>
