@@ -704,13 +704,23 @@ sopia.onmessage = async (e) => {
 		}
 
 		if ( !sopia.me || !sopia.me.tag ) {
-			const userInfoStr = await webview.executeJavaScript('sessionStorage.SPOONCAST_userInfo');
-			sopia.me = JSON.parse(userInfoStr);
-			if ( e.event.trim() === "live_join" && data.author ) {
-				sopia.me = data.author;
-				sopia.wlog('SUCCESS', `Login success (${sopia.me.id})`);
+			if ( e.event.trim() === "live_join" || e.event.trim() === 'live_shadowjoin' ) {
+
+				// update me
+				webview.executeJavaScript('getProps().userInfo.toJSON()').
+						then((info) => {
+							sopia.me = info;
+						});
 				nextTick.push(function(e) {
 					const data = e.data;
+
+					// update props
+					webview.executeJavaScript('getProps()')
+					.then(d => {
+						sopia.props = d;
+					});
+
+					sopia.wlog('SUCCESS', `Live join success (${live.id})`);
 
 					if ( sopia.me.tag.toString() !== sopia.config.license.id.toString() ) {
 						// 라이센스 id 와 로그인 한 id가 다르다면,
@@ -748,12 +758,6 @@ sopia.onmessage = async (e) => {
 					}).catch(err => {
 						sopia.debug("fail!");
 						sopia.error(err);
-					});
-
-					// update props
-					webview.executeJavaScript('getProps()')
-					.then(d => {
-						sopia.props = d;
 					});
 
 					// mute sound
