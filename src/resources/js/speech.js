@@ -36,25 +36,8 @@ String.prototype.toB64Str = function() {
 	return "data:audio/mp3;base64," + buf.toString('base64');
 };
 
-const createPapagoData = (text, options) => {
-	const data = {
-		pitch: 0,
-		speaker: "kyuri",
-		speed: 0,
-		text: "",
-	};
-	data.text = text || "";
-	Object.entries(data).forEach(([key, value]) => {
-		data[key] = value;
-	});
-
-    const prepare = Buffer.from('\xaeU\xae\xa1C\x9b,Uzd\xf8\xef', 'binary').toString('base64');
-    const body = `pitch":${data.pitch},"speaker":"${data.speaker}","speed": ${data.speed},"text":"${data.text.replace('"', "")}"}`;
-	return `data=${prepare}${Buffer.from(body, 'utf8').toString('base64')}`;
-};
-
 const voices = {
-    "minji": {
+	"minji": {
 		url: 'https://naveropenapi.apigw.ntruss.com/voice/v1/tts',
 		languageCode: 'ko-KR',
 		name: 'ko-KR-Wavenet-A',
@@ -62,7 +45,7 @@ const voices = {
 		type: 'google',
 		label: "민지",
 	},
-    "minjung": {
+	"minjung": {
 		url: 'https://naveropenapi.apigw.ntruss.com/voice/v1/tts',
 		languageCode: 'ko-KR',
 		name: 'ko-KR-Wavenet-B',
@@ -70,7 +53,7 @@ const voices = {
 		type: 'google',
 		label: "민정",
 	},
-    "minsu": {
+	"minsu": {
 		url: 'https://naveropenapi.apigw.ntruss.com/voice/v1/tts',
 		languageCode: 'ko-KR',
 		name: 'ko-KR-Wavenet-C',
@@ -78,7 +61,7 @@ const voices = {
 		type: 'google',
 		label: "민수",
 	},
-    "minsang": {
+	"minsang": {
 		url: 'https://naveropenapi.apigw.ntruss.com/voice/v1/tts',
 		languageCode: 'ko-KR',
 		name: 'ko-KR-Wavenet-D',
@@ -86,13 +69,29 @@ const voices = {
 		type: 'google',
 		label: "민상",
 	},
-	"kyuri": {
-		url: [
-			'https://papago.naver.com/apis/tts/makeID',
-			'https://papago.naver.com/apis/tts/',
-		],
-		type: 'papago',
-		label: '규리',
+	"spring": {
+		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
+		name: 'WOMAN_READ_CALM',
+		type: 'kakao',
+		label: "봄",
+	},
+	"ryan": {
+		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
+		name: 'MAN_READ_CALM',
+		type: 'kakao',
+		label: "라이언",
+	},
+	"naomi": {
+		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
+		name: 'WOMAN_DIALOG_BRIGHT',
+		type: 'kakao',
+		label: "나오미",
+	},
+	"nick": {
+		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
+		name: 'MAN_DIALOG_BRIGHT',
+		type: 'kakao',
+		label: "닉",
 	},
 };
 
@@ -203,35 +202,43 @@ const StrToSpeech = (str, type = "minji") => {
 				}).catch(reject);
 				break;
 			} // google
-			case "papago": 
+			case 'kakao':
 			{
+				str = str.replace(/[<>&]/g, '');
+				const text = `<speak><voice name="${voice.name}">${str}</voice></speak>`;
 				const options = {
-					url: voice.url[0],
+					url: voice.url,
 					method: 'post',
-					body: createPapagoData(str),
+					body: text,
+					headers: {
+						'Content-Type': 'application/xml',
+						'Authorization': 'KakaoAK 7b2f766e20d285f7bd73069ec520b292',
+					},
 				};
 
-				httpReq(options, (err, res, body) => {
-					const b = JSON.parse(body);
+				const fname = "kakao-tts-" + new Date().getTime() + new Date().getMilliseconds() + '.mp3';
+				const writable = fs.createWriteStream(fname);
 
-
-					const fname = "clova-tts-" + new Date().getTime() + new Date().getMilliseconds() + '.mp3';
-					const writable = fs.createWriteStream(fname);
-					req = httpReq({
-						url: `${voice.url[1]}${b.id}`,
-						method: 'get',
-					}, (err, res, body) => {});
-					req.pipe(writable);
-					writable.on('close', () => {
-						const str = fs.readFileSync(fname);
-						fs.unlinkSync(fname);
-						resolve(str.toB64Str());
+				try {
+					const req = httpReq(options, (err, res, body) => {
+						if ( err ) {
+							reject(err);
+						}
+						//resolve(body.toB64Str())
 					});
+					req.pipe(writable);
+				} catch(err) {
+					console.error(err);
+					reject(err);
+				}
+				writable.on('close', () => {
+					const str = fs.readFileSync(fname);
+					fs.unlinkSync(fname);
+					resolve(str.toB64Str());
 				});
 				break;
-			} // papago
+			} // kakao
 		}
-
 	});
 };
 
