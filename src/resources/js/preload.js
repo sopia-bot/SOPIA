@@ -479,6 +479,17 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
 	return getObject(obj, key, midx, rtn);
 };
 
+const checkObject = (obj) => {
+	if ( typeof obj === 'object' ) {
+		try {
+			JSON.stringify(obj);
+			return true;
+		} catch {
+		}
+	}
+	return false;
+}
+
 /**
  * @function fullStringify
  * @param {Object} obj 문자열화 할 객체
@@ -502,7 +513,7 @@ const fullStringify = (obj, deep = 0) => {
 			rtn += indent + '\t' + fullStringify(val, deep + 1) + `${comma}\n`;
 		}
 		rtn += indent + ']';
-	} else if ( obj && typeof obj === 'object' && Object.keys(obj).length > 0 ) {
+	} else if ( checkObject(obj) ) {
 		rtn += '{\n';
 		const keys = Object.keys(obj);
 		const len = keys.length;
