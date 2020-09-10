@@ -6,6 +6,7 @@
 
 
 document.addEventListener('DOMContentLoaded', (evt) => {
+	loadCustomPage();
 	const config = orgRequire(getPath('/config.json'));
 
 	/*               S: IMPORT               */
@@ -378,7 +379,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	/*               E: IMPORT               */
 
 	/*               S: MENU CLICK               */
-	document.querySelectorAll('ul.uk-navbar-nav>li>a').forEach(element => {
+	document.querySelectorAll('div.uk-navbar-left>ul.uk-navbar-nav>li>a').forEach(element => {
 		element.addEventListener('click', (evt) => {
 			//e.target이 a 태그가 아닐 경우, 그 부모를 탐색하여 a 태그를 찾는다.
 			let checkAtag = true;
@@ -394,36 +395,17 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			}
 
 			if ( checkAtag ) {
-				document.querySelectorAll('#controls>div').forEach(import_ => {
-					//보일 것은 display: table 로, 아닌 것은 숨긴다.
-					if ( import_.getAttribute('data-target') && e.target.getAttribute('value') &&
-					import_.getAttribute('data-target').toLowerCase && e.target.getAttribute('value').toLowerCase ) {
-						if ( import_.getAttribute('data-target').toLowerCase() === e.target.getAttribute('value').toLowerCase() ) {
-							if ( import_.getAttribute('data-target').toLowerCase() === "code" ) {
-								import_.style.overflow = "hidden";
-								document.querySelector('#controls').style.overflow = "hidden";
-							} else {
-								import_.style.overflow = "auto";
-								document.querySelector('#controls').style.overflow = "auto";
-							}
-							import_.style.display = "table";
-						} else {
-							import_.style.display = "none";
-						}
-					}
-
-					//active class 설정
-					document.querySelectorAll('ul.uk-navbar-nav>li>a').forEach(a => {
-						let li = a.parentNode;
-						if ( e.target.getAttribute('value') === a.getAttribute('value') ) {
-							li.classList.add("uk-active");
-						} else {
-							li.classList.remove("uk-active");
-						}
-					});
-				});
+				routingPage(e.target);
 			}
 		});
+	});
+
+	/**
+	* dashboard를 controls에 import 시킨다.
+	* display: block으로 둔다.
+	*/
+	document.querySelector('#controls').appendImport('#other', (parent, target) => {
+		target.setAttribute('data-target', 'other');
 	});
 
 	/*               E: MENU CLICK               */

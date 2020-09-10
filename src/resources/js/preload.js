@@ -15,6 +15,7 @@ const jsonMerger = require('json-merger');
 const http = require('http');
 const https = require('https');
 const rimraf = require('rimraf');
+const Sanilla = require('@sanillajs/sanilla').default;
 
 window.DEBUG_MODE = false;
 process.argv.forEach((arg) => {
@@ -563,6 +564,69 @@ const fullStringify = (obj, deep = 0) => {
 };
 
 const bundleList = {};
+
+const routingPage = (target) => {
+	document.querySelectorAll('#controls>div').forEach(import_ => {
+		//보일 것은 display: table 로, 아닌 것은 숨긴다.
+		if ( import_.getAttribute('data-target') && target.getAttribute('value') &&
+			import_.getAttribute('data-target').toLowerCase && target.getAttribute('value').toLowerCase ) {
+			if ( import_.getAttribute('data-target').toLowerCase() === target.getAttribute('value').toLowerCase() ) {
+				if ( import_.getAttribute('data-target').toLowerCase() === "code" ) {
+					import_.style.overflow = "hidden";
+					document.querySelector('#controls').style.overflow = "hidden";
+				} else {
+					import_.style.overflow = "auto";
+					document.querySelector('#controls').style.overflow = "auto";
+				}
+				import_.style.display = "table";
+			} else {
+				import_.style.display = "none";
+			}
+		}
+
+		//active class 설정
+		document.querySelectorAll('ul.uk-navbar-nav>li>a').forEach(a => {
+			let li = a.parentNode;
+			if ( target.getAttribute('value') === a.getAttribute('value') ) {
+				li.classList.add("uk-active");
+			} else {
+				li.classList.remove("uk-active");
+			}
+		});
+	});
+}
+const loadCustomPage = () => {
+	const drop = document.querySelector('#custom-pages-dropdown');
+	if ( !drop ) {
+		return;
+	}
+	drop.innerHTML = '';
+
+	for ( const [bundle, dir] of Object.entries(sopia.config.bundle) ) {
+		console.log(bundle);
+		const bundlePath = getPath(dir);
+		const target = path.join(bundlePath, 'index.html');
+		if ( !fs.existsSync(target) ) {
+			continue;
+		}
+
+		const html = fs.readFileSync(target, { encoding: 'utf8' });
+
+		const li = document.createElement('li');
+		const a = document.createElement('a');
+		a.href = '#';
+		a.addEventListener('click', (evt) => {
+			Sanilla.mount('#otherTable', html);
+			routingPage(document.querySelector('#other-tab'));
+		});
+		a.innerText = bundle.toUpperCase();
+
+		li.appendChild(a);
+		drop.appendChild(li);
+	}
+
+
+}
 /**
  * @function loadScript
  * @param {function} callback 스크립트가 로딩된 후 실행될 함수
@@ -612,6 +676,8 @@ const loadScript = (callback) => {
 
 				document.body.appendChild(bscript);
 			});
+
+			loadCustomPage();
 		}
 	};
 

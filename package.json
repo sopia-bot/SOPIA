@@ -39,6 +39,7 @@
 	"author": "tree-some",
 	"license": "CC0-1.0",
 	"devDependencies": {
+		"@sanillajs/sanilla": "^1.0.4",
 		"electron": "^5.0.13",
 		"electron-builder": "^21.2.0"
 	},
