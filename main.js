@@ -20,7 +20,7 @@ try {
 	session.webContents.session.clearCache();
 	session.webContents.session.clearStorageData([]);
 	session.webContents.session.flushStorageData();
-	
+
 	session.defaultSession.cookies.get({}, (error, cookies) => {
 		cookies.forEach((cookie) => {
 			let url = '';
@@ -30,7 +30,7 @@ try {
 			// append domain and path
 			url += cookie.domain;
 			url += cookie.path;
-			
+
 			session.defaultSession.cookies.remove(url, cookie.name, (error) => {
 				if (error) console.log(`error removing cookie ${cookie.name}`, error);
 			});
@@ -53,7 +53,7 @@ function recordWindow () {
 			preload: ''
 		},
 	});
-	
+
 	rcWindow.setMenu(null);
 	rcWindow.loadFile('src/recoder.html');
 	rcWindow.on('closed', function (cb, d) {
@@ -90,15 +90,15 @@ function createWindow () {
 	if ( !global.DEBUG_MODE ) {
 		mainWindow.setMenu(null);
 	}
-	
+
 	// and load the index.html of the app.
 	mainWindow.loadFile('src/index.html');
-	
+
 	// Open the DevTools.
 	if ( DEBUG_MODE ) {
 		mainWindow.webContents.openDevTools();
 	}
-	
+
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
 		// Dereference the window object, usually you would store windows
