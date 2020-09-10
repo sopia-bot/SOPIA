@@ -486,7 +486,7 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
  * @description 오브젝트 전체를 문자열화 하여 보여준다.
  * 함수, 그 안에 있는 객체까지도.
  */
-const fullStringify = (obj: any, deep: number = 0) => {
+const fullStringify = (obj, deep = 0) => {
 	let rtn = '';
 	const indent = '\t'.repeat(deep);
 	if ( Array.isArray(obj) ) {
