@@ -135,28 +135,30 @@
 				if ( result.length > 0 ) {
 					const folder = result[0];
 					const old2New = [
-						"/sopia/storages/join.json", 
-						"/sopia/storages/like.json", 
-						"/sopia/storages/messages.json", 
-						"/sopia/storages/permission.json", 
-						"/sopia/storages/present.json", 
-						"/sopia/storages/shadowjoin.json", 
+						"/sopia/storages/admins.json",
+						"/sopia/storages/join.json",
+						"/sopia/storages/like.json",
+						"/sopia/storages/messages.json",
+						"/sopia/storages/permission.json",
+						"/sopia/storages/present.json",
+						"/sopia/storages/shadowjoin.json",
 					];
 					const new2Old = [
 						"/config.json",
 					];
 					const overWrite = [
-						"/sopia/storages/admins.json",
+						"/sopia/main.js",
+						"/sopia/preload.js",
 					];
 
 					try {
 						old2New.forEach(f => {
 							const oldF = path.join(folder, f);
 							const newF = getPath(f);
-							
+
 							const oldJson = file2JSON(oldF);
 							const newJson = file2JSON(newF);
-							
+
 							const result = jsonMerger.mergeObjects([newJson, oldJson]);
 							const resToStr = fullStringify(result);
 							fs.writeFileSync(newF, resToStr, {encoding: 'utf8'});
