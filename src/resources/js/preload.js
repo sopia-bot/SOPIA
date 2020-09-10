@@ -486,36 +486,67 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
  * @description 오브젝트 전체를 문자열화 하여 보여준다.
  * 함수, 그 안에 있는 객체까지도.
  */
-const fullStringify = (obj, deep = 1, rtn = "{\n",) => {
-	let oKeys = Object.keys(obj);
-	oKeys.forEach((k,i) => {
-		rtn += `${'\t'.repeat(deep)}"${k}": `;
-		switch ( typeof obj[k] ) {
-			case "object": {
-				if ( obj[k] === null ) {
-					rtn += "null";
-				} else if ( obj[k] === undefined ) {
-					rtn += "undefined";
-				} else if ( Array.isArray(obj[k]) ) {
-					rtn += JSON.stringify(obj[k]);
-				} else {
-					rtn += fullStringify(obj[k], deep + 1);
-				}
-			} break;
-			case "string": {
-				rtn += `"${obj[k].toString().replace(/\\/, "\\")}"`;
-			} break;
-			default: {
-				rtn += obj[k].toString().replace(/\\/g, '\\');
+const fullStringify = (obj: any, deep: number = 0) => {
+	let rtn = '';
+	const indent = '\t'.repeat(deep);
+	if ( Array.isArray(obj) ) {
+		rtn += '[\n';
+		const len = obj.length;
+		for ( let i=0;i < len; i++ ) {
+			const val = obj[i];
+			let comma = '';
+			if ( i < len - 1 ) {
+				comma = ',';
 			}
+
+			rtn += indent + '\t' + fullStringify(val, deep + 1) + `${comma}\n`;
 		}
-		if ( i < oKeys.length-1 ) {
-			rtn += ',';
+		rtn += indent + ']';
+	} else if ( obj && typeof obj === 'object' && Object.keys(obj).length > 0 ) {
+		rtn += '{\n';
+		const keys = Object.keys(obj);
+		const len = keys.length;
+		for ( let i=0;i < len;i ++ ) {
+			const key = keys[i];
+			const val = obj[key];
+			let comma = '';
+			if ( i < len - 1 ) {
+				comma = ',';
+			}
+
+			rtn += indent + '\t' + `"${key}": ${fullStringify(val, deep + 1)}${comma}\n`;
 		}
-		rtn += "\n";
-	});
-	rtn += '\t'.repeat(deep-1);
-	rtn += '}';
+		rtn += indent + '}';
+	} else {
+		switch ( typeof obj ) {
+			case 'object':
+				if ( obj === null ) {
+					rtn += 'null';
+				} else {
+					rtn += obj.toString();
+				}
+				break;
+			case 'undefined':
+				rtn += 'undefined';
+				break;
+			case 'string':
+				let quotes = '"';
+				if ( obj.match(/^raw:/) ) {
+					obj = obj.replace(/^raw:/, '');
+					quotes = '';
+				} else {
+					obj = obj.replace(/\\/g, '\\\\')
+					.replace(/\n/g, '\\n')
+					.replace(/\t/g, '\\t')
+					.replace(/\r/g, '\\r');
+				}
+				rtn += `${quotes}${obj}${quotes}`;
+				break;
+			default:
+				rtn += obj.toString();
+		}
+	}
+
 	return rtn;
 };
 
