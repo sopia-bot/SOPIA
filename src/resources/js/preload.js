@@ -14,6 +14,7 @@ const orgRequire = require;
 const jsonMerger = require('json-merger');
 const http = require('http');
 const https = require('https');
+const rimraf = require('rimraf');
 
 window.DEBUG_MODE = false;
 process.argv.forEach((arg) => {
@@ -593,7 +594,7 @@ const loadScript = (callback) => {
 			let keys = Object.keys(sopia.config.bundle);
 			keys.forEach((k) => {
 				const bundle = sopia.config.bundle[k];
-				const bundlePath = getPath(bundle);
+				const bundlePath = getPath(path.join(bundle, 'index.js'));
 
 				let bscript = document.querySelector('#' + k);
 				if ( bscript ) {

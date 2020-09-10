@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			const uninstall = (evt) => {
 				if ( bundle.href ) {
 					if ( fs.existsSync(getPath(sopia.config.bundle[name])) ) {
-						fs.unlinkSync(getPath(sopia.config.bundle[name]));
+						rimraf.sync(getPath(sopia.config.bundle[name]));
 					}
 					useButton.className = "uk-button uk-button-small uk-button-primary";
 					useButton.innerText = "사용";
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 				}
 			};
 
-			const install = (evt) => {
+			const install = async (evt) => {
 				if ( bundle.reqVer ) {
 					if ( verCompaire(sopia.config.version, bundle.reqVer) < 0 ) {
 						let msg = '버전 정보가 맞지 않습니다.\n';
@@ -260,59 +260,54 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 				}
 
 				if ( bundle.href ) {
-					axios({
-						url: bundle.href,
-						method: 'get'
-					}).then(res => {
-						const data = res.data;
+					const res = await axios.get(bundle.href);
+					const data = res.data;
 
-						const bundlePath = `sopia/${bundle.type || 'bundles'}/${name}.js`;
-						const target = getPath(bundlePath);
-						sopia.debug(target, data);
-						if ( !fs.existsSync(path.dirname(target)) ) {
-							sopia.debug("no exist target");
-							fs.mkdirSync(path.dirname(target));
+					const bdir = `sopia/${bundle.type || 'bundles'}/${name}`;
+					const bundlePath = getPath(bdir);
+					const bundleDir = path.dirname(bundlePath);
+					if ( !fs.existsSync(bundleDir) ) {
+						fs.mkdirSync(bundleDir);
+					}
+
+					sopia.debug(bundlePath, data);
+					if ( !fs.existsSync(bundlePath) ) {
+						sopia.debug("no exist bundle");
+						fs.mkdirSync(bundlePath);
+					}
+
+					const target = path.join(bundlePath, 'index.js');
+					fs.writeFileSync(target, data, {encoding: 'utf8'});
+
+					useButton.innerText = "삭제";
+					useButton.className = "uk-button uk-button-small uk-button-danger uk-button";
+					useButton.removeEventListener('click', install);
+					useButton.addEventListener('click', uninstall);
+
+					if ( typeof sopia.config.bundle !== "object" ) {
+						sopia.config.bundle = {};
+					}
+
+					sopia.config.bundle[name] = bdir;
+					AllSettingSave(sopia.config, () => {
+						noti.success(name, "번들 추가.");
+						if ( sopia.isLoading ) {
+							loadScript();
 						}
-						fs.writeFileSync(target, data, {encoding: 'utf8'});
-
-						useButton.innerText = "삭제";
-						useButton.className = "uk-button uk-button-small uk-button-danger uk-button";
-						useButton.removeEventListener('click', install);
-						useButton.addEventListener('click', uninstall);
-
-						if ( typeof sopia.config.bundle !== "object" ) {
-							sopia.config.bundle = {};
-						}
-
-						sopia.config.bundle[name] = bundlePath;
-						AllSettingSave(sopia.config, () => {
-							noti.success(name, "번들 추가.");
-							if ( sopia.isLoading ) {
-								loadScript();
-							}
-						});
 					});
-
 
 					// download dependency
 					if ( bundle.dep ) {
 						const deps = bundle.dep[process.arch];
 						if ( Array.isArray(deps) ) {
-							deps.forEach((d) => {
-								const depPath = `sopia/${bundle.type || 'bundles'}/${d.name}`;
-								const target = getPath(depPath);
+							for ( const d of deps ) {
+								const depPath = path.join(bundlePath, d.name);
 
-								sopia.debug(target);
-								if ( !fs.existsSync(path.dirname(target)) ) {
-									sopia.debug("no exist target");
-									fs.mkdirSync(path.dirname(target));
-								}
-
-								const file = fs.createWriteStream(target);
+								const file = fs.createWriteStream(depPath);
 								https.get(d.href, (res) => {
 									res.pipe(file);
 								});
-							});
+							}
 						}
 					}
 				} else {
