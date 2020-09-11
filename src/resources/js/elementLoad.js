@@ -25,9 +25,17 @@ window.addEventListener('resize', () => {
 /**
  * 메인창을 2분할 한다.
  */
+let splitSizes = [50, 50];
+let sp = localStorage.getItem('split');
+if ( sp ) {
+	try {
+		splitSizes = JSON.parse(sp);
+	} catch {
+	}
+}
 window.ContainerPanel = Split(['#ContainerPanel>div[name="panel1"]', '#ContainerPanel>div[name="panel2"]'], {
     //기본적으로 50%를 나눈다.
-    sizes: [50, 50],
+    sizes: splitSizes,
     //webview 쪽의 사이즈는 전부 줄을 수 있게, control view 쪽은 Navbar의 메뉴가 전부 보이도록 설정한다.
     minSize: [400, -50],
     gutterStyle: (dimension, gutterSize) => {
@@ -37,14 +45,10 @@ window.ContainerPanel = Split(['#ContainerPanel>div[name="panel1"]', '#Container
             'z-index': '1001'
         };
     },
-});
-
-/** 
-* 위에서 제스쳐가 끝난 후 마우스 오른쪽 버튼을 떼면,
-* @gesture 에 맞는 동작을 실행한다.
-*/
-document.querySelector('.gutter').addEventListener('mouseout', (e) => {
-	refreshNavSize();
+	onDragEnd: (sizes) => {
+		refreshNavSize();
+		localStorage.setItem('split', JSON.stringify(sizes));
+	},
 });
 
 /**
