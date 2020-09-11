@@ -1,21 +1,26 @@
-////////////////////////////////////////////////////////////////
-//  파일 : preload.js                                         //
-//  작성자 : mobbing                                          //
-//  주석 : DOM이 로드되기 전 처리할 스크립트                    //
+///////////////////////////////////////////////////////////////
+//  파일 : preload.js                                        //
+//  작성자 : mobbing                                         //
+//  주석 : DOM이 로드되기 전 처리할 스크립트                 //
 ///////////////////////////////////////////////////////////////
 
+// Native Package
+const vm = require('vm');
 const path = require('path');
 const fs = require('fs');
-const { app, dialog, process } = require('electron').remote;
-const { clipboard, shell, ipcRenderer } = require('electron');
 const EventEmitter = require('events');
-const axios = require('axios');
-const orgRequire = require;
-const jsonMerger = require('json-merger');
 const http = require('http');
 const https = require('https');
-const rimraf = require('rimraf');
+
+// Download Package
 const Sanilla = require('@sanillajs/sanilla').default;
+const jsonMerger = require('json-merger');
+const rimraf = require('rimraf');
+const axios = require('axios');
+const { app, dialog, process } = require('electron').remote;
+const { clipboard, shell, ipcRenderer } = require('electron');
+
+const orgRequire = require;
 
 window.DEBUG_MODE = false;
 process.argv.forEach((arg) => {
@@ -138,9 +143,10 @@ const AllSettingSave = (s = sopia.config, cb = null) => {
 	});
 };
 
+const fullStr2JSON = (str) => eval(`(function(){ return ${str} })()`);
 const file2JSON = (file) => {
 	if ( file ) {
-		return eval(`(function(){ return ${fs.readFileSync(file, {encoding:'utf8'})} })()`);
+		return eval(fs.readFileSync(file, {encoding:'utf8'}));
 	}
 };
 
@@ -562,6 +568,33 @@ const fullStringify = (obj, deep = 0) => {
 
 	return rtn;
 };
+
+/**
+ * @function jsSyntax
+ * @param {String} 에러 검사할 코드
+ * @description JS 문법을 검사한다.
+ */
+const jsSyntax = (code, fullJSON = false) => {
+	try {
+		if ( fullJSON ) {
+			code = `(function(){\nreturn ${code}\n;})()`;
+		}
+		const v = vm;
+		v.createScript(code);
+		return { result: true };
+	} catch (err) {
+		const sp = err.stack.split('\n');
+		const line = parseInt(sp[0].split(':')[1], 10) - 1;
+		const syntax = `${sp[1].replace(/^return /, '')}\n${sp[2].substr(3)}`;
+		return {
+			result: false,
+			msg: sp[4],
+			syntax,
+			line,
+			stack: err.stack,
+		};
+	}
+}
 
 const bundleList = {};
 

@@ -41,22 +41,28 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			});
 			window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
 				if ( window.code.viewPath ) {
-					fs.writeFile(window.code.viewPath, window.editor.getValue(), {encoding: 'utf8'}, (err) => {
+					const codeVal = window.editor.getValue();
+					const ext = path.extname(window.code.viewPath);
+					const rtn = jsSyntax(codeVal, ext === '.json');
+					if ( !rtn.result ) {
+						const modal = document.querySelector('#code-modal');
+						if ( modal ) {
+							document.querySelector('#err-title').innerText = rtn.msg;
+							document.querySelector('#message').innerHTML =
+								`${rtn.line} 번째 줄에서 에러가 발생했습니다!<br>` +
+								`${rtn.syntax}`;
+							UIkit.modal(modal).show();
+						}
+						return;
+					}
+
+					fs.writeFile(window.code.viewPath, codeVal, {encoding: 'utf8'}, (err) => {
 						if ( err ) {
 							throw err;
 						}
 						window.code.viewCode = window.editor.getValue();
-						try {
-							file2JSON(window.code.viewPath);
-							if ( noti ) {
-								noti.success('파일 저장에 성공했습니다.', path.basename(window.code.viewPath));
-							}
-						} catch(error) {
-							const modal = document.querySelector('#code-modal');
-							if ( modal ) {
-								document.querySelector('#message').innerText = error.toString();
-								UIkit.modal(modal).show();
-							}
+						if ( noti ) {
+							noti.success('파일 저장에 성공했습니다.', path.basename(window.code.viewPath));
 						}
 					});
 				}
