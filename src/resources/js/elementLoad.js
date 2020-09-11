@@ -46,6 +46,15 @@ window.ContainerPanel = Split(['#ContainerPanel>div[name="panel1"]', '#Container
         };
     },
 	onDragEnd: (sizes) => {
+		if ( sizes[0] > 99 ) {
+			sizes = [99, 1];
+			window.ContainerPanel.setSizes(sizes);
+		}
+		if ( sizes[0] < 1 ) {
+			sizes = [1, 99];
+			window.ContainerPanel.setSizes(sizes);
+		}
+
 		refreshNavSize();
 		localStorage.setItem('split', JSON.stringify(sizes));
 	},

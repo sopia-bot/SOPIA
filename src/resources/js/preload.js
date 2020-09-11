@@ -146,7 +146,7 @@ const AllSettingSave = (s = sopia.config, cb = null) => {
 const fullStr2JSON = (str) => eval(`(function(){ return ${str} })()`);
 const file2JSON = (file) => {
 	if ( file ) {
-		return eval(fs.readFileSync(file, {encoding:'utf8'}));
+		return fullStr2JSON(fs.readFileSync(file, {encoding:'utf8'}));
 	}
 };
 
