@@ -1,0 +1,56 @@
+<script src="https://www.youtube.com/iframe_api"></script>
+<div class="uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
+	<div class="uk-width-1-1">
+		<div class="uk-container" style="max-width: 500px;">
+			<div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+				<div class="uk-width-1-1@m uk-text-center">
+					<!-- S:Login Card -->
+					<div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large spoor-card" style="padding: 0px">
+						<div id="player"></div>
+					</div>
+					<button
+						id="next-play"
+						class="uk-icon-button uk-padding-small uk-box-shadow-small uk-margin-small-right spoor-card"
+						style="width: 100px; height: 100px;"
+						uk-tooltip="다음 곡을 재생합니다."
+						uk-icon="icon: chevron-double-right; ratio: 3"></button>
+					<!-- S:Login Card -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	window.player;
+	function onYouTubeIframeAPIReady() {
+		window.player = new YT.Player('player', {
+			height: '400px',
+			width: '99.5%',
+			videoId: 'bvYWrHHWfKY',
+			playerVars: {
+				autoplay: 1,
+				controls: 0,
+				disablekb: 1,
+				iv_load_policy: 3,
+				modestbranding: 1,
+			},
+		});
+
+		YT.search = async (query) => {
+			const res = await axios({
+				url: YT_URL,
+				method: 'get',
+				params: {
+					key: YT_API_KEY,
+					part: 'snippet',
+					q: query,
+					videoEmbeddable: true,
+					type: 'video',
+				},
+			});
+
+			return res && res.data && res.data.items;
+		}
+	}
+</script>
