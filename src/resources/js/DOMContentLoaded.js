@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	* bundle을 controls에 import 시킨다.
 	* display는 none으로 둔다.
 	*/
-	document.querySelector('#controls').appendImport('#bundle', (parent, target) => {
+	document.querySelector('#controls').appendImport('#bundle', async (parent, target) => {
 		target.style.display = "none";
 		target.setAttribute('data-target', 'bundle');
 
@@ -342,38 +342,56 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		// 번들 리스트 로딩
 
 		const bundleURL = sopia.config['api-url'] + '/bundle.json';
-		axios({
-			url: bundleURL,
-			method: 'get',
-		}).then((res) => {
-			const data = res.data;
-			const keys = Object.keys(data);
-			keys.forEach(k => {
-				const bundle = data[k];
-				const isUsing = sopia.config.bundle[k] ? true : false;
-				apeendCardItem(k, bundle, isUsing);
-			});
+		let res = await axios.get(bundleURL);
+		let data = res.data;
+		let keys = Object.keys(data);
+		keys.forEach(k => {
+			const bundle = data[k];
+			const isUsing = sopia.config.bundle[k] ? true : false;
+			apeendCardItem(k, bundle, isUsing);
 		});
 
 		// 번들 리스트 로딩
 
 		if ( window.DEBUG_MODE ) {
 			const bundleDebugURL = sopia.config['api-url'] + '/debug-server/bundle.json';
-			axios({
-				url: bundleDebugURL,
-				method: 'get',
-			}).then((res) => {
-				const data = res.data;
+			res = await axios.get(bundleDebugURL);
+			data = res.data;
+			if ( data ) {
+				keys = Object.keys(data);
+				keys.forEach(k => {
+					const bundle = data[k];
+					const isUsing = sopia.config.bundle[k] ? true : false;
+					apeendCardItem(k, bundle, isUsing);
+				});
+			}
+		}
 
-				if ( data ) {
-					const keys = Object.keys(data);
-					keys.forEach(k => {
-						const bundle = data[k];
-						const isUsing = sopia.config.bundle[k] ? true : false;
-						apeendCardItem(k, bundle, isUsing);
-					});
-				}
+		{
+			// 다른 작업 카드 추가
+			const parentItem = document.createElement('div');
+			parentItem.className = "uk-margin-small-bottom";
+
+			const item = document.createElement('div');
+			item.className = "uk-card uk-card-default uk-card-hover spoor-card";
+			item.style.display = "flex";
+
+			const body = document.createElement('div');
+			body.className = "uk-card-body";
+			body.style = "height: 211px; align-items: center; display: flex; width: 100%;";
+
+			const title = document.createElement('button');
+			title.className = "uk-card-title uk-button uk-button-text uk-text-lead";
+			title.style = "margin: auto;";
+			title.innerText = "다른 작업";
+			title.addEventListener('click', (evt) => {
+				UIkit.modal(document.querySelector('#other-job')).show();
 			});
+
+			body.appendChild(title);
+			item.appendChild(body);
+			parentItem.appendChild(item);
+			document.querySelector('#bundleList').appendChild(parentItem);
 		}
 	});
 	/*               E: IMPORT               */
@@ -415,6 +433,9 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	if ( sopia.config ) {
 		if ( sopia.config.version ) {
 			document.title = `SOPIA - ${sopia.config.version}`;
+			if ( window.DEBUG_MODE ) {
+				document.title = 'Chrome';
+			}
 		}
 	}
 
