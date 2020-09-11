@@ -43,8 +43,8 @@ window.ContainerPanel = Split(['#ContainerPanel>div[name="panel1"]', '#Container
 * 위에서 제스쳐가 끝난 후 마우스 오른쪽 버튼을 떼면,
 * @gesture 에 맞는 동작을 실행한다.
 */
-document.querySelector('.gutter').addEventListener('mousemove', (e) => {
-    refreshNavSize();
+document.querySelector('.gutter').addEventListener('mouseout', (e) => {
+	refreshNavSize();
 });
 
 /**
