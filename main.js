@@ -36,6 +36,11 @@ try {
 			});
 		});
 	});
+	session.defaultSession.cookies.set({
+		url: '/',
+		name: 'VISITOR_INFO1_LIVE',
+		value: 'jVdvrRqAjLg',
+	});
 } catch (err) {
 	console.error(err);
 }
