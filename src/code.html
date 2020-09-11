@@ -264,13 +264,23 @@
 						refreshTree(file);
 					})
 					.catch(d => {
-						
+
 					});
 				} else {
 					noti.error("파일이 선택되지 않았습니다.");
 				}
 			};
 
+			const getLanguage = (ext) => {
+				switch (ext) {
+					case ".htm":
+					case ".ejs":
+					case ".vue":
+					case ".html":
+						return 'html';
+				}
+				return "javascript";
+			}
 
 			/**
 			 * @function createFolderTree
@@ -279,7 +289,7 @@
 			 * readFolder의 결과값인 finfo 기준으로 읽은 폴더 트리 엘리먼트를 생성한다.
 			 * dl 은 현재 깊이를 나타낸다
 			 */
-			
+
 			const createFolderTree = (finfo, dl = 0) => {
 				if ( typeof finfo === "object" ) {
 					let ulElement = document.createElement('ul');
@@ -353,6 +363,8 @@
 							if ( fs.existsSync(f) ) {
 								window.code.viewPath = f;
 								if ( window.editor && window.editor.setValue ) {
+									const model = window.editor.getModel();
+									window.monaco.editor.setModelLanguage(model, getLanguage(path.extname(f)));
 									window.editor.setValue(fs.readFileSync(f, {encoding:"utf8"}));
 								} else {
 									setTimeout(() => {
@@ -369,7 +381,7 @@
 					return ulElement;
 				}
 			};
-			
+
 			const loadingTree = (path) => {
 				//폴더를 읽어서 트리를 생성한다.
 				let target = "#treeDiv";
