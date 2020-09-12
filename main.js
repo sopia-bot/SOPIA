@@ -67,8 +67,11 @@ function createWindow () {
 		mainWindow.setMenu(null);
 	}
 
+	mainWindow.webContents.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.105.22 Safari/537.36');
 	// and load the index.html of the app.
-	mainWindow.loadFile('src/index.html');
+	mainWindow.loadFile('src/index.html', {
+		userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.105.22 Safari/537.36',
+	});
 
 	// Open the DevTools.
 	if ( DEBUG_MODE ) {
@@ -91,6 +94,10 @@ function createWindow () {
 					session.defaultSession.cookies.remove(url, cookie.name, (error) => {
 						if (error) console.log(`error removing cookie ${cookie.name}`, error);
 					});
+				});
+				session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+					details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.105.22 Safari/537.36';
+					callback({ cancel: false, requestHeaders: details.requestHeaders });
 				});
 			});
 			session.defaultSession.cookies.set({
