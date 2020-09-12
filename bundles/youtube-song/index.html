@@ -23,17 +23,58 @@
 
 <script>
 	window.player;
+	
+	window.YT_API_KEY='AIzaSyDivm3vdNwk6uPo6lYWLaam9rnp9aYPrDQ';
+	window.YT_URL='https://www.googleapis.com/youtube/v3/search';
+
+	sopia.songTimeout = 0;
+	function playNextSong() {
+		// play next song
+		clearTimeout(sopia.songTimeout);
+		sopia.songTimeout = 0;
+		const song = sopia.playQueue.shift();
+		if ( song ) {
+			player.loadVideoById(song.id, 1, 'default');
+			sopia.send(`[${song.title}] 을 재생합니다.`);
+		} else {
+			sopia.send('재생할 곡이 없습니다.');
+		}
+	}
+
 	function onYouTubeIframeAPIReady() {
 		window.player = new YT.Player('player', {
 			height: '400px',
 			width: '99.5%',
-			videoId: 'bvYWrHHWfKY',
+			videoId: '',
 			playerVars: {
 				autoplay: 1,
 				controls: 0,
 				disablekb: 1,
 				iv_load_policy: 3,
 				modestbranding: 1,
+				mute: 0,
+			},
+			events: {
+				'onStateChange': function (event) {
+					console.log('onStateChange', event.data);
+					if ( event.data === YT.PlayerState.ENDED ) {
+						playNextSong();
+					} else if ( event.data === -1 ) {
+						const timeout = 5;
+						if ( sopia.songTimeout !== 0 ) {
+							clearTimeout(sopia.songTimeout);
+						}
+						sopia.songTimeout = setTimeout(() => {
+							if ( player.getPlayerState() !== YT.PlayerState.PLAYING ) {
+								sopia.send(`${timeout}초 동안 곡이 재생되지 않았으므로 다음 곡을 재생합니다.`);
+								playNextSong();
+							}
+						}, 1000 * timeout);
+					}
+				},
+				'onError': function (event) {
+					console.error(event);
+				}
 			},
 		});
 
@@ -46,11 +87,15 @@
 					part: 'snippet',
 					q: query,
 					videoEmbeddable: true,
+					videoSyndicated: true,
 					type: 'video',
+					maxResults: 3,
 				},
 			});
 
 			return res && res.data && res.data.items;
 		}
 	}
+
+	document.querySelector('#next-play').addEventListener('click', playNextSong);
 </script>
