@@ -15,36 +15,6 @@ process.argv.forEach((arg) => {
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-try {
-	session.defaultSession.cookies.flushStore();
-	session.webContents.session.clearCache();
-	session.webContents.session.clearStorageData([]);
-	session.webContents.session.flushStorageData();
-
-	session.defaultSession.cookies.get({}, (error, cookies) => {
-		cookies.forEach((cookie) => {
-			let url = '';
-			// get prefix, like https://www.
-			url += cookie.secure ? 'https://' : 'http://';
-			url += cookie.domain.charAt(0) === '.' ? 'www' : '';
-			// append domain and path
-			url += cookie.domain;
-			url += cookie.path;
-
-			session.defaultSession.cookies.remove(url, cookie.name, (error) => {
-				if (error) console.log(`error removing cookie ${cookie.name}`, error);
-			});
-		});
-	});
-	session.defaultSession.cookies.set({
-		url: '/',
-		name: 'VISITOR_INFO1_LIVE',
-		value: 'jVdvrRqAjLg',
-	});
-} catch (err) {
-	console.error(err);
-}
-
 
 function recordWindow () {
 	rcWindow = new BrowserWindow({
@@ -86,6 +56,7 @@ function createWindow () {
 			nodeIntegration: true,
 			preload: ''
 		},
+		show: false,
 	});
 
 	ipcMain.on('openDevTool', () => {
@@ -104,6 +75,35 @@ function createWindow () {
 		mainWindow.webContents.openDevTools();
 	}
 
+	mainWindow.on('ready-to-show', () => {
+		try {
+			session.defaultSession.cookies.flushStore();
+			session.defaultSession.cookies.get({}, (error, cookies) => {
+				cookies.forEach((cookie) => {
+					let url = '';
+					// get prefix, like https://www.
+					url += cookie.secure ? 'https://' : 'http://';
+					url += cookie.domain.charAt(0) === '.' ? 'www' : '';
+					// append domain and path
+					url += cookie.domain;
+					url += cookie.path;
+	
+					session.defaultSession.cookies.remove(url, cookie.name, (error) => {
+						if (error) console.log(`error removing cookie ${cookie.name}`, error);
+					});
+				});
+			});
+			session.defaultSession.cookies.set({
+				url: 'https://youtube.com',
+				name: 'VISITOR_INFO1_LIVE',
+				value: 'jVdvrRqAjLg',
+			});
+		} catch (err) {
+			console.error(err);
+		}
+		mainWindow.show();
+	});
+
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
 		// Dereference the window object, usually you would store windows
@@ -116,7 +116,9 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+	createWindow();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
