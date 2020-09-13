@@ -128,18 +128,22 @@ const popPath = (path_) => {
 * @param {function} cb
 * 소피아 설정을 config.json에 전체 저장한다.
 */
-const AllSettingSave = (s = sopia.config, cb = null) => {
+const AllSettingSave = (s = sopia.config, cb = null, mute = false) => {
 	if ( typeof sopia.debug === "function" ) {
 		sopia.debug(getPath('./config.json'));
 	}
 	fs.writeFile(getPath("./config.json"), JSON.stringify(s, null, '\t'), {encoding:'utf8'}, (err) => {
 		if ( err ) {
-			noti.error(err);
+			if ( !mute ) {
+				noti.error(err);
+			}
 		}
 		if ( typeof cb === "function" ) {
 			cb();
 		}
-		noti.success("성공", "설정을 저장했습니다.");
+		if ( !mute ) {
+			noti.success("성공", "설정을 저장했습니다.");
+		}
 	});
 };
 
@@ -393,6 +397,16 @@ const verCompaire = (ver1, ver2) => {
 	}
 };
 
+const ToNumber = (num) => {
+	switch ( typeof num ) {
+		case 'number': return num;
+		case 'boolean': return num ? 1 : 0;
+		case 'string': return parseInt(num, 10) || 0;
+		case 'function': return ToNumber(num()) || 0;
+	}
+	return 0;
+};
+
 const alertModal = (title, message) => {
 	const alert = document.querySelector('#alert-modal');
 	if ( alert ) {
@@ -440,7 +454,7 @@ HTMLElement.prototype.appendImport = function(target, query, cb) {
 	}
 	
 	let child = null;
-	if ( t.import instanceof Document ) {
+	if ( t.rel === 'import' ) {
 		child = t.import.querySelector(query);
 		if ( child ) {
 			//child = child.cloneNode(true);

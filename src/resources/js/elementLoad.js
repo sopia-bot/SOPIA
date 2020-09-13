@@ -19,6 +19,13 @@ window.addEventListener('resize', () => {
     } else {
     }
     refreshNavSize();
+
+    if ( !sopia.config.size ) {
+        sopia.config.size = {};
+    }
+    sopia.config.size.width = window.outerWidth;
+    sopia.config.size.height = window.outerHeight;
+    AllSettingSave(sopia.config, null, true);
 });
 
 
