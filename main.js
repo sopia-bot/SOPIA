@@ -11,6 +11,25 @@ process.argv.forEach((arg) => {
 	}
 });
 
+/**
+ * @function getPath
+ * @param {string} path_
+ * 현재 프로그램이 시작된 경로를 기준으로,
+ * @path_ 의 절대 경로를 반환한다.
+ * @cur true 면 electron.exe 검사를 안 한다.
+ */
+const getPath = (path_, cur = false) => {
+	let exePath = app.getPath('exe');
+	let exe = path.basename(exePath);
+	let p = app.getAppPath();
+	if ( !exe.match("electron") && cur === false ) {
+		p = path.dirname(exePath);
+	}
+	return path.join(p, path_);
+};
+
+const config = require(getPath('config.json'));
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -45,10 +64,18 @@ ipcMain.on('openRecordWindow', (event) => {
 
 
 function createWindow () {
+	// Load before window size
+	let width = 1280;
+	let height = 720;
+	if ( typeof config.size === 'object' ) {
+		width = config.size.width;
+		height = config.size.height;
+	}
+
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
-		width: 1280,
-		height: 720,
+		width,
+		height,
 		minWidth: 500,
 		minHeight: 400,
 		webPreferences: {
