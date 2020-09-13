@@ -132,7 +132,7 @@
 					properties: ['openDirectory'],
 					title: '설정 값 불러오기',
 				});
-				if ( result.length > 0 ) {
+				if ( result && result.length > 0 ) {
 					const folder = result[0];
 					const old2New = [
 						"/sopia/storages/admins.json",
@@ -188,7 +188,11 @@
 							const oldF = path.join(folder, f);
 							const newF = getPath(f);
 
-							fs.copyFileSync(oldF, newF, fs.constants.COPYFILE_FICLONE_FORCE);
+							if ( fs.existsSync(newF) ) {
+								fs.unlinkSync(newF);
+							}
+							fs.createReadStream(oldF)
+								.pipe(fs.createWriteStream(newF));
 						});
 					} catch (err) {
 						sopia.error(err);
@@ -196,21 +200,29 @@
 
 					try {
 						//bundle copy
-						const bundles = Object.keys(sopia.config.bundle);
+						const config = sopia.require(path.join(folder, 'config.json'));
+						const bundles = Object.keys(config.bundle);
 						bundles.forEach((b) => {
-							const k = sopia.config.bundle[b];
+							const k = config.bundle[b];
 							const oldF = path.join(folder, k);
-							const newF = getPath(f);
+							const newF = getPath(k);
 
-							fs.copyFileSync(oldF, newF, fs.constants.COPYFILE_FICLONE_FORCE);
+							if ( fs.existsSync(newF) ) {
+								fs.unlinkSync(newF);
+							}
+							fs.createReadStream(oldF)
+								.pipe(fs.createWriteStream(newF));
+								
+							sopia.config.bundle[b] = k;
 						});
+						AllSettingSave();
 					} catch(err) {
 						sopia.error(err);
 					}
 
 					noti.success('설정', '불러오기 성공');
-					app.relaunch();
-					app.exit();
+					//app.relaunch();
+					//app.exit();
 				}
 			};
 
