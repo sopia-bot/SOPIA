@@ -10,6 +10,10 @@ sopia.playReQ = {};
 
 sopia.on('message', async (e) => {
 	if ( e.isCmd || isCmd(e) ) {
+		// 다음 줄을 지우면 모든 청취자가 명령어를 사용할 수 있습니다.
+		console.log('on event', e);
+		if ( !isAdmin(e.author) ) return;
+		console.log('admin', e.author);
 		
 		const cmd = e.message.trim();
 		if ( e.cmd === "신청곡" ) {
@@ -48,9 +52,13 @@ sopia.on('message', async (e) => {
 			sopia.send(`[${song.title}](이)가 신청곡 리스트에 추가되었습니다.`);
 			delete sopia.playReQ[e.author.tag];
 
-			const videoData = player.getVideoData();
-			if ( player.getPlayerState() <= 0 || (videoData.author === '' && videoData.title === '') ) {
+			if ( !player.getVideoData ) {
 				playNextSong();
+			} else {
+				const videoData = player.getVideoData();
+				if ( player.getPlayerState() <= 0 || (videoData.author === '' && videoData.title === '') ) {
+					playNextSong();
+				}
 			}
 		} else if ( e.cmd === "재생목록" ) {
 			if ( sopia.playQueue.length === 0 ) {
