@@ -80,25 +80,27 @@ function createWindow () {
 
 	mainWindow.on('ready-to-show', () => {
 		try {
-			session.defaultSession.cookies.flushStore();
-			session.defaultSession.cookies.get({}, (error, cookies) => {
-				cookies.forEach((cookie) => {
-					let url = '';
-					// get prefix, like https://www.
-					url += cookie.secure ? 'https://' : 'http://';
-					url += cookie.domain.charAt(0) === '.' ? 'www' : '';
-					// append domain and path
-					url += cookie.domain;
-					url += cookie.path;
-	
-					session.defaultSession.cookies.remove(url, cookie.name, (error) => {
-						if (error) console.log(`error removing cookie ${cookie.name}`, error);
+			if ( DEBUG_MODE ) {
+				session.defaultSession.cookies.flushStore();
+				session.defaultSession.cookies.get({}, (error, cookies) => {
+					cookies.forEach((cookie) => {
+						let url = '';
+						// get prefix, like https://www.
+						url += cookie.secure ? 'https://' : 'http://';
+						url += cookie.domain.charAt(0) === '.' ? 'www' : '';
+						// append domain and path
+						url += cookie.domain;
+						url += cookie.path;
+		
+						session.defaultSession.cookies.remove(url, cookie.name, (error) => {
+							if (error) console.log(`error removing cookie ${cookie.name}`, error);
+						});
 					});
 				});
-				session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-					details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.105.22 Safari/537.36';
-					callback({ cancel: false, requestHeaders: details.requestHeaders });
-				});
+			}
+			session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+				details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.105.22 Safari/537.36';
+				callback({ cancel: false, requestHeaders: details.requestHeaders });
 			});
 			session.defaultSession.cookies.set({
 				url: 'https://youtube.com',
