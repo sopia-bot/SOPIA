@@ -93,6 +93,7 @@ export default class Mixin extends VueDecorator {
 	public $modal(options: any = {}) {
 		const defaultOptions: any = {
 			open: true,
+			type: 'none',
 			title: 'Modal Title',
 			content: 'Modal Content',
 			textOk: 'Ok',

@@ -226,6 +226,7 @@ export default class Code extends Mixins(GlobalMixins) {
 			}
 			if ( !rtn.result ) {
 				this.$modal({
+					type: 'error',
 					title: rtn.msg,
 					content: `At line ${rtn.line}.<br>${rtn.syntax}`,
 				});
@@ -236,6 +237,7 @@ export default class Code extends Mixins(GlobalMixins) {
 			openedFile.oriContents = openedFile.contents;
 
 			this.$modal({
+				type: 'success',
 				title: this.$t('msg.alert'),
 				content: this.$t('code.msg.save-success'),
 			});

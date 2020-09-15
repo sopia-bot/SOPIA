@@ -14,7 +14,12 @@
 			<v-card-text class="pt-8 py-6">
 				<v-row class="ma-0" align="center">
 					<v-col cols="12" align="center">
-						<h1 class="mb-8">{{ title }}</h1>
+						<h1 class="mb-8 d-flex">
+							<span class="mx-auto d-flex" style="align-items: center">
+								<v-icon :style="{ color: colors[type] }" class="mr-2" large>{{ icons[type] }}</v-icon>
+								{{ title }}
+							</span>
+						</h1>
 						<span class="subtitle-1" v-html="content"></span>
 					</v-col>
 				</v-row>
@@ -39,6 +44,10 @@
 export default {
 	name: 'Modal',
 	props: {
+		type: {
+			type: String,
+			default: 'none',
+		},
 		open: {
 			type: Boolean,
 			default: false,
@@ -55,6 +64,24 @@ export default {
 			type: String,
 			default: 'Ok',
 		},
+	},
+	data() {
+		return {
+			icons: {
+				info: 'mdi-information',
+				warning: 'mdi-alert',
+				error: 'mdi-close-circle',
+				success: 'mdi-checkbox-marked-circle-outline',
+				none: '',
+			},
+			colors: {
+				info: '#81D4FA',
+				warning: '#FFB74D',
+				error: '#E53935',
+				success: '#43A047',
+				none: '',
+			},
+		};
 	},
 };
 </script>
