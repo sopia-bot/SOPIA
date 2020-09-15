@@ -161,7 +161,7 @@ export default class Code extends Mixins(GlobalMixins) {
 			},
 		},
 	];
-	
+
 	public closeTab() {
 		//TODO: confirm
 
@@ -266,7 +266,7 @@ export default class Code extends Mixins(GlobalMixins) {
 		} else {
 			const file = node.data.value;
 
-			
+
 			const idx = this.openFiles.findIndex((opened) => opened.name === node.data.text);
 
 			if ( idx >= 0 ) {
@@ -289,8 +289,9 @@ export default class Code extends Mixins(GlobalMixins) {
 						name: node.data.text,
 						fullPath: node.data.value,
 						contents: data,
+						oriContents: data,
 						isEdit: false,
-						node: node,
+						node,
 					});
 					this.selectedFile = this.openFiles.length - 1;
 				} else {
