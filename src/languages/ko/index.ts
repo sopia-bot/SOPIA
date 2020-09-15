@@ -10,4 +10,8 @@ import code from './code';
 export default {
 	home,
 	code,
+	// common
+	msg: {
+		alert: '알림',
+	},
 };

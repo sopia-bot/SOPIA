@@ -29,12 +29,37 @@
 				</v-row>
 			</v-col>
 			<v-col cols="12" sm="8" md="9" lg="10" class="pa-0">
+				<v-tabs
+					v-model="selectedFile"
+	 				background-color="indigo lighten-1"
+					show-arrows
+					color="white" dark>
+					<v-tab
+						v-for="(opened, idx) in openFiles"
+	  					@click="selectedItem(opened.node, true)"
+						style="text-transform: unset;"
+	  					class="pr-2"
+						:key="opened.name + idx">
+						<v-icon small v-if="opened.isEdit" class="mr-2">
+							mdi-source-commit-start-next-local
+						</v-icon>
+						{{ opened.name }}
+						<v-btn
+							icon small
+		  					@click.stop="closeTab"
+							class="ml-2 mr-0"
+							color="white">
+							<v-icon>mdi-close</v-icon>
+						</v-btn>
+					</v-tab>
+				</v-tabs>
 				<monaco-editor
 					ref="code-editor"
 					class="editor"
 					v-model="editor.code"
 					:language="editor.language"
 					@editorDidMount="editorDidMount"
+	 				@change="editorChange"
 					:theme="editor.theme"
 					:options="editor.options"/>
 			</v-col>
@@ -64,6 +89,15 @@ interface ContextMenu {
 	rename: any;
 }
 
+interface TabFile {
+	name: string;
+	fullPath: string;
+	contents: string;
+	oriContents: string;
+	isEdit: boolean;
+	node: any;
+}
+
 @Component({
 	components: {
 		MonacoEditor,
@@ -79,7 +113,10 @@ export default class Code extends Mixins(GlobalMixins) {
 		language: 'javascript',
 		code: '',
 		theme: 'vs',
+		changed: false,
 	};
+	public openFiles: TabFile[] = [];
+	public selectedFile: number = -1;
 
 	public treeRenderer: boolean = true;
 
@@ -124,11 +161,35 @@ export default class Code extends Mixins(GlobalMixins) {
 			},
 		},
 	];
+	
+	public closeTab() {
+		//TODO: confirm
+
+		this.openFiles.splice(this.selectedFile, 1);
+		this.$nextTick()
+			.then(() => {
+				this.selectedFile = this.openFiles.length - 1;
+				this.selectedItem(this.openFiles[this.selectedFile].node);
+			});
+	}
 
 	public editorDidMount(editor: any) {
+		// save
 		editor.addCommand(window.monaco.KeyMod.CtrlCmd | window.monaco.KeyCode.KEY_S, () => {
 			this.save(editor);
 		});
+
+		// close
+		editor.addCommand(window.monaco.KeyMod.CtrlCmd | window.monaco.KeyCode.KEY_W, () => {
+			this.closeTab();
+		});
+	}
+
+	public editorChange(value: string, editor: any) {
+		const openedFile = this.openFiles[this.selectedFile];
+		openedFile.contents = value;
+
+		openedFile.isEdit = openedFile.contents !== openedFile.oriContents;
 	}
 
 	public openContextmenu(event: any, node: any) {
@@ -150,15 +211,16 @@ export default class Code extends Mixins(GlobalMixins) {
 
 	public save(editor: any) {
 		try {
-			//const ext = path.extname(file);
+			const openedFile = this.openFiles[this.selectedFile];
+			const ext = path.extname(openedFile.name);
 			let rtn: any = { result: true, line: 0 };
-			const ext: string = '.js';
+
 			switch ( ext ) {
 				case '.js':
-					rtn = this.jsSyntax(editor.getValue());
+					rtn = this.jsSyntax(openedFile.contents);
 					break;
 				case '.json':
-					rtn = this.jsSyntax(`JSON.parse(\n${editor.getValue()}\n)`);
+					rtn = this.jsSyntax(`JSON.parse(\n${openedFile.contents}\n)`);
 					rtn.line -= 1;
 					break;
 			}
@@ -170,7 +232,13 @@ export default class Code extends Mixins(GlobalMixins) {
 				return;
 			}
 
-			//fs.writeFileSync(this.selectPath, editor.getValue(), {encoding: 'utf8'});
+			fs.writeFileSync(openedFile.fullPath, openedFile.contents, {encoding: 'utf8'});
+			openedFile.oriContents = openedFile.contents;
+
+			this.$modal({
+				title: this.$t('msg.alert'),
+				content: this.$t('code.msg.save-success'),
+			});
 					/*
 			this.$notify({
 				type: 'primary',
@@ -198,21 +266,37 @@ export default class Code extends Mixins(GlobalMixins) {
 		} else {
 			const file = node.data.value;
 
-			/*
-			TODO: Manifualting open tab
-			const idx = this.openedTabs.findIndex((tab) => tab.data.value === file);
-			if ( idx === -1 ) {
-				this.openedTabs.push(node);
-			}
-			*/
-			if ( fs.existsSync(file) ) {
+			
+			const idx = this.openFiles.findIndex((opened) => opened.name === node.data.text);
+
+			if ( idx >= 0 ) {
+				const openFile = this.openFiles[idx];
+				this.editor.code = openFile.contents;
+				this.editor.language = this.getLanguage(path.extname(openFile.name));
+
+				node.select();
+				this.selectedFile = idx;
+				this.$emit('selected', node);
+			} else if ( fs.existsSync(file) ) {
 				const data = fs.readFileSync(file, { encoding: 'utf-8' });
 				this.editor.code = data;
 				this.editor.language = this.getLanguage(path.extname(file));
 
 				node.select();
 
-				//localStorage.setItem(`${this.targetFolder}-last-select`, file);
+				if ( idx === -1 ) {
+					this.openFiles.push({
+						name: node.data.text,
+						fullPath: node.data.value,
+						contents: data,
+						isEdit: false,
+						node: node,
+					});
+					this.selectedFile = this.openFiles.length - 1;
+				} else {
+					this.selectedFile = idx;
+				}
+
 				this.$emit('selected', node);
 			} else {
 				this.$logger.warn(file, 'not exists');

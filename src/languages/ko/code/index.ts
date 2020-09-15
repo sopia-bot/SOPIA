@@ -12,4 +12,7 @@ export default {
 		'rename': '이름 변경',
 		'unlink': '제거',
 	},
+	msg: {
+		'save-success': '저장에 성공했습니다.',
+	},
 };
