@@ -11,6 +11,7 @@ import Vuetify from '@/plugins/vuetify';
 
 import Modal from '@/views/Components/Modal.vue';
 import Confirm from '@/views/Components/Confirm.vue';
+import Notification from '@/views/Components/Notification.vue';
 
 const path = window.require('path');
 const fs = window.require('fs');
@@ -89,6 +90,30 @@ export default class Mixin extends VueDecorator {
 				stack: err.stack,
 			};
 		}
+	}
+
+	public $noti(options: any = {}) {
+		const defaultOptions: any = {
+			open: true,
+			type: 'none',
+			content: 'Snackbar Content',
+			timeout: 5000,
+			horizontal: 'center',
+			vertical: 'middle',
+		};
+
+		for ( const [key, val] of Object.entries(options) ) {
+			if ( typeof defaultOptions[key] !== 'undefined' ) {
+				defaultOptions[key] = val;
+			}
+		}
+
+		if ( typeof options.vuetify === 'undefined' ) {
+			options.vuetify = Vuetify;
+		}
+
+		let instance: any = this.mount(Notification, { propsData: defaultOptions });
+		document.body.appendChild(instance.$el);
 	}
 
 	public $modal(options: any = {}) {
