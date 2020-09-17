@@ -113,6 +113,12 @@ export default class Mixin extends VueDecorator {
 		}
 
 		let instance: any = this.mount(Notification, { propsData: defaultOptions });
+		setTimeout(() => {
+			Vue.nextTick(() => {
+				instance.$el.remove();
+				instance = null;
+			});
+		}, defaultOptions.timeout);
 		document.body.appendChild(instance.$el);
 	}
 
