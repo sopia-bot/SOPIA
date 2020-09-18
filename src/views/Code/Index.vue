@@ -28,7 +28,7 @@
 					<!-- E:Folder Tree -->
 				</v-row>
 			</v-col>
-			<v-col cols="12" sm="8" md="9" lg="10" class="pa-0">
+			<v-col cols="12" sm="8" md="9" lg="10" class="pa-0" v-if="openFiles.length > 0">
 				<v-tabs
 					v-model="selectedFile"
 	 				background-color="indigo lighten-1"
@@ -62,6 +62,13 @@
 	 				@change="editorChange"
 					:theme="editor.theme"
 					:options="editor.options"/>
+			</v-col>
+			<v-col cols="12" sm="8" md="9" lg="10" class="pa-0" v-else>
+				<v-row class="ma-0" align="center" style="height: 100%;">
+					<v-col cols="12" align="center">
+						<h1 class="text-overline" style="font-size: 1.5rem !important;">{{ $t('code.editor.not-opened-file') }}</h1>
+					</v-col>
+				</v-row>
 			</v-col>
 		</v-row>
 	</v-main>

@@ -15,4 +15,7 @@ export default {
 	msg: {
 		'save-success': '저장에 성공했습니다.',
 	},
+	editor: {
+		'not-opened-file': '열린 파일이 없습니다.',
+	},
 };
