@@ -111,6 +111,11 @@ interface TabFile {
 		TreeView,
 		ToolButton,
 	},
+	watch: {
+		$route(to, from) {
+			this.treeReload();
+		},
+	},
 })
 export default class Code extends Mixins(GlobalMixins) {
 	public editor: any = {
@@ -168,6 +173,13 @@ export default class Code extends Mixins(GlobalMixins) {
 			},
 		},
 	];
+
+	public treeReload() {
+		this.treeRenderer = false;
+		this.$nextTick(() => {
+			this.treeRenderer = true;
+		});
+	}
 
 	public closeTab() {
 		//TODO: confirm
