@@ -236,29 +236,19 @@ export default class Code extends Mixins(GlobalMixins) {
 			fs.writeFileSync(openedFile.fullPath, openedFile.contents, {encoding: 'utf8'});
 			openedFile.oriContents = openedFile.contents;
 
-			this.$modal({
+			this.$noti({
 				type: 'success',
-				title: this.$t('msg.alert'),
 				content: this.$t('code.msg.save-success'),
+				horizontal: 'right',
+				vertical: 'bottom',
+				timeout: 2000,
 			});
-					/*
-			this.$notify({
-				type: 'primary',
-				message: this.$t('code.noti.save-success'),
-				horizontalAlign: 'right',
-				verticalAlign: 'bottom',
-			});
-			*/
 		} catch (err) {
-			/*
-			this.$notify({
-				type: 'danger',
-				message: err.message,
-				horizontalAlign: 'right',
-				verticalAlign: 'bottom',
+			this.$modal({
+				type: 'error',
+				title: 'Error',
+				content: err.message,
 			});
-			*/
-			console.error(err);
 		}
 	}
 

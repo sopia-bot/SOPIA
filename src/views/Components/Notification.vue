@@ -21,7 +21,7 @@
 				</v-icon>
 			</div>
 		</template>
-		<span :style="{ color: textColors[type] }">{{ text }}</span>
+		<span :style="{ color: textColors[type] }">{{ content }}</span>
 	</v-snackbar>
 </template>
 <script>
@@ -40,7 +40,7 @@ export default {
 			type: Number,
 			default: 5000,
 		},
-		text: {
+		content: {
 			type: String,
 			default: 'Snack Content',
 		},
