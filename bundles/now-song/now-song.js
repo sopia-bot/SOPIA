@@ -1,4 +1,4 @@
-sopia.modules.getMelonCaption = sopia.require(getPath('./sopia/bundles/get-melon-caption')).getMelonCaption;
+sopia.modules.getMelonCaption = sopia.require(getPath('./sopia/bundles/now-song/get-melon-caption')).getMelonCaption;
 
 sopia.var.cpation = sopia.modules.getMelonCaption();
 
