@@ -24,7 +24,7 @@
 		<div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
 			<button class="uk-modal-close-default" type="button" uk-close></button>
 
-			<div class="uk-child-width-1-3@s uk-child-width-1-4@m" uk-grid>
+			<div class="uk-child-width-1-3@s" uk-grid>
 				<div v-for="(sticker, idx) of stickers">
 					<div
 		 				@click="selectSticker(idx)"
@@ -48,6 +48,8 @@
 			<div class="uk-container">
 				<div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
 					<div class="uk-width-1-1@m">
+						<h3 v-if="usingOnOff" class="uk-margin" style="color: #ff8394">현재 OnOff 번들을 사용 중입니다.<br>동작에 오류가 있을 수 있습니다.</h3>
+						<!-- S:Tab -->
 						<ul class="uk-child-width-expand" uk-tab>
 							<li
 								:class="tab === 'join' ? 'uk-active' : ''"
@@ -70,6 +72,7 @@
 								<a href="#">명령어</a>
 							</li>
 						</ul>
+						<!-- E:Tab -->
 						<!-- S:Join -->
 						<div v-if="tab === 'join'">
 							<div class="uk-card" style="padding-top: 2rem; padding-bottom: 2rem;">
@@ -180,17 +183,20 @@
 											placeholder="내용"
 											style="background: transparent; color: white;">
 									</div>
-									<div class="uk-width-1-5">
+									<div class="uk-width-1-5" style="padding-left: 10px;">
 										<button
 			  								class="uk-button uk-button-default"
 											style="color: white; width: 100%;"
 											type="button">
-											랜덤
+											{{ obj.permission ? '관리자' : '청취자' }}
 										</button>
 										<div uk-dropdown="pos: bottom-right">
 											<ul class="uk-nav uk-dropdown-nav">
-												<li class="uk-active">
-													<a href="#">랜덤</a>
+												<li :class="obj.permission ? '' : 'uk-active'">
+													<a href="#" @click="EzMessage[idx].permission = false; messageRerender();">청취자</a>
+												</li>
+												<li :class="obj.permission ? 'uk-active' : ''">
+													<a href="#" @click="EzMessage[idx].permission = true; messageRerender();">관리자</a>
 												</li>
 											</ul>
 										</div>
@@ -222,30 +228,32 @@
 	</div>
 </div>
 <script>
-	const Vue = sopia.require(getPath('bundles/ez-cmd/vue.js'));
+	const Vue = sopia.require(getPath(sopia.config.bundle['ez-cmd'] + '/vue.js'));
 
-	if ( !fs.existsSync(getPath('bundles/ez-cmd/join.json')) ) {
-		fs.writeFileSync(getPath('bundles/ez-cmd/join.json'), '{}', { encoding: 'utf8' });
+	if ( !fs.existsSync(getPath(sopia.config.bundle['ez-cmd'] + '/join.json')) ) {
+		fs.writeFileSync(getPath(sopia.config.bundle['ez-cmd'] + '/join.json'), '{}', { encoding: 'utf8' });
 	}
-	if ( !fs.existsSync(getPath('bundles/ez-cmd/like.json')) ) {
-		fs.writeFileSync(getPath('bundles/ez-cmd/like.json'), '{}', { encoding: 'utf8' });
+	if ( !fs.existsSync(getPath(sopia.config.bundle['ez-cmd'] + '/like.json')) ) {
+		fs.writeFileSync(getPath(sopia.config.bundle['ez-cmd'] + '/like.json'), '{}', { encoding: 'utf8' });
 	}
-	if ( !fs.existsSync(getPath('bundles/ez-cmd/present.json')) ) {
-		fs.writeFileSync(getPath('bundles/ez-cmd/present.json'), '{}', { encoding: 'utf8' });
+	if ( !fs.existsSync(getPath(sopia.config.bundle['ez-cmd'] + '/present.json')) ) {
+		fs.writeFileSync(getPath(sopia.config.bundle['ez-cmd'] + '/present.json'), '{}', { encoding: 'utf8' });
 	}
-	if ( !fs.existsSync(getPath('bundles/ez-cmd/message.json')) ) {
-		fs.writeFileSync(getPath('bundles/ez-cmd/message.json'), '{}', { encoding: 'utf8' });
+	if ( !fs.existsSync(getPath(sopia.config.bundle['ez-cmd'] + '/message.json')) ) {
+		fs.writeFileSync(getPath(sopia.config.bundle['ez-cmd'] + '/message.json'), '[]', { encoding: 'utf8' });
 	}
 
-	const EzJoin = sopia.require(getPath('bundles/ez-cmd/join.json'));
-	const EzLike = sopia.require(getPath('bundles/ez-cmd/like.json'));
-	const EzPresent = sopia.require(getPath('bundles/ez-cmd/present.json'));
-	const EzMessage = sopia.require(getPath('bundles/ez-cmd/message.json'));
-	const EzMessageCopy = sopia.require(getPath('bundles/ez-cmd/message.json'));
+	window.EzJoin = sopia.require(getPath(sopia.config.bundle['ez-cmd'] + '/join.json'));
+	window.EzLike = sopia.require(getPath(sopia.config.bundle['ez-cmd'] + '/like.json'));
+	window.EzPresent = sopia.require(getPath(sopia.config.bundle['ez-cmd'] + '/present.json'));
+	window.EzMessage = sopia.require(getPath(sopia.config.bundle['ez-cmd'] + '/message.json'));
+	window.EzMessageCopy = sopia.require(getPath(sopia.config.bundle['ez-cmd'] + '/message.json'));
 
 	const VueApp = new Vue({
 		el: '#vue-app',
 		async created() {
+			this.usingOnOff = !!sopia.config.bundle['custom-onoff'];
+
 			const res = await axios.get(`https://static.spooncast.net/kr/stickers/index.json`)
 			const result = res.data;
 			const categories = result.categories;
@@ -288,8 +296,11 @@
 				this.EzMessage.push({
 					cmd: '',
 					msg: '',
-					permission: true
+					permission: false,
 				});
+				this.messageRerender();
+			},
+			messageRerender() {
 				this.EzMessageCopy = JSON.parse(JSON.stringify(this.EzMessage));
 				this.rerender('message');
 			},
@@ -319,6 +330,7 @@
 			presentRenderer: true,
 			prevPresentName: 0,
 			messageRenderer: true,
+			usingOnOff: false,
 		},
 	});
 </script>
