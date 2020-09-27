@@ -118,6 +118,23 @@
 						<!-- S:Present -->
 						<div v-else-if="tab === 'present'">
 							<div v-if="presentRenderer" class="uk-card" style="padding-top: 2rem; padding-bottom: 2rem;">
+								<div uk-grid>
+									<div class="uk-width-2-5">
+										<a
+											class="uk-button uk-button-default text-overflow"
+											style="color: white; padding: 0 15px; width: 100%;"
+											type="button"
+											href="#">기본</a>
+									</div>
+									<div class="uk-width-3-5">
+										<input
+											class="uk-input uk-input-spoon"
+		   									v-model="EzPresent['default']"
+											type="text"
+											placeholder="내용"
+											style="background: transparent; color: white;">
+									</div>
+								</div>
 								<!-- S:Row -->
 								<div v-for="(obj, idx) of Object.entries(EzPresent)" :key="obj[0] + idx" uk-grid>
 									<div class="uk-width-2-5">
@@ -308,10 +325,10 @@
 				this.EzMessage[idx][t] = evt.target.value;
 			},
 			applySetting() {
-				const join = getPath('bundles/ez-cmd/join.json');
-				const like = getPath('bundles/ez-cmd/like.json');
-				const present = getPath('bundles/ez-cmd/present.json');
-				const message = getPath('bundles/ez-cmd/message.json');
+				const join = getPath(sopia.config.bundle['ez-cmd'] + '/join.json');
+				const like = getPath(sopia.config.bundle['ez-cmd'] + '/like.json');
+				const present = getPath(sopia.config.bundle['ez-cmd'] + 'present.json');
+				const message = getPath(sopia.config.bundle['ez-cmd'] + '/message.json');
 				fs.writeFileSync(join, JSON.stringify(this.EzJoin, null, '\t'), { encoding: 'utf8' });
 				fs.writeFileSync(like, JSON.stringify(this.EzLike, null, '\t'), { encoding: 'utf8' });
 				fs.writeFileSync(present, JSON.stringify(this.EzPresent, null, '\t'), { encoding: 'utf8' });

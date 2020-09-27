@@ -45,7 +45,18 @@ sopia.on('like', (e) => {
 
 sopia.on('present', (e) => {
 	if ( typeof window.EzPresent === 'object' ) {
-		if ( typeof window.EzPresent[e.sticker].trim() ) {
+		if ( window.EzPresent[e.sticker].trim() ) {
+			sopia.send(
+				window.EzPresent[e.sticker]
+					.trim()
+					.replace(/\[\[name\]\]/g, e.author.nickname)
+					.replace(/\[\[tag\]\]/g, e.author.tag)
+					.replace(/\[\[combo\]\]/g, e.combo)
+					.replace(/\[\[amount\]\]/g, e.amount)
+					.replace(/\[\[count\]\]/g, e.combo * e.amount)
+					.replace(/\[\[sticker\]\]/g, e.sticker)
+			);
+		} else if ( window.EzPresent['default'].trim() ) {
 			sopia.send(
 				window.EzPresent[e.sticker]
 					.trim()
