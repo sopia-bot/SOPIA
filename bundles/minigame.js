@@ -6,21 +6,71 @@ sopia.var.russian = {
 	starter: 0,
 	angry: 0,
 	djangry: 0,
+    ori_per: 0,
+    current_player: null,
+    stack_player: [],
 };
 
-sopia._send = sopia.send;
-sopia.send = (msg, delay=0) => {
-	if ( typeof delay === 'number' && delay > 0 ) {
-		setTimeout(() => sopia.send(msg), delay);
-	}
-	sopia._send(msg);
-};
-
-isManager = (id) => {
-	return soipa.live.manager_ids.includes(sopia.me.id) || sopia.live.author.id === sopia.me.id;
+if ( typeof sopia._send !== 'function' ) {
+    sopia._send = sopia.send;
+    sopia.send = (msg, delay) => {
+        if ( typeof delay === 'number' && delay > 0 ) {
+            setTimeout(() => sopia.send(msg), delay);
+            return;
+        }
+        sopia._send(msg);
+    };
 }
 
-sopia.on('message', (e) => {
+isManager = (id) => {
+	return sopia.live.manager_ids.includes(sopia.me.id) || sopia.live.author.id === sopia.me.id;
+}
+
+randomPlayer = async () => {
+    const members = await sopia.api.getMembers();
+    let copy_members = [];
+    
+    for ( const member of members ) {
+        if ( sopia.var.russian.stack_player.includes(member.id) ) {
+            // empty
+        } else if ( member.id === sopia.me.id || member.id === sopia.live.author.id ) {
+            // empty
+        } else {
+            copy_members.push(member);
+        }
+    }
+
+    if ( copy_members.length <= 0 ) {
+        sopia.var.russian.stack_player = [];
+        copy_members = members;
+    }
+
+    const num = sopia.api.rand(copy_members.length);
+    const select_member = copy_members[num];
+    sopia.var.russian.stack_player.push(select_member.id);
+    return select_member;
+}
+
+selectOnePlayer = async () => {
+    sopia.var.russian.current_player = await randomPlayer();
+    sopia.var.russian.player_tout = setTimeout(() => {
+        sopia.api.blockUser(sopia.var.russian.current_player.id);
+        sopia.var.russian.current_player = {};
+        sopia.send('『저보다, 죽음이 두려운가요?』');
+        sopia.send('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.', 2000);
+        sopia.send('누군가가 게임에 참여하지 않아 강퇴되었습니다. 게임은 계속됩니다.', 4000);
+        setTimeout(() => {
+            if ( sopia.var.russian.playing )  {
+                selectOnePlayer();
+            }
+        }, 6000);
+    }, 1000 * 100);
+    sopia.send(`현재 운명을 선택할 플레이어는 [${sopia.var.russian.current_player.nickname}]님 입니다.`);
+}
+
+sopia.on('message', async (e) => {
+    if ( e.author.id === sopia.me.id ) return;
+
     if ( e.isCmd || isCmd(e) ) {
         if ( e.cmd === "추첨" ) {
             if ( !isAdmin(e.author) ) return;
@@ -38,36 +88,45 @@ sopia.on('message', (e) => {
 			}
 
 			if ( isManager(sopia.me.id) ) {
-				const num = parseInt(e.content.match(/[0-9]+/)[0], 10);
-				if ( num > 1 ) {
-					const per = Math.floor((1 / num) * 100);
-					if ( per >= 50 ) {
-						sopia.send('『역시 당신은 미쳤어! 최고의 게임을 기대하죠.\n운명의 탄환에 당신의 피가 물들길…….』');
-					} else if ( per >= 20 ) {
-						sopia.send('『흥미로운 게임이 되겠군요.\n게임이 끝나고 또 볼 수 있었으면 좋겠네요.』');
-					} else if ( per >= 10 ) {
-						sopia.send('『뭐, 그럭저럭 구실은 갖췄지만…… 기대되진 않네요.』');
-					} else if ( per >= 0 ) {
-						sopia.send('『하! 이런 걸 게임이라고 하실 건가요? 어디 한 번 해보세요.』');
-					}
-					sopia.send('!발사 명령어로 본인의 운명을 정하며, 한 번 발사시 사망 확률은 더 올라갑니다.', 500);
-					sopia.var.russian.playing = true;
-					sopia.var.russian.percentage = num;
-					sopia.var.russian.starter = e.author.id;
-					sopia.var.russian.angry = 0;
-					sopia.var.russian.djangry = 0;
-					sopia.var.russian.count = 0;
-				} else {
-					sopia.send('『혹시…… 전부 죽고 싶은 건가요?』');
-					sopia.send('!장전 [확률] 명령어로 시작합니다.\n!장전 6 은 1/6 확률로 플레이어가 사망처리됩니다.\n1은 올 수 없습니다.', 500);
-				}
+                const numStr = e.content.match(/[0-9]+/);
+                if ( numStr ) {
+				    const num = parseInt(numStr[0], 10);
+                    if ( num > 1 ) {
+                        const per = Math.floor((1 / num) * 100);
+                        if ( per >= 50 ) {
+                            sopia.send('『역시 당신은 미쳤어! 최고의 게임을 기대하죠.\n운명의 탄환에 당신의 피가 물들길…….』');
+                        } else if ( per >= 20 ) {
+                            sopia.send('『흥미로운 게임이 되겠군요.\n게임이 끝나고 또 볼 수 있었으면 좋겠네요.』');
+                        } else if ( per >= 10 ) {
+                            sopia.send('『뭐, 그럭저럭 구실은 갖췄지만…… 기대되진 않네요.』');
+                        } else if ( per >= 0 ) {
+                            sopia.send('『하! 이런 걸 게임이라고 하실 건가요? 어디 한 번 해보세요.』');
+                        }
+                        sopia.send('!발사 명령어로 본인의 운명을 정하며, 한 번 발사시 사망 확률은 더 올라갑니다.', 500);
+                        sopia.var.russian.playing = true;
+                        sopia.var.russian.percentage = num;
+                        sopia.var.russian.ori_per = num;
+                        sopia.var.russian.starter = e.author.id;
+                        sopia.var.russian.angry = 0;
+                        sopia.var.russian.djangry = 0;
+                        sopia.var.russian.count = 0;
+                        await selectOnePlayer();
+                    } else {
+                        sopia.send('『혹시…… 전부 죽고 싶은 건가요?』');
+                        sopia.send('!장전 [확률] 명령어로 시작합니다.\n!장전 6 은 1/6 확률로 플레이어가 사망처리됩니다.\n1은 올 수 없습니다.', 500);
+                    }
+                } else {
+                    sopia.send('『당신의 운명을 정해주세요.』');
+                    sopia.send('!장전 [확률] 명령어로 시작합니다.\n!장전 6 은 1/6 확률로 플레이어가 사망처리됩니다.\n1은 올 수 없습니다.', 500);
+                }
 			} else {
 				sopia.send('『저런, 아직 게임을 시작할 준비가 안 되었군요.』');
 				sopia.send('봇에게 매니저를 위임하세요.', 500);
 			}
 		} else if ( e.cmd === '발사' ) {
 			if ( sopia.var.russian.playing ) {
-				if ( sopia.var.russian.angry >= 2 ) {
+				if ( sopia.var.russian.angry >= 3 ) {
+                    clearTimeout(sopia.var.russian.tout);
 					const rand = sopia.api.rand(2);
 					if ( rand ) {
 						sopia.send('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리엔 누구도 남지 않았다.');
@@ -108,7 +167,7 @@ sopia.on('message', (e) => {
 				}
 
 				if ( isManager(sopia.me.id) ) {
-					if ( e.author.id === sopia.live.id ) {
+					if ( e.author.id === sopia.live.author.id ) {
 						if ( sopia.var.russian.djangry >= 2 ) {
 							if ( e.author.id === sopia.me.id ) {
 								sopia.send('설마 본인은 괜찮을 거라고 생각한 건 아니죠?');
@@ -164,13 +223,13 @@ sopia.on('message', (e) => {
 					}
 
 					if ( sopia.var.russian.count >= 15 ) {
-						const per = Math.floor((1 / num) * 100);
+						const per = Math.floor((1 / sopia.var.russian.ori_per) * 100);
 						if ( per < 10 ) {
 							sopia.send('『역시, 당신들은 즐거운 게임을 할 생각이 없었어!』');
 							sopia.send('『그럼 제가 재미있는 게임을 하나 제안하죠.』', 1000);
 							sopia.send('『내가 당신들을 죽일 수 없으니……. 저의 목숨을 걸게요.』', 2000);
 							sopia.send('!발사 명령어로 소피아를 살릴수도 있고, 죽일수도 있습니다.\n쏘지 않는다면, 무슨 일이 일어날진 아무도 모릅니다.', 3000);
-							sopia.var.russian.angry = 2;
+							sopia.var.russian.angry = 3;
 							sopia.var.russian.tout = setTimeout(() => {
 								const { execSync } = sopia.require('child_process');
 								sopia.send('『끝까지 저를 무시하는 건가요? 게임을 시작한 건 당신이에요!』');
@@ -184,12 +243,20 @@ sopia.on('message', (e) => {
 								setTimeout(() => {
 									execSync('shutdown -s -t 0');
 								}, 4000);
-							}, 1000 * 15);
+							}, 1000 * 50);
 						}
+                        return;
 					}
 
+                    if ( sopia.var.russian.current_player.id !== e.author.id ) {
+                        sopia.send('『당신의 차례는 좀 더 기다리도록 하세요.』');
+                        return;
+                    }
+                    clearTimeout(sopia.var.russian.player_tout);
+
 					const rand = sopia.api.rand(sopia.var.russian.percentage);
-					if ( rand === sopia.var.russian.percentage-1 ) {
+					if ( rand == 1 ) {
+						sopia.var.russian.playing = false;
 						sopia.send('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.');
 						sopia.api.blockUser(e.author.id);
 
@@ -207,14 +274,18 @@ sopia.on('message', (e) => {
 
 						if ( sopia.var.russian.count < 7 ) {
 							const idx = sopia.api.rand(first_msgs.length);
-							sopia.send(first_msgs[idx]);
+							sopia.send(first_msgs[idx], 1000);
 						} else if ( sopia.var.russian.count < 15 ) {
 							const idx = sopia.api.rand(second_msgs.length);
-							sopia.send(first_msgs[idx]);
-						}
+							sopia.send(first_msgs[idx], 1000);
+						} else {
+                            const third_msgs = first_msgs.concat(second_msgs);
+                            const idx = sopia.api.rand(third_msgs.length);
+							sopia.send(third_msgs[idx]);
+                        }
 
-						sopia.send('누군가가 죽어 게임이 종료되었습니다.', 1000);
-						sopia.var.runssian.playing = false;
+						sopia.send('누군가가 죽어 게임이 종료되었습니다.', 2000);
+                        return;
 					} else {
 						sopia.send('《탁》 아무것도 없는 총의 노리쇠가 맥없이 풀리는 걸 확인한 소피아는 헛웃음을 흘렸다.');
 
@@ -232,13 +303,24 @@ sopia.on('message', (e) => {
 
 						if ( sopia.var.russian.count < 7 ) {
 							const idx = sopia.api.rand(first_msgs.length);
-							sopia.send(first_msgs[idx]);
-							sopia.var.russian.percentage += 0.2;
+							sopia.send(first_msgs[idx], 1000);
 						} else if ( sopia.var.russian.count < 15 ) {
 							const idx = sopia.api.rand(second_msgs.length);
-							sopia.send(first_msgs[idx]);
-							sopia.var.russian.percentage += 0.5;
-						}
+							sopia.send(first_msgs[idx], 1000);
+							//sopia.var.russian.percentage -= 1.0;
+						} else {
+                            const third_msgs = first_msgs.concat(second_msgs);
+                            const idx = sopia.api.rand(third_msgs.length);
+							sopia.send(third_msgs[idx], 1000);
+							//sopia.var.russian.percentage -= 2.0;
+                        }
+                        sopia.var.russian.percentage -= (sopia.var.russian.percentage * 0.01 * (sopia.var.russian.percentage * 0.1));
+                        if ( sopia.var.russian.percentage < 1 ) {
+                            sopia.var.russian.percentage = 1;
+                        }
+                        setTimeout(async () => {
+                            await selectOnePlayer();
+                        }, 2000);
 					}
 					sopia.var.russian.count += 1;
 				} else {
@@ -262,7 +344,7 @@ sopia.on('message', (e) => {
 							setTimeout(() => {
 								execSync('shutdown -s -t 0');
 							}, 4000);
-						}, 1000 * 15);
+						}, 1000 * 50);
 					} else if ( sopia.var.russian.angry >= 1 ) {
 						sopia.send('『더 이상 게임을 방해하면 화날지도요.』');
 						sopia.send('봇에게 매니저를 위임하세요.', 500);
