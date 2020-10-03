@@ -151,20 +151,16 @@ export default class Code extends Mixins(GlobalMixins) {
 	public save(editor: any) {
 		try {
 			//const ext = path.extname(file);
-			let rtn = { result: true, line: 0 };
-			const ext = '.js';
+			let rtn = { result: true, line: 0 } as any;
+			const ext: string = '.js';
 			switch ( ext ) {
 				case '.js':
-				{
 					rtn = this.jsSyntax(editor.getValue());
 					break;
-				}
 				case '.json':
-				{
 					rtn = this.jsSyntax(`JSON.parse(\n${editor.getValue()}\n)`);
 					rtn.line -= 1;
 					break;
-				}
 			}
 			if ( !rtn.result ) {
 				this.$modal({
@@ -183,7 +179,7 @@ export default class Code extends Mixins(GlobalMixins) {
 				verticalAlign: 'bottom',
 			});
 			*/
-		} catch(err) {
+		} catch (err) {
 			/*
 			this.$notify({
 				type: 'danger',

@@ -8,8 +8,7 @@
 	<v-main class="indigo lighten-5">
 		<v-row v-if="liveList" class="ma-0" align="center">
 			<v-col
-				v-for="(live, idx) in liveList"
-				:key="'' + idx + live.id"
+				v-for="(live, idx) in liveList" :key="'' + idx + live.id"
 				cols="12"
 				class="my-6"
 				sm="6"
@@ -55,7 +54,7 @@ const sleep = (msec: number) => {
 	},
 })
 export default class Home extends Mixins(GlobalMixins) {
-	public liveManager!: ApiManager;
+	public liveManager!: ApiManager<Play>;
 	public liveList: Play[] = [];
 	public asyncMutex: boolean = false;
 

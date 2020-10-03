@@ -109,8 +109,8 @@ export default class Mixin extends VueDecorator {
 		}
 
 		let instance: any = this.mount(Modal, { propsData: defaultOptions });
-		instance.$once('ok', (evt) => {
-			if ( typeof options.ok === "function" ) {
+		instance.$once('ok', (evt: any) => {
+			if ( typeof options.ok === 'function' ) {
 				options.ok(instance, evt);
 			}
 			instance.open = false;

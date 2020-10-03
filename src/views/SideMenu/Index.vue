@@ -89,11 +89,11 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 	public readonly Routes: any = routes;
 	public CurPath: string = location.pathname;
 
-	public user: User = User.deserialize({
+	public user: User = {
 		nickname: 'Not Login',
 		tag: 'Not Login',
 		profile_url: require('assets/default-profile.png'),
-	});
+	} as any;
 
 	public mounted() {
 		this.$evt.$on('user', (user: User) => {
