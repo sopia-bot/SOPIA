@@ -19,8 +19,6 @@ sopia.destinySetting = {
 sopia.var.msg_queue = [];
 sopia.var.last_msg_time = Date.now();
 
-
-
 sopia.Rsend = (msg, sndSrc, sndVolume) => {
     return new Promise(async (r) => {
         const now = Date.now();
@@ -53,7 +51,7 @@ getRpath = (p) => path.join(sopia.destinySetting.path, p);
 asleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 isManager = (id) => {
-	return sopia.live.manager_ids.includes(sopia.me.id) || sopia.live.author.id === sopia.me.id;
+	return sopia.live.manager_ids.includes(id) || sopia.live.author.id === id;
 };
 
 randomPlayer = async () => {
@@ -81,10 +79,24 @@ randomPlayer = async () => {
     return select_member;
 };
 
+timeCheck = (ms) => {
+    const start_time = Date.now();
+    setTimeout(() => {
+        const end_time = Date.now();
+        const val = end_time - start_time;
+        const sec = Math.floor(val / 1000);
+        const ms = val % 1000;
+        console.log(`[TIME CHECK] ${sec}.${ms}s`);
+    }, ms);
+};
+
 selectOnePlayer = async () => {
     sopia.var.russian.current_player = await randomPlayer();
+    if ( sopia.var.russian.player_tout ) {
+        clearTimeout(sopia.var.russian.player_tout);
+    }
     sopia.var.russian.player_tout = setTimeout(async () => {
-        sopia.api.blockUser(sopia.var.russian.current_player.id);
+        //sopia.api.blockUser(sopia.var.russian.current_player.id);
         sopia.var.russian.current_player = {};
         await sopia.Rsend('『저보다, 죽음이 두려운가요?』');
         await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.');
@@ -92,7 +104,7 @@ selectOnePlayer = async () => {
         if ( sopia.var.russian.playing )  {
             selectOnePlayer();
         }
-    }, 1000 * 60 * 60);
+    }, 1000 * 60 * 2);
     sopia.Rsend(`현재 운명을 선택할 플레이어는 [${sopia.var.russian.current_player.nickname}]님 입니다.`);
 };
 
@@ -109,6 +121,7 @@ initVariable = () => {
     sopia.var.russian.stack_player = [];
     sopia.var.russian.dump = {};
     sopia.var.russian.bgm = {};
+    sopia.var.russian.randFlag = false;
 };
 
 dumpEvents = () => {
@@ -151,22 +164,10 @@ restoreEvents = () => {
 
 endGame = () => {
     sopia.var.russian.playing = false;
+    clearTimeout(sopia.var.russian.tout);
+    clearTimeout(sopia.var.russian.player_tout);
+    stopBGM();
     restoreEvents();
-};
-
-gameProcesser =  async (e) => {
-    if ( sopia.me ) {
-        if ( e.author.id === sopia.me.id ) return;
-
-        if ( e.isCmd || isCmd(e) ) {
-            console.log('cmd', e.cmd);
-            if ( e.cmd === '장전' ) {
-                await startGame(e);
-            } else if ( e.cmd === '발사' ) {
-                await tickShout(e);
-            }
-        }
-}
 };
 
 playMusic = (src, volume = 0.5) => {
@@ -193,6 +194,18 @@ startBGM = async () => {
     setTimeout(startBGM, 1000);
 };
 
+stopBGM = async () => {
+    if ( sopia.var.russian.bgm['bgm'] ) {
+        sopia.var.russian.bgm['bgm'].onpause = () => {};
+        const volume = sopia.var.russian.bgm['bgm'].volume * 100;
+        for( let i = volume; i >= 0; i-- ) {
+            sopia.var.russian.bgm['bgm'].volume = (i * 0.01);
+            await asleep(100);
+        }
+        sopia.var.russian.bgm['bgm'].pause();
+    }
+};
+
 startGame = async (e) => {
     if ( sopia.var.russian.playing ) {
         await sopia.Rsend('『이미 당신은 물릴 수 없는 게임을 시작했어요.\n누군가 죽기 전 까진 끝나지 않겠죠.』');
@@ -200,16 +213,31 @@ startGame = async (e) => {
         return;
     }
 
+    if ( typeof sopia.live === 'undefined' ) {
+        const wv = document.querySelector('#webview');
+        const live_id = wv.src.replace(/https:\/\/(www\.)?spooncast\.net\/\w{2}\/live\//, '');
+        const res = await axios.get('https://kr-api.spooncast.net/lives/' + live_id);
+        const data = res.data;
+        sopia.live = data.results[0];
+    }
+
     if ( isManager(sopia.me.id) ) {
         const numStr = e.content.match(/[0-9]+/);
+        
+        let num = 0;
+        let randFlag = false;
         if ( numStr ) {
-            const num = parseInt(numStr[0], 10);
-            if ( num > 1 ) {
-                console.log('start game');
-                initVariable();
-                sopia.var.russian.playing = true;
-                await playMusic(getRpath('media/clipout.mp3'), 1);
+            num = parseInt(numStr[0], 10);
+        } else {
+            num = sopia.api.rand(15, 2);
+            randFlag = true;
+        }
+        if ( num > 1 ) {
+            initVariable();
+            sopia.var.russian.playing = true;
+            await playMusic(getRpath('media/clipout.mp3'), 1);
 
+            if ( !randFlag ) {
                 const per = Math.floor((1 / num) * 100);
                 if ( per >= 50 ) {
                     await sopia.Rsend('『역시 당신은 미쳤어! 최고의 게임을 기대하죠.\n운명의 탄환에 당신의 피가 물들길…….』');
@@ -220,24 +248,24 @@ startGame = async (e) => {
                 } else if ( per >= 0 ) {
                     await sopia.Rsend('『하! 이런 걸 게임이라고 하실 건가요? 어디 한 번 해보세요.』');
                 }
-                await sopia.helper('!발사 명령어로 본인의 운명을 정하며, 한 번 발사시 사망 확률은 더 올라갑니다.');
-                await sopia.helper('원활한 게임 진행을 위해 게임에 필요한 이벤트 이외엔 전부 무시합니다.');
-
-                await playMusic(getRpath('media/clipin.mp3'), 1);
-                sopia.var.russian.percentage = num;
-                sopia.var.russian.ori_per = num;
-                sopia.var.russian.starter = e.author.id;
-                startBGM();
-                dumpEvents();
-                removeEvents();
-                sopia.on('message', gameProcesser);
-                await selectOnePlayer();
             } else {
-                await sopia.Rsend('『혹시…… 전부 죽고 싶은 건가요?』');
-                await sopia.helper('!장전 [확률] 명령어로 시작합니다.\n!장전 6 은 1/6 확률로 플레이어가 사망처리됩니다.\n1은 올 수 없습니다.');
+                await sopia.Rsend('『과연 당신은 죽을 수 있을까요?』');
             }
+            await sopia.helper('!발사 명령어로 본인의 운명을 정하며, 한 번 발사시 사망 확률은 더 올라갑니다.');
+            await sopia.helper('원활한 게임 진행을 위해 게임에 필요한 이벤트 이외엔 전부 무시합니다.');
+
+            await playMusic(getRpath('media/clipin.mp3'), 1);
+            sopia.var.russian.percentage = num;
+            sopia.var.russian.ori_per = num;
+            sopia.var.russian.starter = e.author.id;
+            sopia.var.russian.randFlag = randFlag;
+            startBGM();
+            dumpEvents();
+            removeEvents();
+            sopia.on('message', gameProcesser);
+            await selectOnePlayer();
         } else {
-            await sopia.Rsend('『당신의 운명을 정해주세요.』');
+            await sopia.Rsend('『혹시…… 전부 죽고 싶은 건가요?』');
             await sopia.helper('!장전 [확률] 명령어로 시작합니다.\n!장전 6 은 1/6 확률로 플레이어가 사망처리됩니다.\n1은 올 수 없습니다.');
         }
     } else {
@@ -252,7 +280,7 @@ sopiaAngry = async () => {
         clearTimeout(sopia.var.russian.tout);
         const rand = sopia.api.rand(2);
         if ( rand ) {
-            await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리엔 누구도 남지 않았다.', getRpath('media/fire.mp3'), 1);
+            await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리엔 누구도 남지 않았다.', getRpath('media/fire.mp3'), 0.3);
             await sopia.Rsend('그저, 누군가 잡고 있었던 총이 떨어지며 울리는 쇳소리만 남았을 뿐이다.');
             await sopia.Rsend('소피아가 사망하여 게임이 종료되었습니다.\n사망 패널티로 다음날까지 소피아를 사용할 수 없습니다.');
 
@@ -308,8 +336,11 @@ sopiaAngry = async () => {
 };
 
 sopiaRoulettePrize = async (e) => {
-    await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.', getRpath('media/fire.mp3'), 1);
-    sopia.api.blockUser(e.author.id);
+    await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.', getRpath('media/fire.mp3'), 0.3);
+    let rand = sopia.api.rand(2);
+    if ( rand === 0 ) {
+        sopia.api.blockUser(e.author.id);
+    }
 
     const first_msgs = [
         '『저런, 어쩜 이리도 운 나쁜 사람인지……. 가는 길 조심하세요. 아, 이미 그곳에 도착했으려나?』',
@@ -336,7 +367,7 @@ sopiaRoulettePrize = async (e) => {
     }
 
     await sopia.Rsend('누군가가 죽어 게임이 종료되었습니다.');
-    endGame();
+    await endGame();
 };
 
 sopiaRouletteTick = async (e) => {
@@ -365,13 +396,13 @@ sopiaRouletteTick = async (e) => {
         const idx = sopia.api.rand(third_msgs.length);
         await sopia.Rsend(third_msgs[idx]);
     }
-    sopia.var.russian.percentage -= (sopia.var.russian.percentage * 0.01 * (sopia.var.russian.percentage * 0.1));
+    sopia.var.russian.percentage -= 0.4;
     if ( sopia.var.russian.percentage < 1 ) {
         sopia.var.russian.percentage = 1;
     }
-    setTimeout(async () => {
-        await selectOnePlayer();
-    }, 2000);
+    
+    await asleep(2000);
+    await selectOnePlayer();
     sopia.var.russian.count += 1;
 };
 
@@ -385,25 +416,27 @@ sopiaError = async () => {
 [ERROR]`);
     await sopia.Rsend('소피아의 모습이 점점 에러로 점칠되다, 끝끝내 전원이 내려가고 말았다.');
     setTimeout(() => {
-        execSync('shutdown -s -t 0');
+        //execSync('shutdown -s -t 0');
     }, 4000);
 };
 
 tickShout = async (e) => {
     if ( sopia.var.russian.playing ) {
-        if ( isManager(sopia.me.id) ) {
-            if ( sopia.var.russian.count >= 15 ) {
+        if ( isManager(sopia.me.id) && sopia.var.russian.angry < 3 ) {
+            if ( !sopia.var.russian.randFlag ) {
                 const per = Math.floor((1 / sopia.var.russian.ori_per) * 100);
                 if ( per < 10 ) {
-                    await sopia.Rsend('『역시, 당신들은 즐거운 게임을 할 생각이 없었어!』');
-                    await sopia.Rsend('『그럼 제가 재미있는 게임을 하나 제안하죠.』');
-                    await sopia.Rsend('『내가 당신들을 죽일 수 없으니……. 저의 목숨을 걸게요.』');
-                    await sopia.helper('!발사 명령어로 소피아를 살릴수도 있고, 죽일수도 있습니다.\n쏘지 않는다면, 무슨 일이 일어날진 아무도 모릅니다.');
-                    
-                    sopia.var.russian.angry = 3;
-                    sopia.var.russian.tout = setTimeout(sopiaError, 1000 * 50);
+                    if ( sopia.var.russian.count >= 15 && sopia.var.russian.angry < 3 ) {
+                        await sopia.Rsend('『역시, 당신들은 즐거운 게임을 할 생각이 없었어!』');
+                        await sopia.Rsend('『그럼 제가 재미있는 게임을 하나 제안하죠.』');
+                        await sopia.Rsend('『내가 당신들을 죽일 수 없으니……. 저의 목숨을 걸게요.』');
+                        await sopia.helper('!발사 명령어로 소피아를 살릴수도 있고, 죽일수도 있습니다.\n쏘지 않는다면, 무슨 일이 일어날진 아무도 모릅니다.');
+                        
+                        sopia.var.russian.angry = 3;
+                        sopia.var.russian.tout = setTimeout(sopiaError, 1000 * 50);
+                        return;
+                    }
                 }
-                return;
             }
 
             if ( sopia.var.russian.current_player.id !== e.author.id ) {
@@ -415,16 +448,40 @@ tickShout = async (e) => {
             const rand = sopia.api.rand(sopia.var.russian.percentage);
             if ( rand == 1 ) {
                 await sopiaRoulettePrize(e);
-                return;
             } else {
                 await sopiaRouletteTick(e);
-                return;
             }
         } else {
-            sopiaAngry();
+            await sopiaAngry();
         }
     }
 };
 
+gameProcesser =  async (e) => {
+    if ( sopia.me ) {
+        if ( e.author.id === sopia.me.id ) return;
+
+        console.log('skip lock', sopia.var.skipLock);
+        if ( sopia.var.skipLock ) {
+            return;
+        }
+
+        if ( e.isCmd || isCmd(e) ) {
+            sopia.var.skipLock = true;
+            if ( e.cmd === '장전' ) {
+                await startGame(e);
+            } else if ( e.cmd === '발사' ) {
+                await tickShout(e);
+            } else if ( e.cmd === '스킵' ) {
+                if ( isAdmin(e.author) || sopia.var.russian.current_player.id === e.author.id ) {
+                    selectOnePlayer();
+                }
+            } else if ( e.cmd === '종료' ) {
+                endGame();
+            }
+            sopia.var.skipLock = false;
+        }
+    }
+};
 
 sopia.on('message', gameProcesser);
