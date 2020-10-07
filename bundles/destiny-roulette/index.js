@@ -11,11 +11,10 @@ sopia.var.russian = {
     stack_player: [],
     bgm: {},
 };
-sopia.destinySetting = {
-    delay: 1500,
-    help: true,
-    path: getPath(sopia.config.bundle['destiny-roulette']),
-};
+if ( !sopia.drset ) {
+	sopia.drset = sopia.require(getPath(sopia.config.bundle['destiny-roulette'] + '/config.json'));
+	sopia.drset.path = getPath(sopia.config.bundle['destiny-roulette']),
+}
 sopia.var.msg_queue = [];
 sopia.var.last_msg_time = Date.now();
 
@@ -23,10 +22,10 @@ sopia.Rsend = (msg, sndSrc, sndVolume) => {
     return new Promise(async (r) => {
         const now = Date.now();
         const delay = now - sopia.var.last_msg_time;
-        if ( delay < 1500 ) {
+        if ( delay < sopia.drset.delay ) {
             setTimeout(() => {
                 sopia.Rsend(msg).then(r);
-            }, 1500 - delay);
+            }, sopia.drset.delay - delay);
             return;
         }
         sopia.var.last_msg_time = Date.now();
@@ -42,12 +41,12 @@ sopia.Rsend = (msg, sndSrc, sndVolume) => {
     });
 };
 sopia.helper = async (msg) => {
-    if ( sopia.destinySetting && sopia.destinySetting.help ) {
+    if ( sopia.drset && sopia.drset.help ) {
         return await sopia.Rsend(msg);
     }
 };
 
-getRpath = (p) => path.join(sopia.destinySetting.path, p);
+getRpath = (p) => path.join(sopia.drset.path, p);
 asleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 isManager = (id) => {
@@ -96,7 +95,7 @@ selectOnePlayer = async () => {
         clearTimeout(sopia.var.russian.player_tout);
     }
     sopia.var.russian.player_tout = setTimeout(async () => {
-        //sopia.api.blockUser(sopia.var.russian.current_player.id);
+        sopia.api.blockUser(sopia.var.russian.current_player.id);
         sopia.var.russian.current_player = {};
         await sopia.Rsend('『저보다, 죽음이 두려운가요?』');
         await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.');
@@ -190,7 +189,7 @@ playMusic = (src, volume = 0.5) => {
 };
 
 startBGM = async () => {
-    await playMusic(getRpath('media/bgm.mp3'), 0.3);
+	await playMusic(getRpath('media/bgm.mp3'), sopia.drset.bgmVolume / 100);
     setTimeout(startBGM, 1000);
 };
 
@@ -280,7 +279,7 @@ sopiaAngry = async () => {
         clearTimeout(sopia.var.russian.tout);
         const rand = sopia.api.rand(2);
         if ( rand ) {
-            await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리엔 누구도 남지 않았다.', getRpath('media/fire.mp3'), 0.3);
+            await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리엔 누구도 남지 않았다.', getRpath('media/fire.mp3'), sopia.drset.effectVolume);
             await sopia.Rsend('그저, 누군가 잡고 있었던 총이 떨어지며 울리는 쇳소리만 남았을 뿐이다.');
             await sopia.Rsend('소피아가 사망하여 게임이 종료되었습니다.\n사망 패널티로 다음날까지 소피아를 사용할 수 없습니다.');
 
@@ -336,7 +335,7 @@ sopiaAngry = async () => {
 };
 
 sopiaRoulettePrize = async (e) => {
-    await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.', getRpath('media/fire.mp3'), 0.3);
+    await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.', getRpath('media/fire.mp3'), sopia.drset.effectVolume);
     let rand = sopia.api.rand(2);
     if ( rand === 0 ) {
         sopia.api.blockUser(e.author.id);
