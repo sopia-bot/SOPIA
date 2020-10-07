@@ -154,73 +154,74 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		}
 	}
 
+	public readdir(PATH: string, DIR: string = '', ORI: any, sf?: any[]) {
+		DIR = DIR || '';
+		const target = path.join(DIR, PATH);
+
+		if ( fs.existsSync(target) ) {
+			const fll = fs.readdirSync(target);
+			const arr: any = [];
+
+			if ( Array.isArray(fll) ) {
+				const fl = fll.sort((a, b) => {
+					const statsA = fs.statSync(path.join(target, a));
+					const statsB = fs.statSync(path.join(target, b));
+					if ( statsA.isDirectory() ) {
+						return -1;
+					} else if ( statsB.isDirectory() ) {
+						return 1;
+					}
+					return a > b ? 1 : -1;
+				});
+
+				fl.forEach((f) => {
+					const fullPath = path.join(target, f);
+					const stats = fs.statSync(fullPath);
+					const obj: any = { data: {} };
+					const oriObjIdx = Array.isArray(ORI) ? ORI.findIndex((oo) => {
+						if ( oo.data['value'] === fullPath ) { return true; }
+						//if ( oo.data['value'] === this.cm.rename.value ) { return true; }
+					}) : -1;
+					const oriObj = oriObjIdx >= 0 ? ORI[oriObjIdx] : {};
+
+					obj['text'] = f;
+					obj.data['value'] = fullPath;
+
+					if ( stats.isDirectory() ) {
+						let expanded = false;
+						if ( sf && sf.length > 0 ) {
+							const p = sf.shift();
+							expanded = (p === f);
+						} else {
+							expanded = (oriObj['states'] && oriObj['states'].expanded);
+						}
+						obj['state'] = {
+							expanded,
+						};
+						obj.data['isFolder'] = true;
+						obj['children'] = this.readdir(fullPath, '', oriObj && oriObj.children );
+
+					} else {
+						obj['state'] = oriObj['state'] || {};
+						obj.data['isFolder'] = false;
+						obj.data['icon'] = this.iconFinder(path.extname(f));
+					}
+
+					arr.push(obj);
+				});
+			}
+			return arr;
+		} else {
+			this.checkFolder();
+			return [];
+		}
+	}
+
 	public buildFolderTree(src: string, selectedFile: string = '') {
 		const ori = this.oriFolderTree;
-		const readdir = (PATH: string, DIR: string = '', ORI: any, sf?: any[]) => {
-			DIR = DIR || '';
-			const target = path.join(DIR, PATH);
-
-			if ( fs.existsSync(target) ) {
-				const fll = fs.readdirSync(target);
-				const arr: any = [];
-
-				if ( Array.isArray(fll) ) {
-					const fl = fll.sort((a, b) => {
-						const statsA = fs.statSync(path.join(target, a));
-						const statsB = fs.statSync(path.join(target, b));
-						if ( statsA.isDirectory() ) {
-							return -1;
-						} else if ( statsB.isDirectory() ) {
-							return 1;
-						}
-						return a > b ? 1 : -1;
-					});
-
-					fl.forEach((f) => {
-						const fullPath = path.join(target, f);
-						const stats = fs.statSync(fullPath);
-						const obj: any = { data: {} };
-						const oriObjIdx = Array.isArray(ORI) ? ORI.findIndex((oo) => {
-							if ( oo.data['value'] === fullPath ) { return true; }
-							//if ( oo.data['value'] === this.cm.rename.value ) { return true; }
-						}) : -1;
-						const oriObj = oriObjIdx >= 0 ? ORI[oriObjIdx] : {};
-
-						obj['text'] = f;
-						obj.data['value'] = fullPath;
-
-						if ( stats.isDirectory() ) {
-							let expanded = false;
-							if ( sf && sf.length > 0 ) {
-								const p = sf.shift();
-								expanded = (p === f);
-							} else {
-								expanded = (oriObj['states'] && oriObj['states'].expanded);
-							}
-							obj['state'] = {
-								expanded,
-							};
-							obj.data['isFolder'] = true;
-							obj['children'] = readdir(fullPath, '', oriObj && oriObj.children );
-
-						} else {
-							obj['state'] = oriObj['state'] || {};
-							obj.data['isFolder'] = false;
-							obj.data['icon'] = this.iconFinder(path.extname(f));
-						}
-
-						arr.push(obj);
-					});
-				}
-				return arr;
-			} else {
-				this.checkFolder();
-				return [];
-			}
-		};
 
 		const sfs = selectedFile ? selectedFile.split('/') : [];
-		return readdir(src, '', ori, sfs);
+		return this.readdir(src, '', ori, sfs);
 	}
 
 }

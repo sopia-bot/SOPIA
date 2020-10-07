@@ -12,4 +12,8 @@ export default {
 	home,
 	code,
 	lives,
+	// common
+	msg: {
+		alert: '알림',
+	},
 };

@@ -28,6 +28,14 @@
 						<div class="flex-grow-1"></div>
 
 						<v-btn
+							color="red darken-1"
+	   						class="mr-4"
+							large
+							dark
+							@click="$emit('cancel', $event); $emit('update:open', false);">
+							{{ textCancel }}
+						</v-btn>
+						<v-btn
 							color="indigo"
 							large
 							dark
@@ -42,7 +50,7 @@
 </template>
 <script>
 export default {
-	name: 'Modal',
+	name: 'Confirm',
 	props: {
 		type: {
 			type: String,
@@ -54,15 +62,19 @@ export default {
 		},
 		title: {
 			type: String,
-			default: 'Modal Title',
+			default: 'Confirm Title',
 		},
 		content: {
 			type: String,
-			default: 'Modal Content',
+			default: 'Confirm Content',
 		},
 		textOk: {
 			type: String,
 			default: 'Ok',
+		},
+		textCancel: {
+			type: String,
+			default: 'Cancel',
 		},
 	},
 	data() {

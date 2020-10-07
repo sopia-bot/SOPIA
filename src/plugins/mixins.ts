@@ -10,6 +10,8 @@ import { Component, Vue as VueDecorator } from 'vue-property-decorator';
 import Vuetify from '@/plugins/vuetify';
 
 import Modal from '@/views/Components/Modal.vue';
+import Confirm from '@/views/Components/Confirm.vue';
+import Notification from '@/views/Components/Notification.vue';
 
 const path = window.require('path');
 const fs = window.require('fs');
@@ -90,9 +92,40 @@ export default class Mixin extends VueDecorator {
 		}
 	}
 
+	public $noti(options: any = {}) {
+		const defaultOptions: any = {
+			open: true,
+			type: 'none',
+			content: 'Snackbar Content',
+			timeout: 5000,
+			horizontal: 'center',
+			vertical: 'middle',
+		};
+
+		for ( const [key, val] of Object.entries(options) ) {
+			if ( typeof defaultOptions[key] !== 'undefined' ) {
+				defaultOptions[key] = val;
+			}
+		}
+
+		if ( typeof options.vuetify === 'undefined' ) {
+			options.vuetify = Vuetify;
+		}
+
+		let instance: any = this.mount(Notification, { propsData: defaultOptions });
+		setTimeout(() => {
+			Vue.nextTick(() => {
+				instance.$el.remove();
+				instance = null;
+			});
+		}, defaultOptions.timeout);
+		document.body.appendChild(instance.$el);
+	}
+
 	public $modal(options: any = {}) {
 		const defaultOptions: any = {
 			open: true,
+			type: 'none',
 			title: 'Modal Title',
 			content: 'Modal Content',
 			textOk: 'Ok',
@@ -112,6 +145,50 @@ export default class Mixin extends VueDecorator {
 		instance.$once('ok', (evt: any) => {
 			if ( typeof options.ok === 'function' ) {
 				options.ok(instance, evt);
+			}
+			instance.open = false;
+			Vue.nextTick(() => {
+				instance.$el.remove();
+				instance = null;
+			});
+		});
+		document.body.appendChild(instance.$el);
+	}
+
+	public $confirm(options: any = {}) {
+		const defaultOptions: any = {
+			open: true,
+			type: 'none',
+			title: 'Confirm Title',
+			content: 'Confirm Content',
+			textOk: 'Ok',
+			textCancel: 'Cancel',
+		};
+
+		for ( const [key, val] of Object.entries(options) ) {
+			if ( typeof defaultOptions[key] !== 'undefined' ) {
+				defaultOptions[key] = val;
+			}
+		}
+
+		if ( typeof options.vuetify === 'undefined' ) {
+			options.vuetify = Vuetify;
+		}
+
+		let instance: any = this.mount(Confirm, { propsData: defaultOptions });
+		instance.$once('ok', (evt: any) => {
+			if ( typeof options.ok === 'function' ) {
+				options.ok(instance, evt);
+			}
+			instance.open = false;
+			Vue.nextTick(() => {
+				instance.$el.remove();
+				instance = null;
+			});
+		});
+		instance.$once('cancel', (evt: any) => {
+			if ( typeof options.cancel === 'function' ) {
+				options.cancel(instance, evt);
 			}
 			instance.open = false;
 			Vue.nextTick(() => {
