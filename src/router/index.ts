@@ -7,8 +7,9 @@ export interface RouteConfig {
 	name: string;
 	path: string;
 	component?: any;
-	icon: string;
+	icon?: string;
 	childs?: RouteConfig[];
+	isMenu?: boolean;
 }
 
 export const routes: RouteConfig[] = [
@@ -17,12 +18,19 @@ export const routes: RouteConfig[] = [
 		path: '/',
 		component: () => import('@/views/Home/Index.vue'),
 		icon: 'mdi-home',
+		isMenu: true,
+	},
+	{
+		name: 'Search',
+		path: '/search/:type/:query(.*)/',
+		component: () => import('@/views/Search/Index.vue'),
 	},
 	{
 		name: 'Code',
 		path: '/code/:folder/',
 		component: () => import('@/views/Code/Index.vue'),
 		icon: 'mdi-code-braces',
+		isMenu: true,
 		childs: [
 			{
 				name: 'Bundles',

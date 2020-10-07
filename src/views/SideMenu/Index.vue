@@ -33,6 +33,7 @@
 					v-model="CurPath">
 					<div
 						v-for="route in Routes"
+						v-if="route.isMenu"
 						:key="route.name">
 						<!-- S:Has Child -->
 						<v-list-group

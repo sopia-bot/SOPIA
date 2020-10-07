@@ -5,7 +5,8 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
 <template>
-	<v-main class="indigo lighten-5">
+	<v-main class="custom indigo lighten-5">
+		<search-header />
 		<v-row v-if="liveList" class="ma-0" align="center">
 			<v-col
 				v-for="(live, idx) in liveList" :key="'' + idx + live.id"
@@ -39,6 +40,7 @@ import { ApiManager, ApiRequest, Play } from 'sopia-core';
 import InfiniteLoading from 'vue-infinite-loading';
 import { StateChanger } from 'vue-infinite-loading';
 import LiveItem from './LiveItem.vue';
+import SearchHeader from '../Search/Header.vue';
 
 const sleep = (msec: number) => {
 	return new Promise((resolve, reject) => {
@@ -51,6 +53,7 @@ const sleep = (msec: number) => {
 	components: {
 		InfiniteLoading,
 		LiveItem,
+		SearchHeader,
 	},
 })
 export default class Home extends Mixins(GlobalMixins) {

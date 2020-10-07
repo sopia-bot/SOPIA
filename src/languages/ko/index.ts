@@ -6,8 +6,10 @@
  */
 import home from './home';
 import code from './code';
+import lives from './lives';
 
 export default {
 	home,
 	code,
+	lives,
 };

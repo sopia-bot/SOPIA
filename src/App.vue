@@ -7,7 +7,7 @@
 <template>
 	<v-app style="padding-left: 56px">
 		<side-menu />
-		<v-sheet id="router-view" tile>
+		<v-sheet id="router-view" tile :key="$route.fullPath">
 			<transition name="scroll-y-reverse-transition">
 				<router-view />
 			</transition>
