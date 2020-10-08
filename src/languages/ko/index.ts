@@ -7,11 +7,13 @@
 import home from './home';
 import code from './code';
 import lives from './lives';
+import users from './users';
 
 export default {
 	home,
 	code,
 	lives,
+	users,
 	// common
 	msg: {
 		alert: '알림',

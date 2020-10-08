@@ -26,6 +26,11 @@ export const routes: RouteConfig[] = [
 		component: () => import('@/views/Search/Index.vue'),
 	},
 	{
+		name: 'User',
+		path: '/user/:id/',
+		component: () => import('@/views/User/Index.vue'),
+	},
+	{
 		name: 'Code',
 		path: '/code/:folder/',
 		component: () => import('@/views/Code/Index.vue'),

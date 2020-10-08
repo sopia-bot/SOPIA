@@ -34,25 +34,25 @@
 					:key="searchType + idx">
 					<div v-if="searchType === 'user'">
 						<v-list-item>
-								<v-badge
-									v-if="search.currentLive"
-									avatar
-									bottom
-									color="red accent-4"
-									dot
-									offset-x="25"
-									offset-y="17">
-									<v-list-item-avatar class="ml-0">
-										<v-img :src="search.profileUrl"></v-img>
-									</v-list-item-avatar>
-								</v-badge>
-								<v-list-item-avatar v-else>
+							<v-badge
+								v-if="search.currentLive"
+								avatar
+								bottom
+								color="red accent-4"
+								dot
+								offset-x="25"
+								offset-y="17">
+								<v-list-item-avatar class="ml-0">
 									<v-img :src="search.profileUrl"></v-img>
 								</v-list-item-avatar>
+							</v-badge>
+							<v-list-item-avatar v-else>
+								<v-img :src="search.profileUrl"></v-img>
+							</v-list-item-avatar>
 
 							<v-list-item-content>
 								<v-list-item-title>
-									<router-link class="blue-grey--text" :to="`/users/${search.id}/`">{{ search.nickname }}</router-link>
+									<router-link class="blue-grey--text" :to="`/user/${search.id}/`">{{ search.nickname }}</router-link>
 								</v-list-item-title>
 								<v-list-item-subtitle>@{{ search.tag }}</v-list-item-subtitle>
 							</v-list-item-content>
