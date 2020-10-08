@@ -62,8 +62,10 @@ export default class SearchHeader extends Mixins(GlobalMixins) {
 	public async mounted() {
 		const params = this.$route.params;
 		const { type, query } = params;
-		this.searchTypeSelect = decodeURI(type) as ContentType;
-		this.searchText = decodeURI(query).replace(/\/$/, '');
+		if ( type && query ) {
+			this.searchTypeSelect = decodeURI(type) as ContentType;
+			this.searchText = decodeURI(query).replace(/\/$/, '');
+		}
 	}
 
 	public searchTypeChange(type: ContentType) {

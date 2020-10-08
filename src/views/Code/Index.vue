@@ -113,7 +113,8 @@ interface TabFile {
 	},
 	watch: {
 		$route(to, from) {
-			this.treeReload();
+			const t: any = this;
+			t.treeReload();
 		},
 	},
 })
