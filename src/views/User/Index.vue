@@ -13,8 +13,9 @@
 				class="pa-0"
 				:src="user.profileUrl">
 				<v-row align="start" class="ma-0" style="background-color: rgba(0, 0 ,0, 0.6);">
-					<v-col cols="12" align="center">
+					<v-col cols="12" align="center" style="min-height: 72px;">
 						<v-chip
+		  					v-if="user.currentLive"
 							class="ma-2"
 							color="red darken-2"
 							dark
