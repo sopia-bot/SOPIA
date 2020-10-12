@@ -12,6 +12,7 @@
 				<router-view />
 			</transition>
 		</v-sheet>
+		<live-player v-if="currentLive.id" :live="currentLive" />
 	</v-app>
 </template>
 <style>
@@ -26,7 +27,8 @@ html {
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import SideMenu from '@/views/SideMenu/Index.vue';
-import { LoginType, User } from 'sopia-core';
+import { LoginType, User, Play } from 'sopia-core';
+import LivePlayer from '@/views/Live/Player.vue';
 
 declare global {
 	interface Window {
@@ -37,12 +39,22 @@ declare global {
 @Component({
 	components: {
 		SideMenu,
+		LivePlayer,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {
+	public currentLive: Play = {} as Play;
+
 	public async mounted() {
 		window.user = await this.$sopia.login(localStorage.id, localStorage.pw, LoginType.PHONE);
 		this.$evt.$emit('user', window.user);
+		this.$evt.$on('live-join', async (live: Play) => {
+			this.currentLive = {} as Play;
+			this.$nextTick(async () => {
+				live = await this.$sopia.liveManager.liveInfo(live);
+				this.currentLive = live;
+			});
+		});
 	}
 }
 </script>

@@ -8,4 +8,4 @@
 export default {
 	fan: '팬',
 	following: '팔로잉',
-}
+};

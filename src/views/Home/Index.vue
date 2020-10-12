@@ -58,7 +58,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { ApiManager, ApiRequest, Play } from 'sopia-core';
+import { ApiManager, ApiRequest, Play, User } from 'sopia-core';
 import InfiniteLoading from 'vue-infinite-loading';
 import { StateChanger } from 'vue-infinite-loading';
 import LiveItem from './LiveItem.vue';

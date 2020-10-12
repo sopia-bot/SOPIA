@@ -18,4 +18,5 @@ export default {
 	msg: {
 		alert: '알림',
 	},
+	send: '전송',
 };

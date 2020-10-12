@@ -8,6 +8,7 @@
 	<v-main class="custom" v-if="user">
 		<search-header></search-header>
 		<v-container class="pa-0 pa-md-4">
+			<!-- S:PROFILE -->
 			<v-parallax
 				height="300"
 				class="pa-0"
@@ -17,6 +18,7 @@
 						<v-chip
 		  					v-if="user.currentLive"
 							class="ma-2"
+							@click="joinLive"
 							color="red darken-2"
 							dark
 							style="cursor: pointer;">ON AIR</v-chip>
@@ -72,13 +74,14 @@
 					</v-col>
 				</v-row>
 			</v-parallax>
+			<!-- E:PROFILE -->
 		</v-container>
 	</v-main>
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User } from 'sopia-core';
+import { User, Play } from 'sopia-core';
 import SearchHeader from '../Search/Header.vue';
 
 @Component({
@@ -87,7 +90,7 @@ import SearchHeader from '../Search/Header.vue';
 	},
 })
 export default class UserPage extends Mixins(GlobalMixins) {
-	public user!: User = {} as User;
+	public user: User = {} as User;
 	public async created() {
 		const { id } = this.$route.params;
 		if ( id ) {
@@ -102,6 +105,10 @@ export default class UserPage extends Mixins(GlobalMixins) {
 
 	public async unfollowThisUser() {
 		this.user = await this.$sopia.userManager.userUnfollow(this.user);
+	}
+
+	public async joinLive() {
+		this.$evt.$emit('live-join', this.user.currentLive.id);
 	}
 }
 </script>

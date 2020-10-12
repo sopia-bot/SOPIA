@@ -12,6 +12,7 @@
 				height="400"
 				flat
 				tile
+				@click.stop="$evt.$emit('live-join', live)"
 				color="grey lighten-4"
 				class="mx-auto"
 				style="cursor: pointer"
@@ -31,7 +32,7 @@
 
 				<v-card-actions>
 					<v-list-item class="grow">
-						<v-list-item-avatar>
+						<v-list-item-avatar @click.stop="$assign('/user/' + live.author.id)">
 							<v-img
 								:src="live.author.profileUrl"></v-img>
 						</v-list-item-avatar>
