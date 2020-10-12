@@ -6,12 +6,34 @@
 -->
 <template>
 	<v-main class="custom indigo lighten-5">
-		<search-header />
+		<search-header></search-header>
 		<v-row v-if="liveList" class="ma-0" align="center">
+			<v-col
+				cols="12"
+				class="mt-6">
+				<h2 class="ml-3">{{ $t('home.following-dj') }}</h2>
+			</v-col>
+			<v-col
+				v-for="(live, idx) in liveSubscribed" :key="'sub' + idx + live.id"
+				cols="12"
+				sm="6"
+				md="4"
+				lg="3"
+				xl="2">
+				<!-- S:Live Item -->
+				<live-item :live="live" />
+				<!-- E:Live Item -->
+			</v-col>
+		</v-row>
+		<v-row v-if="liveList" class="ma-0" align="center">
+			<v-col
+				cols="12"
+				class="mt-6">
+				<h2 class="ml-3">{{ $t('home.now-live') }}</h2>
+			</v-col>
 			<v-col
 				v-for="(live, idx) in liveList" :key="'' + idx + live.id"
 				cols="12"
-				class="my-6"
 				sm="6"
 				md="4"
 				lg="3"
@@ -59,6 +81,7 @@ const sleep = (msec: number) => {
 export default class Home extends Mixins(GlobalMixins) {
 	public liveManager!: ApiManager<Play>;
 	public liveList: Play[] = [];
+	public liveSubscribed: Play[] = [];
 	public asyncMutex: boolean = false;
 
 	// TODO: Can setting audult content
@@ -86,6 +109,23 @@ export default class Home extends Mixins(GlobalMixins) {
 		}
 
 		this.asyncMutex = false;
+	}
+
+	public mounted() {
+		this.$evt.$on('user', async (user: User) => {
+			this.liveSubscribed = [];
+			console.log(user);
+			if ( user.currentLive ) {
+				const myLiveId = user.currentLive.id;
+				const myLive = await this.$sopia.liveManager.liveInfo(myLiveId);
+				this.liveSubscribed.push(myLive);
+			}
+
+			const lives = await this.$sopia.liveManager.liveSubscribed();
+			for ( const live of lives.data ) {
+				this.liveSubscribed.push(live);
+			}
+		});
 	}
 }
 </script>
