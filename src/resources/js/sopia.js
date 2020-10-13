@@ -695,6 +695,7 @@ const nextTick = [];
 sopia.onmessage = async (e) => {
 	try {
 		let data = e.data;
+		console.log('!!!!!', e);
 
 		if ( nextTick.length > 0 ) {
 			let func = nextTick.shift();
@@ -808,20 +809,21 @@ sopia.onmessage = async (e) => {
 			}
 		}
 		
-		if ( ["join", "leave", "like", "present"].includes(e.event) ) {
-			sopia.debug("is manager event!", e.event);
-			sopia.debug("only manager ", sopia.config.sopia.onlymanager);
-			if ( sopia.config.sopia.onlymanager === true ) {
-				sopia.debug(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
-				if ( (sopia.live.manager_ids.includes(sopia.me.id) === false &&
-					 sopia.me.id !== sopia.live.author.id) &&
-					 send_event ) {
-					sopia.debug("I'm not manager or dj. Do not send this event.");
-					send_event = false;
-				}
-			}
+		// 더 이상 일반 청취자는 매니저 이벤트를 받을 수 없다.
+		// if ( ["join", "leave", "like", "present"].includes(e.event) ) {
+		// 	sopia.debug("is manager event!", e.event);
+		// 	sopia.debug("only manager ", sopia.config.sopia.onlymanager);
+		// 	if ( sopia.config.sopia.onlymanager === true ) {
+		// 		sopia.debug(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
+		// 		if ( (sopia.live.manager_ids.includes(sopia.me.id) === false &&
+		// 			 sopia.me.id !== sopia.live.author.id) &&
+		// 			 send_event ) {
+		// 			sopia.debug("I'm not manager or dj. Do not send this event.");
+		// 			send_event = false;
+		// 		}
+		// 	}
 
-		}
+		// }
 
 		
 		let devRtn = devMessage(data, e.event);

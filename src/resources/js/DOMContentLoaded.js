@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			window.editor = monaco.editor.create(target.querySelector('#codeDiv'), {
 				value: "",
 				language: 'javascript',
-				theme: 'vs',
+				theme: sopia.config.sopia['dark-editor'] ? 'vs-dark' : 'vs',
 				automaticLayout: true
 			});
 			window.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 
 		//SOPIA 설정
 		document.querySelector('#autoManagerStart').checked = sopia.config.sopia.autostart;
-		document.querySelector('#onlymanager').checked = sopia.config.sopia.onlymanager;
+		document.querySelector('#dark-editor').checked = sopia.config.sopia['dark-editor'];
 		document.querySelector('#default-url').value = sopia.config.sopia['default-url'];
 
 		const webview = window.webview || document.querySelector('#webview');
@@ -444,6 +444,18 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			}
 		}
 	}
+
+	/*
+	axios.get(`${sopia.config['api-url']}/app/notice.json`)
+		.then((res) => {
+			const data = res.data;
+			if ( Array.isArray(data) && data.length > 0 ) {
+				const readed = ToNumber(localStorage['read-noti']);
+				data.forEach((noti, idx) => {
+				});
+			}
+		});
+		*/
 
 	INJECTORS.forEach((injector) => injector.complete());
 	sopia.wlog('SUCCESS', 'DOMContentLoad complete');

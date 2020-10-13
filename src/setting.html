@@ -39,10 +39,10 @@
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-							<div>매니저일때만 매니저 멘트 작동</div>
+							<div>에디터 다크모드 적용</div>
 							<div class="uk-text-right">
 								<label class="switch">
-									<input id="onlymanager" type="checkbox">
+									<input id="dark-editor" type="checkbox">
 									<span class="slider round"></span>
 								</label>
 							</div>
@@ -232,7 +232,7 @@
 			 */
 			const sopiaSettingSave = () => {
 				sopia.config.sopia.autostart = document.querySelector('#autoManagerStart').checked;
-				sopia.config.sopia.onlymanager = document.querySelector('#onlymanager').checked;
+				sopia.config.sopia['dark-editor'] = document.querySelector('#dark-editor').checked;
 				sopia.config.sopia['default-url'] = document.querySelector('#default-url').value;
 				sopia.debug(sopia.config.sopia, "save");
 				AllSettingSave();
