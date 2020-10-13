@@ -25,7 +25,7 @@
 				width="100%"
 				style="background: rgba(0, 0, 0, 0.5);">
 				<v-list-item-content class="mx-4">
-					<pre v-text="msg.message"></pre>
+					<pre style="white-space: pre-wrap;" v-text="msg.message"></pre>
 				</v-list-item-content>
 			</v-card>
 		</v-list-item>

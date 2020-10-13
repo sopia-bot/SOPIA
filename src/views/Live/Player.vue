@@ -40,18 +40,21 @@
 						<!-- S:SendChat -->
 						<v-row class="ma-0" align="center">
 							<v-col cols="9">
-								<v-text-field
-									v-model="chat"
-									dark
-									class="ml-2"
+								<v-textarea
+									:label="$t('lives.input-chat')"
+		 							class="ml-2"
+		 							@keydown="keyEvent"
 									color="indigo lighten-4"
-									:label="$t('lives.input-chat')"></v-text-field>
+									no-resize dark
+									rows="1"
+									v-model="chat"></v-textarea>
 							</v-col>
 							<v-col cols="3" align="right">
 								<v-btn
 									dark depressed
 									tile
 									class="mr-2"
+		 							@click="sendMessage"
 									color="indigo accent-5">
 									{{ $t('send') }}
 								</v-btn>
@@ -107,6 +110,27 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			this.liveSocket.on(LiveEvent.LIVE_MESSAGE, (evt: any) => {
 				console.log('debug', evt);
 				this.liveEvents.push(evt);
+			});
+		}
+	}
+
+	public keyEvent(evt: KeyboardEvent) {
+		if ( evt.shiftKey === false && evt.keyCode === 13 ) {
+			// enter
+			this.sendMessage();
+			evt.preventDefault();
+		}
+	}
+
+	public sendMessage() {
+		if ( this.chat.trim() ) {
+			const chat = this.chat
+							.replace(/\\/g, '\\\\')
+							.replace(/\n/g, '\\n');
+			this.$logger.debug('live', `send message [${chat}]`);
+			this.liveSocket.message(chat);
+			this.$nextTick(() => {
+				this.chat = '';
 			});
 		}
 	}
