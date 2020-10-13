@@ -13,4 +13,11 @@ export default {
 		talk: '톡 이름',
 	},
 	'input-chat': '채팅을 입력하세요.',
+	'notice': {
+		'join': '님이 입장하셨습니다.',
+		'like': '님이 좋아요를 누르셨습니다.',
+		'block': '님이 강제 퇴장되었습니다.',
+		'chatban-disable': '님이 채팅금지 되었습니다.',
+		'chatban-enable': '님의 채팅금지가 해제되었습니다.',
+	},
 };

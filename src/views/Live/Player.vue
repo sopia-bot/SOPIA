@@ -35,8 +35,32 @@
 										v-for="(event, idx) of liveEvents"
 										:key="idx">
 										<chat-message
-											v-if="event.event === 'live_message'"
+											v-if="event.event === LiveEvent.LIVE_MESSAGE"
 											:msg="event.data"></chat-message>
+										<p
+											class="indigo--text text--lighten-4 font-weight-bold"
+											style="overflow-wrap: anywhere;"
+											v-else-if="event.event === LiveEvent.LIVE_JOIN">
+											{{ event.data.author.nickname }}{{ $t('lives.notice.join') }}
+										</p>
+										<p
+											class="indigo--text text--lighten-4 font-weight-bold"
+											style="overflow-wrap: anywhere;"
+											v-else-if="event.event === LiveEvent.LIVE_LIKE">
+											{{ event.data.author.nickname }}{{ $t('lives.notice.like') }}
+										</p>
+										<p
+											class="red--text text--lighten-2 font-weight-bold"
+											style="overflow-wrap: anywhere;"
+											v-else-if="event.event === LiveEvent.LIVE_BLOCK">
+											{{ event.data.author.nickname }}{{ $t('lives.notice.block') }}
+										</p>
+										<p
+											class="red--text text--lighten-2 font-weight-bold"
+											style="overflow-wrap: anywhere;"
+											v-else-if="event.event === LiveEvent.LIVE_COMMAND && event.detail.command === 'chat'">
+											{{ event.detail.user.nickname }}{{ $t('lives.notice.chatban-' + event.detail.state) }}
+										</p>
 									</div>
 								</v-col>
 							</v-row>
@@ -88,12 +112,25 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Play, SocketManager, LiveEvent } from 'sopia-core';
+import { Play, SocketManager, LiveEvent, LiveType } from 'sopia-core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
+
+const IgnoreEvent = [
+	LiveEvent.LIVE_STATE,
+	LiveEvent.LIVE_HEALTH,
+	LiveEvent.LIVE_FAILOVER,
+	LiveEvent.LIVE_RANK,
+	LiveEvent.LIVE_RANKLIST,
+];
 
 @Component({
 	components: {
 		ChatMessage,
+	},
+	data() {
+		return {
+			LiveEvent,
+		};
 	},
 })
 export default class LivePlayer extends Mixins(GlobalMixins) {
@@ -111,9 +148,18 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				socket.destroy();
 			});
 			this.liveSocket = await this.$sopia.liveManager.liveJoin(this.live);
-			this.liveSocket.on(LiveEvent.LIVE_MESSAGE, (evt: any) => {
-				console.log('debug', evt);
+			this.liveSocket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
+				if ( IgnoreEvent.includes(evt.event) ) {
+					return;
+				}
+				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.user.id ) {
+					return;
+				}
+
 				this.liveEvents.push(evt);
+				if ( this.liveEvents.length > 100 ) {
+					this.liveEvents.shift();
+				}
 
 				if ( this.fullScreen ) {
 					this.$nextTick(() => {
