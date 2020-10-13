@@ -26,18 +26,20 @@
 						tile
 						height="100%"
 						style="background: rgba(0, 0, 0, 0.7) !important;">
-						<vue-scroll style="max-height: calc(100% - 158px); height: calc(100% - 158px);">
-						<v-row class="ma-0">
-							<v-col cols="12">
-								<div
-									v-for="(event, idx) of liveEvents"
-									:key="idx">
-									<chat-message
-										v-if="event.event === 'live_message'"
-										:msg="event.data"></chat-message>
-								</div>
-							</v-col>
-						</v-row>
+						<vue-scroll
+							ref="scroll"
+							style="max-height: calc(100% - 158px); height: calc(100% - 158px);">
+							<v-row class="ma-0">
+								<v-col cols="12">
+									<div
+										v-for="(event, idx) of liveEvents"
+										:key="idx">
+										<chat-message
+											v-if="event.event === 'live_message'"
+											:msg="event.data"></chat-message>
+									</div>
+								</v-col>
+							</v-row>
 						</vue-scroll>
 						<!-- S:SendChat -->
 						<v-row class="ma-0" align="center">
@@ -112,6 +114,17 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			this.liveSocket.on(LiveEvent.LIVE_MESSAGE, (evt: any) => {
 				console.log('debug', evt);
 				this.liveEvents.push(evt);
+
+				if ( this.fullScreen ) {
+					this.$nextTick(() => {
+							const scroll: any = this.$refs['scroll'];
+							const { v, h } = scroll.getScrollProcess();
+							const size =  scroll?._data?.bar?.vBar?.state?.size || 0;
+							if ( (size === 0 || size >= 0.5) || v >= 0.8 ) {
+								scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
+							}
+					});
+				}
 			});
 		}
 	}
