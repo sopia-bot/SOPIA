@@ -13,6 +13,7 @@ import Vue from 'vue';
 import * as spoon from 'sopia-core';
 import { v4 as uuidv4 } from 'uuid';
 import LiquorTree from 'liquor-tree';
+import VueScroll from 'vuescroll';
 const electron = window.require('electron');
 
 // custom modules
@@ -28,6 +29,23 @@ const { app } = remote;
 // Vue Use
 Vue.use(Logger);
 Vue.use(LiquorTree);
+Vue.use(VueScroll, {
+	ops: {
+		rail: {
+			background: '#000',
+			opacity: 0,
+			size: '8px',
+		},
+		bar: {
+			showDelay: 500,
+			onlyShowBarOnScroll: true,
+			background: '#7a7a7a',
+			keepShow: false,
+			opacity: 0.5,
+			size: '6px',
+		},
+	},
+});
 
 Vue.config.productionTip = false;
 Vue.prototype.$sopia = new spoon.Client(uuidv4()); // TODO: set country

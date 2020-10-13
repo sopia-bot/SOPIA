@@ -26,7 +26,8 @@
 						tile
 						height="100%"
 						style="background: rgba(0, 0, 0, 0.7) !important;">
-						<v-row class="ma-0" style="max-height: calc(100% - 158px); height: calc(100% - 158px); overflow: auto;">
+						<vue-scroll style="max-height: calc(100% - 158px); height: calc(100% - 158px);">
+						<v-row class="ma-0">
 							<v-col cols="12">
 								<div
 									v-for="(event, idx) of liveEvents"
@@ -37,6 +38,7 @@
 								</div>
 							</v-col>
 						</v-row>
+						</vue-scroll>
 						<!-- S:SendChat -->
 						<v-row class="ma-0" align="center">
 							<v-col cols="9">
@@ -145,7 +147,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	width: 100%;
 	bottom: 0px;
 	right:0px;
-	z-index: 100;
+	z-index: 1;
 }
 
 .minify-button {
@@ -153,6 +155,6 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	max-width: 450px;
 	bottom: 0px;
 	right:0px;
-	z-index: 100;
+	z-index: 1;
 }
 </style>

@@ -7,7 +7,8 @@
 <template>
 	<v-main class="custom indigo lighten-5" style="min-height: 100vh;">
 		<search-header></search-header>
-		<v-container>
+		<vue-scroll @handle-scroll="scrollEvent" style="max-height: calc(100vh - 68px);">
+		<v-container style="max-height: calc(100vh - 58px);">
 			<v-btn-toggle
 				v-model="searchType"
 				tile
@@ -42,7 +43,10 @@
 								dot
 								offset-x="25"
 								offset-y="17">
-								<v-list-item-avatar class="ml-0">
+								<v-list-item-avatar
+									@click="$evt.$emit('live-join', search.currentLive.id)"
+									style="cursor: pointer;"
+									class="ml-0">
 									<v-img :src="search.profileUrl"></v-img>
 								</v-list-item-avatar>
 							</v-badge>
@@ -62,26 +66,15 @@
 						<live-item :live="search"></live-item>
 					</div>
 				</v-col>
-				<v-col cols="12">
-					<infinite-loading @infinite="getNextSearchList">
-						<div slot="no-more" class="text-white">
-							<h3 class="indigo--text text--darken-4" >{{ $t('home.load-fin') }}</h3>
-						</div>
-						<div slot="no-results" class="text-white">
-							<h3 class="indigo--text text--darken-4" >{{ $t('home.load-fin') }}</h3>
-						</div>
-					</infinite-loading>
-				</v-col>
 			</v-row>
 		</v-container>
+		</vue-scroll>
 	</v-main>
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { ApiManager, Play, User, ContentType } from 'sopia-core';
-import InfiniteLoading from 'vue-infinite-loading';
-import { StateChanger } from 'vue-infinite-loading';
 import SearchHeader from './Header.vue';
 import LiveItem from '../Home/LiveItem.vue';
 
@@ -93,7 +86,6 @@ const sleep = (msec: number) => {
 
 @Component({
 	components: {
-		InfiniteLoading,
 		SearchHeader,
 		LiveItem,
 	},
@@ -102,6 +94,7 @@ export default class Search extends Mixins(GlobalMixins) {
 	public searchManager!: ApiManager<(Play|User)>;
 	public searchList: Array<Play|User> = [];
 	public asyncMutex: boolean = false;
+	public loadComplete: boolean = false;
 
 	public searchTypes: any[] = [
 		{
@@ -129,11 +122,12 @@ export default class Search extends Mixins(GlobalMixins) {
 		const { type, query } = params;
 		this.searchType = decodeURI(type) as ContentType;
 		this.searchQuery = decodeURI(query).replace(/\/$/, '');
+		this.getNextSearchList();
 	}
 
-	public async getNextSearchList(state?: StateChanger) {
-		while ( this.asyncMutex ) {
-			await sleep(100);
+	public async getNextSearchList() {
+		if ( this.loadComplete || this.asyncMutex ) {
+			return;
 		}
 		this.asyncMutex = true;
 
@@ -147,10 +141,9 @@ export default class Search extends Mixins(GlobalMixins) {
 			this.searchList = this.searchManager.data;
 		}
 
-		state?.loaded();
 
 		if ( this.searchManager.response.next === '' ) {
-			state?.complete();
+			this.loadComplete = true;
 		}
 
 		this.asyncMutex = false;
@@ -158,6 +151,12 @@ export default class Search extends Mixins(GlobalMixins) {
 
 	public searchContent(type: ContentType) {
 		this.$assign(`/search/${type}/${encodeURI(this.searchQuery)}/`);
+	}
+
+	public scrollEvent(vertical: any) {
+		if ( vertical.process >= 0.9 ) {
+			this.getNextSearchList();
+		}
 	}
 }
 </script>

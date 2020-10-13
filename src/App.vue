@@ -19,8 +19,8 @@
 .h-100v {
 	height: 100vh;
 }
-html {
-	overflow-y: auto;
+html, body {
+	overflow: hidden;
 }
 </style>
 <script lang="ts">
