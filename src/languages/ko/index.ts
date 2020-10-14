@@ -19,4 +19,5 @@ export default {
 		alert: '알림',
 	},
 	send: '전송',
+	spoon: '스푼',
 };
