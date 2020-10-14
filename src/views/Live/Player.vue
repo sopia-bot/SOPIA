@@ -112,8 +112,9 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Play, SocketManager, LiveEvent, LiveType } from 'sopia-core';
+import { Play, SocketManager, LiveEvent, LiveType, SpoonSocketEvent } from 'sopia-core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
+import SopiaProcesser from '@/sopia/processor';
 
 const IgnoreEvent = [
 	LiveEvent.LIVE_STATE,
@@ -149,6 +150,8 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			});
 			this.liveSocket = await this.$sopia.liveManager.liveJoin(this.live);
 			this.liveSocket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
+				SopiaProcesser(evt as SpoonSocketEvent);
+
 				if ( IgnoreEvent.includes(evt.event) ) {
 					return;
 				}

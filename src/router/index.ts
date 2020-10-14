@@ -49,6 +49,13 @@ export const routes: RouteConfig[] = [
 			},
 		],
 	},
+	{
+		name: 'Setting',
+		path: '/setting/',
+		component: () => import('@/views/Setting/Index.vue'),
+		icon: 'mdi-cog',
+		isMenu: true,
+	},
 ];
 
 const router = new VueRouter({

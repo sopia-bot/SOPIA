@@ -27,12 +27,14 @@ html, body {
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import SideMenu from '@/views/SideMenu/Index.vue';
-import { LoginType, User, Play } from 'sopia-core';
+import { LoginType, User, Play, Client } from 'sopia-core';
 import LivePlayer from '@/views/Live/Player.vue';
 
 declare global {
 	interface Window {
 		user: User;
+		$spoon: any;
+		$sopia: Client;
 	}
 }
 

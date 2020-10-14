@@ -48,7 +48,8 @@ Vue.use(VueScroll, {
 });
 
 Vue.config.productionTip = false;
-Vue.prototype.$sopia = new spoon.Client(uuidv4()); // TODO: set country
+window.$spoon = spoon;
+Vue.prototype.$sopia = window.$sopia = new spoon.Client(uuidv4()); // TODO: set country
 
 // Event Bus
 Vue.prototype.$evt = new Vue();
