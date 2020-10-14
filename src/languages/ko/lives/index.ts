@@ -20,4 +20,6 @@ export default {
 		'chatban-disable': '님이 채팅금지 되었습니다.',
 		'chatban-enable': '님의 채팅금지가 해제되었습니다.',
 	},
+	'block': '강제퇴장',
+	'block-user': '님을 강퇴하시겠습니까?',
 };

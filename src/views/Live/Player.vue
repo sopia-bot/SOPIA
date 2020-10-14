@@ -180,6 +180,21 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 					});
 				}
 			});
+			this.$evt.$on('live-block', async (id: number) => {
+				this.$confirm({
+					title: this.$t('lives.block'),
+					content: this.$t('lives.block-user'),
+					okText: this.$t('confirm'),
+					cancelText: this.$t('cancel'),
+					ok: async () => {
+						await this.$sopia.liveManager.liveBlock(this.live, id);
+					},
+				});
+			});
+			{
+				const scroll: any = this.$refs['scroll'];
+				scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
+			}
 		}
 	}
 

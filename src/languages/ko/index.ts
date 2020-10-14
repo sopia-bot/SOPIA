@@ -20,4 +20,6 @@ export default {
 	},
 	send: '전송',
 	spoon: '스푼',
+	confirm: '확인',
+	cancel: '취소',
 };

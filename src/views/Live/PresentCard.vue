@@ -16,6 +16,18 @@
 					class="white--text"
 					v-text="msg.author.nickname"></span>
 			</v-list-item-content>
+
+			<v-list-item-action>
+				<v-list-item-action-text>
+					<v-btn
+						small icon
+						dark
+						@click="blockUser(msg.author.id)"
+						color="red accent-2">
+						<v-icon>mdi-account-cancel</v-icon>
+					</v-btn>
+				</v-list-item-action-text>
+			</v-list-item-action>
 		</v-list-item>
 		<v-list-item>
 			<v-list-item-avatar>
@@ -44,7 +56,11 @@ export default class PresentCard extends Mixins(GlobalMixins) {
 	@Prop(Object) public msg!: any;
 
 	public getStickerImg() {
-		return this.$sopia.stickers.search(this.msg.sticker).imageThumbnail;
+		return (this.$sopia?.stickers?.search(this.msg.sticker)?.imageThumbnail) as string;
+	}
+
+	public blockUser(id: number) {
+		this.$evt.$emit('live-block', id);
 	}
 }
 </script>
