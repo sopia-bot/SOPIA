@@ -101,7 +101,10 @@ export default class Home extends Mixins(GlobalMixins) {
 		this.asyncMutex = false;
 	}
 
-	public mounted() {
+	public async mounted() {
+		if ( window.user ) {
+			this.user = window.user;
+		}
 		this.$evt.$on('user', async (user: User) => {
 			this.liveSubscribed = [];
 			if ( user.currentLive ) {
@@ -116,6 +119,19 @@ export default class Home extends Mixins(GlobalMixins) {
 			}
 		});
 		this.getNextLiveList();
+		if ( this.user ) {
+			this.liveSubscribed = [];
+			if ( this.user.currentLive ) {
+				const myLiveId = this.user.currentLive.id;
+				const myLive = await this.$sopia.liveManager.liveInfo(myLiveId);
+				this.liveSubscribed.push(myLive);
+			}
+
+			const lives = await this.$sopia.liveManager.liveSubscribed();
+			for ( const live of lives.data ) {
+				this.liveSubscribed.push(live);
+			}
+		}
 	}
 
 	public scrollEvent(vertical: any) {
