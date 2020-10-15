@@ -34,36 +34,7 @@
 									<div
 										v-for="(event, idx) of liveEvents"
 										:key="idx">
-										<chat-message
-											v-if="event.event === LiveEvent.LIVE_MESSAGE"
-											:msg="event.data"></chat-message>
-										<p
-											class="indigo--text text--lighten-4 font-weight-bold mt-4"
-											style="overflow-wrap: anywhere;"
-											v-else-if="event.event === LiveEvent.LIVE_JOIN">
-											{{ event.data.author.nickname }}{{ $t('lives.notice.join') }}
-										</p>
-										<p
-											class="indigo--text text--lighten-4 font-weight-bold mt-4"
-											style="overflow-wrap: anywhere;"
-											v-else-if="event.event === LiveEvent.LIVE_LIKE">
-											{{ event.data.author.nickname }}{{ $t('lives.notice.like') }}
-										</p>
-										<p
-											class="red--text text--lighten-2 font-weight-bold mt-4"
-											style="overflow-wrap: anywhere;"
-											v-else-if="event.event === LiveEvent.LIVE_BLOCK">
-											{{ event.data.author.nickname }}{{ $t('lives.notice.block') }}
-										</p>
-										<p
-											class="red--text text--lighten-2 font-weight-bold mt-4"
-											style="overflow-wrap: anywhere;"
-											v-else-if="event.event === LiveEvent.LIVE_COMMAND && event.detail.command === 'chat'">
-											{{ event.detail.user.nickname }}{{ $t('lives.notice.chatban-' + event.detail.state) }}
-										</p>
-										<present-card
-											v-if="event.event === LiveEvent.LIVE_PRESENT"
-											:msg="event.data"></present-card>
+										<chat-message :evt="event"></chat-message>
 									</div>
 								</v-col>
 							</v-row>
@@ -117,7 +88,6 @@ import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { Play, SocketManager, LiveEvent, LiveType, SpoonSocketEvent } from 'sopia-core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
-import PresentCard from '@/views/Live/PresentCard.vue';
 import SopiaProcesser from '@/sopia/processor';
 
 const IgnoreEvent = [
@@ -131,7 +101,6 @@ const IgnoreEvent = [
 @Component({
 	components: {
 		ChatMessage,
-		PresentCard,
 	},
 	data() {
 		return {
