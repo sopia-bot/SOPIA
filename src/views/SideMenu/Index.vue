@@ -89,7 +89,7 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 	public user: User = {
 		nickname: 'Not Login',
 		tag: 'Not Login',
-		profile_url: require('assets/default-profile.png'),
+		profileUrl: require('assets/default-profile.png'),
 	} as any;
 
 	public mounted() {

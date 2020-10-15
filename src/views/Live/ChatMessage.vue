@@ -11,7 +11,7 @@
 				<v-list-item-avatar
 					style="cursor: pointer;"
 					@click="$assign('/user/' + evt.data.author.id)">
-					<v-img :src="evt.data.author.profile_url"></v-img>
+					<v-img :src="evt.data.author.profileUrl"></v-img>
 				</v-list-item-avatar>
 
 				<v-list-item-content>

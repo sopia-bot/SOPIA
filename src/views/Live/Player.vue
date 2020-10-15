@@ -189,6 +189,9 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			});
 		}
 	}
+
+	public userType(user: User) {
+	}
 }
 </script>
 <style scope>
