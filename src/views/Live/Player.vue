@@ -195,6 +195,8 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				const scroll: any = this.$refs['scroll'];
 				scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
 			}
+
+			await this.$sopia.initSignatureSticker(this.live.author);
 		}
 	}
 

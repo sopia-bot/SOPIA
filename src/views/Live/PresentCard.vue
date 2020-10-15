@@ -56,7 +56,7 @@ export default class PresentCard extends Mixins(GlobalMixins) {
 	@Prop(Object) public msg!: any;
 
 	public getStickerImg() {
-		return (this.$sopia?.stickers?.search(this.msg.sticker)?.imageThumbnail) as string;
+		return (this.$sopia.findSticker(this.msg.sticker)?.imageThumbnail) as string;
 	}
 
 	public blockUser(id: number) {
