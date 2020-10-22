@@ -502,7 +502,7 @@ const getObject = (obj, key, midx=0, rtn = obj) => {
 };
 
 const checkObject = (obj) => {
-	if ( typeof obj === 'object' ) {
+	if ( obj && typeof obj === 'object' ) {
 		try {
 			JSON.stringify(obj);
 			return true;
