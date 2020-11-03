@@ -115,7 +115,7 @@ const popPath = (path_) => {
 	let exePath = app.getPath('exe');
 	let exe = path.basename(exePath);
 	let p = app.getAppPath();
-	if ( !exe.match("electron") && cur === false ) {
+	if ( !exe.match("electron") ) {
 		p = path.dirname(exePath);
 	}
 	return path_.replace(p, '').replace(/^file\:\/\//, '');
