@@ -10,6 +10,7 @@ process.argv.forEach((arg) => {
 		global.DEBUG_MODE = true;
 	}
 });
+process.setMaxListeners(200);
 
 /**
  * @function getPath

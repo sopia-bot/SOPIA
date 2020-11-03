@@ -11,6 +11,7 @@
  * sopia.var은 프로그램 재시작 전까진 값을 가지고 있는다.
  */
 const sopia = new EventEmitter();
+sopia.setMaxListeners(200);
 
 sopia.modules = {
 	axios: require('axios'),
@@ -650,24 +651,24 @@ const devMessage = (data, event) => {
 						if ( sopia.app.admins.indexOf(author.tag) !== -1 ) {
 							return true;
 						}
-						
+
 						let a = sopia.storage.get('admins');
 						if ( a.indexOf(author.tag) !== -1 ) {
 							return true; //참/거짓 할때의 참.
 						}
-						
+
 						if ( sopia.var.live && Array.isArray(sopia.var.live.manager_ids) && 
 						sopia.var.live.manager_ids.includes(author.id) ) {
 							return true;
 						}
-						
+
 						if ( sopia.var.live && sopia.var.live.author.id == author.id ) {
 							return true;
 						}
-						
+
 						return false;
 					};
-					
+
 					sopia.send(`- You have all control -`);
 					rtn = false;
 				} else if ( e.cmd === "eval" ) {
@@ -787,7 +788,7 @@ sopia.onmessage = async (e) => {
 			send_event = false;
 		}
 		*/
-		
+
 		e.event = e.event.replace("live_", "").trim();
 
 		if ( data.live && e.event !== "message" ) {
