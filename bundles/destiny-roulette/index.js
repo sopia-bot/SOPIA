@@ -13,7 +13,7 @@ sopia.var.russian = {
 };
 if ( !sopia.drset ) {
 	sopia.drset = sopia.require(getPath(sopia.config.bundle['destiny-roulette'] + '/config.json'));
-	sopia.drset.path = getPath(sopia.config.bundle['destiny-roulette']),
+	sopia.drset.path = getPath(sopia.config.bundle['destiny-roulette']);
 }
 sopia.var.msg_queue = [];
 sopia.var.last_msg_time = Date.now();
