@@ -20,6 +20,14 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	});
 
 	/**
+	* ez-cmd를 controls에 import 시킨다.
+	* display: block으로 둔다.
+	*/
+	document.querySelector('#controls').appendImport('#ez-cmd', (parent, target) => {
+		target.setAttribute('data-target', 'ez-cmd');
+	});
+
+	/**
 	* code를 controls에 import 시킨다.
 	* 그와 동시에 monaco editor를 세팅한다.
 	* display는 none으로 둔다.

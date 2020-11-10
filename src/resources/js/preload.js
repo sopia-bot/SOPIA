@@ -626,6 +626,11 @@ const routingPage = (target) => {
 					document.querySelector('#controls').style.overflow = "auto";
 				}
 				import_.style.display = "table";
+				if ( import_ ) {
+					if ( typeof import_.onload === 'function' ) {
+						import_.onload();
+					}
+				}
 			} else {
 				import_.style.display = "none";
 			}
