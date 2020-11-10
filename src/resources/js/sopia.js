@@ -850,6 +850,9 @@ sopia.onmessage = async (e) => {
 			document.querySelector('#liveTitle').innerText = live.title;
 			document.querySelector('#liveStartTime').innerText = new Date(live.created).toLocaleString();
 			document.querySelector('#liveBgUrl').innerText = live.img_url;
+			document.querySelector('#liveMemberCount').innerText = live.member_count;
+			document.querySelector('#liveLikeCount').innerText = live.like_count;
+			document.querySelector('#liveTotalMebmerCount').innerText = live.total_member_count;
 
 			//비제이 정보
 			if ( live.author ) {
@@ -858,8 +861,7 @@ sopia.onmessage = async (e) => {
 				document.querySelector('#bjTag').innerText = author.tag;
 				document.querySelector('#bjPID').innerText = author.id;
 				document.querySelector('#bjProfileUrl').innerText = author.profile_url;
-				document.querySelector('#bjDateJoined').innerText = 
-					new Date(author.date_joined).toLocaleString();
+				document.querySelector('#bjDateJoined').innerText = new Date(author.date_joined).toLocaleString();
 			}
 		}
 
