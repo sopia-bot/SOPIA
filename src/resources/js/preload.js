@@ -416,6 +416,32 @@ const alertModal = (title, message) => {
 	}
 };
 
+const newAlertModal = (title, message) => {
+	return new Promise((resolve) => {
+		const id = Date.now().toString();
+		const modal = `	<div id="dom-${id}" class="uk-flex-top" uk-modal="bg-close: false;">
+				<div class="uk-modal-dialog uk-margin-auto-vertical">
+					<button class="uk-modal-close-default" type="button" uk-close></button>
+					<div class="uk-modal-header uk-background-sopia">
+						<h2 class="uk-modal-title uk-text-white">${title}</h3>
+					</div>
+					<div class="uk-modal-body">
+						<span class="uk-text-emphasis">${message}</span>
+					</div>
+				</div>
+			</div>`;
+
+		document.body.innerHTML += modal;
+		UIkit.util.on('#dom-' + id, 'hide', () => {
+			setTimeout(() => {
+				document.querySelector('#dom-' + id).remove();
+				resolve();
+			}, 1000);
+		});
+		UIkit.modal('#dom-' + id).show();
+	});
+};
+
 /**
  * NavBar의 사이즈를 panel의 크기에 맞게 재정비한다.
  * +++ codeDiv 의 사이즈도 맞춘다.
