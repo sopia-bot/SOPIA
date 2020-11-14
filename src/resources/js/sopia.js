@@ -696,7 +696,6 @@ const nextTick = [];
 sopia.onmessage = async (e) => {
 	try {
 		let data = e.data;
-		console.log('!!!!!', e);
 
 		if ( nextTick.length > 0 ) {
 			let func = nextTick.shift();

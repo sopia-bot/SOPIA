@@ -1,6 +1,9 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, session, ipcMain, dialog} = require('electron');
+const { spawn } = require('child_process');
 const path = require('path');
+const axios = require('axios');
+
 
 global.DEBUG_MODE = false;
 process.argv.forEach((arg) => {
@@ -28,8 +31,59 @@ const getPath = (path_, cur = false) => {
 	}
 	return path.join(p, path_);
 };
+/** 
+ * @function verCompaire
+ * @param {String} ver1
+ * @param {String} ver2
+ * @returns -1: ver1 < ver2 0: ver1 = ver2 1: ver1 > ver2
+ */
+const verCompaire = (ver1, ver2) => {
+	const v1 = parseVersion(ver1);
+	const v2 = parseVersion(ver2);
+	
+	if ( v1 === false || v2 === false ) return;
+	
+	if ( v1.app === v2.app ) {
+		if ( v1.major === v2.major ) {
+			if ( v1.minor === v2.minor ) {
+				return 0;
+			} else {
+				return (v1.minor < v2.minor ? -1 : 1);
+			}
+		} else {
+			return (v1.major < v2.major ? -1 : 1);
+		}
+	} else {
+		return (v1.app < v2.app ? -1 : 1);
+	}
+};
+const parseVersion = (ver) => {
+	if ( typeof ver !== "string" ) return false;
+
+	const sVer = ver.split('.');
+	if ( sVer.length === 3 ) {
+		return {
+			app:   parseInt(sVer[0], 10),
+			major: parseInt(sVer[1], 10),
+			minor: parseInt(sVer[2], 10),
+		};
+	}
+	return false;
+};
 
 const config = require(getPath('config.json'));
+const checkUpdate = async (version = '') => {
+	const res = await axios.get('https://sopia-bot.firebaseio.com/app/update/version.json');
+	const newVer = res.data.replace(/^\"|\"$/, '');
+	if ( verCompaire(version, newVer) == -1 ) {
+		const child = spawn(getPath('SOPIAUpdater.exe'), [ getPath('/') ], {
+			detached: true,
+			stdio: [ 'ignore', 'ignore', 'ignore' ],
+		});
+		child.unref();
+		process.exit(0);
+	}
+};
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -153,7 +207,8 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => {
+app.on('ready', async () => {
+	await checkUpdate(config.version);
 	createWindow();
 });
 
@@ -167,7 +222,7 @@ app.on('window-all-closed', function () {
 app.on('activate', function () {
 	// On macOS it's common to re-create a window in the app when the
 	// dock icon is clicked and there are no other windows open.
-	if (mainWindow === null) createWindow();
+	//if (mainWindow === null) createWindow();
 });
 
 // In this file you can include the rest of your app's specific main process

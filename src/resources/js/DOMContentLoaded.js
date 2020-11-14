@@ -48,10 +48,15 @@ const notiCheck = async () => {
 	}
 };
 
-document.addEventListener('DOMContentLoaded', (evt) => {
+
+const loadInit = async (config = {}) => {
 	loadCustomPage();
-	notiCheck();
+	await notiCheck();
+};
+
+document.addEventListener('DOMContentLoaded', (evt) => {
 	const config = orgRequire(getPath('/config.json'));
+	loadInit(config);
 
 	/*               S: IMPORT               */
 
