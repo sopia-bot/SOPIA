@@ -4,9 +4,53 @@
 //  주석 : onload 이벤트 때 동작할 것들.                       //
 ///////////////////////////////////////////////////////////////
 
+const dcheck = (d1, d2) => {
+	if ( parseInt(d1[0], 10) < parseInt(d2[0], 10) ) {
+		return false;
+	} else if ( parseInt(d1[0], 10) === parseInt(d2[0], 10) ) {
+		if ( parseInt(d1[1], 10) < parseInt(d2[1], 10) ) {
+			return false;
+		} else if ( parseInt(d1[1], 10) === parseInt(d2[1], 10) ) {
+			if ( parseInt(d1[2], 10) < parseInt(d2[2], 10) ) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+};
+
+const notiCheck = async () => {
+	const res = await axios.get('https://sopia-bot.firebaseio.com/app/notice.json');
+	const notices = res.data;
+	const d = new Date(), now = new Date();
+	d.setDate(d.getDate() - 7);
+
+	let lastNotiIdx = parseInt(localStorage.getItem('noti-idx'), 10);
+	if ( Number.isNaN(lastNotiIdx) ) {
+		lastNotiIdx = -1;
+	}
+
+	if ( !notices ) {
+		return;
+	}
+
+	if ( notices.length >= lastNotiIdx ) {
+		for ( let i = lastNotiIdx+1;i < notices.length;i++ ) {
+			const noti = notices[i];
+			const pd = d.yyyymmdd('-').split('-');
+			const nd = noti.date.split('-');
+			if ( dcheck(nd, pd) ) {
+				await newAlertModal(noti.title, noti.content);
+			}
+			localStorage.setItem('noti-idx', i);
+		}
+	}
+};
 
 document.addEventListener('DOMContentLoaded', (evt) => {
 	loadCustomPage();
+	notiCheck();
 	const config = orgRequire(getPath('/config.json'));
 
 	/*               S: IMPORT               */
@@ -17,6 +61,14 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	*/
 	document.querySelector('#controls').appendImport('#home', (parent, target) => {
 		target.setAttribute('data-target', 'home');
+	});
+
+	/**
+	* ez-cmd를 controls에 import 시킨다.
+	* display: block으로 둔다.
+	*/
+	document.querySelector('#controls').appendImport('#ez-cmd', (parent, target) => {
+		target.setAttribute('data-target', 'ez-cmd');
 	});
 
 	/**

@@ -98,6 +98,7 @@ let loadingInterval = setInterval(() => {
     }
 }, 1000 * callAppTime);
 
+
 INJECTORS.forEach((injector) => injector.loading());
 
 sopia.wlog('SUCCESS', 'Element load complete');
