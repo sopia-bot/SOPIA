@@ -1,12 +1,12 @@
 {
 	"name": "sopia",
-	"version": "1.5.2",
+	"version": "1.7.0",
 	"description": "A Spooncast manager A.I Program",
 	"main": "main.js",
 	"scripts": {
 		"start": "electron . DEBUG",
 		"build:win32": "build --win --ia32",
-		"pbuild:win32": "electron-packager . SOPIA --asar --overwrite --platform=win32 --arch=ia32 --out=release-builds --icon=\".\\sopia.ico\" --ignore=release-builds --ignore=bundles --ignore=test --ignore=media"
+		"pbuild:win32": "electron-packager . SOPIA --asar --overwrite --platform=win32 --arch=ia32 --out=release-builds --icon=\".\\sopia.ico\" --ignore=release-builds --ignore=bundles --ignore=test --ignore=media --ignore=SOPIAUpdater"
 	},
 	"build": {
 		"productName": "SOPIA",
@@ -34,19 +34,19 @@
 			"app": "."
 		}
 	},
-	"repository": "https://github.com/tree-some/SOPIA",
+	"repository": "https://github.com/sopia-bot/SOPIA",
 	"keywords": [],
-	"author": "tree-some",
+	"author": "sopia-bot",
 	"license": "CC0-1.0",
 	"devDependencies": {
-		"@sanillajs/sanilla": "^1.0.4",
 		"electron": "^5.0.13",
-		"electron-builder": "^21.2.0"
+		"electron-builder": "^22.8.1"
 	},
 	"dependencies": {
 		"@google-cloud/text-to-speech": "^2.2.0",
+		"@sanillajs/sanilla": "^1.0.4",
 		"axios": "^0.19.0",
-		"electron-packager": "^14.0.6",
+		"electron-packager": "^15.1.0",
 		"form-data": "^3.0.0",
 		"json-merger": "^1.1.2",
 		"request": "^2.88.2",
