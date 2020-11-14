@@ -1,0 +1,15 @@
+﻿<Window x:Class="SOPIAUpdater.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SOPIAUpdater"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="380" Width="300" ResizeMode="NoResize" WindowStyle="None" Background="{x:Null}" ContentRendered="Window_ContentRendered" ShowInTaskbar="False">
+    <Grid Background="#FF202225" MouseDown="Grid_MouseDown">
+        <Image Margin="24,0,24,120" Source="SOPIA(W).png" Stretch="Fill"/>
+        <ProgressBar x:Name="UpdateProgress" HorizontalAlignment="Left" Height="12" Margin="36,278,0,0" VerticalAlignment="Top" Width="228" BorderThickness="0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFFF4100" AutomationProperties.Name="UpdateProgress"/>
+        <Label x:Name="ProgressLabel" Content="0%" HorizontalAlignment="Center" HorizontalContentAlignment="Center"  Margin="70,225,70,0" VerticalAlignment="Top" Foreground="#FFB9BBBE" FontWeight="Bold" FontSize="20" AutomationProperties.Name="ProgressLabel" Width="160"/>
+        <Label x:Name="DescLabel" Content="Description" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Margin="36,304,36,0" VerticalAlignment="Top" Foreground="#FFB9BBBE" FontWeight="Bold" AutomationProperties.Name="DescLabel" Width="228"/>
+    </Grid>
+</Window>
