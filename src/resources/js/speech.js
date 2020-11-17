@@ -1,5 +1,3 @@
-const projectId='silken-avatar-268104';
-const keyfile='./sopia-tts.json';
 const { ipcMain, ipcRenderer, remote } = require('electron');
 const { app } = remote;
 let httpReq = require('request');
@@ -23,8 +21,6 @@ const getPath = (path_, cur = false) => {
 	}
 	return path.join(p, path_);
 };
-
-let client = null;
 
 Buffer.prototype.toB64Str = function() {
 	let buf = this;
@@ -259,12 +255,6 @@ const tts = (text, type) => {
 const mainInit = () => {
 	let isBrowser = typeof window !== 'undefined';
 	if ( !isBrowser ) {
-		const textToSpeech = require('@google-cloud/text-to-speech');
-		client = new textToSpeech.TextToSpeechClient({
-			projectId:projectId,
-			keyFilename: keyfile,
-		});
-
 		ipcMain.on('text-to-speech-req', (event, options) => {
 			StrToSpeech(options.text, options.type).
 				then(b64Audio => {
