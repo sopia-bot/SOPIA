@@ -31,6 +31,35 @@ export const routes: RouteConfig[] = [
 		component: () => import('@/views/User/Index.vue'),
 	},
 	{
+		name: 'Command',
+		path: '/cmd/:type/',
+		component: () => import('@/views/Cmd/Index.vue'),
+		isMenu: true,
+		icon: 'mdi-powershell',
+		childs: [
+			{
+				name: 'Join',
+				path: '/cmd/join/',
+				icon: 'mdi-door',
+			},
+			{
+				name: 'Like',
+				path: '/cmd/like/',
+				icon: 'mdi-heart',
+			},
+			{
+				name: 'Present',
+				path: '/cmd/present/',
+				icon: 'mdi-gift',
+			},
+			{
+				name: 'Message',
+				path: '/cmd/message/',
+				icon: 'mdi-message-alert',
+			},
+		],
+	},
+	{
 		name: 'Code',
 		path: '/code/:folder/',
 		component: () => import('@/views/Code/Index.vue'),

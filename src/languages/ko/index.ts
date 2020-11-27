@@ -8,12 +8,14 @@ import home from './home';
 import code from './code';
 import lives from './lives';
 import users from './users';
+import cmd from './cmd';
 
 export default {
 	home,
 	code,
 	lives,
 	users,
+	cmd,
 	// common
 	msg: {
 		alert: '알림',
@@ -22,4 +24,5 @@ export default {
 	spoon: '스푼',
 	confirm: '확인',
 	cancel: '취소',
+	enable: '사용',
 };
