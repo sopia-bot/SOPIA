@@ -25,4 +25,6 @@ export default {
 	confirm: '확인',
 	cancel: '취소',
 	enable: '사용',
+	apply: '적용',
+	add: '추가',
 };

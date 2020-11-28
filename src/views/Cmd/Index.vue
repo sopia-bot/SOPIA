@@ -11,7 +11,7 @@
 				offset="1"
 				offset-sm="2"
 				offset-md="3"
-				offset-lg="4"
+				cols="10"
 				sm="8"
 				md="6"
 				align="center">
@@ -36,17 +36,51 @@
 				</v-row>
 				<v-row align="center">
 					<v-col cols="12" align="left">
-						<span v-html="$t('cmd.join-desc')"></span>
+						<span v-html="$t('cmd.'+setType+'-desc')"></span>
 					</v-col>
 				</v-row>
 				<v-divider></v-divider>
 				<v-row align="center">
 					<v-col cols="12" align="center">
 						<v-textarea
+							v-if="setType === 'join' || setType === 'like'"
 		  					color="indigo"
 		  					counter
 		  					row="5"
 							></v-textarea>
+						<v-container v-else-if="setType === 'present'">
+							<v-row align="center">
+								<v-col cols="3"></v-col>
+								<v-col cols="9"></v-col>
+							</v-row>
+							<v-row align="center">
+								<v-col cols="12" class="px-0">
+									<v-btn block tile dark color="indigo">{{ $t('add') }}</v-btn>
+								</v-col>
+							</v-row>
+						</v-container>
+						<v-container v-else-if="setType === 'message'">
+							<v-row align="center">
+								<v-col cols="3"></v-col>
+								<v-col cols="6"></v-col>
+								<v-col cols="3"></v-col>
+							</v-row>
+							<v-row align="center">
+								<v-col cols="12" class="px-0">
+									<v-btn block tile dark color="indigo">{{ $t('add') }}</v-btn>
+								</v-col>
+							</v-row>
+						</v-container>
+					</v-col>
+				</v-row>
+				<v-row align="start">
+					<v-col cols="8" align="left">
+						<span class="text-caption" style="font-size: 11pt !important;" v-html="$t('cmd.'+setType+'-ex')"></span>
+					</v-col>
+					<v-col cols="4" align="right">
+						<v-btn tile dark color="indigo">
+							{{ $t('apply') }}
+						</v-btn>
 					</v-col>
 				</v-row>
 			</v-col>
@@ -76,4 +110,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 }
 </script>
 <style scope>
+.custom .v-input--selection-controls.v-input {
+	margin-top: 1rem;
+}
 </style>
