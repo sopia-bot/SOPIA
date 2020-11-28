@@ -6,10 +6,35 @@
  */
 'use strict';
 
-import { app, session, protocol, BrowserWindow } from 'electron';
+import { app, session, protocol, BrowserWindow, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import path from 'path';
+import CfgLite from 'cfg-lite';
+
+
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
+
+const CfgList: any = {};
+const getPath = (type: any, ...args: any) => path.resolve(app.getPath(type), ...args);
+
+ipcMain.on('cfg-lite', (evt: any, prop: string, file: string, ...args: any) => {
+	const key = path.basename(file);
+	let rtn: any = null;
+	if ( prop === 'new' ) {
+		CfgList[key] = new CfgLite(file, args[0]);
+	} else {
+		if ( typeof CfgList[key][prop] === 'function' ) {
+			rtn = CfgList[key][prop](...args);
+		} else {
+			rtn = CfgList[key][prop];
+		}
+	}
+
+	evt.returnValue = rtn;
+});
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

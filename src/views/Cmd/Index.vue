@@ -90,6 +90,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
+import CfgLite from '@/plugins/cfg-lite-ipc';
 
 @Component({
 	components: {
@@ -103,6 +104,7 @@ import GlobalMixins from '@/plugins/mixins';
 export default class Cmd extends Mixins(GlobalMixins) {
 	public setType: string = 'join';
 	public use: boolean = true;
+	public cfg: CfgLite = new CfgLite(this.$path('userData', 'cmd.cfg'));
 
 	public mounted() {
 		this.setType = this.$route.params['type'];
