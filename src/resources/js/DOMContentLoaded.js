@@ -367,6 +367,10 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 							for ( const d of deps ) {
 								const depPath = path.join(bundlePath, d.name);
 
+								if ( !fs.existsSync(path.dirname(depPath)) ) {
+									fs.mkdirSync(path.dirname(depPath));
+								}
+
 								const file = fs.createWriteStream(depPath);
 								https.get(d.href, (res) => {
 									res.pipe(file);
