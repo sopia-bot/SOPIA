@@ -18,6 +18,7 @@ if ( !sopia.drset ) {
 sopia.var.msg_queue = [];
 sopia.var.last_msg_time = Date.now();
 
+
 sopia.Rsend = (msg, sndSrc, sndVolume) => {
     return new Promise(async (r) => {
         const now = Date.now();
@@ -95,7 +96,9 @@ selectOnePlayer = async () => {
         clearTimeout(sopia.var.russian.player_tout);
     }
     sopia.var.russian.player_tout = setTimeout(async () => {
-        sopia.api.blockUser(sopia.var.russian.current_player.id);
+        if ( sopia.drset.kickTrigger ) {
+            sopia.api.blockUser(sopia.var.russian.current_player.id);
+        }
         sopia.var.russian.current_player = {};
         await sopia.Rsend('『저보다, 죽음이 두려운가요?』');
         await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.');
@@ -167,6 +170,7 @@ endGame = () => {
     clearTimeout(sopia.var.russian.player_tout);
     stopBGM();
     restoreEvents();
+    sopia.send('게임이 종료되었습니다.');
 };
 
 playMusic = (src, volume = 0.5) => {
@@ -279,7 +283,7 @@ sopiaAngry = async () => {
         clearTimeout(sopia.var.russian.tout);
         const rand = sopia.api.rand(2);
         if ( rand ) {
-            await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리엔 누구도 남지 않았다.', getRpath('media/fire.mp3'), sopia.drset.effectVolume);
+            await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리엔 누구도 남지 않았다.', getRpath('media/fire.mp3'), sopia.drset.effectVolume / 100);
             await sopia.Rsend('그저, 누군가 잡고 있었던 총이 떨어지며 울리는 쇳소리만 남았을 뿐이다.');
             await sopia.Rsend('소피아가 사망하여 게임이 종료되었습니다.\n사망 패널티로 다음날까지 소피아를 사용할 수 없습니다.');
 
@@ -335,10 +339,12 @@ sopiaAngry = async () => {
 };
 
 sopiaRoulettePrize = async (e) => {
-    await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.', getRpath('media/fire.mp3'), sopia.drset.effectVolume);
+    await sopia.Rsend('《타앙-》 총의 화약이 터지는 굉음과 함께 그 자리에 빨간 선이 하나 그어졌다.', getRpath('media/fire.mp3'), sopia.drset.effectVolume / 100);
     let rand = sopia.api.rand(2);
     if ( rand === 0 ) {
-        sopia.api.blockUser(e.author.id);
+        if ( sopia.drset.kickTrigger ) {
+            sopia.api.blockUser(e.author.id);
+        }
     }
 
     const first_msgs = [

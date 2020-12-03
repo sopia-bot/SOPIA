@@ -23,6 +23,15 @@
 				</div>
 			</div>
 			<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+				<div>패비시 강제 퇴장</div>
+				<div class="uk-text-right">
+					<label class="switch">
+						<input id="kickTrigger" type="checkbox">
+						<span class="slider round"></span>
+					</label>
+				</div>
+			</div>
+			<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 				<div>효과음 볼륨</div>
 				<div class="uk-text-right">
 					<input id="drEffectVolume" class="uk-range uk-text-right" oninput="this.setAttribute('value',this.value)" min="0" value="30" max="100" type="range">
@@ -32,12 +41,6 @@
 				<div>BGM 볼륨</div>
 				<div class="uk-text-right">
 					<input id="drBgmVolume" class="uk-range uk-text-right" oninput="this.setAttribute('value',this.value)" min="0" value="50" max="100" type="range">
-				</div>
-			</div>
-			<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
-				<div>목소리 볼륨</div>
-				<div class="uk-text-right">
-					<input id="drVoiceVolume" class="uk-range uk-text-right" oninput="this.setAttribute('value',this.value)" min="0" value="100" max="100" type="range">
 				</div>
 			</div>
 			<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
@@ -56,32 +59,33 @@
 	}
 
 	document.querySelector('#drEnableHelper').checked = sopia.drset.help;
+	document.querySelector('#kickTrigger').checked = sopia.drset.kickTrigger;
 	document.querySelector('#drEffectVolume').value = sopia.drset.effectVolume;
 	document.querySelector('#drBgmVolume').value = sopia.drset.bgmVolume;
-	document.querySelector('#drVoiceVolume').value = sopia.drset.voiceVolume;
 	document.querySelector('#drDelayChat').value = sopia.drset.delay;
 
 	function drSettingSave() {
 		const help = document.querySelector('#drEnableHelper').checked;
+		const kickTrigger = document.querySelector('#kickTrigger').checked;
 		const effectVolume = document.querySelector('#drEffectVolume').value;
 		const bgmVolume = document.querySelector('#drBgmVolume').value;
-		const voiceVolume = document.querySelector('#drVoiceVolume').value;
 		const delay = document.querySelector('#drDelayChat').value;
 
 		sopia.drset.help = help;
+		sopia.drset.kickTrigger = kickTrigger;
 		sopia.drset.effectVolume = effectVolume;
 		sopia.drset.bgmVolume = bgmVolume;
-		sopia.drset.voiceVolume = voiceVolume;
 		sopia.drset.delay = delay;
 
 		fs.writeFileSync(sopia.drset.path + '/config.json', 
 			JSON.stringify({
 				help,
+				kickTrigger,
 				effectVolume,
 				bgmVolume,
-				voiceVolume,
 				delay,
 			}), { encoding: 'utf8' });
 		noti.success("성공", "설정을 저장했습니다.");
 	}
 </script>
+

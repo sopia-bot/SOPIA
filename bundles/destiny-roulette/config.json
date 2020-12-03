@@ -1,7 +1,1 @@
- {
-	 "delay": 1500,
-	 "help": true,
-	 "effectVolume": 30,
-	 "voiceVolume": 70,
-	 "bgmVolume": 50
- }
+{"help":true,"kickTrigger":false,"effectVolume":"17","bgmVolume":"30","delay":"1500"}
