@@ -7,3 +7,6 @@ media
 test
 logs
 now.log
+bin
+obj
+.suo
