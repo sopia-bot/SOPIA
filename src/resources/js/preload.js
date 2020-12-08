@@ -19,6 +19,9 @@ const axios = require('axios');
 const { app, dialog, process } = require('electron').remote;
 const { clipboard, shell, ipcRenderer } = require('electron');
 
+const spoon = require('sopia-core');
+$sopia = new spoon.Client(navigator.userAgent);
+
 const orgRequire = require;
 
 window.DEBUG_MODE = false;

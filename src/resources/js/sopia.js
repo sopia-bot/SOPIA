@@ -328,33 +328,37 @@ sopia.msgQ = [];
  * 
  * 라이브에서 채팅을 보낸다.
  * 이 함수는 Message Queue 만 담아두며, 실제 전송하는 것은 sopia.RealMessageSend 에서 다룬다.
- * from bboddolie
  */
 sopia.send = (msg) => {
-	if ( typeof msg === "string" ) {
+	if ( typeof msg === 'string' ) {
 		if ( msg.length > 0 ) {
 			const limit = 100;
-			sopia.debug("=============== sopia send ===============");
-			if ( sopia.config.sopia.limitoff === true ) {
-				while ( msg.length > 0 ) {
-					if ( msg.length > limit ) {
-						const ridx = msg.rMatch(limit);
-						const l = (ridx !== -1) ? ridx : limit;
-						const m = msg.substring(0, l);
-
-						sopia.debug(`message push ${m}`);
-						sopia.msgQ.push(m);
-						msg = msg.splice(0, l);
-					} else {
-						sopia.debug(`message last push ${msg}`);
-						sopia.msgQ.push(msg);
-						msg = "";
-					}
+			const smsg = msg.split('\n');
+			if ( smsg.length === 1 ) {
+				// don't have new line
+				for ( let i=0;i<msg.length;i+=limit ) {
+					sopia.msgQ.push(msg.substr(i, limit));
 				}
 			} else {
-				const smsg = msg.substring(0, limit);
-				sopia.debug(`limit_off is ${sopia.config.sopia.limitoff}.\npush message ${smsg}`);
-				sopia.msgQ.push(smsg);
+				let m = '';
+				while ( smsg.length > 0 ) {
+					if ( smsg[0].length > limit ) {
+						if ( m.length > 0 ) {
+							sopia.msgQ.push(m);
+						}
+						for ( let i=0;i<smsg[0].length;i+=limit ) {
+							sopia.msgQ.push(smsg[0].substr(i, limit));
+						}
+						smsg.shift();
+						m = '';
+					} else {
+						if ( m.length + smsg[0].length >= 100 ) {
+							sopia.msgQ.push(m);
+							m = '';
+						}
+						m += smsg.shift() + '\n';
+					}
+				}
 			}
 			sopia.RealSendChat();
 		}
@@ -366,13 +370,10 @@ sopia.RealSendChat = () => {
 	if ( sopia.isSending === false ) {
 		sopia.isSending = true;
 		while ( sopia.msgQ.length > 0 ) {
-			//let msg = ws.msgQ.shift().toString().trim().replace(/^\n+|\n+$/g, "").replace(/\"/g, "\\\"");
-			const msg = sopia.msgQ.shift().trim().replace(/\`/g, "\\\`").replace(/\$/g, "\\$").replace(/\./g, "\\.");
+			const msg = sopia.msgQ.shift();
 			if ( typeof msg === "string" && msg.length > 0 ) {
-				//sopia.send(msgData);
-				//const chat = data.replace(/\`/g, "\\\`").replace(/\$/g, "\\$");
-				sopia.debug("real send chat", msg);
-				webview.executeJavaScript(`SendChat(\`${msg}\`);`);
+				sopia.sock.message(msg);
+				webview.executeJavaScript('addChatBox(`'+msg.replace(/`/g, '\\`').replace(/\$/g, '\\$')+'`);');
 			}
 		}
 		sopia.isSending = false;
@@ -696,6 +697,8 @@ const nextTick = [];
 sopia.onmessage = async (e) => {
 	try {
 		let data = e.data;
+		console.log('message', e);
+
 
 		if ( nextTick.length > 0 ) {
 			let func = nextTick.shift();
@@ -704,89 +707,17 @@ sopia.onmessage = async (e) => {
 			}
 		}
 
-		if ( !sopia.me || !sopia.me.tag ) {
-			if ( e.event.trim() === "live_join" || e.event.trim() === 'live_shadowjoin' ) {
+		// update props
+		webview.executeJavaScript('getProps()')
+			.then(d => {
+				sopia.props = d;
+			});
 
-				// update me
-				webview.executeJavaScript('getProps().userInfo.toJSON()').
-						then((info) => {
-							sopia.me = info;
-						});
-				nextTick.push(function(e) {
-					const data = e.data;
-
-					// update props
-					webview.executeJavaScript('getProps()')
-					.then(d => {
-						sopia.props = d;
-					});
-
-					sopia.wlog('SUCCESS', `Live join success (${live.id})`);
-
-					if ( sopia.me.tag.toString() !== sopia.config.license.id.toString() ) {
-						// 라이센스 id 와 로그인 한 id가 다르다면,
-						if ( !window.DEBUG_MODE ) {
-							window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
-						}
-					}
-
-					const nowDate = new Date();
-					const nDay = nowDate.yyyymmdd('-');
-					const nTime = nowDate.hhMMss('-') + '-' + nowDate.getMilliseconds();
-
-					const live = data.live;
-					const roomData = {
-						title: live.title,
-						img_url: live.img_url,
-						created: live.created,
-						nickname: live.author.nickname,
-						tag: live.author.tag,
-						room: live.id
-					};
-					sopia.wlog('SUCCESS', `Live join success (${live.id})`);
-
-					// send join data to firebase server.
-					sopia.debug("================== send join data to firebase server ==================");
-					axios({
-						url: `${sopia.config['api-url']}/join-log/${nDay}/${nTime}.json`,
-						method: 'put',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						data: roomData
-					}).then(res => {
-						sopia.debug("success!");
-					}).catch(err => {
-						sopia.debug("fail!");
-						sopia.error(err);
-					});
-
-					// mute sound
-					setTimeout(() => {
-						webview.executeJavaScript('toggleMute()');
-					}, 100);
-				});
-			}
-		} else {
-			// sopia.me 가 존재할 때
-			/*
-			if ( sopia.me.tag !== sopia.config.license.id ) {
-				// 라이센스 id 와 로그인 한 id가 다르다면,
-				if ( !window.DEBUG_MODE ) {
-					window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
-				}
-			}
-			*/
+		if ( data.author.tag === sopia.me.tag ) {
+			return;
 		}
 
 		let send_event = true;
-		/*
-		if ( !sopia.config.sopia.detectme &&
-			e.data.author.tag === sopia.me.tag ) {
-			//detectme then, not send data sopia
-			send_event = false;
-		}
-		*/
 
 		e.event = e.event.replace("live_", "").trim();
 
@@ -808,24 +739,7 @@ sopia.onmessage = async (e) => {
 				send_event = true;
 			}
 		}
-		
-		// 더 이상 일반 청취자는 매니저 이벤트를 받을 수 없다.
-		// if ( ["join", "leave", "like", "present"].includes(e.event) ) {
-		// 	sopia.debug("is manager event!", e.event);
-		// 	sopia.debug("only manager ", sopia.config.sopia.onlymanager);
-		// 	if ( sopia.config.sopia.onlymanager === true ) {
-		// 		sopia.debug(sopia.live.manager_ids, sopia.me.id, sopia.live.manager_ids.includes(sopia.me.id));
-		// 		if ( (sopia.live.manager_ids.includes(sopia.me.id) === false &&
-		// 			 sopia.me.id !== sopia.live.author.id) &&
-		// 			 send_event ) {
-		// 			sopia.debug("I'm not manager or dj. Do not send this event.");
-		// 			send_event = false;
-		// 		}
-		// 	}
 
-		// }
-
-		
 		let devRtn = devMessage(data, e.event);
 		if ( devRtn === false ) {
 			send_event = false;
@@ -848,10 +762,10 @@ sopia.onmessage = async (e) => {
 			let live = data.live;
 			document.querySelector('#liveTitle').innerText = live.title;
 			document.querySelector('#liveStartTime').innerText = new Date(live.created).toLocaleString();
-			document.querySelector('#liveBgUrl').innerText = live.img_url;
-			document.querySelector('#liveMemberCount').innerText = live.member_count;
-			document.querySelector('#liveLikeCount').innerText = live.like_count;
-			document.querySelector('#liveTotalMebmerCount').innerText = live.total_member_count;
+			document.querySelector('#liveBgUrl').innerText = live.imgUrl;
+			document.querySelector('#liveMemberCount').innerText = live.memberCount;
+			document.querySelector('#liveLikeCount').innerText = live.likeCount;
+			document.querySelector('#liveTotalMebmerCount').innerText = live.totalMemberCount;
 
 			//비제이 정보
 			if ( live.author ) {
@@ -859,8 +773,8 @@ sopia.onmessage = async (e) => {
 				document.querySelector('#bjName').innerText = author.nickname;
 				document.querySelector('#bjTag').innerText = author.tag;
 				document.querySelector('#bjPID').innerText = author.id;
-				document.querySelector('#bjProfileUrl').innerText = author.profile_url;
-				document.querySelector('#bjDateJoined').innerText = new Date(author.date_joined).toLocaleString();
+				document.querySelector('#bjProfileUrl').innerText = author.profileUrl;
+				document.querySelector('#bjDateJoined').innerText = new Date(author.dateJoined).toLocaleString();
 			}
 		}
 

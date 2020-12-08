@@ -75,6 +75,22 @@ window.autoLogin = (type, id, pw) => {
 	}
 };
 
+window.addChatBox = (str) => {
+	let props = getProps();
+	if ( props ) {
+		if ( !token ) {
+			if ( props.authKey ) {
+				token = props.authKey.replace("Token ", "");
+			}
+		}
+		props.LiveDetailActions.addLiveComment({
+			"type": "message",
+			"author": props.userInfo,
+			"message": str
+		});
+	}
+};
+
 var token;
 window.SendChat = (str) => {
 	let props = getProps();
@@ -93,11 +109,7 @@ window.SendChat = (str) => {
 			"type":"live_rpt",
 		});
 
-		props.LiveDetailActions.addLiveComment({
-			"type": "message",
-			"author": props.userInfo,
-			"message": str
-		});
+		window.addChatBox(str);
 	}
 };
 
@@ -230,3 +242,7 @@ var logInterval = setInterval(() => {
 setTimeout(() => {
 	document.querySelector('iframe[name="us-entrypoint-buttonV2"]').remove();
 }, 3000);
+
+if ( localStorage.SPOONCAST_KR_userInfo ) {
+	logging('loginCallback', JSON.parse(localStorage.SPOONCAST_KR_userInfo));
+}
