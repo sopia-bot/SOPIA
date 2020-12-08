@@ -14,7 +14,6 @@ const https = require('https');
 
 // Download Package
 const Sanilla = require('@sanillajs/sanilla').default;
-const jsonMerger = require('json-merger');
 const rimraf = require('rimraf');
 const axios = require('axios');
 const { app, dialog, process } = require('electron').remote;
