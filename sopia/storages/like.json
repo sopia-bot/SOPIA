@@ -1,3 +1,3 @@
 {
-    "default": e => `${e.author.nickname}님의 좋아요 감사합니다.`
+	"default": e => `${e.author.nickname}(${e.author.tag}) 님 좋아요 감사합니다.`
 }

@@ -1,3 +1,0 @@
-{
-    "defaut": e => `${e.author.nickname}님이 유령으로 들어오셨습니다.`
-}

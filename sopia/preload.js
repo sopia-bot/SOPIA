@@ -10,7 +10,7 @@ String.prototype.replaceAt=function(index, replacement) {
 
 String.prototype.sprintf = function() {
 	let format = this;
-	
+
 	for (let i = 0;i < arguments.length;i++) {
 		let element = arguments[i];
 		format = format.replace(`{${i}}`, element);
@@ -23,7 +23,7 @@ window.s2hms = (s) => {
 	let h = (parseInt(s/3600)).toString();
 	let m = (parseInt((s - (h*3600)) / 60)).toString();
 	let sc = (parseInt((s - (h*3600) - (m*60)))).toString();
-	
+
 	if ( h.length < 2 ) {
 		h = '0' + h;
 	}
@@ -33,7 +33,7 @@ window.s2hms = (s) => {
 	if ( sc.length < 2 ) {
 		sc = '0' + sc;
 	}
-	
+
 	return {
 		h: h,
 		m: m,
@@ -42,16 +42,16 @@ window.s2hms = (s) => {
 };
 
 window.makePlaybar = (current, max) => {
-	const playbar = 
+	const playbar =
 	'{0} {1} {2}\n'+
 	'     ㅤㅤㅤㅤㅤ ◁ㅤㅤ❚❚ㅤㅤ▷ㅤㅤㅤㅤㅤ↻ ⇆';
 	const bar = '────────────';
 	const parseCurrent = s2hms(current);
 	const parseMax = s2hms(max);
-	
+
 	const per = parseInt(current / max * 100);
 	const idx = parseInt(bar.length * per / 100);
-	
+
 	return playbar.sprintf(`${parseCurrent.h}:${parseCurrent.m}:${parseCurrent.s}`,
 	bar.replaceAt(idx, '●'),
 	`${parseMax.h}:${parseMax.m}:${parseMax.s}`);

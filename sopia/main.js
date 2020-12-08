@@ -1,34 +1,20 @@
 sopia.include('./preload.js');
-sopia.api = sopia.import('./api.js');
 
 sopia.storage.load('messages',		'./storages/messages.json');
 sopia.storage.load('permission',	'./storages/permission.json');
 sopia.storage.load('admins',		'./storages/admins.json');
-sopia.storage.load('personal',		'./storages/personal.json');
-sopia.storage.load('blacklist',		'./storages/blacklist.json');
 sopia.storage.load('join',			'./storages/join.json');
 sopia.storage.load('like',			'./storages/like.json');
-sopia.storage.load('shadowjoin',	'./storages/shadowjoin.json');
 sopia.storage.load('present',		'./storages/present.json');
 
-//"!개발자" 이런 문장이 왔을 때, 감지를 해내고
-//!를 삭제하여 "개발자"로 만듦
 isCmd = (e) => {
 	let msg = e.message;
 	if ( msg.indexOf("!") === 0 ) {
-		msg = msg.replace("!", ""); // ! 삭제
+		msg = msg.replace("!", "");
 		e.message = msg;
 		e.cmd = msg.split(' ')[0];
 		e.isCmd = true;
 		e.content = msg.replace(e.cmd, "");
-		return true;
-	}
-	return false;
-};
-
-isBlack = (tag = "") => {
-	let b = sopia.storage.get('blacklist');
-	if ( b.indexOf(tag) !== -1 ) {
 		return true;
 	}
 	return false;
@@ -79,10 +65,6 @@ runCmd = (cmd, e) => {
 };
 
 sopia.on('message', (e) => {
-	if ( isBlack(e.author.tag) ) {
-		return;
-	}
-
 	if ( isCmd(e) ) {
 		//![command]
 		let command = e.cmd;
@@ -104,14 +86,6 @@ sopia.on('message', (e) => {
 			}
 		}
 
-		if ( sendStr === null ) {
-			//personal
-			let cmd = sopia.storage.get('personal.'+command);
-			if ( cmd ) {
-				sendStr = runCmd(cmd, e);
-			}
-		}
-
 		if ( typeof sendStr === "string" ) {
 			sopia.send(sendStr);
 		}
@@ -119,21 +93,13 @@ sopia.on('message', (e) => {
 });
 
 sopia.on('join', (e) => {
-	// 지식에서 join 이라는 지식 안에 default라는 지식을 찾는다.
-	let j = sopia.storage.get('join.default');
-	//runCmd(j,e) 부분은 찾은 지식(명령어) 를 실행
-	let sendStr = runCmd(j, e);	//sendStr에 실행된 명령어를 저장.
-	//ex) e.author.nickname 이 "MOR" 라고 가정하면, 결과 : "MOR님이 등장했노라."
+	let j = sopia.storage.get(`join.${e.author.tag}`);
 
-	if ( typeof sendStr === "string" ) {
-		//sopia.send 가 채팅을 보낸다.
-		sopia.send(sendStr);
+	if ( j == null ) {
+		j = sopia.storage.get(`join.default`);
 	}
-});
 
-sopia.on('shadowjoin', (e) => {
-	let s = sopia.storage.get('shadowjoin.default');
-	let sendStr = runCmd(s, e);
+	let sendStr = runCmd(j, e);
 
 	if ( typeof sendStr === "string" ) {
 		sopia.send(sendStr);
@@ -141,7 +107,12 @@ sopia.on('shadowjoin', (e) => {
 });
 
 sopia.on('like', (e) => {
-	let l = sopia.storage.get('like.default');
+	let l = sopia.storage.get(`like.${e.author.tag}`);
+
+	if ( l == null ) {
+		l = sopia.storage.get(`like.default`);
+	}
+
 	let sendStr = runCmd(l, e);
 
 	if ( typeof sendStr === "string" ) {
@@ -150,10 +121,18 @@ sopia.on('like', (e) => {
 });
 
 sopia.on('present', (e) => {
-	let p = sopia.storage.get('present.default');
+	let p = sopia.storage.get(`present.${e.author.tag}`);
 	let r = p[e.sticker];
 	if ( !r ) {
 		r = p['default'];
+	}
+
+	if ( !r ) {
+		p = sopia.storage.get(`present.default`);
+		let r = p[e.sticker];
+		if ( !r ) {
+			r = p['default'];
+		}
 	}
 
 	let sendStr = runCmd(r, e);
