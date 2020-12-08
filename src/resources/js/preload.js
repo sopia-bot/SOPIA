@@ -764,6 +764,10 @@ const loadScript = (callback) => {
 	document.body.appendChild(script);
 };
 
+const Vue = require(getPath('src/vendors/js/vue.js', true));
+window.VueApp = {};
+
+const TC = require(getPath('src/resources/js/typecast.js', true));
 
 const logDirPath = getPath('./logs');
 if ( !fs.existsSync(logDirPath) ) {

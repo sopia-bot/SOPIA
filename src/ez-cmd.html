@@ -16,11 +16,11 @@
 				padding: 0;
 				overflow: hidden;
 			}
-			#vue-app .uk-tab a {
+			#ezcmd-vue-app .uk-tab a {
 				color: white;
 				font-size: 16pt;
 			}
-			#vue-app .uk-tab > .uk-active > a {
+			#ezcmd-vue-app .uk-tab > .uk-active > a {
 				border-color: #F2B442;
 			}
 			.text-overflow {
@@ -31,8 +31,8 @@
 		</style>
 	</head>
 	<body>
-		<div id="ezcmdTable" name="import-child" class="uk-animation-fade" style="overflow: hidden;" onload="loading();">
-			<div id="vue-app">
+		<div id="ezcmdTable" name="import-child" class="uk-animation-fade" style="overflow: hidden;" onload="EZCMDloading();">
+			<div id="ezcmd-vue-app">
 				<!-- S:Sticker Select Modal -->
 				<div id="sticker-modal" ref="sticker-modal" class="uk-flex-top" uk-modal>
 					<div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
@@ -319,13 +319,12 @@
 							}
 							return newObj;
 						};
-						const loading = () => {
+						const EZCMDloading = () => {
 
-							if ( window.VueApp ) {
+							if ( window.VueApp['EZCMD'] ) {
 								return;
 							}
 
-							const Vue = sopia.require(getPath('src/vendors/js/vue.js', true));
 							var storageRoot = 'sopia/storages';
 							window.EzJoin = 				file2JSON(getPath(storageRoot + '/join.json')).default;
 							window.EzLike = 				file2JSON(getPath(storageRoot + '/like.json')).default;
@@ -374,8 +373,8 @@
 								});
 							}
 
-							window.VueApp = new Vue({
-								el: '#vue-app',
+							window.VueApp['EZCMD'] = new Vue({
+								el: '#ezcmd-vue-app',
 								async created() {
 									this.usingOnOff = !!sopia.config.bundle['custom-onoff'];
 
