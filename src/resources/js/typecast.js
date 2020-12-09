@@ -4,6 +4,7 @@ const { NotiData } = require("sopia-core");
 
 let token = '';
 let voiceList = [];
+let gAccount = null;
 
 const apiUrl = 'https://typecast.ai/api';
 const fbKey = 'AIzaSyA7rq_sg-scoKIMWPbq7MJ-3kGu7W1Uouw';
@@ -21,7 +22,8 @@ const getVoiceList = async () => {
 			authorization: 'Bearer ' + token,
 		},
 	});
-	return res.data.result;
+	voiceList = res.data.result;
+	return voiceList;
 };
 
 const speakPost = async (actor_id, text, option = {}) => {
@@ -75,7 +77,7 @@ const speakGet = async (speakUrls) => {
 	return result;
 };
 
-const speak = (actor, text, option = {}) => {
+const read = (actor, text, option = {}) => {
 	return new Promise(async (resolve, reject) => {
 		const post = await speakPost(actor.actor_id, text, option);
 		let audio;
@@ -201,13 +203,28 @@ const initLogin = async (email, password) => {
 	if ( account ) {
 		const custom = await customToken(account.idToken);
 		const verify = await verifyToken(custom);
-		return account;
+		token = verify.idToken;
+		gAccount = account;
+		return gAccount;
 	}
 };
+
+const isLogin = () => {
+	if ( gAccount ) {
+		return true;
+	}
+	return false;
+}
+
+const getLoginAccount = () => {
+	return gAccount;
+}
 
 module.exports = {
 	getVoiceList,
 	loginAccount,
 	initLogin,
-	speak,
+	read,
+	isLogin,
+	getLoginAccount,
 };

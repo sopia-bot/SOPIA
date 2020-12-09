@@ -22,6 +22,10 @@ const { clipboard, shell, ipcRenderer } = require('electron');
 const spoon = require('sopia-core');
 $sopia = new spoon.Client(navigator.userAgent);
 
+const loaded = {
+	spoor: false,
+};
+
 const orgRequire = require;
 
 window.DEBUG_MODE = false;

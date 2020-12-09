@@ -141,40 +141,49 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 	 * spoorchat을 controls에 import 시킨다.
 	 * display는 nonde으로 둔다.
 	 */
-	document.querySelector('#controls').appendImport('#spoorchat', (parent, target) => {
+	document.querySelector('#controls').appendImport('#spoorchat', async (parent, target) => {
 		target.style.display = "none";
 		target.setAttribute('data-target', 'spoorchat');
 
 
-        /*
-		Object.entries(speech.voices)
-		.forEach(([name, obj]) => {
-			const divider = document.createElement('li');
-			divider.className = "uk-nav-divider";
-
-			const li = document.createElement('li');
-			li.dataset.type = name;
-			li.addEventListener('click', voiceTypeSelect);
-			li.setAttribute('name', 'voiceTypeItems');
-
-			const a = document.createElement('a');
-			a.href = '#';
-			a.innerText = obj.label;
-
-			li.appendChild(a);
-			//document.querySelector('#voiceTypeItem').appendChild(divider);
-			document.querySelector('#voiceTypeItem').appendChild(li);
-        });
-        */
 
 		// 설정값 로딩
 
 		document.querySelector('#enableSpoorChat').checked = sopia.config.spoor.enable;
 		document.querySelector('#minimumSpoon').value = sopia.config.spoor.minspoon;
-		//document.querySelector(`#voiceTypeItem>li[data-type="${sopia.config.spoor.type}"]`).click();
 		document.querySelector('#effectVolume').value = sopia.config.spoor.effectvolume;
 		document.querySelector('#ttsVolume').value = sopia.config.spoor.ttsvolume;
 		document.querySelector('#toutSpoor').value = sopia.config.spoor.toutspoor;
+
+
+		if ( sopia.config.spoor.typecast && sopia.config.spoor.typecast.use ) {
+			const email = sopia.config.spoor.typecast.email;
+			const password = sopia.config.spoor.typecast.password;
+			const user = await TC.initLogin(email, password);
+	
+			if ( user ) {
+				noti.success('로그인 성공', user.email);
+			}
+		}
+	
+		window.TCVoices = await TC.getVoiceList();
+		const tcidx = sopia.config.spoor.tcidx;
+		const type = sopia.config.spoor.type;
+
+		const vtype = document.querySelector('#voiceType');
+		vtype.dataset.type = type;
+		if ( typeof tcidx === 'number' ) {
+			vtype.dataset.tcidx = tcidx;
+		}
+		if ( type === 'typecast' ) {
+			vtype.innerText = 'T: ' + TCVoices[sopia.config.spoor.tcidx].name.ko
+		} else {
+			if ( speech.voices[type] ) {
+				vtype.innerText = speech.voices[type].label;
+			} else {
+				vtype.innerText = type;
+			}
+		}
 
 		// button event setting
 		document.getElementsByName('toggle-body').forEach((element) => {
@@ -212,6 +221,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			appendSignature(k, sopia.config.spoor.signature[k]);
 		});
 
+		loaded['spoor'] = true;
 	});
 
 	/**

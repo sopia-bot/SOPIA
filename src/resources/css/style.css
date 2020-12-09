@@ -18,6 +18,10 @@ nav {
 	background: linear-gradient(0.25turn, #F0D29C, #F2B442);
 }
 
+.uk-tab > .uk-active > a {
+	border-color: #F2B442;
+}
+
 /* style로 지정하면 width에 의해 padding 값이 사라진다. */
 div[name="panel1"] {
 	padding-top: 80px;

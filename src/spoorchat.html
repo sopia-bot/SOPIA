@@ -201,7 +201,8 @@
                         <div v-if="vtab === 'default'" style="max-height: 300px; overflow: auto; padding: 35px;">
                             <div class="uk-child-width-1-2@s" uk-grid>
                                 <div v-for="([key, val], idx) of Object.entries(voices)">
-                                    <div
+									<div
+										@click="selectVoice(key);"
                                         class="uk-card uk-card-default uk-box-shadow-small uk-box-shadow-hover-large"
                                         style="cursor: pointer;">
                                         <div class="uk-card-body">
@@ -213,7 +214,7 @@
                         </div>
                         <div v-else-if="vtab === 'typecast'" style="max-height: 300px; overflow: auto; padding: 35px;">
                             <!-- S: Login -->
-                            <div class="uk-container">
+                            <div v-if="!user" class="uk-container">
                                 <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
                                     <div class="uk-width-1-1@m">
                                         <div style="width: 70%; margin: auto;">
@@ -237,12 +238,42 @@
 
                                             <button class="uk-button uk-button-spoon uk-button-large uk-width-1-1" @click="TCLogin">로그인</button>
 
-                                            <p style="color: #cfcfcf; font-size: 7pt;">해당 기능은 <a style="color: #F0D29C;" href="https://typecast.ai/" target="_blank">Typecast</a>의 비공식 API를 사용하며, 소피아는 이 기능에 대해 책임을 지지 않습니다.</p>
+                                            <p style="color: #cfcfcf; font-size: 7pt;">해당 기능은 <a style="color: #F0D29C;" href="https://typecast.ai/" target="_blank">Typecast</a>의 비공식 API를 사용하며, 소피아는 이 기능을 사용함으로서 일어난 모든 일에 책임을 지지 않습니다.</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- E: Login -->
+							<!-- E: Login -->
+							<!-- S: Voice -->
+							<div v-else class="uk-container">
+								<div v-if="renderer" class="uk-child-width-1-2@s" uk-grid>
+									<div v-for="(voice, idx) of tcVoices" :key="voice.actor_id" v-if="voice.language == 'ko-kr'">
+										<div
+											@click="selectTCVoice(idx)"
+											class="uk-card uk-card-default uk-box-shadow-small uk-box-shadow-hover-large"
+											style="cursor: pointer;">
+											<div class="uk-card-body uk-flex" style="align-items: center;">
+												<div class="uk-width-auto">
+													<img class="uk-border-circle" width="50" height="50" :src="voice.img_url">
+												</div>
+												<div style="margin-left: 1rem;">
+													<h3 style="margin: 0; font-size: 1rem;">{{ voice.name.ko }}</h3>
+												</div>
+												<div style="margin-left: auto;">
+													<p style="margin: 0;">
+														<a
+															@click.stop="playTCVoice(idx)"
+															:class="voice.playing ? 'uk-text-warning' : 'uk-text-success'"
+															class="uk-icon-button uk-margin-small-right"
+															:uk-icon="voice.playing ? 'ban' : 'play'"></a>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- E: Voice -->
                         </div>
 					</div>
 				</div>

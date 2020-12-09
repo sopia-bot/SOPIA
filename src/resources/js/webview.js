@@ -100,10 +100,10 @@ const browserEvent = async (evt) => {
 	}
 };
 
-document.querySelectorAll('webview').forEach((element, idx) => {
+window.addEventListener('DOMContentLoaded', () => {
 
     //webview에서 받은 콘솔로그를 출력하지만, 그것이 라이브의 이벤트일 경우는 라이브 이벤트로 처리한다.
-    element.addEventListener('console-message', (e) => {
+    webview.addEventListener('console-message', (e) => {
         try {
             switch(e.level) {
                 case -1: {
@@ -125,14 +125,14 @@ document.querySelectorAll('webview').forEach((element, idx) => {
     });
 
     //webview의 로딩이 끝났을 때, BrowserInject.js 를 추가한다.
-    element.addEventListener('dom-ready', () => {
+    webview.addEventListener('dom-ready', () => {
         //3초 이내는 브라우저 로딩을 단 한 번으로 친다.
-        if ( element.isLoaded ) {
+        if ( webview.isLoaded ) {
             return;
         }
-        element.isLoaded = true;
+        webview.isLoaded = true;
         setTimeout(() => {
-            element.isLoaded = false;
+            webview.isLoaded = false;
         }, 3000);
 
 		sopia.wlog('INFO', 'Webview dom-ready.');
@@ -141,16 +141,16 @@ document.querySelectorAll('webview').forEach((element, idx) => {
             if ( err ) {
                 throw err;
             }
-            element.executeJavaScript(data);
+            webview.executeJavaScript(data);
             if ( sopia.config.autologin.enable ) {
                 if ( sopia.config.devel && sopia.config.devel["토큰"] ) {
                     //do not autologin
                 } else {
-                    element.executeJavaScript(`autoLogin('${sopia.config.autologin.type}', '${sopia.config.autologin.id}', '${sopia.config.autologin.passwd}')`);
+                    webview.executeJavaScript(`autoLogin('${sopia.config.autologin.type}', '${sopia.config.autologin.id}', '${sopia.config.autologin.passwd}')`);
                 }
             }
         });
     });
 
-});
 
+});
