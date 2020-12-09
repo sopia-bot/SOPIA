@@ -1,0 +1,30 @@
+{
+	"sopia": {
+		"autostart": false,
+		"onlymanager": true,
+		"limitoff": true,
+		"default-url": "https://spooncast.net"
+	},
+	"autologin": {
+		"enable": false,
+		"id": "",
+		"passwd": "",
+		"type": "phone"
+	},
+	"api-url": "https://sopia-bot.firebaseio.com",
+	"license": {},
+	"spoor": {
+		"enable": false,
+		"type": "minji",
+		"minspoon": "1",
+		"effectvolume": "50",
+		"ttsvolume": "100",
+		"toutspoor": "30",
+		"signature": {},
+		"typecast": {},
+		"tcidx": 4
+	},
+	"bundle": {},
+	"version": "1.8.0",
+	"size": {}
+}
