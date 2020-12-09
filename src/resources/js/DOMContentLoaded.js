@@ -164,9 +164,9 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			if ( user ) {
 				noti.success('로그인 성공', user.email);
 			}
+			window.TCVoices = await TC.getVoiceList();
 		}
 	
-		window.TCVoices = await TC.getVoiceList();
 		const tcidx = sopia.config.spoor.tcidx;
 		const type = sopia.config.spoor.type;
 

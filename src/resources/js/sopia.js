@@ -4,6 +4,8 @@
 //  주석 : sopia 객체를 생성하는 스크립트                       //
 ///////////////////////////////////////////////////////////////
 
+const { LiveEvent } = require('sopia-core');
+
 /**
  * @sopia 의 객체를 생성한다.
  * 기본적으로 EventEmitter을 사용하여 스푼에서 받은 이벤트를 처리한다.
@@ -497,24 +499,40 @@ sopia.itv.add('spoorchat', () => {
 						} else {
 							if ( arg.trim() !== "" ) {
 								sopia.debug("Run tts", arg.trim());
+								let useTypecast = false;
+								let tcidx = sopia.config.spoor.tcidx;
 
-
-								sopia.tts.read(arg.trim(), voiceType).then(buf => {
-									if ( !readStack.includes(buf) ) {
-										readStack[idx] = buf;
-									} else {
-										// 이전과 동일한 tts로 나올 시 1회만 더 실행
-										sopia.debug("I find matched file. 1 time retry. idx", idx);
-										sopia.tts.read(arg.trim(), voiceType).then(buf => {
-											sopia.debug("success get buf. idx", idx);
-											readStack[idx] = buf;
-										});
+								if ( voiceType === 'random' ) {
+									if ( sopia.config.spoor.typecast.use ) {
+										if ( sopia.api.rand(2) === 0 ) {
+											useTypecast = true;
+											tcidx = sopia.api.rand(TCVoices.length);
+										}
 									}
-								}).catch((err) => {
-									sopia.tts.isrun = false;
-									console.error(err);
-									return;
-								});
+								}
+
+								if ( useTypecast || sopia.config.spoor.type === 'typecast' ) {
+									TC.read(TCVoices[tcidx], arg.trim()).then(buf => {
+										readStack[idx] = buf;
+									});
+								} else {
+									sopia.tts.read(arg.trim(), voiceType).then(buf => {
+										if ( !readStack.includes(buf) ) {
+											readStack[idx] = buf;
+										} else {
+											// 이전과 동일한 tts로 나올 시 1회만 더 실행
+											sopia.debug("I find matched file. 1 time retry. idx", idx);
+											sopia.tts.read(arg.trim(), voiceType).then(buf => {
+												sopia.debug("success get buf. idx", idx);
+												readStack[idx] = buf;
+											});
+										}
+									}).catch((err) => {
+										sopia.tts.isrun = false;
+										console.error(err);
+										return;
+									});
+								}
 							} else {
 								readStack[idx] = "no run";
 							}
@@ -695,10 +713,9 @@ const devMessage = (data, event) => {
  */
 const nextTick = [];
 sopia.onmessage = async (e) => {
+	sopiaProcesser(e);
 	try {
 		let data = e.data;
-		console.log('message', e);
-
 
 		if ( nextTick.length > 0 ) {
 			let func = nextTick.shift();
