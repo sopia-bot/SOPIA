@@ -36,8 +36,13 @@ const SPOORCHATloading = () => {
                     AllSettingSave(sopia.config, null, true);
 
                     noti.success('로그인 성공', user.email);
+
+                    if ( !window.TCVoices ) {
+                        window.TCVoices = await TC.getVoiceList();
+                    }
                     this.tcVoices = window.TCVoices;
                     this.user = user;
+                    this.voiceListReload();
                 }
             },
             async playTCVoice(idx) {

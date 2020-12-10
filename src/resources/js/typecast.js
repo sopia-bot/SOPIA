@@ -1,6 +1,6 @@
-const console = require("console");
-const { fstat } = require("fs");
+const fs = require("fs");
 const { NotiData } = require("sopia-core");
+const httpReq = require('request');
 
 let token = '';
 let voiceList = [];
@@ -99,8 +99,6 @@ const read = (actor, text, option = {}) => {
 		});
 		
 		const wavUrl = res.data.result;
-
-		//const wavRes = await axios.get(wavUrl);
 		
 		const fname = "typecast-tts-" + new Date().getTime() + new Date().getMilliseconds() + '.wav';
 		const writable = fs.createWriteStream(fname);

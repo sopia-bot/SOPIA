@@ -9,7 +9,7 @@ const browserEvent = async (evt) => {
 		return;
 	}
 
-	sopia.debug(`[${evt.event.trim()}]`, evt.data);
+	//sopia.debug(`[${evt.event.trim()}]`, evt.data);
 	switch ( evt.event.trim() ) {
 
 		case 'snsLoginCallback':
@@ -23,6 +23,7 @@ const browserEvent = async (evt) => {
 
 		case 'live_join':
 			try {
+
 			if ( evt.data.type === spoon.LiveType.LIVE_RSP ) {
 				if ( !$sopia.user ) {
 					const user = await webview.executeJavaScript('localStorage.SPOONCAST_KR_userInfo');
@@ -44,7 +45,15 @@ const browserEvent = async (evt) => {
 				}
 				sopia.sock = await $sopia.liveManager.liveJoin(liveId);
 				sopia.sock.on(spoon.LiveEvent.LIVE_EVENT_ALL, sopia.onmessage);
-				sopia.me = $sopia.user;
+                sopia.me = $sopia.user;
+                
+                
+            
+                // update props
+                webview.executeJavaScript('getProps()')
+                .then(d => {
+                    sopia.props = d;
+                });
 
 				writeLog('SUCCESS', `Live join success (${liveId})`);
 

@@ -39,6 +39,8 @@ process.argv.forEach((arg) => {
 	}
 });
 
+asleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 //"yyyymmdd"
 Date.prototype.yyyymmdd = function(flag_) {
 	const flag = flag_ ? flag_ : "";
