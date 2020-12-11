@@ -358,9 +358,10 @@ sopia.send = (msg) => {
 							sopia.msgQ.push(m);
 							m = '';
 						}
-						m += smsg.shift() + '\n';
+						m += smsg.shift() + '\\n';
 					}
-				}
+                }
+                sopia.msgQ.push(m);
 			}
 			sopia.RealSendChat();
 		}
@@ -370,9 +371,9 @@ sopia.send = (msg) => {
 sopia.isSending = false;
 sopia.RealSendChat = () => {
 	if ( sopia.isSending === false ) {
-		sopia.isSending = true;
+        sopia.isSending = true;
 		while ( sopia.msgQ.length > 0 ) {
-			const msg = sopia.msgQ.shift();
+            const msg = sopia.msgQ.shift();
 			if ( typeof msg === "string" && msg.length > 0 ) {
                 sopia.sock.message(msg);
                 setTimeout(() => {
