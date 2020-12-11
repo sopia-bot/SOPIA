@@ -14,15 +14,16 @@
 	"api-url": "https://sopia-bot.firebaseio.com",
 	"license": {},
 	"spoor": {
-		"enable": false,
+		"enable": true,
 		"type": "minji",
 		"minspoon": "1",
 		"effectvolume": "50",
 		"ttsvolume": "100",
 		"toutspoor": "30",
 		"signature": {},
+		"randsel": [],
 		"typecast": {},
-		"tcidx": 4
+		"tcidx": 0
 	},
 	"bundle": {},
 	"version": "1.8.0",
