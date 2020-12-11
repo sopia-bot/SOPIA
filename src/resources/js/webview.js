@@ -64,7 +64,7 @@ const browserEvent = async (evt) => {
 				writeLog('SUCCESS', `Live join success (${liveId})`);
 
 				if ( !window.DEBUG_MODE ) {
-					if ( sopia.client.user.tag.toString() !== config.license.id.toString() ) {
+					if ( sopia.me.tag.toString() !== config.license.id.toString() ) {
 						// 라이센스 id 와 로그인 한 id가 다르다면,
 						window.location.assign('license.html?noti=로그인 한 계정과 인증 계정이 다릅니다.');
 					}
