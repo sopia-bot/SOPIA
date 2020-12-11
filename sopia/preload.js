@@ -80,7 +80,7 @@ if ( fs.existsSync(presentPath) ) {
 
                 for ( const sticker of category.stickers ) {
                     if ( !sticker.is_used ) continue;
-                    stickers[sticker.name] = eval(`e => \`${sticker.title}: ${sticker.description}\``);
+                    stickers[sticker.name] = null;
                 }
             });
             const mergedSticker = stickers;

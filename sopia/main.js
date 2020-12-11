@@ -22,7 +22,7 @@ isCmd = (e) => {
 
 isAdmin = (author = "") => {
 	let a = sopia.storage.get('admins');
-	if ( a.indexOf(author.tag) !== -1 ) {
+	if ( Array.isArray(a) && a.indexOf(author.tag) !== -1 ) {
 		return true; //참/거짓 할때의 참.
 	}
 
@@ -122,14 +122,17 @@ sopia.on('like', (e) => {
 
 sopia.on('present', (e) => {
 	let p = sopia.storage.get(`present.${e.author.tag}`);
-	let r = p[e.sticker];
-	if ( !r ) {
-		r = p['default'];
-	}
+    let r = null;
+    if ( p ) {
+        r = p[e.sticker];
+        if ( !r ) {
+            r = p['default'];
+        }
+    }
 
 	if ( !r ) {
 		p = sopia.storage.get(`present.default`);
-		let r = p[e.sticker];
+		r = p[e.sticker];
 		if ( !r ) {
 			r = p['default'];
 		}
