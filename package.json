@@ -47,6 +47,6 @@
 		"open": "^7.3.0",
 		"request": "^2.88.2",
 		"rimraf": "^3.0.2",
-		"sopia-core": "^1.4.6"
+		"sopia-core": "^1.4.8"
 	}
 }
