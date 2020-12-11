@@ -96,3 +96,10 @@ if ( fs.existsSync(presentPath) ) {
             fs.writeFileSync(presentPath, fullStringify(rtn), {encoding: 'utf8'});
         });
 }
+
+window.updateProps = () => {
+	document.querySelector('#webview').executeJavaScript('getProps()')
+	.then(d => {
+		sopia.var.props = d;
+	});
+};
