@@ -9,7 +9,7 @@ const browserEvent = async (evt) => {
 		return;
 	}
 
-	//sopia.debug(`[${evt.event.trim()}]`, evt.data);
+	//console.log(`[${evt.event.trim()}]`, evt.data);
 	switch ( evt.event.trim() ) {
 
 		case 'snsLoginCallback':
@@ -19,7 +19,14 @@ const browserEvent = async (evt) => {
 			const user = spoon.User.deserialize(evt.data);
 			const token = await webview.executeJavaScript('localStorage.SPOONCAST_KR_authKey');
 			sopia.debug('login', await $sopia.loginToken(user, token.replace('Bearer ', '')));
-			break;
+            break;
+        
+        case 'SOCKET_LIVE_LEAVE':
+            if ( sopia.sock ) {
+                sopia.sock.destroy();
+                sopia.sock = null;
+            }
+            break;
 
 		case 'live_join':
 			try {

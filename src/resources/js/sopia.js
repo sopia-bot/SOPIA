@@ -29,9 +29,6 @@ sopia.api = {
 			const reqMembers = (url) => {
 				sopia.modules.axios({
 					url,
-					headers: {
-						'user-agent': "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
-					}
 				}).then(res => {
 					const data = res.data;
 					members = members.concat(data.results);
@@ -51,7 +48,6 @@ sopia.api = {
 				if ( sopia.live && sopia.live.id ) {
 					sopia.modules.axios({
 						headers: {
-							'user-agent': "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
 							"authorization": sopia.props.authKey
 						},
 						method: 'post',
@@ -334,6 +330,7 @@ sopia.msgQ = [];
 sopia.send = (msg) => {
 	if ( typeof msg === 'string' ) {
 		if ( msg.length > 0 ) {
+            msg = msg.replace(/"/g, '\\"');
 			const limit = 100;
 			const smsg = msg.split('\n');
 			if ( smsg.length === 1 ) {
@@ -373,7 +370,7 @@ sopia.RealSendChat = () => {
 	if ( sopia.isSending === false ) {
         sopia.isSending = true;
 		while ( sopia.msgQ.length > 0 ) {
-            const msg = sopia.msgQ.shift();
+            const msg = sopia.msgQ.shift().replace(/[\s|\\n]+$/, '');
 			if ( typeof msg === "string" && msg.length > 0 ) {
                 sopia.sock.message(msg);
                 setTimeout(() => {
@@ -576,6 +573,10 @@ sopia.itv.add('dev-spoorchat', async () => {
                         useRandSelIdx.push(idx);
                     }
                 });
+            }
+
+            if ( useRandSelIdx.length === 0 ) {
+                useRandSelIdx = sopia.config.spoor.randsel;
             }
 
             const ridx = sopia.api.rand(useRandSelIdx.length);
