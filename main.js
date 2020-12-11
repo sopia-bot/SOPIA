@@ -3,7 +3,6 @@ const {app, BrowserWindow, session, ipcMain, dialog} = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 const axios = require('axios');
-const open = require('open');
 
 
 global.DEBUG_MODE = false;
@@ -77,7 +76,6 @@ const checkUpdate = async (version = '') => {
 	const res = await axios.get('https://sopia-bot.firebaseio.com/app/update/version.json');
 	const newVer = res.data.replace(/^\"|\"$/, '');
 	if ( verCompaire(version, newVer) == -1 ) {
-        open(`https://sopia-bot.github.io/release/#${newVer}`);
 		const child = spawn(getPath('SOPIAUpdater.exe'), [ getPath('/') ], {
 			detached: true,
 			stdio: [ 'ignore', 'ignore', 'ignore' ],
