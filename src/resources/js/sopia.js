@@ -762,7 +762,7 @@ sopia.onmessage = async (e) => {
 			}
         }
         
-		if ( data.author.tag === sopia.me.tag ) {
+		if ( e.event !== LiveEvent.LIVE_MESSAGE && data.author.tag === sopia.me.tag ) {
 			return;
 		}
 
