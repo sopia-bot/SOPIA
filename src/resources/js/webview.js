@@ -38,11 +38,17 @@ const browserEvent = async (evt) => {
 					}
 				}
 
+				// mute sound
+				setTimeout(() => {
+					webview.executeJavaScript('toggleMute()');
+				}, 100);
+
 				const liveId = evt.data.live_id;
 				let sock = $sopia.liveSocketMap.get(liveId);
 				if ( sock ) {
 					sock.destroy();
-				}
+                }
+
 				sopia.sock = await $sopia.liveManager.liveJoin(liveId);
 				sopia.sock.on(spoon.LiveEvent.LIVE_EVENT_ALL, sopia.onmessage);
                 sopia.me = $sopia.user;
@@ -95,11 +101,6 @@ const browserEvent = async (evt) => {
 					sopia.debug("fail!");
 					sopia.error(err);
 				});
-
-				// mute sound
-				setTimeout(() => {
-					webview.executeJavaScript('toggleMute()');
-				}, 100);
 			}
 			} catch(err) {
 				console.error(err);

@@ -1,5 +1,31 @@
 let audioPlayer = null;
 
+const createRandSel = () => {
+    const randsel = [];
+    for ( const [key, val] of Object.entries(speech.voices) ) {
+        randsel.push({
+            type: 'default',
+            val: key,
+            label: val.label,
+            use: false,
+        });
+    }
+
+    if ( sopia.config.spoor.typecast && sopia.config.spoor.typecast.use ) {
+        TCVoices.forEach((voice, idx) => {
+            if ( voice.language === 'ko-kr' ) {
+                randsel.push({
+                    type: 'typecast',
+                    val: idx,
+                    label: voice.name.ko,
+                    use: false,
+                });
+            }
+        });
+    }
+    return randsel;
+}
+
 const SPOORCHATloading = () => {
 	if ( window.VueApp['SPOORCHAT'] ) {
 		return;
@@ -8,6 +34,16 @@ const SPOORCHATloading = () => {
     if ( loaded['spoor'] === false ) {
         setTimeout(SPOORCHATloading, 200);
         return;
+    }
+
+    const newRandSel = createRandSel();
+    if ( !sopia.config.spoor.randsel ) {
+        sopia.config.spoor.randsel = newRandSel;
+    } else if ( sopia.config.spoor.randsel.length != newRandSel.length ) {
+        sopia.config.spoor.randsel.forEach((r, idx) => {
+            newRandSel.use = r.use;
+        });
+        sopia.config.spoor.randsel = newRandSel;
     }
 
 	window.VueApp['SPOORCHAT'] = new Vue({
@@ -92,6 +128,35 @@ const SPOORCHATloading = () => {
                 sopia.config.spoor.tcidx = idx;
                 UIkit.modal('#voice-modal').hide();
             },
+            async apply() {
+                if ( this.vtab === 'random' ) {
+                    const vtype = document.querySelector('#voiceType');
+                    vtype.dataset.type = 'random';
+                    vtype.innerText = '랜덤';
+
+                    sopia.config.spoor.type = 'random';
+                    sopia.config.spoor.randsel = this.randsel;
+                    UIkit.modal('#voice-modal').hide();
+                }
+            },
+            isAllSel() {
+                for ( let i = 0;i < this.randsel.length;i++ ) {
+                    if ( !this.randsel[i].use ) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            allSelect() {
+                let val = true;
+                if ( this.isAllSel() ) {
+                    val = false;
+                }
+                for ( let i = 0;i < this.randsel.length;i++ ) {
+                    this.randsel[i].use = val;
+                }
+                this.voiceListReload();
+            }
         },
 		data() {
             return {
@@ -102,6 +167,8 @@ const SPOORCHATloading = () => {
                 tcPw: '',
                 user: null,
                 renderer: true,
+                randAll: false,
+                randsel: sopia.config.spoor.randsel,
             };
         },
 	});

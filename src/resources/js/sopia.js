@@ -374,8 +374,11 @@ sopia.RealSendChat = () => {
 		while ( sopia.msgQ.length > 0 ) {
 			const msg = sopia.msgQ.shift();
 			if ( typeof msg === "string" && msg.length > 0 ) {
-				sopia.sock.message(msg);
-				webview.executeJavaScript('addChatBox(`'+msg.replace(/`/g, '\\`').replace(/\$/g, '\\$')+'`);');
+                sopia.sock.message(msg);
+                setTimeout(() => {
+                    // node 소켓이 더 빠르기 때문에 딜레이를 맞춰주기 위함
+                    webview.executeJavaScript('addChatBox(`'+msg.replace(/`/g, '\\`').replace(/\$/g, '\\$')+'`);');
+                }, 100);
 			}
 		}
 		sopia.isSending = false;
@@ -565,20 +568,20 @@ sopia.itv.add('dev-spoorchat', async () => {
 
         // select voice type
         if ( voiceType === "random" ) {
-            if ( sopia.config.spoor.typecast.use ) {
-                if ( sopia.api.rand(2) === 0 ) {
-                    useTypecast = true;
-                    tcidx = sopia.api.rand(TCVoices.length);
-                    selVoice = true;
-                }
+            const useRandSelIdx = [];
+            if ( Array.isArray(sopia.config.spoor.randsel) ) {
+                sopia.config.spoor.randsel.forEach((rand, idx) => {
+                    if ( rand.use ) {
+                        useRandSelIdx.push(idx);
+                    }
+                });
             }
 
-            if ( selVoice === false ) {
-                let voiceList = Object.keys(sopia.tts.voices);
-                let idx = sopia.api.rand(voiceList.length);
-                
-                voiceType = voiceList[idx];
-            }
+            const ridx = sopia.api.rand(useRandSelIdx.length);
+            const sel = sopia.config.spoor.randsel[useRandSelIdx[ridx]];
+
+            useTypecast = (sel.type === 'typecast');
+            voiceType = tcidx = sel.val;
         }
 
 
@@ -609,7 +612,9 @@ sopia.itv.add('dev-spoorchat', async () => {
                         await spoorSpeech(b64snd, sopia.config.spoor.ttsvolume * 0.01);
                         speechIdx++;
                     } catch(err) {
-                        console.error(err);
+                        if ( err ) {
+                            console.error(err);
+                        }
                         break;
                     }
 
@@ -688,7 +693,8 @@ const devMessage = (data, event) => {
 
 			if ( isCmd(e) ) {
 				if ( e.cmd === "tts" ) {
-					sopia.tts.stack.push({ message: e.content });
+                    sopia.tts.stack.push({ message: e.content });
+                    sopia.send(`스택 추가 완료 [${e.content}]`);
 					rtn = false;
 				} else if ( e.cmd === "adminme" ) {
 					isAdmin = (author = "") => {
@@ -741,9 +747,9 @@ const nextTick = [];
 sopia.onmessage = async (e) => {
 	try {
         let data = e.data;
-        console.log('[onmessage]', e);
+        sopia.debug('[onmessage]', e);
         
-        if ( e.event === LiveEvent.LIVE_RANK ) {
+        if ( e.event === LiveEvent.LIVE_RANK || e.userAgent === 'Server' ) {
             return;
         }
 
