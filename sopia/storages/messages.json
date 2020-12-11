@@ -1,2 +1,13 @@
 {
+	"바보": e => `나는 ${e.author.nickname}님 밖에 모르는 바보~`,
+	"나이": `SOPIA는 2019년 6월 20일 프로젝트가 생성되었습니다.`,
+	"개발자": `소피아의 아빠는 개발자 윤군입니다.`,
+	"명령어": e => {
+		let keys = Object.keys(sopia.storage.get('messages'));
+		let idx = keys.indexOf('__loaded_file__');
+		if ( idx > 0 ) {
+			keys.splice(idx, 1);
+		}
+		return keys.join(', ');
+	},
 }
