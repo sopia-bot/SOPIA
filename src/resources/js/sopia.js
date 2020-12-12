@@ -373,10 +373,12 @@ sopia.RealSendChat = () => {
             const msg = sopia.msgQ.shift().replace(/[\s|\\n]+$/, '');
 			if ( typeof msg === "string" && msg.length > 0 ) {
                 sopia.sock.message(msg);
-                setTimeout(() => {
-                    // node 소켓이 더 빠르기 때문에 딜레이를 맞춰주기 위함
-                    webview.executeJavaScript('addChatBox(`'+msg.replace(/`/g, '\\`').replace(/\$/g, '\\$')+'`);');
-                }, 100);
+                if ( sopia.me.id !== sopia.live.author.id ) {
+                    setTimeout(() => {
+                        // node 소켓이 더 빠르기 때문에 딜레이를 맞춰주기 위함
+                        webview.executeJavaScript('addChatBox(`'+msg.replace(/`/g, '\\`').replace(/\$/g, '\\$')+'`);');
+                    }, 100);
+                }
 			}
 		}
 		sopia.isSending = false;

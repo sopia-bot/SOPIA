@@ -28,10 +28,12 @@ const browserEvent = async (evt) => {
             }
             break;
 
+        case 'live_shadowjoin':
 		case 'live_join':
 			try {
 
-			if ( evt.data.type === spoon.LiveType.LIVE_RSP ) {
+            if ( evt.data.type === spoon.LiveType.LIVE_RSP ||
+                (($sopia.user && evt.data.author) && evt.data.author.id === $sopia.user.id) ) {
 				if ( !$sopia.user ) {
 					const user = await webview.executeJavaScript('localStorage.SPOONCAST_KR_userInfo');
 					if ( user ) {
@@ -50,7 +52,15 @@ const browserEvent = async (evt) => {
 					webview.executeJavaScript('toggleMute()');
 				}, 100);
 
-				const liveId = evt.data.live_id;
+                const liveId = evt.data.live_id;
+                if ( !liveId ) {
+                    liveId = evt.data.live && evt.data.live_id;
+                }
+
+                if ( !liveId ) {
+                    return;
+                }
+                
 				let sock = $sopia.liveSocketMap.get(liveId);
 				if ( sock ) {
 					sock.destroy();
