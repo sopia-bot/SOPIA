@@ -3,7 +3,8 @@ const {app, BrowserWindow, session, ipcMain, dialog} = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 const axios = require('axios');
-
+const https = require('https');
+const fs = require('fs');
 
 global.DEBUG_MODE = false;
 process.argv.forEach((arg) => {
@@ -76,7 +77,7 @@ const checkUpdate = async (version = '') => {
 	const res = await axios.get('https://sopia-bot.firebaseio.com/app/update/version.json');
 	const newVer = res.data.replace(/^\"|\"$/, '');
 	if ( verCompaire(version, newVer) == -1 ) {
-		const child = spawn(getPath('SOPIAUpdater.exe'), [ getPath('/') ], {
+		const child = spawn(getPath('SOPIAUpdater.exe'), [ getPath('/'), newVer ], {
 			detached: true,
 			stdio: [ 'ignore', 'ignore', 'ignore' ],
 		});
@@ -84,6 +85,28 @@ const checkUpdate = async (version = '') => {
 		process.exit(0);
 	}
 };
+
+const checkUpdaterVer = (version = '1.0.0') => {
+    return new Promise(async (resolve, reject) => {
+        const { data } = await axios.get('https://sopia-bot.firebaseio.com/app/updater.json');
+        const newVer = data.version;
+        if ( verCompaire(version, newVer) == -1 ) {
+            console.log(`Download updater... ${version} to ${newVer}.`);
+            const file = fs.createWriteStream(getPath('SOPIAUpdater.exe'));
+            const req = https.get(data.url, (res) => {
+                res.pipe(file);
+                res.on('end', () => {
+                    config.upver = newVer;
+                    fs.writeFileSync(getPath('config.json'), JSON.stringify(config, null, '\t'), 'utf8');
+                    resolve();
+                });
+            });
+            req.on('error', reject);
+        } else {
+            resolve();
+        }
+    });
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -208,6 +231,7 @@ function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+    await checkUpdaterVer(config.upver);
 	await checkUpdate(config.version);
 	createWindow();
 });
