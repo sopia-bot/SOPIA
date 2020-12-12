@@ -24,6 +24,7 @@ namespace SOPIAUpdater
 	{
 		private const string ApiUrl = "https://sopia-bot.firebaseio.com";
 		private string BasePath = "./";
+		private string reqVer = "latest";
 
 		static string GetMd5Hash( MD5 md5Hash, string input )
 		{
@@ -100,12 +101,20 @@ namespace SOPIAUpdater
 			InitializeComponent();
 
 			string[] args = Environment.GetCommandLineArgs();
-			if ( args.Length >= 2 ) {
+			if ( args.Length >= 3 ) {
 				string bp = args[1];
 				if ( bp[bp.Length - 1] != '/' ) {
 					bp += "/";
 				}
 				BasePath = bp;
+
+				reqVer = args[2];
+				if ( reqVer == "latest" ) {
+					reqVer = DBGetStr( "/app/update/version.json" );
+				}
+			} else {
+				MessageBox.Show( "실행에 필요한 인자가 부족합니다.", "알림" );
+				System.Windows.Application.Current.Shutdown();
 			}
 		}
 
@@ -122,44 +131,17 @@ namespace SOPIAUpdater
 		}
 
 
-		private bool UpdateNeedCheck()
-		{
-			if ( File.Exists(GetSPath("/config.json")) ) {
-				JObject cfg = JObject.Parse( File.ReadAllText( GetSPath( "/config.json" ) ) );
-				string nowVer = cfg["version"].ToString();
-				string newVer = DBGetStr("/app/update/version.json");
-
-				Console.Write( nowVer, newVer );
-
-				string[] nowVS = nowVer.Split('.');
-				string[] newVS = newVer.Split('.');
-
-				if ( Int32.Parse(nowVS[0]) < Int32.Parse(newVS[0]) ) {
-					return true;
-				} else {
-					if ( Int32.Parse(nowVS[1]) < Int32.Parse(newVS[1])) {
-						return true;
-					} else {
-						if ( Int32.Parse(nowVS[2]) < Int32.Parse(newVS[2])) {
-							return true;
-						}
-					}
-				}
-			}
-			return false;
-		}
-
 		private async Task DoUpdate()
 		{
-			JArray dep = DBGetArr( "/app/update/dep.json" );
+			JArray dep = DBGetArr( "/app/update/"+reqVer.Replace('.', '-')+".json" );
 			WebClient client = new WebClient();
 
 			UpdateProgress.Maximum = dep.Count;
-			for ( int i=0;i<dep.Count;i++ ) {
+			for ( int i = 0; i < dep.Count; i++ ) {
 				JObject info = dep[i] as JObject;
 				string target = GetSPath(info["name"].ToString());
 				bool update = false;
-				if ( File.Exists(target) ) {
+				if ( File.Exists( target ) ) {
 					string hash = ToMD5( target );
 					if ( hash != info["hash"].ToString() ) {
 						update = true;
@@ -169,10 +151,14 @@ namespace SOPIAUpdater
 				}
 
 				if ( update ) {
-					DescLabel.Content = Path.GetFileName(target) + "을(를) 다운받습니다.";
+					string dir = Path.GetDirectoryName(target);
+					if ( !Directory.Exists( dir ) ) {
+						Directory.CreateDirectory( dir );
+					}
+					DescLabel.Content = Path.GetFileName( target ) + "을(를) 다운받습니다.";
 					client.DownloadFile( info["url"].ToString(), target );
 				} else {
-					DescLabel.Content = Path.GetFileName(target) + "은(는) 최신 파일입니다.";
+					DescLabel.Content = Path.GetFileName( target ) + "은(는) 최신 파일입니다.";
 				}
 				await Task.Delay( 200 );
 
@@ -185,24 +171,20 @@ namespace SOPIAUpdater
 			}
 
 			JObject cfg = JObject.Parse( File.ReadAllText( GetSPath( "/config.json" ) ) );
-			cfg["version"] = DBGetStr( "/app/update/version.json" );
+			cfg["version"] = reqVer;
 
-			File.WriteAllText( GetSPath( "/config.json"), cfg.ToString() );
+			File.WriteAllText( GetSPath( "/config.json" ), cfg.ToString() );
 		}
 
 		private async void Window_ContentRendered( object sender, EventArgs e )
 		{
-			DescLabel.Content = "새로운 버전을 확인합니다.";
+			DescLabel.Content = reqVer + " 버전을 확인합니다.";
 			await Task.Delay( 2000 );
-			if ( UpdateNeedCheck() ) {
-				DescLabel.Content = "새로운 버전을 다운받습니다.";
-				await DoUpdate();
-				DescLabel.Content = "업데이트를 완료했습니다.";
-			} else {
-				UpdateProgress.Value = UpdateProgress.Maximum;
-				ProgressLabel.Content = "100%";
-				DescLabel.Content = "이미 최신 버전입니다.";
-			}
+			
+			await DoUpdate();
+			
+			DescLabel.Content = "업데이트를 완료했습니다.";
+
 			await Task.Delay( 2000 );
 			this.Close();
 			System.Windows.Application.Current.Shutdown();
