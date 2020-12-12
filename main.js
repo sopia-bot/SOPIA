@@ -77,12 +77,17 @@ const checkUpdate = async (version = '') => {
 	const res = await axios.get('https://sopia-bot.firebaseio.com/app/update/version.json');
 	const newVer = res.data.replace(/^\"|\"$/, '');
 	if ( verCompaire(version, newVer) == -1 ) {
-		const child = spawn(getPath('SOPIAUpdater.exe'), [ getPath('/'), newVer ], {
-			detached: true,
-			stdio: [ 'ignore', 'ignore', 'ignore' ],
-		});
-		child.unref();
-		process.exit(0);
+        console.log('Confirm new version.', newVer);
+        if ( !config['version-fix'] ) {
+            const child = spawn(getPath('SOPIAUpdater.exe'), [ getPath('/'), newVer ], {
+                detached: true,
+                stdio: [ 'ignore', 'ignore', 'ignore' ],
+            });
+            child.unref();
+            process.exit(0);
+        } else {
+            console.log('But do not update. version fix', version);
+        }
 	}
 };
 
