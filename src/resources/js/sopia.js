@@ -370,7 +370,7 @@ sopia.RealSendChat = () => {
 	if ( sopia.isSending === false ) {
         sopia.isSending = true;
 		while ( sopia.msgQ.length > 0 ) {
-            const msg = sopia.msgQ.shift().replace(/[\s|\\n]+$/, '');
+            const msg = sopia.msgQ.shift().replace(/(\s|\\n)+$/, '');
 			if ( typeof msg === "string" && msg.length > 0 ) {
                 sopia.sock.message(msg);
                 if ( sopia.me.id !== sopia.live.author.id ) {
