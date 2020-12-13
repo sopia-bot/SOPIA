@@ -4,6 +4,7 @@
 //  주석 : onload 이벤트 때 동작할 것들.                       //
 ///////////////////////////////////////////////////////////////
 
+
 const dcheck = (d1, d2) => {
 	if ( parseInt(d1[0], 10) < parseInt(d2[0], 10) ) {
 		return false;
@@ -239,7 +240,10 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		//SOPIA 설정
 		document.querySelector('#autoManagerStart').checked = sopia.config.sopia.autostart;
 		document.querySelector('#dark-editor').checked = sopia.config.sopia['dark-editor'];
-		document.querySelector('#default-url').value = sopia.config.sopia['default-url'];
+        document.querySelector('#default-url').value = sopia.config.sopia['default-url'];
+        if ( sopia.config['version-fix'] ) {
+            document.querySelector('#version-select').innerText = sopia.config.version;
+        }
 
 		const webview = window.webview || document.querySelector('#webview');
 		webview.src = sopia.config.sopia['default-url'];

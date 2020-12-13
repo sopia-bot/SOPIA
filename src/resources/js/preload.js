@@ -416,6 +416,33 @@ const ToNumber = (num) => {
 	return 0;
 };
 
+const sopiaConfirm = (message = '', title = '확인 요청', okTxt = '확인', cancelTxt = '취소') => {
+    document.querySelector('#confirm-title').innerText = title;
+    document.querySelector('#confirm-message').innerHTML = message;
+    const cancelBtn = document.querySelector('#confirm-cancel-btn');
+    const applyBtn = document.querySelector('#confirm-apply-btn');
+    const confirm = document.querySelector('#confirm-modal');
+    return new Promise((resolve) => {
+        const cancel = () => {
+            cancelBtn.removeEventListener('click', cancel);
+            UIkit.modal(confirm).hide();
+            resolve(false);
+        };
+        cancelBtn.addEventListener('click', cancel);
+        cancelBtn.innerText = cancelTxt;
+
+        const apply = () => {
+            applyBtn.removeEventListener('click', apply);
+            UIkit.modal(confirm).hide();
+            resolve(true);
+        };
+        applyBtn.addEventListener('click', apply);
+        applyBtn.innerText = okTxt;
+
+        UIkit.modal(confirm).show();
+    });
+};
+
 const alertModal = (title, message) => {
 	const alert = document.querySelector('#alert-modal');
 	if ( alert ) {

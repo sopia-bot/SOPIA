@@ -74,6 +74,23 @@ const parseVersion = (ver) => {
 
 const config = require(getPath('config.json'));
 const checkUpdate = async (version = '') => {
+    const reqVer = config.reqVer;
+    if ( reqVer ) {
+        delete config.reqVer;
+        fs.writeFileSync(getPath('config.json'), JSON.stringify(config, null, '\t'), 'utf8');
+        const child = spawn(getPath('SOPIAUpdater.exe'), [ getPath('/'), reqVer ], {
+            detached: true,
+            stdio: [ 'ignore', 'ignore', 'ignore' ],
+        });
+        child.unref();
+        process.exit(0);
+        return;
+    }
+
+    if ( config['version-fix'] ) {
+        return;
+    }
+
 	const res = await axios.get('https://sopia-bot.firebaseio.com/app/update/version.json');
 	const newVer = res.data.replace(/^\"|\"$/, '');
 	if ( verCompaire(version, newVer) == -1 ) {

@@ -52,7 +52,7 @@ const browserEvent = async (evt) => {
 					webview.executeJavaScript('toggleMute()');
 				}, 100);
 
-                const liveId = evt.data.live_id;
+                let liveId = evt.data.live_id;
                 if ( !liveId ) {
                     liveId = evt.data.live && evt.data.live_id;
                 }

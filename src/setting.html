@@ -9,11 +9,32 @@
 				padding: 1.5rem;
 				display: table-cell;
 			}
-		</style>
+        </style>
+        <script src="resources/js/setting.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<div name="import-child">
-			<div id="settingDiv" class="uk-animation-fade" style="height: 100%; width:100%;">
+		<div name="import-child" onload="SETTINGLoading();">
+            <div id="settingDiv" class="uk-animation-fade" style="height: 100%; width:100%;">
+                <!-- S:Modal -->
+				<div id="version-modal" class="uk-flex-top" uk-modal="bg-close: false;">
+					<div class="uk-modal-dialog uk-margin-auto-vertical" style="width: 70%;">
+						<button class="uk-modal-close-default" type="button" uk-close></button>
+						<div class="uk-modal-header uk-background-danger">
+							<h2 class="uk-modal-title uk-text-white">버전 선택</h2>
+						</div>
+						<div class="uk-modal-body">
+							<ul id="version-list" uk-accordion>
+                            </ul>
+						</div>
+						<div class="uk-modal-footer">
+							<div class="uk-text-right uk-flex-wrap-around">
+								<button class="uk-button uk-button-default uk-modal-close" type="button" onclick="versionCancel();">취소</button>
+                                <button class="uk-button uk-button-danger" type="button" onclick="versionApply();">적용</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- E:Modal -->
 				<!-- S:SOPIA Setting -->
 				<div class="uk-margin uk-card uk-card-default spoor-card" style="width: 100%;">
 					<div class="uk-card-header">
@@ -53,6 +74,19 @@
 								<input id="default-url" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="text">
 							</div>
                         </div>
+                        <div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>소피아 버전 관리</div>
+							<div class="uk-text-right">
+								<div class="uk-inline">
+                                    <button
+                                        id="version-select"
+                                        class="uk-button uk-button-default"
+                                        data-type="random"
+                                        uk-toggle="target: #version-modal"
+                                        type="button">최신 유지</button>
+								</div>
+							</div>
+						</div>
                         <div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>소피아 홈페이지</div>
 							<div class="uk-text-right">

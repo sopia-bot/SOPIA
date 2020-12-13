@@ -21,11 +21,28 @@
 		<link id="other"		href="other.html"		rel="import">
 	</head>
 	<body>
+        <!-- S:Confirm Modal -->
+		<div id="confirm-modal" class="uk-flex-top" uk-modal="bg-close: false;">
+			<div class="uk-modal-dialog uk-margin-auto-vertical">
+				<button class="uk-modal-close-default" type="button" uk-close></button>
+				<div class="uk-modal-header uk-background-danger">
+					<h2 id="confirm-title" name="title" class="uk-modal-title uk-text-white"></h3>
+				</div>
+				<div class="uk-modal-body">
+					<div id="confirm-message" name="message" class="uk-text-emphasis"></div>
+                </div>
+                <div class="uk-modal-footer uk-text-right">
+                    <button id="confirm-cancel-btn" class="uk-button uk-button-default uk-modal-close" type="button">취소</button>
+                    <button id="confirm-apply-btn" class="uk-button uk-button-spoon" type="button">확인</button>
+                </div>
+			</div>
+		</div>
+		<!-- E:Confirm Modal -->
 		<!-- S:Alert Modal -->
 		<div id="alert-modal" class="uk-flex-top" uk-modal="bg-close: false;">
 			<div class="uk-modal-dialog uk-margin-auto-vertical">
 				<button class="uk-modal-close-default" type="button" uk-close></button>
-				<div class="uk-modal-header uk-background-sopia">
+				<div class="uk-modal-header uk-background-danger">
 					<h2 name="title" class="uk-modal-title uk-text-white"></h3>
 				</div>
 				<div class="uk-modal-body">
