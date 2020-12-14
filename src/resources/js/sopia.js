@@ -472,9 +472,9 @@ const spoorMakeVoice = async (argv, voiceType, useTypecast, tcidx) => {
                 // has signature
                 const buf = fs.readFile(sigFile, (err, data) => {
                     if ( path.extname(sigFile) === '.base64' ) {
-                        sopia.tts.readStack[idx] = buf.toString('utf8');
+                        sopia.tts.readStack[idx] = data.toString('utf8');
                     } else {
-                        sopia.tts.readStack[idx] = buf.toB64Str();
+                        sopia.tts.readStack[idx] = data.toB64Str();
                     }
                 });
             } else {
