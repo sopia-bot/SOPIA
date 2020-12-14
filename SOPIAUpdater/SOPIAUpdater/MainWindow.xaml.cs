@@ -100,21 +100,33 @@ namespace SOPIAUpdater
 		{
 			InitializeComponent();
 
+			string configP = GetSPath( "/config.json" );
+			if ( !File.Exists (configP) ) {
+				MessageBox.Show( "설정 파일이 없습니다.", "에러" );
+				System.Windows.Application.Current.Shutdown();
+				return;
+			}
+
+			JObject cfg = JObject.Parse( File.ReadAllText( configP ) );
+			if ( cfg.GetValue("version-fix") != null && cfg["version-fix"].ToString().ToLower() == "true" ) {
+				System.Windows.Application.Current.Shutdown();
+				return;
+			}
+
 			string[] args = Environment.GetCommandLineArgs();
-			if ( args.Length >= 3 ) {
+			if ( args.Length >= 2 ) {
 				string bp = args[1];
 				if ( bp[bp.Length - 1] != '/' ) {
 					bp += "/";
 				}
 				BasePath = bp;
-
+			}
+			if ( args.Length >= 3 ) {
 				reqVer = args[2];
-				if ( reqVer == "latest" ) {
-					reqVer = DBGetStr( "/app/update/version.json" );
-				}
-			} else {
-				MessageBox.Show( "실행에 필요한 인자가 부족합니다.", "알림" );
-				System.Windows.Application.Current.Shutdown();
+			}
+
+			if ( reqVer == "latest" ) {
+				reqVer = DBGetStr( "/app/update/version.json" );
 			}
 		}
 
