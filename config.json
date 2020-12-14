@@ -3,7 +3,8 @@
 		"autostart": false,
 		"onlymanager": true,
 		"limitoff": true,
-		"default-url": "https://spooncast.net"
+		"default-url": "https://spooncast.net",
+		"dark-editor": false
 	},
 	"autologin": {
 		"enable": false,
@@ -26,6 +27,8 @@
 		"tcidx": 0
 	},
 	"bundle": {},
-	"version": "1.8.4",
-	"size": {}
+	"version": "1.9.0",
+	"version-fix": false,
+	"size": {},
+	"upver": "1.0.1"
 }
