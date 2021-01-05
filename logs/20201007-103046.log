@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20201007-103046.log ~~~~~~~~~~~~~~~~~~
-[10:30:46] [INFO] speech module import done.
-[10:30:46] [INFO] sopia module import done.
-[10:30:46] [SUCCESS] Element load complete
-[10:30:46] [SUCCESS] DOMContentLoad complete
-[10:30:46] [INFO] Webview dom-ready.
-[10:30:48] [ERROR] /home/youn/proj/node/SOPIA/bundles/destiny-roulette/config.json: Unexpected token o in JSON at position 1 -> internal/modules/cjs/loader.js:865

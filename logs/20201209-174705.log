@@ -1,6 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20201209-174705.log ~~~~~~~~~~~~~~~~~~
-[17:47:06] [INFO] speech module import done.
-[17:47:06] [INFO] sopia module import done.
-[17:47:07] [SUCCESS] Element load complete
-[17:47:07] [ERROR] await is only valid in async function -> /src/resources/js/DOMContentLoaded.js:186
-[17:47:08] [INFO] Webview dom-ready.

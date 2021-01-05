@@ -1,8 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200831-152258.log ~~~~~~~~~~~~~~~~~~
-[15:22:58] [INFO] speech module import done.
-[15:22:58] [INFO] sopia module import done.
-[15:22:58] [SUCCESS] Element load complete
-[15:22:58] [SUCCESS] DOMContentLoad complete
-[15:22:59] [INFO] Webview dom-ready.
-[15:23:00] [INFO] Run spoor chat (test)
-[15:23:03] [SUCCESS] Finish spoor chat

@@ -1,6 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200910-215118.log ~~~~~~~~~~~~~~~~~~
-[21:51:18] [INFO] speech module import done.
-[21:51:18] [INFO] sopia module import done.
-[21:51:19] [SUCCESS] Element load complete
-[21:51:19] [ERROR] ENOENT: no such file or directory, open '/home/youn/proj/node/SOPIA/sopia/bundles/loop.js/index.html' -> fs.js:121
-[21:51:19] [INFO] Webview dom-ready.

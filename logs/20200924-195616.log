@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200924-195616.log ~~~~~~~~~~~~~~~~~~
-[19:56:16] [INFO] speech module import done.
-[19:56:16] [INFO] sopia module import done.
-[19:56:16] [SUCCESS] Element load complete
-[19:56:16] [SUCCESS] DOMContentLoad complete
-[19:56:16] [INFO] Webview dom-ready.
-[19:56:21] [ERROR] Can only have one anonymous define call per script file -> /vs/loader.js:26

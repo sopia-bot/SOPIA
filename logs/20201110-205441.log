@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20201110-205441.log ~~~~~~~~~~~~~~~~~~
-[20:54:41] [INFO] speech module import done.
-[20:54:41] [INFO] sopia module import done.
-[20:54:41] [SUCCESS] Element load complete
-[20:54:41] [SUCCESS] DOMContentLoad complete
-[20:54:42] [INFO] Webview dom-ready.
-[20:54:42] [ERROR] Vue is not defined -> /src/ez-cmd.html:269

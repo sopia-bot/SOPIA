@@ -1,3 +1,0 @@
-{
-    "default": e => `${e.author.nickname}님이 입장하셨습니다.`
-}

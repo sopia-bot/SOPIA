@@ -1,5 +1,0 @@
-{
-	"default": {
-		"default": e => `${e.author.nickname}님이 스푼 ${e.amount * e.combo}개를 선물하셨습니다.`
-	}
-}

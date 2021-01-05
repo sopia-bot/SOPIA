@@ -1,5 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20201208-160946.log ~~~~~~~~~~~~~~~~~~
-[16:09:46] [INFO] speech module import done.
-[16:09:47] [INFO] Webview dom-ready.
-[16:09:49] [SUCCESS] Live join success (22970302)
-[16:09:49] [ERROR] sopia.onmessage is not a function -> /src/resources/js/sopia.js:557

@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200911-155101.log ~~~~~~~~~~~~~~~~~~
-[15:51:02] [INFO] speech module import done.
-[15:51:02] [INFO] sopia module import done.
-[15:51:02] [SUCCESS] Element load complete
-[15:51:02] [SUCCESS] DOMContentLoad complete
-[15:51:02] [INFO] Webview dom-ready.
-[15:51:50] [ERROR] Cannot read property 'length' of undefined -> /src/bundle.html:39

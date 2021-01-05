@@ -1,9 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200924-194103.log ~~~~~~~~~~~~~~~~~~
-[19:41:03] [INFO] speech module import done.
-[19:41:03] [INFO] sopia module import done.
-[19:41:03] [SUCCESS] Element load complete
-[19:41:03] [SUCCESS] DOMContentLoad complete
-[19:41:04] [INFO] Webview dom-ready.
-[19:41:06] [ERROR] Check dependency list! Synchronous require cannot resolve module '/home/youn/proj/node/SOPIA/bundles/ez-cmd/vue.js'. This is the first mention of this module! -> /vs/loader.js:27
-[19:41:25] [ERROR] Check dependency list! Synchronous require cannot resolve module '/home/youn/proj/node/SOPIA/bundles/ez-cmd/vue.js'. This is the first mention of this module! -> /vs/loader.js:27
-[19:41:29] [ERROR] Check dependency list! Synchronous require cannot resolve module '/home/youn/proj/node/SOPIA/bundles/ez-cmd/vue.js'. This is the first mention of this module! -> /vs/loader.js:27

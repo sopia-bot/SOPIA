@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20201110-225327.log ~~~~~~~~~~~~~~~~~~
-[22:53:27] [INFO] speech module import done.
-[22:53:27] [INFO] sopia module import done.
-[22:53:27] [SUCCESS] Element load complete
-[22:53:27] [SUCCESS] DOMContentLoad complete
-[22:53:28] [INFO] Webview dom-ready.
-[22:53:29] [ERROR] Cannot convert undefined or null to object -> /src/ez-cmd.html:298

@@ -1,6 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20201208-140611.log ~~~~~~~~~~~~~~~~~~
-[14:06:11] [INFO] speech module import done.
-[14:06:11] [INFO] sopia module import done.
-[14:06:11] [SUCCESS] Element load complete
-[14:06:11] [ERROR] missing ) after argument list -> /src/resources/js/webview.js:20
-[14:06:11] [SUCCESS] DOMContentLoad complete

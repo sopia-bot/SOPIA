@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200924-193639.log ~~~~~~~~~~~~~~~~~~
-[19:36:39] [INFO] speech module import done.
-[19:36:39] [INFO] sopia module import done.
-[19:36:39] [SUCCESS] Element load complete
-[19:36:39] [SUCCESS] DOMContentLoad complete
-[19:36:40] [INFO] Webview dom-ready.
-[19:37:09] [ERROR] Vue is not defined -> :2

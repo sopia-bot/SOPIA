@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200911-102815.log ~~~~~~~~~~~~~~~~~~
-[10:28:15] [INFO] speech module import done.
-[10:28:15] [INFO] sopia module import done.
-[10:28:15] [SUCCESS] Element load complete
-[10:28:15] [SUCCESS] DOMContentLoad complete
-[10:28:16] [INFO] Webview dom-ready.
-[10:28:23] [ERROR] UIKit is not defined -> /src/resources/js/DOMContentLoaded.js:389

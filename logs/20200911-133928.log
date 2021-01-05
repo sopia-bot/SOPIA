@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200911-133928.log ~~~~~~~~~~~~~~~~~~
-[13:39:28] [INFO] speech module import done.
-[13:39:28] [INFO] sopia module import done.
-[13:39:28] [ERROR] Cannot set property '__loaded_file__' of undefined -> /src/resources/js/sopia.js:179
-[13:39:28] [SUCCESS] Element load complete
-[13:39:28] [SUCCESS] DOMContentLoad complete
-[13:39:29] [INFO] Webview dom-ready.

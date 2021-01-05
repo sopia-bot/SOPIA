@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20201110-211245.log ~~~~~~~~~~~~~~~~~~
-[21:12:45] [INFO] speech module import done.
-[21:12:45] [INFO] sopia module import done.
-[21:12:45] [SUCCESS] Element load complete
-[21:12:46] [SUCCESS] DOMContentLoad complete
-[21:12:46] [INFO] Webview dom-ready.
-[21:12:47] [ERROR] Cannot set property 'className' of null -> /src/ez-cmd.html:360

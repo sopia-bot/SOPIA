@@ -1,7 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20201209-152553.log ~~~~~~~~~~~~~~~~~~
-[15:25:53] [INFO] speech module import done.
-[15:25:53] [INFO] sopia module import done.
-[15:25:53] [ERROR] await is only valid in async function -> /src/resources/js/spoorchat.js:24
-[15:25:54] [SUCCESS] Element load complete
-[15:25:54] [SUCCESS] DOMContentLoad complete
-[15:25:54] [INFO] Webview dom-ready.

@@ -1,8 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200911-110452.log ~~~~~~~~~~~~~~~~~~
-[11:04:52] [INFO] speech module import done.
-[11:04:52] [INFO] sopia module import done.
-[11:04:52] [SUCCESS] Element load complete
-[11:04:52] [SUCCESS] DOMContentLoad complete
-[11:04:53] [INFO] Webview dom-ready.
-[11:04:53] [ERROR] ContainerPanel.getSize is not a function -> /src/resources/js/elementLoad.js:56
-[11:04:55] [ERROR] ContainerPanel.getSize is not a function -> /src/resources/js/elementLoad.js:56

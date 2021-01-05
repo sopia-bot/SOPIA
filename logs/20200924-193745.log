@@ -1,8 +1,0 @@
-~~~~~~~~~~~~~~~~~~ Created 20200924-193745.log ~~~~~~~~~~~~~~~~~~
-[19:37:45] [INFO] speech module import done.
-[19:37:45] [INFO] sopia module import done.
-[19:37:45] [SUCCESS] Element load complete
-[19:37:45] [SUCCESS] DOMContentLoad complete
-[19:37:46] [INFO] Webview dom-ready.
-[19:37:49] [ERROR] Vue is not defined -> :2
-[19:40:14] [ERROR] Can only have one anonymous define call per script file -> /vs/loader.js:26
