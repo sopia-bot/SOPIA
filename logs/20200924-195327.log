@@ -1,0 +1,7 @@
+~~~~~~~~~~~~~~~~~~ Created 20200924-195327.log ~~~~~~~~~~~~~~~~~~
+[19:53:27] [INFO] speech module import done.
+[19:53:27] [INFO] sopia module import done.
+[19:53:27] [SUCCESS] Element load complete
+[19:53:27] [SUCCESS] DOMContentLoad complete
+[19:53:28] [INFO] Webview dom-ready.
+[19:53:28] [ERROR] Vuetifty is not defined -> :8

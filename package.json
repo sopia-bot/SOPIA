@@ -1,51 +1,51 @@
 {
-	"name": "sopia",
-	"version": "1.9.0",
+	"name": "sopia-v3",
+	"version": "0.1.0",
 	"description": "A Spooncast manager A.I Program",
-	"main": "main.js",
+	"private": true,
 	"scripts": {
-		"start": "electron . DEBUG",
-		"pbuild:win32": "electron-packager . SOPIA --asar --overwrite --platform=win32 --arch=ia32 --out=release-builds --icon=\".\\sopia.ico\" --ignore=release-builds --ignore=bundles --ignore=test --ignore=media --ignore=SOPIAUpdater"
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint",
+		"electron:build": "vue-cli-service electron:build",
+		"electron:serve": "vue-cli-service electron:serve",
+		"postinstall": "electron-builder install-app-deps",
+		"postuninstall": "electron-builder install-app-deps"
 	},
-	"build": {
-		"productName": "SOPIA",
-		"appId": "com.electron.sopia",
-		"asar": true,
-		"protocols": {
-			"name": "sopia",
-			"schemes": [
-				"helloSOPIA"
-			]
-		},
-		"win": {
-			"target": [
-				"zip",
-				"nsis"
-			],
-			"icon": "./icon.ico"
-		},
-		"nsis": {
-			"oneClick": false,
-			"allowToChangeInstallationDirectory": true
-		},
-		"directories": {
-			"output": "dist/",
-			"app": "."
-		}
-	},
-	"repository": "https://github.com/sopia-bot/SOPIA",
-	"keywords": [],
-	"author": "sopia-bot",
-	"license": "CC0-1.0",
-	"devDependencies": {
-		"electron": "^5.0.13",
-		"electron-packager": "^15.1.0"
-	},
+	"main": "background.js",
 	"dependencies": {
-		"@sanillajs/sanilla": "^1.0.4",
-		"axios": "^0.19.0",
-		"request": "^2.88.2",
+		"@types/electron-devtools-installer": "^2.2.0",
+		"@types/uuid": "^8.0.0",
+		"axios": "^0.19.2",
+		"liquor-tree": "^0.2.70",
 		"rimraf": "^3.0.2",
-		"sopia-core": "^1.4.10"
+		"sopia-core": "^1.3.13",
+		"uuid": "^8.3.0",
+		"vue": "^2.6.11",
+		"vue-class-component": "^7.2.3",
+		"vue-monaco": "^1.2.1",
+		"vue-property-decorator": "^8.4.2",
+		"vue-router": "^3.2.0",
+		"vuescroll": "^4.16.1",
+		"vuetify": "^2.2.11",
+		"vuex": "^3.4.0"
+	},
+	"devDependencies": {
+		"@electron/typescript-definitions": "^8.7.4",
+		"@types/node": "12",
+		"@vue/cli-plugin-router": "~4.4.0",
+		"@vue/cli-plugin-typescript": "~4.4.0",
+		"@vue/cli-plugin-vuex": "~4.4.0",
+		"@vue/cli-service": "~4.4.0",
+		"electron": "^9.0.0",
+		"electron-devtools-installer": "^3.1.0",
+		"monaco-editor-webpack-plugin": "^1.9.0",
+		"sass": "^1.19.0",
+		"sass-loader": "^8.0.0",
+		"typescript": "~3.9.3",
+		"vue-cli-plugin-electron-builder": "~2.0.0-rc.4",
+		"vue-cli-plugin-vuetify": "~2.0.6",
+		"vue-template-compiler": "^2.6.11",
+		"vuetify-loader": "^1.3.0"
 	}
 }

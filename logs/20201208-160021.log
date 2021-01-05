@@ -1,0 +1,4 @@
+~~~~~~~~~~~~~~~~~~ Created 20201208-160021.log ~~~~~~~~~~~~~~~~~~
+[16:00:21] [INFO] speech module import done.
+[16:00:22] [INFO] Webview dom-ready.
+[16:00:22] [ERROR] sopia is not defined -> /src/resources/js/webview.js:123

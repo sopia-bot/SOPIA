@@ -1,21 +1,24 @@
-# SOPIA
+# sopia-v3
 
-<img src = "https://sopia-bot.github.io/%EB%A8%B8%EA%B7%B8%EC%BB%B5.jpg" width="400px">
+## Project setup
+```
+yarn install
+```
 
-Manger bot program for [spoonradio](https://spooncast.net).
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
 
-## Install
+### Compiles and minifies for production
+```
+yarn build
+```
 
-Visit https://sopia-bot.github.io/
+### Lints and fixes files
+```
+yarn lint
+```
 
-## Docs
-
-https://sopia-bot.github.io/docs/
-
-## Contribute
-
-Contributions are always welcome!
-
-## LICENSE
-
-[CC0](/LICENSE.md)
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

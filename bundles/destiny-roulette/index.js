@@ -473,7 +473,7 @@ gameProcesser =  async (e) => {
 
         if ( e.isCmd || isCmd(e) ) {
             sopia.var.skipLock = true;
-            if ( e.cmd === '장전' ) {
+            if ( e.cmd === '마피아' ) {
                 await startGame(e);
             } else if ( e.cmd === '발사' ) {
                 await tickShout(e);

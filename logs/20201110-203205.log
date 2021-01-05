@@ -1,0 +1,10 @@
+~~~~~~~~~~~~~~~~~~ Created 20201110-203205.log ~~~~~~~~~~~~~~~~~~
+[20:32:05] [INFO] speech module import done.
+[20:32:05] [INFO] sopia module import done.
+[20:32:05] [ERROR] Cannot find module 'src/vendors/js/vue.js'
+Require stack:
+- /home/youn/proj/node/SOPIA/src/resources/js/sopia.js
+- /home/youn/proj/node/SOPIA/src/index.html -> internal/modules/cjs/loader.js:683
+[20:32:05] [SUCCESS] Element load complete
+[20:32:05] [SUCCESS] DOMContentLoad complete
+[20:32:06] [INFO] Webview dom-ready.

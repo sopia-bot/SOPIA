@@ -1,0 +1,9 @@
+~~~~~~~~~~~~~~~~~~ Created 20201007-102638.log ~~~~~~~~~~~~~~~~~~
+[10:26:38] [INFO] speech module import done.
+[10:26:38] [INFO] sopia module import done.
+[10:26:38] [SUCCESS] Element load complete
+[10:26:38] [SUCCESS] DOMContentLoad complete
+[10:26:39] [INFO] Webview dom-ready.
+[10:26:40] [ERROR] Unexpected token } -> /src/index.html#:5
+[10:26:42] [ERROR] Unexpected token } -> /src/index.html#:5
+[10:26:43] [ERROR] Unexpected token } -> /src/index.html#:5

@@ -1,0 +1,7 @@
+~~~~~~~~~~~~~~~~~~ Created 20201110-222300.log ~~~~~~~~~~~~~~~~~~
+[22:23:00] [INFO] speech module import done.
+[22:23:00] [INFO] sopia module import done.
+[22:23:00] [ERROR] Invalid regular expression: /(?.*)?s*=>s*[`'"](.*)[`'"].*/: Invalid group -> /src/ez-cmd.html:265
+[22:23:00] [SUCCESS] Element load complete
+[22:23:01] [SUCCESS] DOMContentLoad complete
+[22:23:01] [INFO] Webview dom-ready.

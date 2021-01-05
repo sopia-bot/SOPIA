@@ -1,0 +1,2 @@
+~~~~~~~~~~~~~~~~~~ Created 20200814-151240.log ~~~~~~~~~~~~~~~~~~
+[15:12:40] [ERROR] Cannot read property 'c' of undefined -> file:///src/resources/js/preload.js:627

@@ -1,0 +1,7 @@
+~~~~~~~~~~~~~~~~~~ Created 20200911-184116.log ~~~~~~~~~~~~~~~~~~
+[18:41:16] [INFO] speech module import done.
+[18:41:16] [INFO] sopia module import done.
+[18:41:16] [SUCCESS] Element load complete
+[18:41:16] [SUCCESS] DOMContentLoad complete
+[18:41:17] [INFO] Webview dom-ready.
+[18:41:18] [ERROR] Cannot set property 'search' of undefined -> :17

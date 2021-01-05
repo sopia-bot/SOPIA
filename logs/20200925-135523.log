@@ -1,0 +1,7 @@
+~~~~~~~~~~~~~~~~~~ Created 20200925-135523.log ~~~~~~~~~~~~~~~~~~
+[13:55:25] [INFO] speech module import done.
+[13:55:25] [INFO] sopia module import done.
+[13:55:26] [SUCCESS] Element load complete
+[13:55:26] [SUCCESS] DOMContentLoad complete
+[13:55:27] [INFO] Webview dom-ready.
+[13:55:30] [ERROR] /home/youn/proj/node/SOPIA/bundles/ez-cmd/join.json: Unexpected token m in JSON at position 14 -> internal/modules/cjs/loader.js:865

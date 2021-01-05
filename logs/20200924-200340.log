@@ -1,0 +1,10 @@
+~~~~~~~~~~~~~~~~~~ Created 20200924-200340.log ~~~~~~~~~~~~~~~~~~
+[20:03:40] [INFO] speech module import done.
+[20:03:40] [INFO] sopia module import done.
+[20:03:40] [SUCCESS] Element load complete
+[20:03:41] [SUCCESS] DOMContentLoad complete
+[20:03:41] [INFO] Webview dom-ready.
+[20:03:42] [ERROR] Cannot find module '/home/youn/proj/node/SOPIA/bundles/ez-cmd/vue.js'
+Require stack:
+- /home/youn/proj/node/SOPIA/src/resources/js/sopia.js
+- /home/youn/proj/node/SOPIA/src/index.html -> internal/modules/cjs/loader.js:683

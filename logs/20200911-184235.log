@@ -1,0 +1,7 @@
+~~~~~~~~~~~~~~~~~~ Created 20200911-184235.log ~~~~~~~~~~~~~~~~~~
+[18:42:36] [INFO] speech module import done.
+[18:42:36] [INFO] sopia module import done.
+[18:42:36] [SUCCESS] Element load complete
+[18:42:36] [SUCCESS] DOMContentLoad complete
+[18:42:36] [INFO] Webview dom-ready.
+[18:42:41] [ERROR] Unexpected token . -> /src/index.html#:30

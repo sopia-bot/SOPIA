@@ -1,0 +1,7 @@
+~~~~~~~~~~~~~~~~~~ Created 20200911-160542.log ~~~~~~~~~~~~~~~~~~
+[16:05:42] [INFO] speech module import done.
+[16:05:42] [INFO] sopia module import done.
+[16:05:42] [SUCCESS] Element load complete
+[16:05:42] [SUCCESS] DOMContentLoad complete
+[16:05:43] [INFO] Webview dom-ready.
+[16:05:47] [ERROR] window.editor.setModelLanguage is not a function -> /src/code.html:367

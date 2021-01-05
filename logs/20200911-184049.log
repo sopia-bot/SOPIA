@@ -1,0 +1,7 @@
+~~~~~~~~~~~~~~~~~~ Created 20200911-184049.log ~~~~~~~~~~~~~~~~~~
+[18:40:52] [INFO] speech module import done.
+[18:40:52] [INFO] sopia module import done.
+[18:40:52] [SUCCESS] Element load complete
+[18:40:52] [SUCCESS] DOMContentLoad complete
+[18:40:53] [INFO] Webview dom-ready.
+[18:40:55] [ERROR] YT is not defined -> :25

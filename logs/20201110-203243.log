@@ -1,0 +1,7 @@
+~~~~~~~~~~~~~~~~~~ Created 20201110-203243.log ~~~~~~~~~~~~~~~~~~
+[20:32:43] [INFO] speech module import done.
+[20:32:43] [INFO] sopia module import done.
+[20:32:44] [ERROR] /home/youn/proj/node/SOPIA/sopia/storages/join.json: Unexpected token e in JSON at position 14 -> internal/modules/cjs/loader.js:865
+[20:32:44] [SUCCESS] Element load complete
+[20:32:44] [SUCCESS] DOMContentLoad complete
+[20:32:44] [INFO] Webview dom-ready.
