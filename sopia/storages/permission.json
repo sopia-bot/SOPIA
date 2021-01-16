@@ -3,7 +3,7 @@
 	"업타임": e => makePlaybar(parseInt((new Date().getTime() - sopia.var.created.getTime()) / 1000), 7200),
 	"off": (e) => {
 		sopia.send("소피아의 동작이 중지됩니다.\n!on 명령을 사용하여 킬 수 있습니다.");
-        sopia.var._send_ = soipa.send;
+        sopia.var._send_ = sopia.send;
 		sopia.send = () => {};
 		sopia.is_on = false;
 	},
