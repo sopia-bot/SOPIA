@@ -76,7 +76,7 @@ window.autoLogin = (type, id, pw) => {
 };
 
 window.addChatBox = (str) => {
-	let props = getProps();
+	let props = getProps("app");
 	if ( props ) {
 		if ( !token ) {
 			if ( props.authKey ) {
