@@ -16,7 +16,8 @@ const browserEvent = async (evt) => {
 			evt.data = evt.data.result;
 
 		case 'loginCallback':
-			const user = spoon.User.deserialize(evt.data);
+            const user = spoon.User.deserialize(evt.data);
+            await asleep(1000);
 			const token = await webview.executeJavaScript('localStorage.SPOONCAST_KR_authKey');
 			sopia.debug('login', await $sopia.loginToken(user, token.replace('Bearer ', '')));
             break;
