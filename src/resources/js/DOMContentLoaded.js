@@ -24,10 +24,11 @@ const dcheck = (d1, d2) => {
 const notiCheck = async () => {
 	const res = await axios.get('https://sopia-bot.firebaseio.com/app/notice.json');
 	const notices = res.data;
-	const d = new Date(), now = new Date();
+    const d = new Date(), now = new Date();
+    const config = orgRequire(getPath('config.json'));
 	d.setDate(d.getDate() - 7);
 
-	let lastNotiIdx = parseInt(localStorage.getItem('noti-idx'), 10);
+	let lastNotiIdx = parseInt(config['noti-idx'], 10);
 	if ( Number.isNaN(lastNotiIdx) ) {
 		lastNotiIdx = -1;
 	}
@@ -44,8 +45,9 @@ const notiCheck = async () => {
 			if ( dcheck(nd, pd) ) {
 				await newAlertModal(noti.title, noti.content);
 			}
-			localStorage.setItem('noti-idx', i);
-		}
+			config['noti-idx'] = i;
+        }
+        AllSettingSave(config, null, true);
 	}
 };
 
@@ -521,18 +523,6 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 			}
 		}
 	}
-
-	/*
-	axios.get(`${sopia.config['api-url']}/app/notice.json`)
-		.then((res) => {
-			const data = res.data;
-			if ( Array.isArray(data) && data.length > 0 ) {
-				const readed = ToNumber(localStorage['read-noti']);
-				data.forEach((noti, idx) => {
-				});
-			}
-		});
-		*/
 
 	INJECTORS.forEach((injector) => injector.complete());
 	sopia.wlog('SUCCESS', 'DOMContentLoad complete');

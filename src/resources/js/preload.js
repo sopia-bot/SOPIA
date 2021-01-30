@@ -653,7 +653,8 @@ const fullStringify = (obj, deep = 0) => {
 const jsSyntax = (code, fullJSON = false) => {
 	try {
 		if ( fullJSON ) {
-			code = `(function(){\nreturn ${code}\n;})()`;
+            code = `(function(){\nreturn ${code}\n;})()`;
+            sopia.debug(code);
 		}
 		const v = vm;
 		v.createScript(code);

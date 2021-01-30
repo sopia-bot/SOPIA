@@ -32,14 +32,7 @@ window.addEventListener('resize', () => {
 /**
  * 메인창을 2분할 한다.
  */
-let splitSizes = [50, 50];
-let sp = localStorage.getItem('split');
-if ( sp ) {
-	try {
-		splitSizes = JSON.parse(sp);
-	} catch {
-	}
-}
+let splitSizes = sopia.config['split'] || [50, 50];
 window.ContainerPanel = Split(['#ContainerPanel>div[name="panel1"]', '#ContainerPanel>div[name="panel2"]'], {
     //기본적으로 50%를 나눈다.
     sizes: splitSizes,
@@ -63,7 +56,8 @@ window.ContainerPanel = Split(['#ContainerPanel>div[name="panel1"]', '#Container
 		}
 
 		refreshNavSize();
-		localStorage.setItem('split', JSON.stringify(sizes));
+        sopia.config['split'] = sizes;
+        AllSettingSave(sopia.config, null, true);
 	},
 });
 
