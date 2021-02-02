@@ -66,6 +66,10 @@ export default class Mixin extends VueDecorator {
 		}
 	}
 
+	public asleep(ms: number) {
+		return new Promise((r) => setTimeout(r, ms));
+	}
+
 	public $path(type: any, ...args: any) {
 		return path.resolve(app.getPath(type), ...args);
 	}
@@ -97,7 +101,7 @@ export default class Mixin extends VueDecorator {
 			open: true,
 			type: 'none',
 			content: 'Snackbar Content',
-			timeout: 5000,
+			timeout: 3000,
 			horizontal: 'center',
 			vertical: 'middle',
 		};
