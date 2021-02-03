@@ -189,7 +189,9 @@ export default class Code extends Mixins(GlobalMixins) {
 		this.$nextTick()
 			.then(() => {
 				this.selectedFile = this.openFiles.length - 1;
-				this.selectedItem(this.openFiles[this.selectedFile].node);
+				if ( this.selectedFile >= 0 && this.openFiles.length > 0 ) {
+					this.selectedItem(this.openFiles[this.selectedFile].node);
+				}
 			});
 	}
 
