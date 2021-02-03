@@ -127,15 +127,38 @@
 							</v-row>
 						</v-container>
 						<v-container v-else-if="setType === 'message'">
-							<v-row align="center">
-								<v-col cols="3">
+							<v-row class="ma-0" align="center" v-for="(message, idx) in liveMessage" :key="'message_' + message.cmd + idx">
+								<v-col cols="3" class="pa-0">
+									<v-text-field
+										:placeholder="$t('cmd.command')"
+										color="indigo darken-3"
+										v-model="message.command"/>
 								</v-col>
-								<v-col cols="6"></v-col>
-								<v-col cols="3"></v-col>
+								<v-col cols="6" class="py-0">
+									<v-text-field
+										:placeholder="$t('cmd.reply')"
+										color="indigo darken-3"
+										v-model="message.message"/>
+								</v-col>
+								<v-col cols="2" class="pa-0">
+									<v-select
+										:items="permitList"
+										color="indigo darken-3"
+										v-model="message.permit" >
+										<template v-slot:selection="{ item }">
+											{{ $t('cmd.permit.' + item) }}
+										</template>
+									</v-select>
+								</v-col>
+								<v-col cols="1" class="pa-0 text-right">
+										<v-btn icon depressed>
+											<v-icon color="red darken-3" @click="delMessageEvent(idx);">mdi-close-circle</v-icon>
+										</v-btn>
+									</v-col>
 							</v-row>
 							<v-row align="center">
 								<v-col cols="12" class="px-0">
-									<v-btn block tile dark color="indigo">{{ $t('add') }}</v-btn>
+									<v-btn block tile dark color="indigo" @click="addMessageEvent">{{ $t('add') }}</v-btn>
 								</v-col>
 							</v-row>
 						</v-container>
@@ -146,7 +169,7 @@
 						<span class="text-caption" style="font-size: 11pt !important;" v-html="$t('cmd.'+setType+'-ex')"></span>
 					</v-col>
 					<v-col cols="4" align="right">
-						<v-btn tile dark color="indigo">
+						<v-btn tile dark color="indigo" @click="save">
 							{{ $t('apply') }}
 						</v-btn>
 					</v-col>
@@ -170,9 +193,9 @@ interface PresentStruct {
 };
 
 interface MessageStruct {
-	cmd: string;
+	command: string;
 	message: string;
-	permit: boolean; // only manager: true.
+	permit: string;
 };
 
 @Component({
@@ -195,6 +218,8 @@ export default class Cmd extends Mixins(GlobalMixins) {
 	public liveLike: string = '';
 	public livePresent: PresentStruct[] = [];
 	public liveMessage: MessageStruct[] = [];
+
+	public readonly permitList: string[] = [ 'all', 'manager' ];
 
 	public render = {
 		present: true,
@@ -265,6 +290,34 @@ export default class Cmd extends Mixins(GlobalMixins) {
 
 	public delPresentEvent(idx: number) {
 		this.livePresent.splice(idx, 1);
+	}
+
+	public addMessageEvent() {
+		this.liveMessage.push({
+			command: '',
+			message: '',
+			permit: 'all',
+		});
+	}
+
+	public delMessageEvent(idx: number) {
+		this.liveMessage.splice(idx, 1);
+	}
+
+	public save() {
+		this.cfg.set('live_join', this.liveJoin);
+		this.cfg.set('live_like', this.liveLike);
+		this.cfg.set('live_present', this.livePresent);
+		this.cfg.set('live_message', this.liveMessage);
+
+		this.cfg.save();
+		this.$evt.$emit('cmd:reload');
+		this.$noti({
+			content: this.$t('save-success'),
+			horizontal: 'right',
+			vertical: 'top',
+		});
+		this.$logger.success('cmd', 'Save success config file.');
 	}
 
 }

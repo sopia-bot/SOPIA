@@ -17,14 +17,15 @@ export default {
 	users,
 	cmd,
 	// common
-	msg: {
-		alert: '알림',
+	'msg': {
+		'alert': '알림',
 	},
-	send: '전송',
-	spoon: '스푼',
-	confirm: '확인',
-	cancel: '취소',
-	enable: '사용',
-	apply: '적용',
-	add: '추가',
+	'send': '전송',
+	'spoon': '스푼',
+	'confirm': '확인',
+	'cancel': '취소',
+	'enable': '사용',
+	'apply': '적용',
+	'add': '추가',
+	'save-success': '저장에 성공했습니다.',
 };

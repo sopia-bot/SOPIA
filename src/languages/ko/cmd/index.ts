@@ -18,4 +18,10 @@ export default {
 		'list': '스티커 목록',
 		'exists': '이미 존재하는 스티커입니다.',
 	},
+	'command': '명령어',
+	'reply': '응답',
+	'permit': {
+		'all': '전체',
+		'manager': '관리자',
+	},
 };
