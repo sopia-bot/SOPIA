@@ -21,6 +21,7 @@ import router from '@/router';
 import store from '@/store';
 import vuetify from '@/plugins/vuetify';
 import Logger from '@/plugins/logger';
+import CfgLite from '@/plugins/cfg-lite-ipc';
 
 import App from '@/App.vue';
 const { remote } = electron;
@@ -53,6 +54,8 @@ Vue.prototype.$sopia = window.$sopia = new spoon.Client(uuidv4()); // TODO: set 
 
 // Event Bus
 Vue.prototype.$evt = new Vue();
+
+Vue.prototype.$cfg = new CfgLite(path.resolve(app.getPath('userData'), 'app.cfg'));
 
 // config
 Vue.config.errorHandler = function(err: any, vm: any, info) {

@@ -6,12 +6,14 @@
  */
 import Vue from 'vue';
 import * as spoon from 'sopia-core';
+import CfgLite from 'cfg-lite';
 
 declare module 'vue/types/vue' {
 	interface Vue {
 		$sopia: spoon.Client;
 		$evt: Vue;
 		$logger: any;
+		$cfg: CfgLite;
 	}
 }
 

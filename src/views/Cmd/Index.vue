@@ -309,8 +309,11 @@ export default class Cmd extends Mixins(GlobalMixins) {
 		this.cfg.set('live_like', this.liveLike);
 		this.cfg.set('live_present', this.livePresent);
 		this.cfg.set('live_message', this.liveMessage);
-
 		this.cfg.save();
+
+		this.$cfg.set('cmd.use', this.use);
+		this.$cfg.save();
+
 		this.$evt.$emit('cmd:reload');
 		this.$noti({
 			content: this.$t('save-success'),
