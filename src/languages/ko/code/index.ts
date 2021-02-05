@@ -18,4 +18,5 @@ export default {
 	editor: {
 		'not-opened-file': '열린 파일이 없습니다.',
 	},
+	'namebox-desc': 'ESC: 취소, ENTER: 확인',
 };

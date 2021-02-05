@@ -9,7 +9,7 @@
 		<v-row class="ma-0 h-100v" style=" overflow-y: hidden;">
 			<v-col cols="4" md="3" lg="2" class="pa-0 d-none d-sm-block h-100v" style="border-right: 1px solid #E8EAF6;">
 				<v-row class="ma-0" style="border-bottom: 1px solid #E8EAF6;">
-					<v-col cols="12" align="center">
+					<v-col cols="12" style="padding-top: 10px; padding-bottom: 10px;" align="center">
 						<!-- S:Toolbar -->
 						<tool-button
 							v-for="btn in buttons"
@@ -163,7 +163,14 @@ export default class Code extends Mixins(GlobalMixins) {
 			icon: 'mdi-form-textbox',
 			name: this.$t('code.menu.rename'),
 			func: () => {
-				console.log(this.editor);
+				console.log(this.editor, this.openFiles.length, this.treeRenderer);
+				this.$evt.$emit('code:rename');
+				if ( this.openFiles.length > 0 && this.selectedFile >= 0 ) {
+					console.log(this.selectedFile, 'aaa');
+					this.$evt.$emit('code:rename');
+				} else {
+					this.$logger.err('code', 'Can not rename file or directory.');
+				}
 			},
 		},
 		{

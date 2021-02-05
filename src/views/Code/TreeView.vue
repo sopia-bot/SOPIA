@@ -5,32 +5,44 @@
  * Copyright (c) Tree Some. Licensed under the MIT License.
 -->
 <template>
-	<div v-if="treeRenderer" style="width: 100%;">
-		<tree
-			class="custom"
-			ref="tree"
-			:key="folderKey"
-			style="overflow-y: auto;"
-			:data.sync="folderTree">
-			<span class="tree-text" slot-scope="{ node }">
-				<!-- S:Folder -->
-				<template v-if="node.hasChildren()">
-					<div @contextmenu.stop="$emit('contextmenu', $event, node)">
-						{{ node.text }}
-					</div>
-				</template>
-				<!-- E:Folder -->
+	<div class="wrapper" style="width:100%;">
+		<v-dialog
+			v-model="namebox"
+			width="260px"
+			content-class="custom namebox px-4 py-1"
+			ref="namebox">
+			<v-text-field
+				ref="name-input"
+				v-model="newName"
+				dark></v-text-field>
+		</v-dialog>
+		<div v-if="treeRenderer" style="width: 100%;">
+			<tree
+				class="custom"
+				ref="tree"
+				:key="folderKey"
+				style="overflow-y: auto;"
+				:data.sync="folderTree">
+				<span class="tree-text" slot-scope="{ node }">
+					<!-- S:Folder -->
+					<template v-if="node.hasChildren()">
+						<div :ref="node.data.value" @contextmenu.stop="$emit('contextmenu', $event, node)">
+							{{ node.text }}
+						</div>
+					</template>
+					<!-- E:Folder -->
 
-				<!-- S:File -->
-				<template v-else>
-					<div @contextmenu.stop="$emit('contextmenu', $event, node)">
-						<i :class="node.data.icon"></i>
-						{{ node.text }}
-					</div>
-				</template>
-				<!-- E:File -->
-			</span>
-		</tree>
+					<!-- S:File -->
+					<template v-else>
+						<div :ref="node.data.value" @contextmenu.stop="$emit('contextmenu', $event, node)">
+							<i :class="node.data.icon"></i>
+							{{ node.text }}
+						</div>
+					</template>
+					<!-- E:File -->
+				</span>
+			</tree>
+		</div>
 	</div>
 </template>
 <script lang="ts">
@@ -50,10 +62,30 @@ export default class TreeView extends Mixins(GlobalMixins) {
 	public selectPath: string = '';
 	/* E:For Tree */
 
+	public namebox: boolean = false;
+	public newName: string = '';
+
 	public mounted() {
 		this.treeRenderer = false;
 		this.targetFolder = this.$route.params.folder;
 		this.folderTree = this.buildFolderTree(this.$path('userData', this.targetFolder));
+
+		this.$evt.$off('code:rename');
+		this.$evt.$on('code:rename', () => {
+			const treeRef = this.$refs.tree as any;
+			const tree = treeRef.tree;
+			const node = this.searchNode(tree.model, this.selectPath);
+			const sel = this.$refs[node.data.value] as HTMLElement;
+			const position = sel.getBoundingClientRect();
+			
+
+			const x = position.x + 50;
+			const y = position.y - 80;
+
+			this.openNameBox(x, y, sel.innerText);
+		});
+
+		
 		this.treeReload((tree: any) => {
 			/*
 			TODO: LAST Opend File open
@@ -69,6 +101,24 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				}
 			}
 			*/
+		});
+	}
+
+	public openNameBox(x: number, y: number, str: string = '') {
+		this.namebox = true;
+
+		this.$nextTick(() => {
+			const namebox = document.querySelector('.custom.namebox') as HTMLElement;
+			namebox.style.left = x + 'px';
+			namebox.style.top = y + 'px';
+			
+			this.$nextTick(() => {
+				this.$nextTick(() => {
+					const ni = this.$refs['name-input'] as any;
+					ni.focus();
+				});
+				this.newName = str;
+			});
 		});
 	}
 
@@ -186,6 +236,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 					obj['text'] = f;
 					obj.data['value'] = fullPath;
+					obj.data['idChange'] = false;
 
 					if ( stats.isDirectory() ) {
 						let expanded = false;
@@ -277,5 +328,10 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 .custom .mdi-language-html5 {
 	color: #E75212;
+}
+
+.custom.v-dialog {
+	position: fixed !important;
+	background: rgba(32, 38, 104, 0.85) !important;
 }
 </style>
