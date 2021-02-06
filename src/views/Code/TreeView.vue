@@ -9,7 +9,10 @@
 		<v-dialog
 			v-model="namebox"
 			width="260px"
+			style="height: 70px;"
 			content-class="custom namebox px-4 py-1"
+			@click:outside="nbOutsideClick"
+			@keydown="nbKeydown"
 			ref="namebox">
 			<v-text-field
 				ref="name-input"
@@ -65,6 +68,15 @@ export default class TreeView extends Mixins(GlobalMixins) {
 	public namebox: boolean = false;
 	public newName: string = '';
 
+	get selectedNode(): any {
+		const treeRef = this.$refs.tree as any;
+		const tree = treeRef.tree;
+		if ( this.selectPath ) {
+			const node = this.searchNode(tree.model, this.selectPath);
+			return node;
+		}
+	}
+
 	public mounted() {
 		this.treeRenderer = false;
 		this.targetFolder = this.$route.params.folder;
@@ -72,17 +84,23 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 		this.$evt.$off('code:rename');
 		this.$evt.$on('code:rename', () => {
-			const treeRef = this.$refs.tree as any;
-			const tree = treeRef.tree;
-			const node = this.searchNode(tree.model, this.selectPath);
-			const sel = this.$refs[node.data.value] as HTMLElement;
-			const position = sel.getBoundingClientRect();
-			
+			const node = this.selectedNode;
+			if ( node ) {
+				const sel = this.$refs[node.data.value] as HTMLElement;
+				const position = sel.getBoundingClientRect();
 
-			const x = position.x + 50;
-			const y = position.y - 80;
+				const x = position.x + 50;
+				const y = position.y - 80;
 
-			this.openNameBox(x, y, sel.innerText);
+				this.openNameBox(x, y, sel.innerText);
+			} else {
+				this.$logger.info('code', 'No selected file');
+				this.$modal({
+					type: 'error',
+					title: 'Error',
+					content: this.$t('code.msg.no-selected'),
+				});
+			}
 		});
 
 		
@@ -120,6 +138,35 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				this.newName = str;
 			});
 		});
+	}
+
+	public nbKeydown(evt: KeyboardEvent) {
+		switch ( evt.key ) {
+			case 'Enter':
+				this.applyNameBox();
+				break;
+			default:
+				this.$logger.debug('code', 'Input namebox key.', evt);
+				break;
+		}
+	}
+
+	public nbOutsideClick() {
+		this.$logger.debug('code', 'Click the outside of namebox');
+		this.applyNameBox();
+	}
+
+	public applyNameBox() {
+		const node = this.selectedNode;
+		const oriP = node.data.value;
+		const dirP = path.dirname(oriP);
+		const newP = path.join(dirP, this.newName);
+
+		this.namebox = false;
+
+		fs.renameSync(oriP, newP);
+		this.$logger.success(`Rename [${oriP}] -> [${newP}]`);
+		this.$evt.$emit('code:tree-rerender', newP);
 	}
 
 	public checkFolder() {
@@ -280,16 +327,16 @@ export default class TreeView extends Mixins(GlobalMixins) {
 <style scope>
 .custom .tree-arrow.has-child:after {
 	border: 1.5px solid #263238;
-    position: absolute;
-    border-left: 0;
-    border-top: 0;
-    left: 9px;
-    top: 50%;
-    height: 9px;
-    width: 9px;
-    transform: rotate(-45deg) translateY(-50%) translateX(0);
-    transition: transform .25s;
-    transform-origin: center;
+	position: absolute;
+	border-left: 0;
+	border-top: 0;
+	left: 9px;
+	top: 50%;
+	height: 9px;
+	width: 9px;
+	transform: rotate(-45deg) translateY(-50%) translateX(0);
+	transition: transform .25s;
+	transform-origin: center;
 }
 
 .custom .tree-anchor .tree-text {
@@ -333,5 +380,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 .custom.v-dialog {
 	position: fixed !important;
 	background: rgba(32, 38, 104, 0.85) !important;
+	height: 73px;
+	overflow: hidden;
 }
 </style>

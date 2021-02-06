@@ -180,6 +180,13 @@ export default class Code extends Mixins(GlobalMixins) {
 				console.log(this.editor);
 			},
 		},
+		{
+			icon: 'mdi-refresh',
+			name: this.$t('code.menu.refresh'),
+			func: () => {
+				this.treeReload();
+			},
+		},
 	];
 
 	public treeReload() {
@@ -331,6 +338,15 @@ export default class Code extends Mixins(GlobalMixins) {
 			if ( this.cm && this.cm.display ) {
 				this.cm.display = 'none';
 			}
+		});
+
+		this.$evt.$off('code:tree-rerender');
+		this.$evt.$on('code:tree-rerender', (newPath: string) => {
+			this.treeReload();
+			const file = this.openFiles[this.selectedFile];
+			file.name = path.basename(newPath);
+			file.fullPath = newPath;
+			file.node.data.value = newPath;
 		});
 	}
 }

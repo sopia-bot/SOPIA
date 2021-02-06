@@ -11,9 +11,11 @@ export default {
 		'new-folder': '새 폴더',
 		'rename': '이름 변경',
 		'unlink': '제거',
+		'refresh': '새로고침',
 	},
 	msg: {
 		'save-success': '저장에 성공했습니다.',
+		'no-selected': '선택된 파일이 없습니다.',
 	},
 	editor: {
 		'not-opened-file': '열린 파일이 없습니다.',

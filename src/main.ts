@@ -6,7 +6,7 @@
  */
 // native modules
 import path from 'path';
-import fs from 'fs';
+const fs = window.require('fs');
 
 // pkacage modules
 import Vue from 'vue';
@@ -55,7 +55,9 @@ Vue.prototype.$sopia = window.$sopia = new spoon.Client(uuidv4()); // TODO: set 
 // Event Bus
 Vue.prototype.$evt = new Vue();
 
-Vue.prototype.$cfg = new CfgLite(path.resolve(app.getPath('userData'), 'app.cfg'));
+const appCfgPath = path.join(app.getPath('userData'), 'app.cfg');
+
+Vue.prototype.$cfg = new CfgLite(appCfgPath);
 
 // config
 Vue.config.errorHandler = function(err: any, vm: any, info) {
