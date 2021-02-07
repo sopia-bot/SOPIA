@@ -166,7 +166,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 		fs.renameSync(oriP, newP);
 		this.$logger.success(`Rename [${oriP}] -> [${newP}]`);
-		this.$evt.$emit('code:tree-rerender', newP);
+		this.$evt.$emit('code:tree-rerender', newP, !node.hasChildren());
 	}
 
 	public checkFolder() {
@@ -214,6 +214,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 					.then(() => {
 						treeRef = this.$refs.tree as any;
 						tree = treeRef.tree;
+						treeRef.$off('node:selected');
 						treeRef.$on('node:selected', (node: any) => {
 							const file = node.data.value;
 							this.selectPath = file;
@@ -221,7 +222,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 						});
 
 						if ( this.selectPath ) {
-							const node = this.searchNode(tree.model, this.selectPath);
+							const node = this.selectedNode;
 							if ( node ) {
 								node.select(true);
 							}
@@ -241,7 +242,9 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				}
 			} else {
 				// folder
-				if ( value.match(node.data.value) ) {
+				if ( value === node.data.value ) {
+					return node;
+				} else if ( value.indexOf(node.data.value) === 0 ) {
 					if ( !node.states.expanded ) {
 						node.toggleExpand();
 					}

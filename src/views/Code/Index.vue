@@ -341,12 +341,15 @@ export default class Code extends Mixins(GlobalMixins) {
 		});
 
 		this.$evt.$off('code:tree-rerender');
-		this.$evt.$on('code:tree-rerender', (newPath: string) => {
+		this.$evt.$on('code:tree-rerender', (newPath: string, isFile: boolean) => {
+			if ( isFile ) {
+				const file = this.openFiles[this.selectedFile];
+				file.name = path.basename(newPath);
+				file.fullPath = newPath;
+				file.node.data.value = newPath;
+				this.editor.language = this.getLanguage(path.extname(newPath));
+			}
 			this.treeReload();
-			const file = this.openFiles[this.selectedFile];
-			file.name = path.basename(newPath);
-			file.fullPath = newPath;
-			file.node.data.value = newPath;
 		});
 	}
 }

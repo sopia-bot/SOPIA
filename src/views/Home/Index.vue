@@ -5,9 +5,9 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
 <template>
-	<v-main class="custom indigo lighten-5">
+	<v-main class="custom indigo lighten-5" style="height: 100vh;">
 		<search-header></search-header>
-		<vue-scroll @handle-scroll="scrollEvent" style="max-height: calc(100vh - 68px);">
+		<vue-scroll @handle-scroll="scrollEvent" style="max-height: calc(100vh - 64px);">
 			<div style="max-height: calc(100vh - 58px);">
 				<v-row v-if="liveList" class="ma-0" align="center">
 					<v-col
