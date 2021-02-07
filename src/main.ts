@@ -57,7 +57,13 @@ Vue.prototype.$evt = new Vue();
 
 const appCfgPath = path.join(app.getPath('userData'), 'app.cfg');
 
-Vue.prototype.$cfg = new CfgLite(appCfgPath);
+declare global {
+	interface Window {
+		appCfg: CfgLite;
+	}
+}
+
+Vue.prototype.$cfg = window.appCfg = new CfgLite(appCfgPath);
 
 // config
 Vue.config.errorHandler = function(err: any, vm: any, info) {

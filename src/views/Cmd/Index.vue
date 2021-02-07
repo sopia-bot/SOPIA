@@ -90,14 +90,21 @@
 				<v-row align="center">
 					<v-col cols="12" align="center">
 						<v-textarea
-							v-if="setType === 'join' || setType === 'like'"
+							v-if="setType === 'join'"
 		  					color="indigo"
+							v-model="liveJoin"
 		  					counter
 		  					row="5"
 							></v-textarea>
+						<v-textarea
+							v-if="setType === 'like'"
+							color="indigo"
+							v-model="liveLike"
+							counter
+							row="5"></v-textarea>
 						<v-container v-else-if="setType === 'present'">
 							<div v-if="render.present" class="my-6">
-								<v-row class="ma-0" v-for="(present, idx) in livePresent" :key="'present_' + present.name" align="center">
+								<v-row class="ma-0" v-for="(present, idx) in livePresent" :key="'present_' + present.sticker" align="center">
 									<v-col class="pa-0" cols="4">
 										<v-btn
 											tile block
@@ -185,14 +192,14 @@ import CfgLite from '@/plugins/cfg-lite-ipc';
 import { Sticker, StickerCategory } from 'sopia-core';
 import giftCoin from '@/assets/gift_coin.png';
 
-interface PresentStruct {
-	name: string;
+export interface PresentStruct {
+	sticker: string;
 	src: string;
 	title: string;
 	message: string;
 }
 
-interface MessageStruct {
+export interface MessageStruct {
 	command: string;
 	message: string;
 	permit: string;
@@ -211,7 +218,8 @@ interface MessageStruct {
 export default class Cmd extends Mixins(GlobalMixins) {
 	public setType: string = 'join';
 	public use: boolean = true;
-	public cfg: CfgLite = new CfgLite(this.$path('userData', 'cmd.cfg'));
+	public cfgPath: string = this.$path('userData', 'cmd.cfg');
+	public cfg: CfgLite = new CfgLite(this.cfgPath);
 	public present: boolean = false;
 	public validStickers: Sticker[] = [];
 
@@ -238,7 +246,12 @@ export default class Cmd extends Mixins(GlobalMixins) {
 			this.$logger.info('cmd', 'Init cfg setting');
 			cfg.set('live_join', '');
 			cfg.set('live_like', '');
-			cfg.set('live_present', []);
+			cfg.set('live_present', [{
+				'sticker': 'default',
+				'src': '',
+				'title': '기본',
+				'message': '',
+			}]);
 			cfg.set('live_message', []);
 		}
 
@@ -271,7 +284,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 
 	public addPresentEvent(idx: number) {
 		const sticker = this.validStickers[idx];
-		const valid = this.livePresent.find((p: PresentStruct) => p.name === sticker.name);
+		const valid = this.livePresent.find((p: PresentStruct) => p.sticker === sticker.name);
 
 		if ( valid ) {
 			this.$noti({
@@ -282,7 +295,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 			return;
 		}
 		this.livePresent.push({
-			'name': sticker.name,
+			'sticker': sticker.name,
 			'title': sticker.title,
 			'src': sticker.imageThumbnail,
 			'message': '',
@@ -290,6 +303,14 @@ export default class Cmd extends Mixins(GlobalMixins) {
 	}
 
 	public delPresentEvent(idx: number) {
+		if ( idx === 0 ) {
+			this.$noti({
+				'content': this.$t('cmd.rm-deferr'),
+				'hrozontal': 'right',
+				'vertical': 'top',
+			});
+			return;
+		}
 		this.livePresent.splice(idx, 1);
 	}
 
@@ -321,7 +342,8 @@ export default class Cmd extends Mixins(GlobalMixins) {
 			'horizontal': 'right',
 			'vertical': 'top',
 		});
-		this.$logger.success('cmd', 'Save success config file.');
+		this.$logger.success('cmd', `Save success config file. [${this.cfgPath}]`, this.cfg.get());
+		window.reloadCmdCfg();
 	}
 
 }

@@ -29,12 +29,15 @@ import GlobalMixins from '@/plugins/mixins';
 import SideMenu from '@/views/SideMenu/Index.vue';
 import { LoginType, User, Play, Client } from 'sopia-core';
 import LivePlayer from '@/views/Live/Player.vue';
+import CfgLite from '@/plugins/cfg-lite-ipc';
 
 declare global {
 	interface Window {
 		user: User;
 		$spoon: any;
 		$sopia: Client;
+		reloadCfg: () => void;
+		appCfg: CfgLite;
 	}
 }
 

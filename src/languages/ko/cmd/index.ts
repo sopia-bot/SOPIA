@@ -24,4 +24,5 @@ export default {
 		'all': '전체',
 		'manager': '관리자',
 	},
+	'rm-deferr': '기본 메시지는 삭제할 수 없습니다.',
 };
