@@ -102,8 +102,10 @@ const IgnoreEvent = [
 	'components': {
 		ChatMessage,
 	},
-	'data': {
-		LiveEvent,
+	'data': () => {
+		return {
+			LiveEvent,
+		};
 	},
 })
 export default class LivePlayer extends Mixins(GlobalMixins) {
@@ -122,7 +124,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			});
 			this.liveSocket = await this.$sopia.liveManager.liveJoin(this.live);
 			this.liveSocket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
-				SopiaProcesser(evt as SpoonSocketEvent);
+				SopiaProcesser(evt as SpoonSocketEvent, this.liveSocket);
 
 				if ( IgnoreEvent.includes(evt.event) ) {
 					return;

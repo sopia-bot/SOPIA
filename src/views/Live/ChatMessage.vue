@@ -84,8 +84,10 @@ import GlobalMixins from '@/plugins/mixins';
 import { LiveEvent } from 'sopia-core';
 
 @Component({
-	'data': {
-		LiveEvent,
+	'data': () => {
+		return {
+			LiveEvent,
+		};
 	},
 })
 export default class ChatMessage extends Mixins(GlobalMixins) {
