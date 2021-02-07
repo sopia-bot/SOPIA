@@ -29,7 +29,9 @@
 				<span class="tree-text" slot-scope="{ node }">
 					<!-- S:Folder -->
 					<template v-if="node.hasChildren()">
-						<div :ref="node.data.value" @contextmenu.stop="$emit('contextmenu', $event, node)">
+						<div
+							:ref="node.data.value"
+							@contextmenu.stop="$emit('contextmenu', $event, node)">
 							{{ node.text }}
 						</div>
 					</template>
@@ -37,7 +39,9 @@
 
 					<!-- S:File -->
 					<template v-else>
-						<div :ref="node.data.value" @contextmenu.stop="$emit('contextmenu', $event, node)">
+						<div
+							:ref="node.data.value"
+							@contextmenu.stop="$emit('contextmenu', $event, node)">
 							<i :class="node.data.icon"></i>
 							{{ node.text }}
 						</div>
@@ -67,6 +71,9 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 	public namebox: boolean = false;
 	public newName: string = '';
+	public nbnew: boolean = false; // true: new file or directory
+	public nbdir: string = '';
+	public nbtype: 'FILE' | 'DIR' = 'FILE';
 
 	get selectedNode(): any {
 		const treeRef = this.$refs.tree as any;
@@ -81,6 +88,15 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		this.treeRenderer = false;
 		this.targetFolder = this.$route.params.folder;
 		this.folderTree = this.buildFolderTree(this.$path('userData', this.targetFolder));
+
+		this.$evt.$off('code:new');
+		this.$evt.$on('code:new', (dir: string, type: 'FILE' | 'DIR') => {
+			this.nbdir = dir;
+			this.nbtype = type;
+			this.nbnew = true;
+			this.$logger.debug('code', `New content [${dir}]`);
+			this.openNameBox(10, 10, '');
+		});
 
 		this.$evt.$off('code:rename');
 		this.$evt.$on('code:rename', () => {
@@ -126,14 +142,20 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 		this.$evt.$off('code:select');
 		this.$evt.$on('code:select', (p: string) => {
-			this.$nextTick(() => {
-				this.selectPath = p;
-				const node = this.selectedNode;
-				this.$logger.debug('code', `Select path [${p}] node`, node);
-				if ( node ) {
-					node.select(true);
-				}
-			});
+			const treeRef = this.$refs.tree as any;
+			if ( !treeRef || !treeRef.tree || !treeRef.tree.model ) {
+				this.$nextTick(() => {
+					this.$evt.$emit('code:select', p);
+				});
+				return;
+			}
+
+			this.selectPath = p;
+			const node = this.selectedNode;
+			this.$logger.debug('code', `Select path [${p}] node`, node);
+			if ( node ) {
+				node.select(true);
+			}
 		});
 
 		
@@ -190,16 +212,49 @@ export default class TreeView extends Mixins(GlobalMixins) {
 	}
 
 	public applyNameBox() {
-		const node = this.selectedNode;
-		const oriP = node.data.value;
-		const dirP = path.dirname(oriP);
-		const newP = path.join(dirP, this.newName);
+		if ( this.newName === '' ) {
+			return;
+		}
 
-		this.namebox = false;
+		if ( this.nbnew ) {
+			const target = path.join(this.nbdir, this.newName);
+			if ( fs.existsSync(target) ) {
+				this.$logger.err('code', `Exists file or directory. [${target}]`);
+				this.$modal({
+					type: 'error',
+					title: 'Error',
+					content: this.$t('code.msg.exists'),
+				});
+				return;
+			}
 
-		fs.renameSync(oriP, newP);
-		this.$logger.success(`Rename [${oriP}] -> [${newP}]`);
-		this.$evt.$emit('code:tree-rerender', newP, !node.hasChildren());
+			if ( !fs.existsSync(this.nbdir) ) {
+				this.$logger.err('code', `No such file or directory. [${this.nbdir}]`);
+			}
+
+			switch ( this.nbtype ) {
+				case 'FILE':
+					fs.writeFileSync(target, '');
+					break;
+				case 'DIR':
+					fs.mkdirSync(target);
+					break;
+			}
+
+			this.nbnew = false;
+			this.$evt.$emit('code:tree-rerender');
+		} else {
+			const node = this.selectedNode;
+			const oriP = node.data.value;
+			const dirP = path.dirname(oriP);
+			const newP = path.join(dirP, this.newName);
+
+			this.namebox = false;
+
+			fs.renameSync(oriP, newP);
+			this.$logger.success(`Rename [${oriP}] -> [${newP}]`);
+			this.$evt.$emit('code:tree-rerender', newP, !node.hasChildren());
+		}
 	}
 
 	public checkFolder() {

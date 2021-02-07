@@ -130,6 +130,7 @@ export default class Code extends Mixins(GlobalMixins) {
 	};
 	public openFiles: TabFile[] = [];
 	public selectedFile: number = -1;
+	public selectedDir: string = '';
 
 	public treeRenderer: boolean = true;
 
@@ -148,44 +149,84 @@ export default class Code extends Mixins(GlobalMixins) {
 		{
 			icon: 'mdi-file-document-multiple',
 			name: this.$t('code.menu.new-file'),
-			func: () => {
-				console.log(this.editor);
-			},
+			func: this.TB_NewFile,
 		},
 		{
 			icon: 'mdi-folder-plus',
 			name: this.$t('code.menu.new-folder'),
-			func: () => {
-				console.log(this.editor);
-			},
+			func: this.TB_NewFolder,
 		},
 		{
 			icon: 'mdi-form-textbox',
 			name: this.$t('code.menu.rename'),
-			func: () => {
-				this.$evt.$emit('code:rename');
-				if ( this.openFiles.length > 0 && this.selectedFile >= 0 ) {
-					this.$evt.$emit('code:rename');
-				} else {
-					this.$logger.err('code', 'Can not rename file or directory.');
-				}
-			},
+			func: this.TB_Rename,
 		},
 		{
 			icon: 'mdi-delete',
 			name: this.$t('code.menu.unlink'),
-			func: () => {
-				this.$evt.$emit('code:remove');
-			},
+			func: this.TB_Unlink,
 		},
 		{
 			icon: 'mdi-refresh',
 			name: this.$t('code.menu.refresh'),
-			func: () => {
-				this.treeReload();
-			},
+			func: this.TB_Refresh,
 		},
 	];
+
+	public TB_NewFile() {
+		let dir = this.$path('userData', this.$route.params.folder);
+		if ( this.selectedDir ) {
+			dir = this.selectedDir;
+		} else if ( this.selectedFile >= 0 ) {
+			const file: TabFile = this.openFiles[this.selectedFile];
+			if ( file ) {
+				const stat = fs.statSync(file.fullPath);
+				if ( stat.isDirectory() ) {
+					dir = file.fullPath;
+				} else {
+					dir = path.basename(file.fullPath);
+				}
+			}
+		}
+
+		this.$evt.$emit('code:new', dir, 'FILE');
+	}
+
+	public TB_NewFolder() {
+		let dir = this.$path('userData', this.$route.params.folder);
+		if ( this.selectedDir ) {
+			dir = this.selectedDir;
+		} else if ( this.selectedFile >= 0 ) {
+			const file: TabFile = this.openFiles[this.selectedFile];
+			if ( file ) {
+				const stat = fs.statSync(file.fullPath);
+				if ( stat.isDirectory() ) {
+					dir = file.fullPath;
+				} else {
+					dir = path.basename(file.fullPath);
+				}
+			}
+		}
+
+		this.$evt.$emit('code:new', dir, 'DIR');
+	}
+
+	public TB_Rename() {
+		this.$evt.$emit('code:rename');
+		if ( this.openFiles.length > 0 && this.selectedFile >= 0 ) {
+			this.$evt.$emit('code:rename');
+		} else {
+			this.$logger.err('code', 'Can not rename file or directory.');
+		}
+	}
+
+	public TB_Unlink() {
+		this.$evt.$emit('code:remove');
+	}
+
+	public TB_Refresh() {
+		this.treeReload();
+	}
 
 	public treeReload(cb?: () => void) {
 		this.treeRenderer = false;
@@ -290,13 +331,15 @@ export default class Code extends Mixins(GlobalMixins) {
 	}
 
 	public selectedItem(node: any) {
+		this.$logger.debug('code', `SelectedItem`, node);
 		if ( node.data.isFolder ) {
-			// folder something to do.
+			this.selectedDir = node.data.value;
+			node.select(true);
+			this.$emit('selected', node);
 		} else {
 			const file = node.data.value;
-
-
 			const idx = this.openFiles.findIndex((opened) => opened.name === node.data.text);
+			this.selectedDir = '';
 
 			if ( idx >= 0 ) {
 				const openFile = this.openFiles[idx];
