@@ -94,13 +94,46 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 				this.openNameBox(x, y, sel.innerText);
 			} else {
-				this.$logger.info('code', 'No selected file');
+				this.$logger.err('code', 'No selected file.');
 				this.$modal({
 					type: 'error',
 					title: 'Error',
 					content: this.$t('code.msg.no-selected'),
 				});
 			}
+		});
+
+		this.$evt.$off('code:remove');
+		this.$evt.$on('code:remove', () => {
+			const node = this.selectedNode;
+			if ( node ) {
+				const stat = fs.statSync(node.data.value);
+				if ( stat.isDirectory() ) {
+					fs.rmdirSync(node.data.value, { recursive: true });
+				} else {
+					fs.unlinkSync(node.data.value);
+				}
+				this.$evt.$emit('code:tree-rerender', node.data.value, !node.hasChildren());
+			} else {
+				this.$logger.err('code', 'No selected file.');
+				this.$modal({
+					type: 'error',
+					title: 'Error',
+					content: this.$t('code.msg.no-selected'),
+				});
+			}
+		});
+
+		this.$evt.$off('code:select');
+		this.$evt.$on('code:select', (p: string) => {
+			this.$nextTick(() => {
+				this.selectPath = p;
+				const node = this.selectedNode;
+				this.$logger.debug('code', `Select path [${p}] node`, node);
+				if ( node ) {
+					node.select(true);
+				}
+			});
 		});
 
 		

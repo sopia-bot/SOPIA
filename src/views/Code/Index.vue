@@ -163,10 +163,8 @@ export default class Code extends Mixins(GlobalMixins) {
 			icon: 'mdi-form-textbox',
 			name: this.$t('code.menu.rename'),
 			func: () => {
-				console.log(this.editor, this.openFiles.length, this.treeRenderer);
 				this.$evt.$emit('code:rename');
 				if ( this.openFiles.length > 0 && this.selectedFile >= 0 ) {
-					console.log(this.selectedFile, 'aaa');
 					this.$evt.$emit('code:rename');
 				} else {
 					this.$logger.err('code', 'Can not rename file or directory.');
@@ -177,7 +175,7 @@ export default class Code extends Mixins(GlobalMixins) {
 			icon: 'mdi-delete',
 			name: this.$t('code.menu.unlink'),
 			func: () => {
-				console.log(this.editor);
+				this.$evt.$emit('code:remove');
 			},
 		},
 		{
@@ -189,10 +187,13 @@ export default class Code extends Mixins(GlobalMixins) {
 		},
 	];
 
-	public treeReload() {
+	public treeReload(cb?: () => void) {
 		this.treeRenderer = false;
 		this.$nextTick(() => {
 			this.treeRenderer = true;
+			if ( typeof cb === 'function' ) {
+				cb();
+			}
 		});
 	}
 
@@ -342,14 +343,26 @@ export default class Code extends Mixins(GlobalMixins) {
 
 		this.$evt.$off('code:tree-rerender');
 		this.$evt.$on('code:tree-rerender', (newPath: string, isFile: boolean) => {
-			if ( isFile ) {
-				const file = this.openFiles[this.selectedFile];
-				file.name = path.basename(newPath);
-				file.fullPath = newPath;
-				file.node.data.value = newPath;
-				this.editor.language = this.getLanguage(path.extname(newPath));
+			if ( newPath ) {
+				if ( isFile ) {
+					const file = this.openFiles[this.selectedFile];
+					file.name = path.basename(newPath);
+					file.fullPath = newPath;
+					file.node.data.value = newPath;
+					this.editor.language = this.getLanguage(path.extname(newPath));
+				}
 			}
-			this.treeReload();
+
+			this.openFiles = this.openFiles.filter((f: TabFile) => fs.existsSync(f.fullPath));
+			if ( this.selectedFile >= this.openFiles.length ) {
+				this.selectedFile = this.openFiles.length - 1;
+			}
+			this.treeReload(() => {
+				const node = this.openFiles[this.selectedFile] as any;
+				if ( node ) {
+					this.$evt.$emit('code:select', node.fullPath);
+				}
+			});
 		});
 	}
 }
