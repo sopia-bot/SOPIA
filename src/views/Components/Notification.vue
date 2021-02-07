@@ -53,27 +53,29 @@ export default {
 			'default': 'middle', // top middle bottom
 		},
 	},
-	'data': {
-		'icons': {
-			'info': 'mdi-information',
-			'warning': 'mdi-alert',
-			'error': 'mdi-close-circle',
-			'success': 'mdi-checkbox-marked-circle-outline',
-			'none': '',
-		},
-		'colors': {
-			'info': '#81D4FA',
-			'warning': '#FFB74D',
-			'error': '#FFCDD2',
-			'success': '#C8E6C9',
-			'none': '',
-		},
-		'textColors': {
-			'info': '#1565C0',
-			'warning': '#E65100',
-			'error': '#E53935',
-			'success': '#2E7D32',
-		},
+	'data': () => {
+		return {
+			'icons': {
+				'info': 'mdi-information',
+				'warning': 'mdi-alert',
+				'error': 'mdi-close-circle',
+				'success': 'mdi-checkbox-marked-circle-outline',
+				'none': '',
+			},
+			'colors': {
+				'info': '#81D4FA',
+				'warning': '#FFB74D',
+				'error': '#FFCDD2',
+				'success': '#C8E6C9',
+				'none': '',
+			},
+			'textColors': {
+				'info': '#1565C0',
+				'warning': '#E65100',
+				'error': '#E53935',
+				'success': '#2E7D32',
+			},
+		};
 	},
 };
 </script>

@@ -65,21 +65,23 @@ export default {
 			'default': 'Ok',
 		},
 	},
-	'data': {
-		'icons': {
-			'info': 'mdi-information',
-			'warning': 'mdi-alert',
-			'error': 'mdi-close-circle',
-			'success': 'mdi-checkbox-marked-circle-outline',
-			'none': '',
-		},
-		'colors': {
-			'info': '#81D4FA',
-			'warning': '#FFB74D',
-			'error': '#E53935',
-			'success': '#43A047',
-			'none': '',
-		},
+	'data': () => {
+		return {
+			'icons': {
+				'info': 'mdi-information',
+				'warning': 'mdi-alert',
+				'error': 'mdi-close-circle',
+				'success': 'mdi-checkbox-marked-circle-outline',
+				'none': '',
+			},
+			'colors': {
+				'info': '#81D4FA',
+				'warning': '#FFB74D',
+				'error': '#E53935',
+				'success': '#43A047',
+				'none': '',
+			},
+		};
 	},
 };
 </script>
