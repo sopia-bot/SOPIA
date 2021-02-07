@@ -42,7 +42,7 @@ let win: BrowserWindow | null;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
-	{ scheme: 'app', privileges: { secure: true, standard: true } },
+	{ 'scheme': 'app', 'privileges': { 'secure': true, 'standard': true } },
 ]);
 
 declare global {
@@ -72,14 +72,14 @@ global.startTime = buildTime(new Date());
 const createWindow = () => {
 	// Create the browser window.
 	win = new BrowserWindow({
-		width: 800,
-		height: 600,
-		webPreferences: {
+		'width': 800,
+		'height': 600,
+		'webPreferences': {
 			// Use pluginOptions.nodeIntegration, leave this alone
 			// See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-			nodeIntegration: true,
-			enableRemoteModule: true,
-			webSecurity: !isDevelopment,
+			'nodeIntegration': true,
+			'enableRemoteModule': true,
+			'webSecurity': !isDevelopment,
 		},
 	});
 
@@ -122,7 +122,7 @@ app.on('ready', async () => {
 	session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
 		details.requestHeaders['User-Agent'] = '5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36';
 		details.requestHeaders['Accept-Encoding'] = 'gzip, deflate, br';
-		callback({ cancel: false, requestHeaders: details.requestHeaders });
+		callback({ 'cancel': false, 'requestHeaders': details.requestHeaders });
 	});
 
 	if (isDevelopment && !process.env.IS_TEST) {

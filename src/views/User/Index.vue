@@ -85,7 +85,7 @@ import { User, Play } from 'sopia-core';
 import SearchHeader from '../Search/Header.vue';
 
 @Component({
-	components: {
+	'components': {
 		SearchHeader,
 	},
 })

@@ -39,7 +39,7 @@ declare global {
 }
 
 @Component({
-	components: {
+	'components': {
 		SideMenu,
 		LivePlayer,
 	},

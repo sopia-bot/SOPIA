@@ -15,6 +15,7 @@
 		"object-literal-sort-keys": false,
 		"ordered-imports": false,
 		"quotemark": [true, "single"],
+		"object-literal-key-quotes": [true, "always"],
 		"comment-format": {
 			"severity": "warning"
 		},

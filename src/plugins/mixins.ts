@@ -61,7 +61,7 @@ export default class Mixin extends VueDecorator {
 		const router = this && this.$router;
 		if ( router ) {
 			if ( router.currentRoute.path !== url ) {
-				router.push({ path: url });
+				router.push({ 'path': url });
 			}
 		}
 	}
@@ -76,34 +76,34 @@ export default class Mixin extends VueDecorator {
 
 	public jsSyntax(code: string) {
 		if ( jsOrPath(code) === 'path' ) {
-			code = fs.readFileSync(code, { encoding: 'utf8' });
+			code = fs.readFileSync(code, { 'encoding': 'utf8' });
 		}
 		try {
 			const v: any = vm;
 			v.createScript(code);
-			return { result: true };
+			return { 'result': true };
 		} catch (err) {
 			const sp = err.stack.split('\n');
 			const line = sp[0].split(':')[1];
 			const syntax = `${sp[1]}\n${sp[2]}`;
 			return {
-				result: false,
-				msg: err.message,
+				'result': false,
+				'msg': err.message,
 				syntax,
 				line,
-				stack: err.stack,
+				'stack': err.stack,
 			};
 		}
 	}
 
 	public $noti(options: any = {}) {
 		const defaultOptions: any = {
-			open: true,
-			type: 'none',
-			content: 'Snackbar Content',
-			timeout: 3000,
-			horizontal: 'center',
-			vertical: 'middle',
+			'open': true,
+			'type': 'none',
+			'content': 'Snackbar Content',
+			'timeout': 3000,
+			'horizontal': 'center',
+			'vertical': 'middle',
 		};
 
 		for ( const [key, val] of Object.entries(options) ) {
@@ -116,7 +116,7 @@ export default class Mixin extends VueDecorator {
 			options.vuetify = Vuetify;
 		}
 
-		let instance: any = this.mount(Notification, { propsData: defaultOptions });
+		let instance: any = this.mount(Notification, { 'propsData': defaultOptions });
 		setTimeout(() => {
 			Vue.nextTick(() => {
 				instance.$el.remove();
@@ -128,11 +128,11 @@ export default class Mixin extends VueDecorator {
 
 	public $modal(options: any = {}) {
 		const defaultOptions: any = {
-			open: true,
-			type: 'none',
-			title: 'Modal Title',
-			content: 'Modal Content',
-			textOk: 'Ok',
+			'open': true,
+			'type': 'none',
+			'title': 'Modal Title',
+			'content': 'Modal Content',
+			'textOk': 'Ok',
 		};
 
 		for ( const [key, val] of Object.entries(options) ) {
@@ -145,7 +145,7 @@ export default class Mixin extends VueDecorator {
 			options.vuetify = Vuetify;
 		}
 
-		let instance: any = this.mount(Modal, { propsData: defaultOptions });
+		let instance: any = this.mount(Modal, { 'propsData': defaultOptions });
 		instance.$once('ok', (evt: any) => {
 			if ( typeof options.ok === 'function' ) {
 				options.ok(instance, evt);
@@ -161,12 +161,12 @@ export default class Mixin extends VueDecorator {
 
 	public $confirm(options: any = {}) {
 		const defaultOptions: any = {
-			open: true,
-			type: 'none',
-			title: 'Confirm Title',
-			content: 'Confirm Content',
-			textOk: 'Ok',
-			textCancel: 'Cancel',
+			'open': true,
+			'type': 'none',
+			'title': 'Confirm Title',
+			'content': 'Confirm Content',
+			'textOk': 'Ok',
+			'textCancel': 'Cancel',
 		};
 
 		for ( const [key, val] of Object.entries(options) ) {
@@ -179,7 +179,7 @@ export default class Mixin extends VueDecorator {
 			options.vuetify = Vuetify;
 		}
 
-		let instance: any = this.mount(Confirm, { propsData: defaultOptions });
+		let instance: any = this.mount(Confirm, { 'propsData': defaultOptions });
 		instance.$once('ok', (evt: any) => {
 			if ( typeof options.ok === 'function' ) {
 				options.ok(instance, evt);

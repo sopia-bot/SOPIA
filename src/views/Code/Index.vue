@@ -106,13 +106,13 @@ interface TabFile {
 }
 
 @Component({
-	components: {
+	'components': {
 		MonacoEditor,
 		TreeView,
 		ToolButton,
 	},
-	watch: {
-		$route(to, from) {
+	'watch': {
+		'$route'(to, from) {
 			const t: any = this;
 			t.treeReload();
 		},
@@ -120,13 +120,13 @@ interface TabFile {
 })
 export default class Code extends Mixins(GlobalMixins) {
 	public editor: any = {
-		options: {
-			automaticLayout: true,
+		'options': {
+			'automaticLayout': true,
 		},
-		language: 'javascript',
-		code: '',
-		theme: 'vs',
-		changed: false,
+		'language': 'javascript',
+		'code': '',
+		'theme': 'vs',
+		'changed': false,
 	};
 	public openFiles: TabFile[] = [];
 	public selectedFile: number = -1;
@@ -135,41 +135,41 @@ export default class Code extends Mixins(GlobalMixins) {
 	public treeRenderer: boolean = true;
 
 	public cm: ContextMenu = {
-		left: 0,
-		top: 0,
-		display: 'none',
-		target: null,
-		rename: {
-			display: 'none',
-			value: '',
+		'left': 0,
+		'top': 0,
+		'display': 'none',
+		'target': null,
+		'rename': {
+			'display': 'none',
+			'value': '',
 		},
 	};
 
 	public buttons: ToolButtonInterface[] = [
 		{
-			icon: 'mdi-file-document-multiple',
-			name: this.$t('code.menu.new-file'),
-			func: this.TB_NewFile,
+			'icon': 'mdi-file-document-multiple',
+			'name': this.$t('code.menu.new-file'),
+			'func': this.TB_NewFile,
 		},
 		{
-			icon: 'mdi-folder-plus',
-			name: this.$t('code.menu.new-folder'),
-			func: this.TB_NewFolder,
+			'icon': 'mdi-folder-plus',
+			'name': this.$t('code.menu.new-folder'),
+			'func': this.TB_NewFolder,
 		},
 		{
-			icon: 'mdi-form-textbox',
-			name: this.$t('code.menu.rename'),
-			func: this.TB_Rename,
+			'icon': 'mdi-form-textbox',
+			'name': this.$t('code.menu.rename'),
+			'func': this.TB_Rename,
 		},
 		{
-			icon: 'mdi-delete',
-			name: this.$t('code.menu.unlink'),
-			func: this.TB_Unlink,
+			'icon': 'mdi-delete',
+			'name': this.$t('code.menu.unlink'),
+			'func': this.TB_Unlink,
 		},
 		{
-			icon: 'mdi-refresh',
-			name: this.$t('code.menu.refresh'),
-			func: this.TB_Refresh,
+			'icon': 'mdi-refresh',
+			'name': this.$t('code.menu.refresh'),
+			'func': this.TB_Refresh,
 		},
 	];
 
@@ -291,7 +291,7 @@ export default class Code extends Mixins(GlobalMixins) {
 		try {
 			const openedFile = this.openFiles[this.selectedFile];
 			const ext = path.extname(openedFile.name);
-			let rtn: any = { result: true, line: 0 };
+			let rtn: any = { 'result': true, 'line': 0 };
 
 			switch ( ext ) {
 				case '.js':
@@ -304,28 +304,28 @@ export default class Code extends Mixins(GlobalMixins) {
 			}
 			if ( !rtn.result ) {
 				this.$modal({
-					type: 'error',
-					title: rtn.msg,
-					content: `At line ${rtn.line}.<br>${rtn.syntax}`,
+					'type': 'error',
+					'title': rtn.msg,
+					'content': `At line ${rtn.line}.<br>${rtn.syntax}`,
 				});
 				return;
 			}
 
-			fs.writeFileSync(openedFile.fullPath, openedFile.contents, {encoding: 'utf8'});
+			fs.writeFileSync(openedFile.fullPath, openedFile.contents, {'encoding': 'utf8'});
 			openedFile.oriContents = openedFile.contents;
 
 			this.$noti({
-				type: 'success',
-				content: this.$t('code.msg.save-success'),
-				horizontal: 'right',
-				vertical: 'bottom',
-				timeout: 2000,
+				'type': 'success',
+				'content': this.$t('code.msg.save-success'),
+				'horizontal': 'right',
+				'vertical': 'bottom',
+				'timeout': 2000,
 			});
 		} catch (err) {
 			this.$modal({
-				type: 'error',
-				title: 'Error',
-				content: err.message,
+				'type': 'error',
+				'title': 'Error',
+				'content': err.message,
 			});
 		}
 	}
@@ -350,7 +350,7 @@ export default class Code extends Mixins(GlobalMixins) {
 				this.selectedFile = idx;
 				this.$emit('selected', node);
 			} else if ( fs.existsSync(file) ) {
-				const data = fs.readFileSync(file, { encoding: 'utf-8' });
+				const data = fs.readFileSync(file, { 'encoding': 'utf-8' });
 				this.editor.code = data;
 				this.editor.language = this.getLanguage(path.extname(file));
 
@@ -358,11 +358,11 @@ export default class Code extends Mixins(GlobalMixins) {
 
 				if ( idx === -1 ) {
 					this.openFiles.push({
-						name: node.data.text,
-						fullPath: node.data.value,
-						contents: data,
-						oriContents: data,
-						isEdit: false,
+						'name': node.data.text,
+						'fullPath': node.data.value,
+						'contents': data,
+						'oriContents': data,
+						'isEdit': false,
 						node,
 					});
 					this.selectedFile = this.openFiles.length - 1;

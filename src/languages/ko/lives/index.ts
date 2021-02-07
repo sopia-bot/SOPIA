@@ -7,10 +7,10 @@
 
 export default {
 	'search-type': {
-		user: '사용자',
-		live: '방송 제목',
-		cast: '캐스트 이름',
-		talk: '톡 이름',
+		'user': '사용자',
+		'live': '방송 제목',
+		'cast': '캐스트 이름',
+		'talk': '톡 이름',
 	},
 	'input-chat': '채팅을 입력하세요.',
 	'notice': {

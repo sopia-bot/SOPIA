@@ -190,20 +190,21 @@ interface PresentStruct {
 	src: string;
 	title: string;
 	message: string;
-};
+}
 
 interface MessageStruct {
 	command: string;
 	message: string;
 	permit: string;
-};
+}
 
 @Component({
-	components: {
+	'components': {
 	},
-	watch: {
-		$route(to, from) {
-			this.setType = this.$route.params['type'];
+	'watch': {
+		'$route'(to, from) {
+			const t = this as any;
+			t.setType = this.$route.params['type'];
 		},
 	},
 })
@@ -213,7 +214,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 	public cfg: CfgLite = new CfgLite(this.$path('userData', 'cmd.cfg'));
 	public present: boolean = false;
 	public validStickers: Sticker[] = [];
-	
+
 	public liveJoin: string = '';
 	public liveLike: string = '';
 	public livePresent: PresentStruct[] = [];
@@ -222,11 +223,11 @@ export default class Cmd extends Mixins(GlobalMixins) {
 	public readonly permitList: string[] = [ 'all', 'manager' ];
 
 	public render = {
-		present: true,
+		'present': true,
 	};
 
 	public imgs = {
-		coin: giftCoin,
+		'coin': giftCoin,
 	};
 
 	public cfgValid(cfg: CfgLite) {
@@ -256,7 +257,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 			await this.asleep(2000);
 		}
 		this.$sopia.stickers.categories.forEach((category: StickerCategory) => {
-			if ( category.isUsed == false ) {
+			if ( category.isUsed === false ) {
 				return;
 			}
 
@@ -274,17 +275,17 @@ export default class Cmd extends Mixins(GlobalMixins) {
 
 		if ( valid ) {
 			this.$noti({
-				content: this.$t('cmd.sticker.exists'),
-				horizontal: 'right',
-				vertical: 'top',
+				'content': this.$t('cmd.sticker.exists'),
+				'horizontal': 'right',
+				'vertical': 'top',
 			});
 			return;
 		}
 		this.livePresent.push({
-			name: sticker.name,
-			title: sticker.title,
-			src: sticker.imageThumbnail,
-			message: '',
+			'name': sticker.name,
+			'title': sticker.title,
+			'src': sticker.imageThumbnail,
+			'message': '',
 		});
 	}
 
@@ -294,9 +295,9 @@ export default class Cmd extends Mixins(GlobalMixins) {
 
 	public addMessageEvent() {
 		this.liveMessage.push({
-			command: '',
-			message: '',
-			permit: 'all',
+			'command': '',
+			'message': '',
+			'permit': 'all',
 		});
 	}
 
@@ -316,9 +317,9 @@ export default class Cmd extends Mixins(GlobalMixins) {
 
 		this.$evt.$emit('cmd:reload');
 		this.$noti({
-			content: this.$t('save-success'),
-			horizontal: 'right',
-			vertical: 'top',
+			'content': this.$t('save-success'),
+			'horizontal': 'right',
+			'vertical': 'top',
 		});
 		this.$logger.success('cmd', 'Save success config file.');
 	}

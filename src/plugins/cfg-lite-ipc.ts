@@ -10,12 +10,12 @@ const { ipcRenderer } = window.require('electron');
 
 export default class CfgLite {
 	private readonly evtName: string = 'cfg-lite';
-	
+
 	constructor(private cfgFile: string, private privKey: string = '') {
 		ipcRenderer.sendSync(this.evtName, 'new', this.cfgFile, this.privKey);
 	}
 
-	
+
 	public save(file?: string, removeBefore: boolean = false) {
 		return ipcRenderer.sendSync(this.evtName, 'save', this.cfgFile, file, removeBefore);
 	}

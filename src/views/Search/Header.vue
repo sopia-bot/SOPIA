@@ -40,20 +40,20 @@ import { ContentType } from 'sopia-core';
 export default class SearchHeader extends Mixins(GlobalMixins) {
 	public searchType: any[] = [
 		{
-			text: this.$t('lives.search-type.user'),
-			value: ContentType.USER,
+			'text': this.$t('lives.search-type.user'),
+			'value': ContentType.USER,
 		},
 		{
-			text: this.$t('lives.search-type.live'),
-			value: ContentType.LIVE,
+			'text': this.$t('lives.search-type.live'),
+			'value': ContentType.LIVE,
 		},
 		{
-			text: this.$t('lives.search-type.cast'),
-			value: ContentType.CAST,
+			'text': this.$t('lives.search-type.cast'),
+			'value': ContentType.CAST,
 		},
 		{
-			text: this.$t('lives.search-type.talk'),
-			value: ContentType.TALK,
+			'text': this.$t('lives.search-type.talk'),
+			'value': ContentType.TALK,
 		},
 	];
 	public searchTypeSelect: ContentType = ContentType.USER;

@@ -26,56 +26,54 @@
 </template>
 <script>
 export default {
-	name: 'Modal',
-	props: {
-		type: {
-			type: String,
-			default: 'none',
+	'name': 'Modal',
+	'props': {
+		'type': {
+			'type': String,
+			'default': 'none',
 		},
-		open: {
-			type: Boolean,
-			default: false,
+		'open': {
+			'type': Boolean,
+			'default': false,
 		},
-		timeout: {
-			type: Number,
-			default: 5000,
+		'timeout': {
+			'type': Number,
+			'default': 5000,
 		},
-		content: {
-			type: String,
-			default: 'Snack Content',
+		'content': {
+			'type': String,
+			'default': 'Snack Content',
 		},
-		horizontal: {
-			type: String,
-			default: 'center', // left center right
+		'horizontal': {
+			'type': String,
+			'default': 'center', // left center right
 		},
-		vertical: {
-			type: String,
-			default: 'middle', // top middle bottom
+		'vertical': {
+			'type': String,
+			'default': 'middle', // top middle bottom
 		},
 	},
-	data() {
-		return {
-			icons: {
-				info: 'mdi-information',
-				warning: 'mdi-alert',
-				error: 'mdi-close-circle',
-				success: 'mdi-checkbox-marked-circle-outline',
-				none: '',
-			},
-			colors: {
-				info: '#81D4FA',
-				warning: '#FFB74D',
-				error: '#FFCDD2',
-				success: '#C8E6C9',
-				none: '',
-			},
-			textColors: {
-				info: '#1565C0',
-				warning: '#E65100',
-				error: '#E53935',
-				success: '#2E7D32',
-			},
-		};
+	'data': {
+		'icons': {
+			'info': 'mdi-information',
+			'warning': 'mdi-alert',
+			'error': 'mdi-close-circle',
+			'success': 'mdi-checkbox-marked-circle-outline',
+			'none': '',
+		},
+		'colors': {
+			'info': '#81D4FA',
+			'warning': '#FFB74D',
+			'error': '#FFCDD2',
+			'success': '#C8E6C9',
+			'none': '',
+		},
+		'textColors': {
+			'info': '#1565C0',
+			'warning': '#E65100',
+			'error': '#E53935',
+			'success': '#2E7D32',
+		},
 	},
 };
 </script>

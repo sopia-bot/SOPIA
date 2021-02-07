@@ -64,7 +64,7 @@ const sleep = (msec: number) => {
 
 
 @Component({
-	components: {
+	'components': {
 		LiveItem,
 		SearchHeader,
 	},

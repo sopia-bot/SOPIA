@@ -21,7 +21,7 @@ Script.add($path('userData', 'sopia/'));
 const bundlePath = $path('userData', 'bundles');
 
 if ( !fs.existsSync(bundlePath) ) {
-    fs.mkdirSync(bundlePath);
+	fs.mkdirSync(bundlePath);
 }
 
 const bundles = fs.readdirSync(bundlePath);
