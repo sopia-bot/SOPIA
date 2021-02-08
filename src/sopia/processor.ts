@@ -8,7 +8,6 @@ import { SpoonSocketEvent, LiveEvent, User, Client, SocketManager, Play } from '
 import CfgLite from '@/plugins/cfg-lite-ipc';
 import logger from '@/plugins/logger';
 import Script from './script';
-import { Socket } from 'dgram';
 
 
 const fs = window.require('fs');

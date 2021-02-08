@@ -7,6 +7,19 @@
 <template>
 	<v-main class="custom" v-if="user">
 		<search-header></search-header>
+		<!-- S:Image Dialog -->
+		<v-dialog
+			v-model="image.show"
+			width="80%"
+			max-width="1000px"
+			content-class="custom">
+			<v-img
+				:src="image.src"
+				aspect-ratio="1.7"
+				contain
+				width="100%"></v-img>
+		</v-dialog>
+		<!-- E:Image Dialog -->
 		<v-container class="pa-0 pa-md-4">
 			<!-- S:PROFILE -->
 			<v-parallax
@@ -27,8 +40,8 @@
 				<v-row align="end" class="ma-0" style="background-color: rgba(0, 0 ,0, 0.6);">
 					<v-col cols="12">
 						<v-list-item>
-							<v-list-item-avatar size="60" style="border: 3px solid white;">
-								<v-img :src="user.profileUrl"></v-img>
+							<v-list-item-avatar size="60" style="border: 3px solid white; cursor: pointer;">
+								<v-img :src="user.profileUrl" @click="image.src = user.profileUrl; image.show = true;"></v-img>
 							</v-list-item-avatar>
 
 							<v-list-item-content>
@@ -91,6 +104,11 @@ import SearchHeader from '../Search/Header.vue';
 })
 export default class UserPage extends Mixins(GlobalMixins) {
 	public user: User = {} as User;
+	public image = {
+		'show': false,
+		'src': '',
+	};
+
 	public async created() {
 		const { id } = this.$route.params;
 		if ( id ) {
@@ -115,5 +133,8 @@ export default class UserPage extends Mixins(GlobalMixins) {
 <style scope>
 .custom .v-parallax__content {
 	padding: 0;
+}
+.custom.v-dialog {
+	box-shadow: none !important;
 }
 </style>
