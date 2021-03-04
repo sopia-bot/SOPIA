@@ -21,7 +21,7 @@
 						<v-card-text>
 							<v-text-field
 								:label="$t('app.login.id')"
-								name="login"
+								v-model="sopiaAuth.id"
 								color="indigo"
 								prepend-icon="mdi-account"
 								type="text"
@@ -29,7 +29,7 @@
 
 							<v-text-field
 								:label="$t('app.login.password')"
-								name="password"
+								v-model="sopiaAuth.pw"
 								color="indigo"
 								prepend-icon="mdi-lock"
 								type="password"
@@ -37,6 +37,7 @@
 							<v-btn
 								block dark
 								tile
+								@click="loginSopia"
 								color="indigo darken-3">{{ $t('login') }}</v-btn>
 						</v-card-text>
 					</v-col>
@@ -68,6 +69,7 @@ import SideMenu from '@/views/SideMenu/Index.vue';
 import { LoginType, User, Play, Client } from 'sopia-core';
 import LivePlayer from '@/views/Live/Player.vue';
 import CfgLite from '@/plugins/cfg-lite-ipc';
+import { SopiaAPI } from '@/plugins/sopia-api';
 
 declare global {
 	interface Window {
@@ -89,6 +91,11 @@ export default class App extends Mixins(GlobalMixins) {
 	public currentLive: Play = {} as Play;
 	public loginDialog: boolean = false;
 
+	public sopiaAuth = {
+		id: '',
+		pw: '',
+	};
+
 	public async mounted() {
 		const auth = this.$cfg.get('auth');
 
@@ -106,9 +113,15 @@ export default class App extends Mixins(GlobalMixins) {
 		});
 	}
 
-	public async sopiaLogin(id: string, pw: string) {
+	public async loginSopia() {
+		const res = await this.$api.login(this.sopiaAuth.id, this.sopiaAuth.pw);
+		console.log(res);
+	}
+
+	public async spoonLogin(id: string, pw: string ) {
 		window.user = await this.$sopia.login(id, pw, LoginType.PHONE);
 		this.$evt.$emit('user', window.user);
 	}
+
 }
 </script>
