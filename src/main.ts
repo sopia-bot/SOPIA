@@ -22,6 +22,7 @@ import store from '@/store';
 import vuetify from '@/plugins/vuetify';
 import Logger from '@/plugins/logger';
 import CfgLite from '@/plugins/cfg-lite-ipc';
+import { SopiaAPI } from '@/plugins/sopia-api';
 
 import App from '@/App.vue';
 const { remote } = electron;
@@ -51,6 +52,7 @@ Vue.use(VueScroll, {
 Vue.config.productionTip = false;
 window.$spoon = spoon;
 Vue.prototype.$sopia = window.$sopia = new spoon.Client(uuidv4()); // TODO: set country
+Vue.prototype.$api = new SopiaAPI();
 
 // Event Bus
 Vue.prototype.$evt = new Vue();

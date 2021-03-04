@@ -7,6 +7,7 @@
 import Vue from 'vue';
 import * as spoon from 'sopia-core';
 import CfgLite from 'cfg-lite';
+import { SopiaAPI } from '@/plugins/sopia-api';
 
 declare module 'vue/types/vue' {
 	interface Vue {
@@ -14,6 +15,7 @@ declare module 'vue/types/vue' {
 		$evt: Vue;
 		$logger: any;
 		$cfg: CfgLite;
+		$api: SopiaAPI;
 	}
 }
 
