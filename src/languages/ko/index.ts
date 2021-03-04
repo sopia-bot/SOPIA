@@ -4,13 +4,15 @@
  *
  * Copyright (c) TreeSome. Licensed under the MIT License.
  */
-import home from './home';
-import code from './code';
-import lives from './lives';
-import users from './users';
-import cmd from './cmd';
+import app from './app/';
+import home from './home/';
+import code from './code/';
+import lives from './lives/';
+import users from './users/';
+import cmd from './cmd/';
 
 export default {
+	app,
 	home,
 	code,
 	lives,
@@ -28,4 +30,5 @@ export default {
 	'apply': '적용',
 	'add': '추가',
 	'save-success': '저장에 성공했습니다.',
+	'login': '로그인',
 };

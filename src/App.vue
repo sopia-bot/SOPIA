@@ -6,6 +6,44 @@
 -->
 <template>
 	<v-app style="padding-left: 56px">
+		<!-- S: Login Dialog -->
+		<v-dialog
+			v-model="loginDialog"
+			persistent
+			max-width="450px"
+			width="80%">
+			<v-card>
+				<v-row class="ma-0">
+					<v-col cols="12" align="center">
+						<v-card-title class="text-center d-block">
+							{{ $t('app.login.title') }}
+						</v-card-title>
+						<v-card-text>
+							<v-text-field
+								:label="$t('app.login.id')"
+								name="login"
+								color="indigo"
+								prepend-icon="mdi-account"
+								type="text"
+								></v-text-field>
+
+							<v-text-field
+								:label="$t('app.login.password')"
+								name="password"
+								color="indigo"
+								prepend-icon="mdi-lock"
+								type="password"
+								></v-text-field>
+							<v-btn
+								block dark
+								tile
+								color="indigo darken-3">{{ $t('login') }}</v-btn>
+						</v-card-text>
+					</v-col>
+				</v-row>
+			</v-card>
+		</v-dialog>
+		<!-- E: Login Dialog -->
 		<side-menu />
 		<v-sheet id="router-view" tile :key="$route.fullPath">
 			<transition name="scroll-y-reverse-transition">
@@ -49,10 +87,16 @@ declare global {
 })
 export default class App extends Mixins(GlobalMixins) {
 	public currentLive: Play = {} as Play;
+	public loginDialog: boolean = false;
 
 	public async mounted() {
-		window.user = await this.$sopia.login(localStorage.id, localStorage.pw, LoginType.PHONE);
-		this.$evt.$emit('user', window.user);
+		const auth = this.$cfg.get('auth');
+
+		if ( auth ) {
+		} else {
+			this.loginDialog = true;
+		}
+
 		this.$evt.$on('live-join', async (live: Play) => {
 			this.currentLive = {} as Play;
 			this.$nextTick(async () => {
@@ -60,6 +104,11 @@ export default class App extends Mixins(GlobalMixins) {
 				this.currentLive = live;
 			});
 		});
+	}
+
+	public async sopiaLogin(id: string, pw: string) {
+		window.user = await this.$sopia.login(id, pw, LoginType.PHONE);
+		this.$evt.$emit('user', window.user);
 	}
 }
 </script>
