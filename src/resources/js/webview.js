@@ -9,7 +9,10 @@ const browserEvent = async (evt) => {
 		return;
 	}
 
-	console.log(`[${evt.event.trim()}]`, evt.data);
+	if ( !['onmessage', 'live_rank' ].includes(evt.event) ) {
+		console.log(`[${evt.event.trim()}]`, evt.data);
+	}
+
 	switch ( evt.event.trim() ) {
 
 		case 'snsLoginCallback':
@@ -172,8 +175,12 @@ window.addEventListener('DOMContentLoaded', () => {
             return;
         }
         webview.isLoaded = true;
-        setTimeout(() => {
+        setTimeout(async () => {
             webview.isLoaded = false;
+			const userStr = await webview.executeJavaScript('localStorage.SPOONCAST_KR_userInfo');
+			if ( userStr ) {
+				browserEvent({ event: 'loginCallback', data: JSON.parse(userStr) });
+			}
         }, 3000);
 
 		sopia.wlog('INFO', 'Webview dom-ready.');
