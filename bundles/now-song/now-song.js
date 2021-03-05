@@ -1,10 +1,12 @@
-var { getMelonCaption } = sopia.require(sopia.config.bundle['now-song']);
+console.log('Now Song hello?');
+
+var { getMelonCaption } = sopia.require(getPath(sopia.config.bundle['now-song'] + '/get-melon-caption.node'));
 if ( typeof qs === 'undefined' ) {
 	window.qs = sopia.require('querystring');
 }
 
 var komca = localStorage.getItem('komca');
-if ( komca != '' ) {
+if ( komca ) {
 	sopia.komca = JSON.parse(komca);
 } else {
 	sopia.komca = {};
@@ -12,14 +14,19 @@ if ( komca != '' ) {
 
 sopia.lastSong = '';
 
-var getNowSongInfo = () => {
+window.getNowSongInfo = () => {
 	const caption = getMelonCaption().trim();
 	if ( caption === '' ) {
 		return;
 	}
 
 	const delMelonCaption = caption.replace(/ - melon$/i, '').trim();
-	const [ title, singer ] = delMelonCaption.split(/ - /);
+	let [ title, singer ] = delMelonCaption.split(/ - /);
+	try {
+		title = title.replace(/\(.*?\)/g, '');
+		singer = singer.replace(/\(.*?\)/g, '').replace(/[,&].*/, '').trim();
+	} catch(err) {
+	}
 	return { title, singer };
 }
 
@@ -38,23 +45,7 @@ sopia.on('message', (e) => {
 	}
 });
 
-var SONG_ITV_TIME = 3 * 1000; // 3 sec
-var itvSongCallback = async () => {
-	const song = getNowSongInfo();
-	if ( !song ) {
-		return;
-	}
-
-	if ( song.lastSong === song.title ) {
-		return;
-	}
-
-	// 곡이 변경될 때마다 현재 곡 정보를 출력하고 싶으면
-	// 아래 false 를 true로 변경하기만 하면 됨.
-	if ( false ) {
-		sopia.send(`🔊현재 곡 정보🎶\n${song.title} - ${song.singer}`);
-	}
-
+var searchKomcaData = async (song, hnab = 'I') => {
 	const { data } = await axios({
 		url: 'https://www.komca.or.kr/srch2/srch_01.jsp',
 		method: 'post',
@@ -73,12 +64,12 @@ var itvSongCallback = async () => {
 			pub_val: '',
 			S_LIB_YN: 'N',
 			S_HANMB_NM: '',
-			S_HNAB_GBN: 'I',
+			S_HNAB_GBN: hnab,
 			S_SECT_CD: '',
-			S_PROD_TTL: title,
+			S_PROD_TTL: song.title,
 			S_PROD_TTL_GB: 3,
 			S_DISCTITLE_NM: '',
-			S_SINA_NM: singer,
+			S_SINA_NM: song.singer,
 			S_START_DAY: '',
 			S_END_DAY: '',
 			S_RIGHTPRES_NM: '',
@@ -94,12 +85,65 @@ var itvSongCallback = async () => {
 	const body = document.createElement('div');
 	body.innerHTML = content;
 	const result = body.querySelector('.result_article');
-
+	
 	const code = result.querySelector('dt.tit2').innerText.replace(/^.*- /, '');
-	const album = result.querySelector('dd.metadata').children[2].querySelector('span').innerText;
+	let album = result.querySelector('dd.metadata');
+	if ( album.childElementCount >= 3 ) {
+		album = album.children[2].querySelector('span').innerText;
+	} else {
+		album = '';
+	}
 
-	const komcaData = spoon.UserKomcaSong.deserize({ title, singer, album, code });
+	return { title: song.title, singer: song.singer, code, album };
+};
 
+var SONG_ITV_TIME = 5 * 1000; // 5 sec
+var itvSongCallback = async () => {
+	const song = getNowSongInfo();
+	if ( !song ) {
+		return;
+	}
+
+	if ( sopia.lastSong === song.title ) {
+		return;
+	}
+	sopia.lastSong = song.title;
+
+	sopia.debug('Change new song.', song);
+
+	// 곡이 변경될 때마다 현재 곡 정보를 출력하고 싶으면
+	// 아래 false 를 true로 변경하기만 하면 됨.
+	if ( false ) {
+		sopia.send(`🔊현재 곡 정보🎶\n${song.title} - ${song.singer}`);
+	}
+
+	let k;
+	try {
+		k = await searchKomcaData(song);
+	} catch(err) {
+		try {
+			k = await searchKomcaData(song, 'O');
+		} catch(err) {
+			try {
+			song.title = song.title.replace(/\s/g, '');
+			k = await searchKomcaData(song);
+			} catch(err) {
+				sopia.send(`국내외 저작권 정보를 검색할 수 없는 곡입니다.\n제목: ${song.title}, 가수: ${song.singer}`);
+				return;
+			}
+		}
+	}
+
+	if ( sopia.komca[k.code] ) {
+		sopia.debug('Already report komca song', song);
+		return;
+	}
+	sopia.komca[k.code] = k;
+	localStorage.setItem('komca', JSON.stringify(sopia.komca));
+
+	const komcaData = spoon.UserKomcaSong.deserialize(k);
+
+	sopia.debug('Komca report', komcaData);
 	await $sopia.userManager.userKomca([ komcaData ]);
 };
 
