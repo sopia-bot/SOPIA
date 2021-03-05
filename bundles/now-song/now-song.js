@@ -1,5 +1,7 @@
 var { getMelonCaption } = sopia.require(sopia.config.bundle['now-song']);
-var qs = sopia.require('querystring');
+if ( typeof qs === 'undefined' ) {
+	window.qs = sopia.require('querystring');
+}
 
 var komca = localStorage.getItem('komca');
 if ( komca != '' ) {

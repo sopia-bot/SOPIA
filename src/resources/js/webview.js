@@ -9,7 +9,7 @@ const browserEvent = async (evt) => {
 		return;
 	}
 
-	//console.log(`[${evt.event.trim()}]`, evt.data);
+	console.log(`[${evt.event.trim()}]`, evt.data);
 	switch ( evt.event.trim() ) {
 
 		case 'snsLoginCallback':
@@ -17,10 +17,23 @@ const browserEvent = async (evt) => {
 
 		case 'loginCallback':
             const user = spoon.User.deserialize(evt.data);
+			$sopia.user = user;
             await asleep(1000);
+
+			//const unique_id = await webview.executeJavaScript(`navigator.userAgent.replace(/ /gi, '').toLowerCase();`);
+			const unique_id = navigator.userAgent.replace(/ /gi, '').toLowerCase();
+			const refToken = await webview.executeJavaScript('localStorage.SPOONCAST_KR_refreshToken');
 			const token = await webview.executeJavaScript('localStorage.SPOONCAST_KR_authKey');
-			sopia.debug('login', await $sopia.loginToken(user, token.replace('Bearer ', '')));
+
+			await webview.executeJavaScript(`getProps().AuthActions.putTokens({ device_unique_id: '${unique_id}', refresh_token: '${refToken}', user_id: ${$sopia.user.id} });`);
+
             break;
+		case 'setAuthKey':
+			console.log(evt);
+			if ( evt.data ) {
+				sopia.debug('login', await $sopia.loginToken($sopia.user, evt.data.replace('Bearer ', '')));
+			}
+			break;
         
         case 'SOCKET_LIVE_LEAVE':
             if ( sopia.sock ) {

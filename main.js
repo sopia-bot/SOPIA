@@ -16,6 +16,8 @@ process.argv.forEach((arg) => {
 });
 process.setMaxListeners(200);
 
+const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
+
 /**
  * @function getPath
  * @param {string} path_
@@ -194,10 +196,10 @@ function createWindow () {
 		mainWindow.setMenu(null);
 	}
 
-	mainWindow.webContents.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.105.22 Safari/537.36');
+	mainWindow.webContents.setUserAgent(USER_AGENT);
 	// and load the index.html of the app.
 	mainWindow.loadFile('src/index.html', {
-		userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.105.22 Safari/537.36',
+		userAgent: USER_AGENT,
 	});
 
 	// Open the DevTools.
@@ -208,6 +210,7 @@ function createWindow () {
 	mainWindow.on('ready-to-show', () => {
 		try {
 			//if ( DEBUG_MODE ) {
+			/*
 				session.defaultSession.cookies.flushStore();
 				session.defaultSession.cookies.get({}, (error, cookies) => {
 					cookies.forEach((cookie) => {
@@ -224,10 +227,21 @@ function createWindow () {
 						});
 					});
 				});
+				*/
             //}
-            session.defaultSession.clearStorageData(() => {});
 			session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-				details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.105.22 Safari/537.36';
+				details.requestHeaders['User-Agent'] = USER_AGENT;
+				if ( details.url.includes('/tokens') ){
+					let data;
+					if ( details.uploadData ) {
+						try {
+							data = details.uploadData[0].bytes.toString();
+						} catch(e) {
+							data = details.uploadData[0].bytes.toString();
+						}
+					}
+					//console.log(`[${details.url}] [${details.method}]`, details.requestHeaders, data);
+				}
 				callback({ cancel: false, requestHeaders: details.requestHeaders });
 			});
 			session.defaultSession.cookies.set({

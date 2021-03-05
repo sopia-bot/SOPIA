@@ -11,6 +11,8 @@ const fs = require('fs');
 const EventEmitter = require('events');
 const http = require('http');
 const https = require('https');
+const qs = require('querystring');
+const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
 
 // Download Package
 const Sanilla = require('@sanillajs/sanilla').default;
@@ -20,7 +22,7 @@ const { app, dialog, process } = require('electron').remote;
 const { clipboard, shell, ipcRenderer } = require('electron');
 
 const spoon = require('sopia-core');
-$sopia = new spoon.Client('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36');
+$sopia = new spoon.Client(USER_AGENT);
 $sopia.wstype = spoon.WSType.NODE;
 
 const loaded = {
