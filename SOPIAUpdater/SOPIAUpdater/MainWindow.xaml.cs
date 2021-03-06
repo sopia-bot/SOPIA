@@ -100,6 +100,8 @@ namespace SOPIAUpdater
 		{
 			InitializeComponent();
 
+			Console.WriteLine( "Init MainWindow" );
+
 			string configP = GetSPath( "/config.json" );
 			if ( !File.Exists (configP) ) {
 				MessageBox.Show( "설정 파일이 없습니다.", "에러" );
@@ -107,12 +109,7 @@ namespace SOPIAUpdater
 				return;
 			}
 
-			JObject cfg = JObject.Parse( File.ReadAllText( configP ) );
-			if ( cfg.GetValue("version-fix") != null && cfg["version-fix"].ToString().ToLower() == "true" ) {
-				System.Windows.Application.Current.Shutdown();
-				return;
-			}
-
+			
 			string[] args = Environment.GetCommandLineArgs();
 			if ( args.Length >= 2 ) {
 				string bp = args[1];
@@ -126,6 +123,12 @@ namespace SOPIAUpdater
 			}
 
 			if ( reqVer == "latest" ) {
+				JObject cfg = JObject.Parse( File.ReadAllText( configP ) );
+				if ( cfg.GetValue( "version-fix" ) != null && cfg["version-fix"].ToString().ToLower() == "true" ) {
+					System.Windows.Application.Current.Shutdown();
+					return;
+				}
+
 				reqVer = DBGetStr( "/app/update/version.json" );
 			}
 		}
@@ -185,6 +188,8 @@ namespace SOPIAUpdater
 			JObject cfg = JObject.Parse( File.ReadAllText( GetSPath( "/config.json" ) ) );
 			cfg["version"] = reqVer;
 
+			Console.WriteLine( "Version: " + reqVer );
+
 			File.WriteAllText( GetSPath( "/config.json" ), cfg.ToString() );
 		}
 
@@ -192,7 +197,8 @@ namespace SOPIAUpdater
 		{
 			DescLabel.Content = reqVer + " 버전을 확인합니다.";
 			await Task.Delay( 2000 );
-			
+
+			Console.WriteLine( "Window rendered. Do update." );
 			await DoUpdate();
 			
 			DescLabel.Content = "업데이트를 완료했습니다.";
