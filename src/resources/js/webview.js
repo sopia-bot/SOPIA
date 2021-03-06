@@ -21,6 +21,7 @@ const browserEvent = async (evt) => {
 		case 'loginCallback':
             const user = spoon.User.deserialize(evt.data);
 			$sopia.user = user;
+			console.log('setting user', $sopia.user);
             await asleep(1000);
 
 			//const unique_id = await webview.executeJavaScript(`navigator.userAgent.replace(/ /gi, '').toLowerCase();`);
@@ -28,13 +29,22 @@ const browserEvent = async (evt) => {
 			const refToken = await webview.executeJavaScript('localStorage.SPOONCAST_KR_refreshToken');
 			const token = await webview.executeJavaScript('localStorage.SPOONCAST_KR_authKey');
 
-			await webview.executeJavaScript(`getProps().AuthActions.putTokens({ device_unique_id: '${unique_id}', refresh_token: '${refToken}', user_id: ${$sopia.user.id} });`);
+			if ( !['email', 'phone'].includes(user.snsType.toLowerCase()) && (token && refToken) ) {
+				console.log('token', token, 'refToken', refToken);
+				await webview.executeJavaScript(`getProps().AuthActions.putTokens({ device_unique_id: '${unique_id}', refresh_token: '${refToken}', user_id: ${$sopia.user.id} });`);
+			} else {
+				browserEvent({ event: 'setAuthKey', data: $sopia.token || token });
+			}
 
             break;
 		case 'setAuthKey':
-			console.log(evt);
 			if ( evt.data ) {
-				sopia.debug('login', await $sopia.loginToken($sopia.user, evt.data.replace('Bearer ', '')));
+				const token = evt.data.replace('Bearer ', '');
+				if ( $sopia.user ) {
+					sopia.debug('login', await $sopia.loginToken($sopia.user, token));
+				} else {
+					$sopia.token = token;
+				}
 			}
 			break;
         
