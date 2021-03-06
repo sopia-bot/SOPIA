@@ -9,7 +9,7 @@ const browserEvent = async (evt) => {
 		return;
 	}
 
-	if ( !['onmessage', 'live_rank' ].includes(evt.event) ) {
+	if ( !['onmessage', 'live_rank' ].includes(evt.event.trim()) ) {
 		console.log(`[${evt.event.trim()}]`, evt.data);
 	}
 

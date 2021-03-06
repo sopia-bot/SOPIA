@@ -443,8 +443,38 @@ sopia.tts.parser = (tts = "", signature = []) => {
 	return tts.split(re);
 };
 
-const spoorEffectPlay = async () => {
-    fs.readFile(getPath('/media/SpoorChatNoti.mp3'), { encoding: 'base64' }, async (err, data) => {
+const getEffectSound = (sticker, combo) => {
+	if ( !sticker ) {
+		console.log('sticker is none');
+		return getPath('/media/SpoorChatNoti.mp3');
+	}
+
+	sticker = sticker.replace(/_(kr)_/i, '_');
+
+	let file;
+
+	if ( combo >= 10 ) {
+		if ( fs.existsSync(getPath('/media/' + sticker + '_long.mp3')) ) {
+			file = getPath('/media/' + sticker + '_long.mp3');
+		}
+	}
+
+	if ( !file ) {
+		file = getPath('/media/' + sticker + '.mp3');
+	}
+	
+	if ( !fs.existsSync(file) ) {
+		console.log('file not found');
+		return getPath('/media/SpoorChatNoti.mp3');
+	}
+
+	console.log('file?', file);
+
+	return file;
+}
+
+const spoorEffectPlay = async (sticker, combo) => {
+    fs.readFile(getEffectSound(sticker, combo), { encoding: 'base64' }, async (err, data) => {
         const notiSnd = new Audio("data:audio/mp3;base64," + data);
         notiSnd.volume = (sopia.config.spoor.effectvolume * 0.01);
         notiSnd.onpause = function() {
@@ -553,7 +583,7 @@ sopia.itv.add('dev-spoorchat', async () => {
         
         
         sopia.tts.efinish = false;
-        spoorEffectPlay();
+        spoorEffectPlay(chatData.sticker, chatData.combo);
 
         let voiceType = sopia.config.spoor.type;
         const sigKeys = Object.keys(sopia.config.spoor.signature);
@@ -778,10 +808,13 @@ sopia.onmessage = async (e) => {
 			// spoorchat
 			let idx = sopia.tts.user.findIndex(item => item.id === data.author.id);
 			if ( idx >= 0 ) {
-				sopia.tts.user.splice(idx, 1);
+				const data = sopia.tts.user[idx];
 				sopia.tts.stack.push({
 					message: data.message,
+					combo: data.combo,
+					sticker: data.sticker,
 				});
+				sopia.tts.user.splice(idx, 1);
 			}
 		}
 
@@ -828,7 +861,7 @@ sopia.onmessage = async (e) => {
 		// spoor chat
 		if ( sopia.config.spoor.enable === true && e.event === "present" ) {
 			if ( (data.amount * data.combo) >= sopia.config.spoor.minspoon ) {
-				sopia.tts.user.push({ id: data.author.id, tick: 0 });
+				sopia.tts.user.push({ id: data.author.id, tick: 0, sticker: data.sticker, combo: data.combo });
 			}
 		}
 
