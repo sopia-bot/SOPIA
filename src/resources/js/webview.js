@@ -29,7 +29,7 @@ const browserEvent = async (evt) => {
 			const refToken = await webview.executeJavaScript('localStorage.SPOONCAST_KR_refreshToken');
 			const token = await webview.executeJavaScript('localStorage.SPOONCAST_KR_authKey');
 
-			if ( !['email', 'phone'].includes(user.snsType.toLowerCase()) && (token && refToken) ) {
+			if ( sopia.config.sopia['keep-login'] && !['email', 'phone'].includes(user.snsType.toLowerCase()) && (token && refToken) ) {
 				console.log('token', token, 'refToken', refToken);
 				await webview.executeJavaScript(`getProps().AuthActions.putTokens({ device_unique_id: '${unique_id}', refresh_token: '${refToken}', user_id: ${$sopia.user.id} });`);
 			} else {

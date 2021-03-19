@@ -69,6 +69,15 @@
 							</div>
 						</div>
 						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>스푼 로그인 유지</div>
+							<div class="uk-text-right">
+								<label class="switch">
+									<input id="keep-login" type="checkbox">
+									<span class="slider round"></span>
+								</label>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 							<div>기본 스푼 Url</div>
 							<div class="uk-text-right">
 								<input id="default-url" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="text">
@@ -172,6 +181,7 @@
 			const sopiaSettingSave = () => {
 				sopia.config.sopia.autostart = document.querySelector('#autoManagerStart').checked;
 				sopia.config.sopia['dark-editor'] = document.querySelector('#dark-editor').checked;
+				sopia.config.sopia['keep-login'] = document.querySelector('#keep-login').checked;
 				sopia.config.sopia['default-url'] = document.querySelector('#default-url').value;
 				sopia.debug(sopia.config.sopia, "save");
 				AllSettingSave();

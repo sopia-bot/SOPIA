@@ -242,6 +242,7 @@ document.addEventListener('DOMContentLoaded', (evt) => {
 		//SOPIA 설정
 		document.querySelector('#autoManagerStart').checked = sopia.config.sopia.autostart;
 		document.querySelector('#dark-editor').checked = sopia.config.sopia['dark-editor'];
+		document.querySelector('#keep-login').checked = sopia.config.sopia['keep-login'];
         document.querySelector('#default-url').value = sopia.config.sopia['default-url'];
         if ( sopia.config['version-fix'] ) {
             document.querySelector('#version-select').innerText = sopia.config.version;
