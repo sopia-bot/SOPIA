@@ -500,12 +500,16 @@ const spoorMakeVoice = async (argv, voiceType, useTypecast, tcidx) => {
             let sigFile = sopia.config.spoor.signature[arg];
             if ( sigFile ) {
                 // has signature
-                const buf = fs.readFile(sigFile, (err, data) => {
-                    if ( path.extname(sigFile) === '.base64' ) {
-                        sopia.tts.readStack[idx] = data.toString('utf8');
-                    } else {
-                        sopia.tts.readStack[idx] = data.toB64Str();
-                    }
+                fs.readFile(sigFile, (err, data) => {
+					if ( !data ) {
+						sopia.tts.readStack[idx] = 'no run';
+					} else {
+                    	if ( path.extname(sigFile) === '.base64' ) {
+							sopia.tts.readStack[idx] = data.toString('utf8');
+						} else {
+							sopia.tts.readStack[idx] = data.toB64Str();
+						}
+					}
                 });
             } else {
                 if ( arg.trim() !== "" ) {
