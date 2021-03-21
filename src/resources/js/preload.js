@@ -818,6 +818,7 @@ fs.writeFileSync(logFilePath, `~~~~~~~~~~~~~~~~~~ Created ${path.basename(logFil
 
 const writeLog = (level, ...args) => {
 	const time = new Date().hhMMss(':');
+	console.log(`[${time}] [${level}] ${args.join(', ')}\r\n`);
 	fs.appendFileSync(logFilePath, `[${time}] [${level}] ${args.join(', ')}\r\n`, { encoding: 'utf8' });
 };
 

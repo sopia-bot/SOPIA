@@ -418,6 +418,12 @@ sopia.me = null;
 sopia.debug = () => {};
 sopia.error = () => {};
 
+
+if ( window.DEBUG_MODE ) {
+	sopia.debug = console.log;
+	sopia.error = console.error;
+}
+
 // spoor chat 관리
 sopia.tts.user = [];
 sopia.tts.stack = [];
@@ -495,6 +501,7 @@ const spoorEffectPlay = async (sticker, combo) => {
 };
 
 const spoorMakeVoice = async (argv, voiceType, useTypecast, tcidx) => {
+	console.log('spoor make voice', argv, voiceType, useTypecast, tcidx);
     if ( Array.isArray(argv) ) {
         argv.forEach((arg, idx) => {
             let sigFile = sopia.config.spoor.signature[arg];
@@ -518,6 +525,7 @@ const spoorMakeVoice = async (argv, voiceType, useTypecast, tcidx) => {
                             sopia.tts.readStack[idx] = buf;
                         });
                     } else {
+						console.log(`normal tts [${arg.trim()}], [${voiceType}]`);
                         sopia.tts.read(arg.trim(), voiceType).then(buf => {
                             if ( !sopia.tts.readStack.includes(buf) ) {
                                 sopia.tts.readStack[idx] = buf;
@@ -592,6 +600,8 @@ sopia.itv.add('dev-spoorchat', async () => {
         let voiceType = sopia.config.spoor.type;
         const sigKeys = Object.keys(sopia.config.spoor.signature);
         const argv = sopia.tts.parser(chatData.message, sigKeys);
+
+		sopia.debug('argv after parse', argv);
         
         sopia.tts.readStack = null;
         sopia.tts.readStack = new Array(argv.length);
@@ -660,9 +670,10 @@ sopia.itv.add('dev-spoorchat', async () => {
             } else {
                 console.error('Make voice fail.');
             }
-        } catch {
+        } catch(err) {
             sopia.debug('speech error');
             sopia.wlog('ERROR', 'spoor chat error');
+			console.error(err);
         }
         
         sopia.tts.readStack.splice(0, sopia.tts.readStack.length);
@@ -812,12 +823,14 @@ sopia.onmessage = async (e) => {
 			// spoorchat
 			let idx = sopia.tts.user.findIndex(item => item.id === data.author.id);
 			if ( idx >= 0 ) {
-				const data = sopia.tts.user[idx];
-				sopia.tts.stack.push({
+				const d = sopia.tts.user[idx];
+				const push = {
 					message: data.message,
-					combo: data.combo,
-					sticker: data.sticker,
-				});
+					combo: d.combo,
+					sticker: d.sticker,
+				};
+				sopia.debug('tts push data', push);
+				sopia.tts.stack.push(push);
 				sopia.tts.user.splice(idx, 1);
 			}
 		}
