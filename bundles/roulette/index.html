@@ -1,3 +1,13 @@
+<style>
+	#vue-app .uk-tab a {
+		color: white;
+		font-size: 16pt;
+	}
+	#vue-app .uk-tab > .uk-active > a {
+		border-color: #F2B442;
+	}
+</style>
+<div id="roulette-vue-app">
 <div style="padding-top: 2rem;">
 	<div class="uk-margin uk-card-default spoor-card">
 		<div class="uk-card-header">
@@ -7,38 +17,40 @@
 				</div>
 				<div class="uk-width-1-2 uk-text-right">
 					<div class="uk-margin" style="margin-top: 5px;">
-						<button id="destiny-roulette-save" onclick="drSettingSave();" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+						<button id="roulette-save" @click="ruSettingSave" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="uk-card-body uk-animation-slide-bottom-small" id="dr-setting-body">
+		<div class="uk-card-body uk-animation-slide-bottom-small" id="ru-setting-body">
 			<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 				<div>룰렛 사용</div>
 				<div class="uk-text-right">
 					<label class="switch">
-						<input id="ruEnable" type="checkbox">
+						<input id="ruEnable" type="checkbox" v-model="roulette.use">
 						<span class="slider round"></span>
 					</label>
 				</div>
 			</div>
+			<!--
 			<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 				<div>효과음 볼륨</div>
 				<div class="uk-text-right">
-					<input id="ruEffectVolume" class="uk-range uk-text-right" oninput="this.setAttribute('value',this.value)" min="0" value="30" max="100" type="range">
+					<input id="ruEffectVolume" class="uk-range uk-text-right" v-model="roulette.effectVolume" oninput="this.setAttribute('value',this.value)" min="0" value="30" max="100" type="range">
 				</div>
 			</div>
+			-->
 			<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 				<div>최소 요구 스푼</div>
 				<div class="uk-text-right">
-					<input id="ruMinPresentNum" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
+					<input id="ruMinPresentNum" class="uk-input uk-input-spoon uk-text-right" v-model="roulette.minPresentNum" onclick="this.focus();" type="number">
 				</div>
 			</div>
 			<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
 				<div>룰렛 효과 사용</div>
 				<div class="uk-text-right">
 					<label class="switch">
-						<input id="ruEffectEnable" type="checkbox">
+						<input id="ruEffectEnable" type="checkbox" v-model="roulette.useEffect">
 						<span class="slider round"></span>
 					</label>
 				</div>
@@ -47,14 +59,14 @@
 				<div>룰렛 효과 지속 시간</div>
 				<div class="uk-text-right">
 					<div class="uk-inline">
-						<button id="autoLoginType" class="uk-button uk-button-default" data-type="phone" type="button">중간</button>
-						<div uk-dropdown="pos: top-right">
+						<button id="ruKeepTime" class="uk-button uk-button-default" data-type="middle" type="button">{{ pickTime }}</button>
+						<div uk-dropdown="pos: bottom-right">
 							<ul id="altItems" class="uk-nav uk-dropdown-nav">
-								<li data-type="short" name="ruEffectTime" ><a href="#">짧음</a></li>
+								<li data-type="short" name="ruEffectTime" ><a href="#" @click="roulette.pickTime = 1;">짧음</a></li>
 								<li class="uk-nav-divider"></li>
-								<li data-type="middle" name="ruEffectTime" class="uk-active"><a href="#">중간</a></li>
+								<li data-type="middle" name="ruEffectTime" class="uk-active"><a href="#" @click="roulette.pickTime = 2;">중간</a></li>
 								<li class="uk-nav-divider"></li>
-								<li data-type="long" name="ruEffectTime"><a href="#">김</a></li>
+								<li data-type="long" name="ruEffectTime"><a href="#" @click="roulette.pickTime = 3;">김</a></li>
 							</ul>
 						</div>
 					</div>
@@ -62,12 +74,136 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="uk-margin uk-card-default spoor-card">
+		<div class="uk-card-header">
+			<div uk-grid>
+				<div class="uk-width-1-2">
+					<h3 class="uk-card-title uk-margin-remove-bottom">룰렛 목록 설정</h3>
+				</div>
+				<div class="uk-width-1-2 uk-text-right">
+					<div class="uk-margin" style="margin-top: 5px;">
+						<button id="roulette-list-save" @click="ruListSettingSave" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="uk-card-body uk-animation-slide-bottom-small" id="ru-list-setting-body">
+			<div v-if="listRenderer">
+				<div v-for="(item, idx) of roulette.list" :key="item.value + idx" uk-grid>
+					<div class="uk-width-4-5">
+						<input
+							class="uk-input uk-input-spoon"
+							type="text"
+							placeholder="내용"
+							:value="item.value"
+							@input="msgKeyDown(this, $event, idx, 'value')"
+							style="background: transparent; color: white;">
+					</div>
+					<div class="uk-width-1-5" style="padding-left: 10px;">
+						<input
+							id="ruMinPresentNum"
+							class="uk-input uk-input-spoon uk-text-right"
+							:value="item.percentage"
+							@input="msgKeyDown(this, $event, idx, 'percentage')"
+							onclick="this.focus();"
+							type="number">
+					</div>
+				</div>
+				<p class="uk-text-right">
+					<button class="uk-button uk-button-default uk-width-1-1" style="color: white;" @click="addList">추가</button>
+				</p>
+			</div>
+		</div>
+	</div>
 </div>
+</div> <!-- Roulette Vue App -->
 <script>
 	if ( !sopia.roulette ) {
 		sopia.roulette = sopia.require(getPath(sopia.config.bundle['roulette'] + '/config.json'));
 		sopia.roulette.path = getPath(sopia.config.bundle['roulette']);
 		sopia.roulette.getPath = (p) => path.join(sopia.roulette.path, p);
 	}
+
+	window.VueApp['roulette'] = new Vue({
+		el: '#roulette-vue-app',
+		data() {
+			return {
+				listRenderer: true,
+				roulette: sopia.roulette,
+				listCopy: JSON.parse(JSON.stringify(sopia.roulette.list)),
+			};
+		},
+		mounted() {
+			setTimeout(() => {
+				//document.querySelector('#ruEffectVolume').value = this.roulette.effectVolume;
+				//document.querySelector('#ruEffectVolume').setAttribute('value',this.roulette.effectVolume);
+			}, 1000);
+		},
+		methods: {
+			rerender(name) {
+				this[name + 'Renderer'] = false;
+				this.$nextTick(() => {
+					this[name + 'Renderer'] = true;
+				});
+			},
+			ruSettingSave() {
+				this.listRerender();
+				fs.writeFileSync(sopia.roulette.getPath('config.json'), JSON.stringify({
+					use: this.roulette.use,
+					minPresentNum: this.roulette.minPresentNum,
+					//effectVolume: this.roulette.effectVolume,
+					useEffect: this.roulette.useEffect,
+					list: this.roulette.list,
+					pickTime: this.roulette.pickTime,
+				}, null, '\t'), 'utf8');
+				const config = sopia.require(getPath(sopia.config.bundle['roulette'] + '/config.json'));
+				for ( const [key, val] of Object.entries(config) ) {
+					this.roulette[key] = val;
+				}
+				noti.success('', '저장했습니다.');
+			},
+			ruListSettingSave() {
+				this.listRerender();
+				this.ruSettingSave();
+			},
+			msgKeyDown(v, evt, idx, key) {
+				this.listCopy[idx][key] = evt.target.value;
+			},
+			addList() {
+				this.roulette.list.push({
+					value: '',
+					percentage: 100,
+				});
+				this.listRerender();
+			},
+			listRerender() {
+				this.roulette.list.forEach((l, idx) => {
+					if ( this.listCopy[idx] ) {
+						l.value = this.listCopy[idx].value;
+						l.percentage = this.listCopy[idx].percentage;
+					}
+				});
+				this.listCopy = JSON.parse(JSON.stringify(this.roulette.list));
+				this.rerender('list');
+			},
+		},
+		computed: {
+			pickTime() {
+				switch ( this.roulette.pickTime ) {
+					case 1: return '짧음';
+					case 2: return '중간';
+					case 3: return '김';
+				}
+			},
+			listValue(idx) {
+				const v = this.roulette.list[idx];
+				if ( v ) {
+					return v.value;
+				}
+				return '';
+			},
+		}
+	});
 </script>
 

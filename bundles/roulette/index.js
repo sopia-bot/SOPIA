@@ -27,11 +27,11 @@ randPer = (items) => {
 	let pickItem;
 	let cumulative = 0;
 
-	items = items.sort((a, b) => a - b);
+	items = items.sort((a, b) => a.percentage - b.percentage);
 
 	for ( const item of items ) {
-		cumulative += item.percentage;
-
+		cumulative = item.percentage;
+		console.log('randPer', rand, cumulative);
 		if ( rand <= cumulative ) {
 			pickItems = items.filter(i => i.percentage === item.percentage);
 			break;
@@ -71,36 +71,36 @@ sopia.roulette.meanlessItems = [
 sopia.roulette.whackSpeech = [
 	async (e) => {
 		sopia.send(`헐 ${e.author.nickname}님. 중대발표가 있어요.`);
-		await asleep(1000);
+		await asleep(2000);
 		sopia.send(`이번에 당첨되신 항목은 무려...!`);
 		await asleep(2000);
 		sopia.send('꽝이에요. 뭐지? 버근가?  ¯＼_(ツ)_/¯ ');
-		await asleep(500);
+		await asleep(2000);
 		sopia.send('당첨될 때 까지 ㄱㄱ!');
 	},
 	async (e) => {
 		sopia.send('축하합니다!');
 		await asleep(2000);
 		sopia.send(`${e.author.nickname}님은 [${random(sopia.roulette.meanlessItems)}]에 당첨되셨습니다!!!`);
-		await asleep(1000);
+		await asleep(2000);
 		sopia.send('꽝이란 소리에요. 뭐라도 당첨된 것 처럼 보이는게 좋잖아요. ꉂ (๑¯ਊ¯)σ ');
 	},
 	async (e) => {
 		sopia.send('ㅋㅋㅋ');
-		await asleep(300);
+		await asleep(1000);
 		sopia.send('ㅋㅋㅋㅋㅋㅋ');
-		await asleep(300);
+		await asleep(1000);
 		sopia.send('ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ');
-		await asleep(300);
+		await asleep(1000);
 		sopia.send('꽝ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ');
 	},
 	async (e) => {
 		sopia.send('저런... 꽝이네요.');
-		await asleep(1000);
+		await asleep(2000);
 		sopia.send('자, 울지 마시고 한 번 더!');
-		await asleep(1000);
+		await asleep(2000);
 		sopia.send(`${sopia.roulette.minPresentNum}스푼밖에 안 해요~.`);
-		await asleep(500);
+		await asleep(2000);
 		sopia.send(`할 수 있다. ${e.author.nickname}님 파이팅!  ꒰◍ॢ•ᴗ•◍ॢ꒱ `);
 	},
 ];
@@ -108,10 +108,10 @@ sopia.roulette.whackSpeech = [
 sopia.roulette.winSpeech = [
 	async (e) => {
 		sopia.send(`헐 ${e.author.nickname}님. 중대발표가 있어요.`);
-		await asleep(1000);
+		await asleep(2000);
 		sopia.send(`이번에 당첨되신 항목은 무려...!`);
 		await asleep(2000);
-		sopia.send(`[${e.item}] 에요!`);
+		sopia.send(`[${e.item.value}] 에요!`);
 	},
 	async (e) => {
 		sopia.send('축하합니다!');
@@ -120,11 +120,11 @@ sopia.roulette.winSpeech = [
 	},
 	async (e) => {
 		sopia.send('ㅋㅋㅋ');
-		await asleep(300);
+		await asleep(1000);
 		sopia.send('ㅋㅋㅋㅋㅋㅋ');
-		await asleep(300);
+		await asleep(1000);
 		sopia.send('ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ');
-		await asleep(300);
+		await asleep(1000);
 		sopia.send(`와 이게 [${e.item.value}] 가 당첨되네.`);
 	},
 ],
@@ -143,8 +143,13 @@ sopia.roulette.processor =  async () => {
 			sopia.send(await runCmd(random(sopia.roulette.randomSpeech), e));
 			await asleep(1500);
 
-			for ( let i=0;i < sopia.roulette.pickTime*5;i++ ) {
-				sopia.send(random(sopia.roulette.list));
+			let cnt = sopia.roulette.list.length;
+			if ( cnt > 5 ) {
+				cnt = 5;
+			}
+
+			for ( let i=0;i < sopia.roulette.pickTime*cnt;i++ ) {
+				sopia.send(`[${random(sopia.roulette.list.map(l => l.value))}] 이걸까?`);
 				await asleep(500 + (2000 / sopia.roulette.list.length));
 			}
 		}
@@ -161,7 +166,7 @@ sopia.roulette.processor =  async () => {
 					await asleep(1000);
 					sopia.send('왜 꽝이냐고요?');
 					await asleep(1000);
-					sopia.send('절대 유비방송에서만 꽝 확률을 올린게 아니랍니다.  ༽΄◞ิ౪◟ิ‵༼ ');
+					sopia.send('절대 유비 방송에서만 꽝 확률을 올린게 아니랍니다.  ༽΄◞ิ౪◟ิ‵༼ ');
 					flag = false;
 				}
 			}

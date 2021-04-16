@@ -1,7 +1,7 @@
 {
-	"use": false,
-	"minPresentNum": true,
-	"effectVolume": "50",
+	"use": true,
+	"minPresentNum": "22",
+	"useEffect": true,
 	"list": [],
 	"pickTime": 1
 }
