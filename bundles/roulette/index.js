@@ -57,7 +57,7 @@ sopia.roulette.randomSpeech = [
 	(e) => '이게 좋아보여요. ˳⚆ɞ⚆˳',
 	(e) => '나는 뭔지 알고 있지만 안 알려줄거에요. 😝',
 	(e) => `${e.author.nickname}님은 뭘 갖고 싶어요?`,
-	(e) => '헐. 이게 당첨되네? 〣(ºΔº)〣',
+	(e) => '헐. 이게 걸리네? 〣(ºΔº)〣',
 ];
 
 sopia.roulette.meanlessItems = [
@@ -103,6 +103,26 @@ sopia.roulette.whackSpeech = [
 		await asleep(2000);
 		sopia.send(`할 수 있다. ${e.author.nickname}님 파이팅!  ꒰◍ॢ•ᴗ•◍ॢ꒱ `);
 	},
+	async (e) => {
+		const reversList = [];
+		sopia.roulette.list.forEach((l, idx) => {
+			reversList[idx] = {
+				percentage: 100 - l.percentage,
+				value: l.value,
+			};
+		});
+		let pick;
+		do {
+			pick = randPer(reversList);
+		} while( !pick );
+		sopia.send('와......');
+		await asleep(2000);
+		sopia.send(`${e.author.nickname}님은......`);
+		await asleep(2000);
+		sopia.send(`[${pick.value}] 당첨!`);
+		await asleep(2000);
+		sopia.send('이라는 내용의 소설 추천받아요! 사실 꽝입니당~  ༽΄◞ิ౪◟ิ‵༼ ');
+	},
 ];
 
 sopia.roulette.winSpeech = [
@@ -127,6 +147,13 @@ sopia.roulette.winSpeech = [
 		await asleep(1000);
 		sopia.send(`와 이게 [${e.item.value}] 가 당첨되네.`);
 	},
+	async (e) => {
+		sopia.send('와......');
+		await asleep(2000);
+		sopia.send(`${e.author.nickname}님은......`);
+		await asleep(2000);
+		sopia.send(`무려 [${e.item.value}] 당첨!`);
+	},
 ],
 
 sopia.roulette.processor =  async () => {
@@ -140,8 +167,8 @@ sopia.roulette.processor =  async () => {
 	if ( e.amount * e.combo  >= sopia.roulette.minPresentNum ) {
 		const item = randPer(sopia.roulette.list);
 		if ( sopia.roulette.useEffect ) {
-			sopia.send(await runCmd(random(sopia.roulette.randomSpeech), e));
-			await asleep(1500);
+			sopia.send(`<${e.author.nickname}>님의 도전! ${await runCmd(random(sopia.roulette.randomSpeech), e)}`);
+			await asleep(2500);
 
 			let cnt = sopia.roulette.list.length;
 			if ( cnt > 5 ) {
@@ -150,7 +177,7 @@ sopia.roulette.processor =  async () => {
 
 			for ( let i=0;i < sopia.roulette.pickTime*cnt;i++ ) {
 				sopia.send(`[${random(sopia.roulette.list.map(l => l.value))}] 이걸까?`);
-				await asleep(500 + (2000 / sopia.roulette.list.length));
+				await asleep(700 + (2000 / sopia.roulette.list.length));
 			}
 		}
 
@@ -178,6 +205,7 @@ sopia.roulette.processor =  async () => {
 
 	sopia.roulette.running = false;
 	if ( sopia.roulette.queue.length > 0 ) {
+		await asleep(2000);
 		await sopia.roulette.processor();
 	}
 };

@@ -103,11 +103,12 @@
 					<div class="uk-width-1-5" style="padding-left: 10px;">
 						<input
 							id="ruMinPresentNum"
-							class="uk-input uk-input-spoon uk-text-right"
+							class="uk-input uk-input-spoon uk-text-right uk-width-3-5 uk-margin-small-right"
 							:value="item.percentage"
 							@input="msgKeyDown(this, $event, idx, 'percentage')"
 							onclick="this.focus();"
 							type="number">
+						<a href="#" class="uk-icon-button uk-text-danger" uk-icon="trash" @click="removeList(idx);"></a>
 					</div>
 				</div>
 				<p class="uk-text-right">
@@ -148,7 +149,7 @@
 				});
 			},
 			ruSettingSave() {
-				this.listRerender();
+				this.listRefresh();
 				fs.writeFileSync(sopia.roulette.getPath('config.json'), JSON.stringify({
 					use: this.roulette.use,
 					minPresentNum: this.roulette.minPresentNum,
@@ -164,7 +165,7 @@
 				noti.success('', '저장했습니다.');
 			},
 			ruListSettingSave() {
-				this.listRerender();
+				this.listRefresh();
 				this.ruSettingSave();
 			},
 			msgKeyDown(v, evt, idx, key) {
@@ -175,17 +176,26 @@
 					value: '',
 					percentage: 100,
 				});
-				this.listRerender();
+				this.listRefresh();
 			},
-			listRerender() {
+			listRefresh() {
 				this.roulette.list.forEach((l, idx) => {
 					if ( this.listCopy[idx] ) {
 						l.value = this.listCopy[idx].value;
 						l.percentage = this.listCopy[idx].percentage;
 					}
 				});
+				this.listRerender();
+			},
+			listRerender() {
 				this.listCopy = JSON.parse(JSON.stringify(this.roulette.list));
 				this.rerender('list');
+			},
+			removeList(idx) {
+				console.log('remove', idx, this.roulette.list.length);
+				this.listCopy.splice(idx, 1);
+				this.roulette.list.splice(idx, 1);
+				this.listRefresh();
 			},
 		},
 		computed: {
