@@ -1,6 +1,4 @@
-console.log('Now Song hello?');
-
-var { getMelonCaption } = sopia.require(getPath(sopia.config.bundle['now-song'] + '/get-melon-caption.node'));
+var { getNowSong } = sopia.require(getPath(sopia.config.bundle['now-song'] + '/get-now-song.node'));
 if ( typeof qs === 'undefined' ) {
 	window.qs = sopia.require('querystring');
 }
@@ -15,19 +13,25 @@ if ( komca ) {
 sopia.lastSong = '';
 
 window.getNowSongInfo = () => {
-	const caption = getMelonCaption().trim();
+	const caption = getNowSong().trim();
 	if ( caption === '' ) {
 		return;
 	}
 
+	if ( caption.includes('ActiveMovie Window') ) {
+		sopia.send('멜론 플레이어를 한 번 클릭해 주세요.');
+		return;
+	}
+
 	const delMelonCaption = caption.replace(/ - melon$/i, '').trim();
-	let [ title, singer ] = delMelonCaption.split(/ - /);
 	try {
+		let [ song, title, singer ] = delMelonCaption.match(/(.*?) - (.*)/);
 		title = title.replace(/\(.*?\)/g, '');
 		singer = singer.replace(/\(.*?\)/g, '').replace(/[,&].*/, '').trim();
+		return { title, singer };
 	} catch(err) {
+		console.error(err);
 	}
-	return { title, singer };
 }
 
 sopia.on('message', (e) => {
