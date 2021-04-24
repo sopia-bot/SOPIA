@@ -299,7 +299,11 @@ document.addEventListener('DOMContentLoaded', async (evt) => {
 
 			const title = document.createElement('h3');
 			title.className = "uk-card-title";
-			title.innerText = bundle.cmd;
+			if ( bundle.help ) {
+				title.innerHTML = `<a href="${bundle.help}" target="_blank" style="color: #66b3ff;">${bundle.cmd}</a>`;
+			} else {
+				title.innerText = bundle.cmd;
+			}
 
 			const desc = document.createElement('p');
 			desc.innerText = bundle.desc;
