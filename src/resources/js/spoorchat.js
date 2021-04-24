@@ -173,3 +173,16 @@ const SPOORCHATloading = () => {
         },
 	});
 };
+
+const printSpoorHelp = () => {
+	if ( sopia.live ) {
+		if ( sopia.config && sopia.config.spoor && sopia.config.spoor.enable ) {
+			const list = sopia.config.spoor.randsel.map(r => r.label);
+			sopia.send(`Spoorchat사용할 때 민지/내용 형태로 입력하시면 해당 성우의 목소리를 사용할 수 있습니다.\n예) 민지/안녕하세요.`);
+			sopia.send(`사용 가능한 목소리: ${list.join(', ')}`);
+		}
+	}
+}
+
+sopia.itv.clear('spoorchat-noti');
+sopia.itv.add('spoorchat-noti', printSpoorHelp, 1000 * 60 * 10);

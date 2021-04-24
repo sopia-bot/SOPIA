@@ -599,12 +599,6 @@ sopia.itv.add('dev-spoorchat', async () => {
 
         let voiceType = sopia.config.spoor.type;
         const sigKeys = Object.keys(sopia.config.spoor.signature);
-        const argv = sopia.tts.parser(chatData.message, sigKeys);
-
-		sopia.debug('argv after parse', argv);
-        
-        sopia.tts.readStack = null;
-        sopia.tts.readStack = new Array(argv.length);
 
         let useTypecast = false;
         let tcidx = sopia.config.spoor.tcidx;
@@ -632,9 +626,31 @@ sopia.itv.add('dev-spoorchat', async () => {
             voiceType = tcidx = sel.val;
         }
 
+		
+		let parse = chatData.message.match(/(.*?)\/(.*)/);
+		let argv;
+		if ( !parse || parse.length < 3 ) {
+			argv = sopia.tts.parser(chatData.message, sigKeys);
+		} else {
+			const sel = sopia.config.spoor.randsel.find(r => r.label === parse[1]);
+			if ( sel ) {
+				const msg = parse[2];
+				useTypecast = (sel.type === 'typecast');
+				voiceType = tcidx = sel.val;
+				argv = sopia.tts.parser(msg, sigKeys);
+			} else {
+				argv = sopia.tts.parser(chatData.message, sigKeys);
+			}
+		}
+
+		sopia.debug('argv after parse', argv);
+        
+        sopia.tts.readStack = null;
+        sopia.tts.readStack = new Array(argv.length);
 
         
         try {
+			
             if ( spoorMakeVoice(argv, voiceType, useTypecast, tcidx) ) {
                 let speechIdx = 0;
                 let pool = 0;
@@ -742,8 +758,8 @@ const devMessage = (data, event) => {
 
 			if ( isCmd(e) ) {
 				if ( e.cmd === "tts" ) {
-                    sopia.tts.stack.push({ message: e.content });
-                    sopia.send(`스택 추가 완료 [${e.content}]`);
+                    sopia.tts.stack.push({ message: e.content.trim() });
+                    sopia.send(`스택 추가 완료 [${e.content.trim()}]`);
 					rtn = false;
 				} else if ( e.cmd === "adminme" ) {
 					isAdmin = (author = "") => {
