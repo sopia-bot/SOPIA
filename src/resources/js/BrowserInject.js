@@ -242,3 +242,11 @@ var logInterval = setInterval(() => {
 setTimeout(() => {
 	document.querySelector('iframe[name="us-entrypoint-buttonV2"]').remove();
 }, 3000);
+
+
+setInterval(() => {
+	const btn = document.querySelector('button.btn-broadcast.create');
+	if ( btn ) {
+		btn.remove();
+	}
+}, 1000);

@@ -150,6 +150,9 @@ const browserEvent = async (evt) => {
 				console.error(err);
 			}
 			break;
+		// E: live_join
+		case 'location':
+			break;
 
 	}
 };
