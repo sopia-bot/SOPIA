@@ -49,6 +49,10 @@ const notiCheck = async () => {
         }
         AllSettingSave(config, null, true);
 	}
+
+	if ( window.DEBUG_MODE ) {
+		//await newAlertModal('TEST', 'TEST Content');
+	}
 };
 
 
@@ -57,9 +61,9 @@ const loadInit = async (config = {}) => {
 	await notiCheck();
 };
 
-document.addEventListener('DOMContentLoaded', (evt) => {
+document.addEventListener('DOMContentLoaded', async (evt) => {
 	const config = orgRequire(getPath('/config.json'));
-	loadInit(config);
+	await loadInit(config);
 
 	/*               S: IMPORT               */
 
