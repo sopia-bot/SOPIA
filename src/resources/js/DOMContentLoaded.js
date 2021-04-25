@@ -161,6 +161,10 @@ document.addEventListener('DOMContentLoaded', async (evt) => {
 		document.querySelector('#effectVolume').value = sopia.config.spoor.effectvolume;
 		document.querySelector('#ttsVolume').value = sopia.config.spoor.ttsvolume;
 		document.querySelector('#toutSpoor').value = sopia.config.spoor.toutspoor;
+		if ( sopia.config.spoor.enableInfoSend === undefined) {
+			sopia.config.spoor.enableInfoSend = true;
+		}
+		document.querySelector('#enableInfoSend').checked = enableInfoSend;
 
 
 		if ( sopia.config.spoor.typecast && sopia.config.spoor.typecast.use ) {

@@ -130,6 +130,15 @@
 								<input id="toutSpoor" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
 							</div>
 						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>안내 멘트 사용</div>
+							<div class="uk-text-right">
+								<label class="switch">
+									<input id="enableInfoSend" type="checkbox">
+									<span class="slider round"></span>
+								</label>
+							</div>
+						</div>
 					</div>
 				</div>
 				<!-- S:Spoorchat Setting -->
@@ -488,6 +497,7 @@
 				sopia.config.spoor.effectvolume = document.querySelector('#effectVolume').value;
 				sopia.config.spoor.ttsvolume = document.querySelector('#ttsVolume').value;
 				sopia.config.spoor.toutspoor = document.querySelector('#toutSpoor').value;
+				sopia.config.spoor.enableInfoSend = document.querySelector('#enableInfoSend').checked;
 				sopia.debug(sopia.config.spoor, "save");
 				AllSettingSave();
             };

@@ -857,7 +857,17 @@ sopia.onmessage = async (e) => {
 
 		if ( sopia.isLoading === false ) {
 			sopia.isLoading = true;
-            loadScript(() => sopia.onmessage(e));
+            loadScript(() => {
+				sopia.onmessage(e);
+				sopia.on('message', (e) => {
+					if ( e.isCmd || isCmd(e) ) {
+						if ( e.cmd === '목형' ) {
+							const list = sopia.config.spoor.randsel.map(r => r.label);
+							sopia.send(`사용 가능한 목소리: ${list.join(', ')}`);
+						}
+					}
+				});
+			});
             return;
 		}
 

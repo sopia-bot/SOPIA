@@ -246,4 +246,8 @@ setInterval(() => {
 			btn.style.display = 'none';
 		}
 	}
+	const b1 = document.querySelector('#slContainer');
+	if ( b1 ) {
+		b1.remove();
+	}
 }, 3000);
