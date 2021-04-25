@@ -239,14 +239,11 @@ var logInterval = setInterval(() => {
 }, logIntervalTime * 1000);
 
 
-setTimeout(() => {
-	document.querySelector('iframe[name="us-entrypoint-buttonV2"]').remove();
-}, 3000);
-
-
 setInterval(() => {
-	const btn = document.querySelector('button.btn-broadcast.create');
-	if ( btn ) {
-		btn.remove();
+	if ( location.pathname !== '/kr/live/broadcast' ) {
+		const btn = document.querySelector('button.btn-broadcast.create');
+		if ( btn ) {
+			btn.style.display = 'none';
+		}
 	}
-}, 1000);
+}, 3000);

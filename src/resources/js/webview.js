@@ -81,7 +81,7 @@ const browserEvent = async (evt) => {
 
                 let liveId = evt.data.live_id;
                 if ( !liveId ) {
-                    liveId = evt.data.live && evt.data.live_id;
+                    liveId = evt.data.live && evt.data.live.id;
                 }
 
                 if ( !liveId ) {
@@ -151,9 +151,6 @@ const browserEvent = async (evt) => {
 			}
 			break;
 		// E: live_join
-		case 'location':
-			break;
-
 	}
 };
 
