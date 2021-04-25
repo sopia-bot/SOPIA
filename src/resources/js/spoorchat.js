@@ -1,5 +1,3 @@
-const sopia = require("./sopia");
-
 let audioPlayer = null;
 
 const createRandSel = () => {
