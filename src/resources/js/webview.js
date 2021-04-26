@@ -52,6 +52,7 @@ const browserEvent = async (evt) => {
             if ( sopia.sock ) {
                 sopia.sock.destroy();
                 sopia.sock = null;
+				writeLog('INFO', `Destroy socket join at ${liveId} because live leave`);
             }
             break;
 
@@ -61,19 +62,6 @@ const browserEvent = async (evt) => {
 
             if ( evt.data.type === spoon.LiveType.LIVE_RSP ||
                 (($sopia.user && evt.data.author) && evt.data.author.id === $sopia.user.id) ) {
-				if ( !$sopia.user ) {
-					const user = await webview.executeJavaScript('localStorage.SPOONCAST_KR_userInfo');
-					if ( user ) {
-						await browserEvent({
-							event: 'loginCallback',
-							data: JSON.parse(user),
-						});
-					} else {
-						noti.error('로그인 정보가 없습니다.');
-						return;
-					}
-				}
-
 				// mute sound
 				setTimeout(() => {
 					webview.executeJavaScript('toggleMute()');
@@ -90,13 +78,14 @@ const browserEvent = async (evt) => {
                 
 				let sock = $sopia.liveSocketMap.get(liveId);
 				if ( sock ) {
+					writeLog('INFO', `Destroy socket join at ${liveId}`);
 					sock.destroy();
                 }
 
 				sopia.sock = await $sopia.liveManager.liveJoin(liveId);
 				sopia.sock.on(spoon.LiveEvent.LIVE_EVENT_ALL, sopia.onmessage);
+				writeLog('INFO', `Create socket join at ${liveId}`);
                 sopia.me = $sopia.user;
-                
                 
             
                 // update props
@@ -200,6 +189,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 throw err;
             }
             webview.executeJavaScript(data);
+			sopia.wlog('INFO', 'Write browser inject js');
             if ( sopia.config.autologin.enable ) {
                 if ( sopia.config.devel && sopia.config.devel["토큰"] ) {
                     //do not autologin

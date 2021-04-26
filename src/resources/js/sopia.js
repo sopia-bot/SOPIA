@@ -823,7 +823,7 @@ sopia.onmessage = async (e) => {
 			}
         }
         
-		if ( e.event !== LiveEvent.LIVE_MESSAGE && data.author.tag === sopia.me.tag ) {
+		if ( (e.event !== LiveEvent.LIVE_MESSAGE && e.event !== LiveEvent.LIVE_LAZY_UPDATE) && data.author.tag === sopia.me.tag ) {
 			return;
 		}
 
@@ -834,6 +834,8 @@ sopia.onmessage = async (e) => {
 		if ( data.live && e.event !== "message" ) {
 			sopia.live = data.live;
 		} else if ( e.event === "message" ) {
+			// legasy code support
+			data.message = e.update_component.message.value;
 			// spoorchat
 			let idx = sopia.tts.user.findIndex(item => item.id === data.author.id);
 			if ( idx >= 0 ) {
