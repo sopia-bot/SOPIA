@@ -68,9 +68,6 @@ const browserEvent = async (evt) => {
 				}, 100);
 
                 let liveId = evt.data.live_id;
-                if ( !liveId ) {
-                    liveId = evt.data.live && evt.data.live.id;
-                }
 
                 if ( !liveId ) {
                     return;
