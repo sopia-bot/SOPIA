@@ -49,11 +49,24 @@ const SETTINGLoading = async () => {
     let { data } = await axios.get('https://sopia-bot.firebaseio.com/app/update.json');
     let versions = [];
 
-    Object.keys(data).reverse().forEach(ver => {
-        if ( ver.match(/\d-\d-\d/) ) {
-            versions.push(ver);
-        }
-    });
+    versions = Object.keys(data).reverse().filter(ver => !!ver.match(/\d+-\d+-\d+/)).sort((ver1, ver2) => {
+		const v1 = parseVersion(ver1.replace(/\-/g, '.'));
+		const v2 = parseVersion(ver2.replace(/\-/g, '.'));
+
+		if ( v1.app === v2.app ) {
+			if ( v1.major === v2.major ) {
+				if ( v1.minor === v2.minor ) {
+					return 0;
+				} else {
+					return v2.minor - v1.minor;
+				}
+			} else {
+				return v2.major - v1.major;
+			}
+		} else {
+			return v1.app - v2.app;
+		}
+	});
 
     let li = document.createElement('li');
     if ( !sopia.config['version-fix'] ) {

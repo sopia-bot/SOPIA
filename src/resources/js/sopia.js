@@ -836,6 +836,9 @@ sopia.onmessage = async (e) => {
 		} else if ( e.event === "message" ) {
 			// legasy code support
 			data.message = e.update_component.message.value;
+			if ( !data.author ) {
+				data.author = data.user;
+			}
 			// spoorchat
 			let idx = sopia.tts.user.findIndex(item => item.id === data.author.id);
 			if ( idx >= 0 ) {

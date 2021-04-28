@@ -173,6 +173,8 @@ window.addEventListener('DOMContentLoaded', () => {
         webview.isLoaded = true;
         setTimeout(async () => {
             webview.isLoaded = false;
+			webview.insertCSS('.live-comment-list-item-container .comment-wrap .comment .comment-text.chat-highlight { border-color: #ffb047 !important }');
+			webview.insertCSS('.live-comment-list-item-container .comment-wrap .comment .comment-name .badge.subscribe { background-color: #ffb047 !important }');
 			const userStr = await webview.executeJavaScript('localStorage.SPOONCAST_KR_userInfo');
 			if ( userStr ) {
 				browserEvent({ event: 'loginCallback', data: JSON.parse(userStr) });

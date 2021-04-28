@@ -1,6 +1,6 @@
 {
 	"name": "sopia",
-	"version": "1.10.0",
+	"version": "1.10.2",
 	"description": "A Spooncast manager A.I Program",
 	"main": "main.js",
 	"scripts": {
@@ -43,9 +43,9 @@
 	},
 	"dependencies": {
 		"@sanillajs/sanilla": "^1.0.4",
-		"axios": "^0.19.0",
+		"axios": "^0.21.1",
 		"request": "^2.88.2",
 		"rimraf": "^3.0.2",
-		"sopia-core": "^1.6.1"
+		"sopia-core": "^1.6.2"
 	}
 }
