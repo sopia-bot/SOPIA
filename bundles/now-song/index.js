@@ -26,8 +26,6 @@ window.getNowSongInfo = () => {
 	const delMelonCaption = caption.replace(/ - melon$/i, '').trim();
 	try {
 		let [ song, title, singer ] = delMelonCaption.match(/(.*?) - (.*)/);
-		title = title.replace(/\(.*?\)/g, '');
-		singer = singer.replace(/\(.*?\)/g, '').replace(/[,&].*/, '').trim();
 		return { title, singer };
 	} catch(err) {
 		console.error(err);
