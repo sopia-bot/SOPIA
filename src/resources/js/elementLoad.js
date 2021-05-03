@@ -96,6 +96,10 @@ let loadingInterval = setInterval(() => {
 INJECTORS.forEach((injector) => injector.loading());
 
 sopia.wlog('SUCCESS', 'Element load complete');
+showSpinner();
+setTimeout(() => {
+	hideSpinner();
+}, 5000);
 
 // 2020. 02. 15 잘 사용하지 않는 제스쳐 사용을 지운다.
 // input range 가 동작하지 않기 때문.

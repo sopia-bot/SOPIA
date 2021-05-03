@@ -647,6 +647,14 @@ const fullStringify = (obj, deep = 0) => {
 	return rtn;
 };
 
+const showSpinner = () => {
+	document.querySelector('#spinner-div').style.display = 'flex';
+}
+
+const hideSpinner = () => {
+	document.querySelector('#spinner-div').style.display = 'none';
+}
+
 /**
  * @function jsSyntax
  * @param {String} 에러 검사할 코드

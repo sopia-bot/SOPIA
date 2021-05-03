@@ -32,9 +32,11 @@ const browserEvent = async (evt) => {
 			if ( sopia.config.sopia['keep-login'] && !['email', 'phone'].includes(user.snsType.toLowerCase()) && (token && refToken) ) {
 				console.log('token', token, 'refToken', refToken);
 				await webview.executeJavaScript(`getProps().AuthActions.putTokens({ device_unique_id: '${unique_id}', refresh_token: '${refToken}', user_id: ${$sopia.user.id} });`);
-			} else {
-				browserEvent({ event: 'setAuthKey', data: $sopia.token || token });
 			}
+			
+			const t = $sopia.token || token;
+			console.log('Emit setAuthKey Event', t);
+			browserEvent({ event: 'setAuthKey', data: t });
 
             break;
 		case 'setAuthKey':
@@ -46,6 +48,7 @@ const browserEvent = async (evt) => {
 					$sopia.token = token;
 				}
 			}
+			hideSpinner();
 			break;
         
         case 'SOCKET_LIVE_LEAVE':

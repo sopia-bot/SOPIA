@@ -9,8 +9,9 @@
 
 		<link href="../vs/editor/editor.main.css" data-name="vs/editor/editor.main" rel="stylesheet">
 
-		<link href="vendors/css/uikit.css"		rel="stylesheet">
-		<link href="resources/css/style.css"	rel="stylesheet">
+		<link href="vendors/css/uikit.css"          rel="stylesheet">
+		<link href="vendors/css/spinkit.min.css"    rel="stylesheet">
+		<link href="resources/css/style.css"        rel="stylesheet">
 
 		<link id="home"			href="home.html"		rel="import">
 		<link id="ez-cmd"		href="ez-cmd.html"		rel="import">
@@ -21,6 +22,14 @@
 		<link id="other"		href="other.html"		rel="import">
 	</head>
 	<body>
+		<!-- S:Spinner -->
+		<div id="spinner-div" style="width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1002; position: fixed; display: none;">
+			<div class="sk-bounce" style="margin: auto;">
+				<div class="sk-bounce-dot" style="background-color: #ff8282;"></div>
+				<div class="sk-bounce-dot" style="background-color: #ffe482;"></div>
+			</div>
+		</div>
+		<!-- E:Spinner -->
         <!-- S:Confirm Modal -->
 		<div id="confirm-modal" class="uk-flex-top" uk-modal="bg-close: false;">
 			<div class="uk-modal-dialog uk-margin-auto-vertical">
