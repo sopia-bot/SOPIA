@@ -5,14 +5,14 @@
  * Copyright (c) raravel. Licensed under the MIT License.
  */
 
-httpReq = require('request');
-sopia.nara = require('./config.json');
+httpReq = sopia.require('request');
+sopia.nara = sopia.require('./config.json');
 sopia.nara.api = {
 	id: '',
 	key: '',
 };
 sopia.nara.bgm = {};
-sopia.nara.cache = require('./nara.json');
+sopia.nara.cache = sopia.require('./nara.json');
 
 
 playMusic = (src, volume = 0.5) => {
@@ -43,7 +43,7 @@ speechNara = (text) => new Promise((resolve, reject) => {
 	}
 
 	if ( sopia.nara.cache[cfname] ) {
-		playMusic(sopia.nara.cache[cfname], sopia.nara.volumn)
+		playMusic(getPath(sopia.nara.cache[cfname]), sopia.nara.volumn)
 		.then(resolve);
 		return;
 	}
@@ -52,7 +52,7 @@ speechNara = (text) => new Promise((resolve, reject) => {
 		url: 'https://naveropenapi.apigw.ntruss.com/voice-premium/v1/tts',
 		method: 'post',
 		form: {
-			speaker: 'clova',
+			speaker: 'nara',
 			speed: '0',
 			text,
 		},
@@ -79,7 +79,7 @@ speechNara = (text) => new Promise((resolve, reject) => {
 	writable.on('close', () => {
 		sopia.nara.cache[cfname] = fname;
 		fs.writeFile('./nara.json', JSON.stringify(sopia.nara.cache), 'utf8', () => {});
-		playMusic(fname, sopia.nara.volumn)
+		playMusic(getPath(fname), sopia.nara.volumn)
 		.then(resolve);
 	});
 });
