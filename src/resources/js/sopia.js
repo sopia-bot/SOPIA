@@ -5,7 +5,6 @@
 ///////////////////////////////////////////////////////////////
 
 const { LiveEvent } = require('sopia-core');
-const Neuro = require('./neuro.js');
 
 /**
  * @sopia 의 객체를 생성한다.
@@ -64,7 +63,6 @@ sopia.api = {
 };
 
 sopia.tts = speech;
-sopia.neuro = new Neuro();
 
 sopia.var = {};
 sopia.storage = {

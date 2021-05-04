@@ -44,7 +44,6 @@
 	"dependencies": {
 		"@sanillajs/sanilla": "^1.0.4",
 		"axios": "^0.21.1",
-		"neuro.umd.js": "^0.1.11",
 		"request": "^2.88.2",
 		"rimraf": "^3.0.2",
 		"sopia-core": "^1.6.2"
