@@ -84,6 +84,15 @@ document.addEventListener('DOMContentLoaded', async (evt) => {
 	});
 
 	/**
+	* for dj를 controls에 import 시킨다.
+	* display: none으로 둔다.
+	*/
+	document.querySelector('#controls').appendImport('#for-dj', (parent, target) => {
+		console.log('for dj!!!');
+		target.setAttribute('data-target', 'for-dj');
+	});
+
+	/**
 	* code를 controls에 import 시킨다.
 	* 그와 동시에 monaco editor를 세팅한다.
 	* display는 none으로 둔다.

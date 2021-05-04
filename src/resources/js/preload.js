@@ -12,6 +12,7 @@ const EventEmitter = require('events');
 const http = require('http');
 const https = require('https');
 const qs = require('querystring');
+const { GetDefaultRenderDevice, GetSessions, SetAppVolume, GetAppVolume } = require('native-sound-mixer');
 const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
 
 // Download Package
