@@ -6,45 +6,7 @@
 -->
 <template>
 	<v-app style="padding-left: 56px">
-		<!-- S: Login Dialog -->
-		<v-dialog
-			v-model="loginDialog"
-			persistent
-			max-width="450px"
-			width="80%">
-			<v-card>
-				<v-row class="ma-0">
-					<v-col cols="12" align="center">
-						<v-card-title class="text-center d-block">
-							{{ $t('app.login.title') }}
-						</v-card-title>
-						<v-card-text>
-							<v-text-field
-								:label="$t('app.login.id')"
-								v-model="sopiaAuth.id"
-								color="indigo"
-								prepend-icon="mdi-account"
-								type="text"
-								></v-text-field>
-
-							<v-text-field
-								:label="$t('app.login.password')"
-								v-model="sopiaAuth.pw"
-								color="indigo"
-								prepend-icon="mdi-lock"
-								type="password"
-								></v-text-field>
-							<v-btn
-								block dark
-								tile
-								@click="loginSopia"
-								color="indigo darken-3">{{ $t('login') }}</v-btn>
-						</v-card-text>
-					</v-col>
-				</v-row>
-			</v-card>
-		</v-dialog>
-		<!-- E: Login Dialog -->
+		<login-dialog :show="loginDialog" />
 		<side-menu />
 		<v-sheet id="router-view" tile :key="$route.fullPath">
 			<transition name="scroll-y-reverse-transition">
@@ -65,11 +27,13 @@ html, body {
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import SideMenu from '@/views/SideMenu/Index.vue';
 import { LoginType, User, Play, Client } from 'sopia-core';
-import LivePlayer from '@/views/Live/Player.vue';
 import CfgLite from '@/plugins/cfg-lite-ipc';
 import { SopiaAPI } from '@/plugins/sopia-api';
+
+import SideMenu from '@/views/SideMenu/Index.vue';
+import LivePlayer from '@/views/Live/Player.vue';
+import LoginDialog from '@/views/Login/Index.vue';
 
 declare global {
 	interface Window {
@@ -85,16 +49,12 @@ declare global {
 	'components': {
 		SideMenu,
 		LivePlayer,
+		LoginDialog,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {
 	public currentLive: Play = {} as Play;
 	public loginDialog: boolean = false;
-
-	public sopiaAuth = {
-		id: '',
-		pw: '',
-	};
 
 	public async mounted() {
 		const auth = this.$cfg.get('auth');
@@ -111,16 +71,6 @@ export default class App extends Mixins(GlobalMixins) {
 				this.currentLive = live;
 			});
 		});
-	}
-
-	public async loginSopia() {
-		const res = await this.$api.login(this.sopiaAuth.id, this.sopiaAuth.pw);
-		console.log(res);
-	}
-
-	public async spoonLogin(id: string, pw: string ) {
-		window.user = await this.$sopia.login(id, pw, LoginType.PHONE);
-		this.$evt.$emit('user', window.user);
 	}
 
 }

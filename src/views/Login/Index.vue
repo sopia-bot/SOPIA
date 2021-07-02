@@ -5,76 +5,75 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
 <template>
-	<v-main>
-		<v-container
-			class="fill-height"
-			fluid
-			>
-			<v-row
-				align="center"
-				justify="center"
-				>
-				<v-col
-					cols="12"
-					sm="8"
-					md="4"
-					>
-					<v-card class="elevation-12">
-						<v-toolbar
-							color="primary"
-							dark
-							flat
-							>
-							<v-toolbar-title>Login form</v-toolbar-title>
-							<v-spacer></v-spacer>
-							<v-tooltip bottom>
-								<template v-slot:activator="{ on }">
-									<v-btn
-										:href="source"
-										icon
-										large
-										target="_blank"
-										v-on="on"
-										>
-										<v-icon>mdi-code-tags</v-icon>
-									</v-btn>
-								</template>
-							<span>Source</span>
-							</v-tooltip>
-						</v-toolbar>
-						<v-card-text>
-							<v-form>
-								<v-text-field
-									label="Login"
-									name="login"
-									prepend-icon="mdi-account"
-									type="text"
-									></v-text-field>
+	<!-- S: Login Dialog -->
+	<v-dialog
+		v-model="show"
+		persistent
+		max-width="450px"
+		width="80%">
+		<v-card>
+			<v-row class="ma-0">
+				<v-col cols="12" align="center">
+					<v-card-title class="text-center d-block">
+						{{ $t('app.login.title') }}
+					</v-card-title>
+					<v-card-text>
+						<v-text-field
+							:label="$t('app.login.id')"
+							v-model="sopiaAuth.id"
+							color="indigo"
+							prepend-icon="mdi-account"
+							type="text"
+							></v-text-field>
 
-								<v-text-field
-									id="password"
-									label="Password"
-									name="password"
-									prepend-icon="mdi-lock"
-									type="password"
-									></v-text-field>
-							</v-form>
-						</v-card-text>
-						<v-card-actions>
-							<v-spacer></v-spacer>
-							<v-btn color="primary">Login</v-btn>
-						</v-card-actions>
-					</v-card>
+						<v-text-field
+							:label="$t('app.login.password')"
+							v-model="sopiaAuth.pw"
+							color="indigo"
+							prepend-icon="mdi-lock"
+							type="password"
+							></v-text-field>
+						<v-btn
+							block dark
+							tile
+							@click="loginSopia"
+							color="indigo darken-3">{{ $t('login') }}</v-btn>
+					</v-card-text>
 				</v-col>
 			</v-row>
-		</v-container>
-	</v-main>
+		</v-card>
+	</v-dialog>
+	<!-- E: Login Dialog -->
 </template>
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 
 @Component
 export default class Login extends Mixins(GlobalMixins) {
+
+	@Prop(Boolean) public show!: boolean;
+
+	public sopiaAuth = {
+		id: '',
+		pw: '',
+	};
+
+	public async loginSopia() {
+		try {
+			const res = await this.$api.login(this.sopiaAuth.id, this.sopiaAuth.pw);
+			console.log(res);
+
+			//this.spoonLogin(this.sopiaAuth.id, this.sopiaAuth.pw);
+		} catch(err) {
+		}
+	}
+
+	public async spoonLogin(id: string, pw: string ) {
+		window.user = await this.$sopia.login(id, pw, LoginType.PHONE);
+		this.$evt.$emit('user', window.user);
+			this.loginDialog = false;
+	}
+
 }
 </script>
