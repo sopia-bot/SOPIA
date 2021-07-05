@@ -59,10 +59,10 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Play } from 'sopia-core';
+import { Live } from 'sopia-core';
 
 @Component
 export default class LiveItem extends Mixins(GlobalMixins) {
-	@Prop(Play) public live!: Play;
+	@Prop(Object) public live!: Live;
 }
 </script>

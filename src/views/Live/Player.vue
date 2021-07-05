@@ -86,7 +86,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Play, SocketManager, LiveEvent, LiveType, SpoonSocketEvent, User } from 'sopia-core';
+import { Live, LiveSocket, LiveEvent, LiveType, User } from 'sopia-core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
 import SopiaProcesser from '@/sopia/processor';
 
@@ -109,27 +109,27 @@ const IgnoreEvent = [
 	},
 })
 export default class LivePlayer extends Mixins(GlobalMixins) {
-	@Prop(Play) public live!: Play;
+	@Prop(Object) public live!: Live;
 
 	public fullScreen: boolean = true;
-	public liveSocket!: SocketManager;
+	public liveSocket!: LiveSocket;
 	public liveEvents: any = [];
 
 	public chat: string = '';
 
 	public async created() {
 		if ( this.live ) {
-			this.$sopia.liveSocketMap.forEach((socket: SocketManager, liveId: number) => {
-				socket.destroy();
+			this.$sopia.liveMap.forEach((socket: LiveSocket, liveId: number) => {
+				//socket.destroy(); TODO:
 			});
-			this.liveSocket = await this.$sopia.liveManager.liveJoin(this.live);
+			this.liveSocket = await this.live.join();
 			this.liveSocket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
-				SopiaProcesser(evt as SpoonSocketEvent, this.liveSocket);
+				SopiaProcesser(evt as any, this.liveSocket);
 
 				if ( IgnoreEvent.includes(evt.event) ) {
 					return;
 				}
-				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.user.id ) {
+				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
 					return;
 				}
 
@@ -156,7 +156,8 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 					okText: this.$t('confirm'),
 					cancelText: this.$t('cancel'),
 					ok: async () => {
-						await this.$sopia.liveManager.liveBlock(this.live, id);
+						// TODO: this api is not support now
+						//await this.live.block(id);
 					},
 				});
 			});
@@ -165,7 +166,8 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
 			}
 
-			await this.$sopia.initSignatureSticker(this.live.author);
+			// TODO: this api is not support now
+			await this.$sopia.sticker.initSignatureSticker(this.live.author.id);
 		}
 	}
 

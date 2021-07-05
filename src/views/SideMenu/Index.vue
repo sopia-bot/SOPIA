@@ -12,7 +12,7 @@
 		>
 		<v-list-item class="px-2" link>
 			<v-list-item-avatar color="black">
-				<v-img :src="user.profileUrl"></v-img>
+				<v-img :src="user.profile_url"></v-img>
 			</v-list-item-avatar>
 
 			<v-list-item-content>
@@ -89,7 +89,7 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 	public user: User = {
 		nickname: 'Not Login',
 		tag: 'Not Login',
-		profileUrl: require('assets/default-profile.png'),
+		profile_url: require('assets/default-profile.png'),
 	} as any;
 
 	public mounted() {
@@ -102,8 +102,8 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 				this.user.tag = user.tag;
 			}
 
-			if ( user.profileUrl ) {
-				this.user.profileUrl = user.profileUrl;
+			if ( user.profile_url ) {
+				this.user.profile_url = user.profile_url;
 			}
 		});
 	}

@@ -98,7 +98,9 @@ export default class ChatMessage extends Mixins(GlobalMixins) {
 	}
 
 	public getStickerImg() {
-		return (this.$sopia.findSticker(this.evt.data.sticker)?.imageThumbnail) as string;
+		// TODO: this api is not support now
+		//return (this.$sopia.findSticker(this.evt.data.sticker)?.imageThumbnail) as string;
+		return '';
 	}
 }
 </script>

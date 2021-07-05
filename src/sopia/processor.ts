@@ -4,7 +4,7 @@
  *
  * Copyright (c) Tree Some. Licensed under the MIT License.
  */
-import { SpoonSocketEvent, LiveEvent, User, Client, SocketManager, Play } from 'sopia-core';
+import { LiveEvent, User, SpoonClient, LiveSocket, Live } from 'sopia-core';
 import CfgLite from '@/plugins/cfg-lite-ipc';
 import logger from '@/plugins/logger';
 import Script from './script';
@@ -37,7 +37,7 @@ declare global {
 	interface Window {
 		user: User;
 		$spoon: any;
-		$sopia: Client;
+		$sopia: SpoonClient;
 		reloadCmdCfg: () => void;
 	}
 }
@@ -48,8 +48,8 @@ window.reloadCmdCfg = () => {
 	cfg = new CfgLite(CMD_PATH);
 };
 
-const isAdmin = (live: Play, user: User|number) => {
-	if ( !live || (!live.managerIds && !live.author) ) {
+const isAdmin = (live: Live, user: User|number) => {
+	if ( !live || (!live.manager_ids && !live.author) ) {
 		return;
 	}
 
@@ -57,9 +57,7 @@ const isAdmin = (live: Play, user: User|number) => {
 		user = user.id;
 	}
 
-	console.log(live.author.id, user);
-
-	return live.author.id === user || live.managerIds.includes(user);
+	return live.author.id === user || live.manager_ids.includes(user);
 };
 
 const DEFAULT_CMD_PREFIX = '!';
@@ -76,7 +74,7 @@ const ckCmd = (cmd: any, msg: string) => {
 	return m[0] === (prefix + cmd.command);
 };
 
-const ckCmdEvent = (evt: SpoonSocketEvent, sock: SocketManager) => {
+const ckCmdEvent = (evt: any, sock: LiveSocket) => {
 	if ( evt.event !== LiveEvent.LIVE_JOIN &&
 		 evt.event !== LiveEvent.LIVE_LIKE &&
 		 evt.event !== LiveEvent.LIVE_PRESENT &&
@@ -88,13 +86,13 @@ const ckCmdEvent = (evt: SpoonSocketEvent, sock: SocketManager) => {
 	if ( evt.event === LiveEvent.LIVE_JOIN ||
 		 evt.event === LiveEvent.LIVE_LIKE ||
 		 evt.event === LiveEvent.LIVE_PRESENT ) {
-		return isAdmin(sock.Live, window.$sopia.user);
+		return isAdmin(sock.Live as Live, window.$sopia.logonUser);
 	}
 
 	return evt.event === LiveEvent.LIVE_MESSAGE;
 };
 
-const processor = async (evt: SpoonSocketEvent, sock: SocketManager) => {
+const processor = async (evt: any, sock: LiveSocket) => {
 	logger.debug('sopia', `receive event [${evt.event}]`, evt);
 
 	/* S: Cmd */
@@ -126,7 +124,7 @@ const processor = async (evt: SpoonSocketEvent, sock: SocketManager) => {
 					console.log('msg', m);
 					if ( m ) {
 						if ( m.permit === 'manager' ) {
-							if ( isAdmin(sock.Live, e.author) ) {
+							if ( isAdmin(sock.Live as Live, e.author) ) {
 								res = m.message;
 							}
 						} else {

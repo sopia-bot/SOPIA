@@ -7,7 +7,6 @@
 const fs = window.require('fs');
 const path = window.require('path');
 import logger from '@/plugins/logger';
-import { SpoonSocketEvent } from 'sopia-core';
 
 export class Script {
 	private files: string[] = [];
@@ -33,7 +32,7 @@ export class Script {
 		}
 	}
 
-	public run(event: SpoonSocketEvent) {
+	public run(event: any) {
 		if ( Array.isArray(this.binds[event.event]) ) {
 			for ( const module of this.binds[event.event] ) {
 				module(event);

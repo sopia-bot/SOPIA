@@ -52,7 +52,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { ApiManager, ApiRequest, Play, User } from 'sopia-core';
+import { Live, User } from 'sopia-core';
 import LiveItem from './LiveItem.vue';
 import SearchHeader from '../Search/Header.vue';
 
@@ -70,9 +70,10 @@ const sleep = (msec: number) => {
 	},
 })
 export default class Home extends Mixins(GlobalMixins) {
-	public liveManager!: ApiManager<Play>;
-	public liveList: Play[] = [];
-	public liveSubscribed: Play[] = [];
+	// TODO: liveManager is api request struct
+	public liveManager!: any;
+	public liveList: Live[] = [];
+	public liveSubscribed: Live[] = [];
 	public asyncMutex: boolean = false;
 	public loadComplete: boolean = false;
 
@@ -90,7 +91,7 @@ export default class Home extends Mixins(GlobalMixins) {
 				this.liveList = this.liveList.concat(this.liveManager.data);
 			}
 		} else {
-			this.liveManager = await this.$sopia.liveManager.livePopular();
+			this.liveManager = await this.$sopia.api.lives.popular();
 			this.liveList = this.liveManager.data;
 		}
 
@@ -104,28 +105,32 @@ export default class Home extends Mixins(GlobalMixins) {
 	public async mounted() {
 		this.$evt.$on('user', async (user: User) => {
 			this.liveSubscribed = [];
-			if ( user.currentLive ) {
-				const myLiveId = user.currentLive.id;
-				const myLive = await this.$sopia.liveManager.liveInfo(myLiveId);
+			if ( user.current_live ) {
+				const myLiveId = user.current_live.id;
+				const myLiveReq = await this.$sopia.api.lives.info(myLiveId);
+				const myLive = myLiveReq.res.results[0];
 				this.liveSubscribed.push(myLive);
 			}
 
-			const lives = await this.$sopia.liveManager.liveSubscribed();
-			for ( const live of lives.data ) {
+			const req = await this.$sopia.api.lives.subcribed();
+			const lives = req.res.results;
+			for ( const live of lives ) {
 				this.liveSubscribed.push(live);
 			}
 		});
 		this.getNextLiveList();
 		if ( window.user ) {
 			this.liveSubscribed = [];
-			if ( window.user.currentLive ) {
-				const myLiveId = window.user.currentLive.id;
-				const myLive = await this.$sopia.liveManager.liveInfo(myLiveId);
+			if ( window.user.current_live ) {
+				const myLiveId = window.user.current_live.id;
+				const myLiveReq = await this.$sopia.api.lives.info(myLiveId);
+				const myLive = myLiveReq.res.results[0];
 				this.liveSubscribed.push(myLive);
 			}
 
-			const lives = await this.$sopia.liveManager.liveSubscribed();
-			for ( const live of lives.data ) {
+			const req = await this.$sopia.api.lives.subcribed();
+			const lives = req.res.results;
+			for ( const live of lives ) {
 				this.liveSubscribed.push(live);
 			}
 		}

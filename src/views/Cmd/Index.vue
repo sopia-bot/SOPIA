@@ -266,16 +266,16 @@ export default class Cmd extends Mixins(GlobalMixins) {
 	public async mounted() {
 		this.setType = this.$route.params['type'];
 		this.cfgValid(this.cfg);
-		if ( !this.$sopia.stickers ) {
+		if ( !this.$sopia.sticker.stickers ) {
 			await this.asleep(2000);
 		}
-		this.$sopia.stickers.categories.forEach((category: StickerCategory) => {
-			if ( category.isUsed === false ) {
+		this.$sopia.sticker.stickers.categories.forEach((category: StickerCategory) => {
+			if ( category.is_used === false ) {
 				return;
 			}
 
 			category.stickers.forEach((sticker: Sticker) => {
-				if ( sticker.isUsed ) {
+				if ( sticker.is_used ) {
 					this.validStickers.push(sticker);
 				}
 			});
@@ -297,7 +297,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 		this.livePresent.push({
 			sticker: sticker.name,
 			title: sticker.title,
-			src: sticker.imageThumbnail,
+			src: sticker.image_thumbnail,
 			message: '',
 		});
 	}

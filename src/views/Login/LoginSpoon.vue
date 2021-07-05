@@ -64,12 +64,12 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { LoginType } from 'sopia-core';
+import { SnsType } from 'sopia-core';
 
 @Component
 export default class LoginSpoon extends Mixins(GlobalMixins) {
 
-	public tabItem: LoginType[] = [ LoginType.PHONE, LoginType.EMAIL ];
+	public tabItem: SnsType[] = [ SnsType.PHONE, SnsType.EMAIL ];
 	public tab: number = 0;
 	public auth = { id: '', pw: '' };
 	public errorMsg: string = '';

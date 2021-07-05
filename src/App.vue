@@ -27,7 +27,7 @@ html, body {
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { LoginType, User, Play, Client } from 'sopia-core';
+import { User, Live, SpoonClient } from 'sopia-core';
 import CfgLite from '@/plugins/cfg-lite-ipc';
 import { SopiaAPI } from '@/plugins/sopia-api';
 
@@ -39,21 +39,21 @@ declare global {
 	interface Window {
 		user: User;
 		$spoon: any;
-		$sopia: Client;
+		$sopia: SpoonClient;
 		reloadCfg: () => void;
 		appCfg: CfgLite;
 	}
 }
 
 @Component({
-	'components': {
+	components: {
 		SideMenu,
 		LivePlayer,
 		LoginDialog,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {
-	public currentLive: Play = {} as Play;
+	public currentLive: Live = {} as Live;
 	public loginDialog: boolean = false;
 
 	public async mounted() {
@@ -65,11 +65,11 @@ export default class App extends Mixins(GlobalMixins) {
 			this.loginDialog = true;
 		}
 
-		this.$evt.$on('live-join', async (live: Play) => {
-			this.currentLive = {} as Play;
+		this.$evt.$on('live-join', async (live: Live) => {
+			this.currentLive = {} as Live;
 			this.$nextTick(async () => {
-				live = await this.$sopia.liveManager.liveInfo(live);
-				this.currentLive = live;
+				const req = await live.info();
+				this.currentLive = live = req.res.results[0];
 			});
 		});
 	}

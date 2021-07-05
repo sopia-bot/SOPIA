@@ -51,7 +51,7 @@ Vue.use(VueScroll, {
 
 Vue.config.productionTip = false;
 window.$spoon = spoon;
-Vue.prototype.$sopia = window.$sopia = new spoon.Client(uuidv4()); // TODO: set country
+Vue.prototype.$sopia = window.$sopia = new spoon.SpoonClient(uuidv4()); // TODO: set country
 Vue.prototype.$api = new SopiaAPI();
 
 // Event Bus
@@ -88,9 +88,12 @@ Vue.config.errorHandler = function(err: any, vm: any, info) {
 	fs.appendFileSync(logFile, str, 'utf8');
 };
 
-new Vue({
-	router,
-	store,
-	vuetify,
-	render: (h) => h(App),
-}).$mount('#app');
+window.$sopia.init()
+	.then(() => {
+		new Vue({
+			router,
+			store,
+			vuetify,
+			render: (h) => h(App),
+		}).$mount('#app');
+	});

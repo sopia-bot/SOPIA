@@ -74,9 +74,16 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { ApiManager, Play, User, ContentType } from 'sopia-core';
+import { User, Live, Cast } from 'sopia-core';
 import SearchHeader from './Header.vue';
 import LiveItem from '../Home/LiveItem.vue';
+
+enum ContentType {
+	USER = 'user',
+	LIVE = 'live',
+	CAST = 'cast',
+	TALK = 'talk',
+}
 
 const sleep = (msec: number) => {
 	return new Promise((resolve, reject) => {
@@ -91,8 +98,8 @@ const sleep = (msec: number) => {
 	},
 })
 export default class Search extends Mixins(GlobalMixins) {
-	public searchManager!: ApiManager<(Play|User)>;
-	public searchList: Array<Play|User> = [];
+	//public searchManager!: ApiManager<(Cast|Live|User)>;
+	public searchList: Array<Cast|Live|User> = [];
 	public asyncMutex: boolean = false;
 	public loadComplete: boolean = false;
 
@@ -131,6 +138,8 @@ export default class Search extends Mixins(GlobalMixins) {
 		}
 		this.asyncMutex = true;
 
+		/*
+		TODO: searchManager to request Result
 		if ( this.searchManager ) {
 			if ( this.searchManager.response.next ) {
 				this.searchManager = await this.searchManager.next();
@@ -145,6 +154,7 @@ export default class Search extends Mixins(GlobalMixins) {
 		if ( this.searchManager.response.next === '' ) {
 			this.loadComplete = true;
 		}
+		*/
 
 		this.asyncMutex = false;
 	}

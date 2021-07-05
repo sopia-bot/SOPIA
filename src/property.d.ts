@@ -5,13 +5,13 @@
  * Copyright (c) Tree Some. Licensed under the MIT License.
  */
 import Vue from 'vue';
-import * as spoon from 'sopia-core';
+import { SpoonClient } from 'sopia-core';
 import CfgLite from 'cfg-lite';
 import { SopiaAPI } from '@/plugins/sopia-api';
 
 declare module 'vue/types/vue' {
 	interface Vue {
-		$sopia: spoon.Client;
+		$sopia: SpoonClient;
 		$evt: Vue;
 		$logger: any;
 		$cfg: CfgLite;

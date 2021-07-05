@@ -34,7 +34,13 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { ContentType } from 'sopia-core';
+
+enum ContentType {
+	USER = 'user',
+	LIVE = 'live',
+	CAST = 'cast',
+	TALK = 'talk',
+}
 
 @Component
 export default class SearchHeader extends Mixins(GlobalMixins) {
