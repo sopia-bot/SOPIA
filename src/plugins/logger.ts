@@ -27,21 +27,21 @@ enum LogLevel {
 
 const COLOR: any = {
 
-	'err': '#ed4b47',
-	'info': '#21a4c2',
-	'success': '#1eb05d',
-	'warn': '#de8914',
-	'debug': '#000',
+	err: '#ed4b47',
+	info: '#21a4c2',
+	success: '#1eb05d',
+	warn: '#de8914',
+	debug: '#000',
 
 };
 
 const CHAR: any = {
 
-	'err': '❌',
-	'info': '❕',
-	'success': '✔',
-	'warn': '⚠',
-	'debug': '🔹',
+	err: '❌',
+	info: '❕',
+	success: '✔',
+	warn: '⚠',
+	debug: '🔹',
 
 };
 
@@ -126,7 +126,7 @@ window.logLevel = 7;
 window.logRegex = /^((?!(emit)).)*$/g;
 
 export default {
-	'install'(Vue: any) {
+	install(Vue: any) {
 		Vue.prototype.$logger = {
 			critical,
 			alert,

@@ -10,21 +10,21 @@ interface State {
 }
 
 export default new Vuex.Store({
-	'state': {
+	state: {
 		user: undefined,
 	},
-	'getters': {
+	getters: {
 		user(state: State) {
 			return state.user;
 		},
 	},
-	'mutations': {
+	mutations: {
 		user(state: State, user: User) {
 			state.user = user;
 		},
 	},
-	'actions': {
+	actions: {
 	},
-	'modules': {
+	modules: {
 	},
 });

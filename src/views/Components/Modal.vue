@@ -42,44 +42,44 @@
 </template>
 <script>
 export default {
-	'name': 'Modal',
-	'props': {
-		'type': {
-			'type': String,
-			'default': 'none',
+	name: 'Modal',
+	props: {
+		type: {
+			type: String,
+			default: 'none',
 		},
-		'open': {
-			'type': Boolean,
-			'default': false,
+		open: {
+			type: Boolean,
+			default: false,
 		},
-		'title': {
-			'type': String,
-			'default': 'Modal Title',
+		title: {
+			type: String,
+			default: 'Modal Title',
 		},
-		'content': {
-			'type': String,
-			'default': 'Modal Content',
+		content: {
+			type: String,
+			default: 'Modal Content',
 		},
-		'textOk': {
-			'type': String,
-			'default': 'Ok',
+		textOk: {
+			type: String,
+			default: 'Ok',
 		},
 	},
-	'data': () => {
+	data: () => {
 		return {
-			'icons': {
-				'info': 'mdi-information',
-				'warning': 'mdi-alert',
-				'error': 'mdi-close-circle',
-				'success': 'mdi-checkbox-marked-circle-outline',
-				'none': '',
+			icons: {
+				info: 'mdi-information',
+				warning: 'mdi-alert',
+				error: 'mdi-close-circle',
+				success: 'mdi-checkbox-marked-circle-outline',
+				none: '',
 			},
-			'colors': {
-				'info': '#81D4FA',
-				'warning': '#FFB74D',
-				'error': '#E53935',
-				'success': '#43A047',
-				'none': '',
+			colors: {
+				info: '#81D4FA',
+				warning: '#FFB74D',
+				error: '#E53935',
+				success: '#43A047',
+				none: '',
 			},
 		};
 	},

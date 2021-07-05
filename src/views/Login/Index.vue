@@ -42,7 +42,7 @@ export default class Login extends Mixins(GlobalMixins) {
 	public spoonShow: boolean = true;
 
 	public async sopiaLogon(user: User) {
-		if ( user.spoon_id == '0' ) {
+		if ( user.spoon_id === '0' ) {
 			this.sopiaShow = false;
 			this.spoonShow = true;
 		} else {
@@ -51,6 +51,7 @@ export default class Login extends Mixins(GlobalMixins) {
 	}
 
 	public async spoonLogon(user: User) {
+		// empty
 	}
 
 }

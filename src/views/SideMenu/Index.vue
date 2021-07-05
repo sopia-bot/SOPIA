@@ -87,9 +87,9 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 	public CurPath: string = location.pathname;
 
 	public user: User = {
-		'nickname': 'Not Login',
-		'tag': 'Not Login',
-		'profileUrl': require('assets/default-profile.png'),
+		nickname: 'Not Login',
+		tag: 'Not Login',
+		profileUrl: require('assets/default-profile.png'),
 	} as any;
 
 	public mounted() {

@@ -112,9 +112,9 @@ export default class TreeView extends Mixins(GlobalMixins) {
 			} else {
 				this.$logger.err('code', 'No selected file.');
 				this.$modal({
-					'type': 'error',
-					'title': 'Error',
-					'content': this.$t('code.msg.no-selected'),
+					type: 'error',
+					title: 'Error',
+					content: this.$t('code.msg.no-selected'),
 				});
 			}
 		});
@@ -125,7 +125,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 			if ( node ) {
 				const stat = fs.statSync(node.data.value);
 				if ( stat.isDirectory() ) {
-					fs.rmdirSync(node.data.value, { 'recursive': true });
+					fs.rmdirSync(node.data.value, { recursive: true });
 				} else {
 					fs.unlinkSync(node.data.value);
 				}
@@ -133,9 +133,9 @@ export default class TreeView extends Mixins(GlobalMixins) {
 			} else {
 				this.$logger.err('code', 'No selected file.');
 				this.$modal({
-					'type': 'error',
-					'title': 'Error',
-					'content': this.$t('code.msg.no-selected'),
+					type: 'error',
+					title: 'Error',
+					content: this.$t('code.msg.no-selected'),
 				});
 			}
 		});
@@ -221,9 +221,9 @@ export default class TreeView extends Mixins(GlobalMixins) {
 			if ( fs.existsSync(target) ) {
 				this.$logger.err('code', `Exists file or directory. [${target}]`);
 				this.$modal({
-					'type': 'error',
-					'title': 'Error',
-					'content': this.$t('code.msg.exists'),
+					type: 'error',
+					title: 'Error',
+					content: this.$t('code.msg.exists'),
 				});
 				return;
 			}
@@ -365,7 +365,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				fl.forEach((f) => {
 					const fullPath = path.join(target, f);
 					const stats = fs.statSync(fullPath);
-					const obj: any = { 'data': {} };
+					const obj: any = { data: {} };
 					const oriObjIdx = Array.isArray(ORI) ? ORI.findIndex((oo) => {
 						if ( oo.data['value'] === fullPath ) { return true; }
 						//if ( oo.data['value'] === this.cm.rename.value ) { return true; }

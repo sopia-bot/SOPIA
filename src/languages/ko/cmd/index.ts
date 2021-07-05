@@ -15,14 +15,14 @@ export default {
 	'message-desc': '특정 명령어를 설정합니다.<br>공란일 경우, 반응하지 않습니다.<br>권한을 관리자로 선택하면 매니저 이상만 명령어를 인식합니다.<br>',
 	'message-ex': '예약어 목록<br>닉네임: <span class="indigo--text text--darken-3">[[name]]</span><br>태그: <span class="indigo--text text--darken-3">[[tag]]</span><br>',
 	'sticker': {
-		'list': '스티커 목록',
-		'exists': '이미 존재하는 스티커입니다.',
+		list: '스티커 목록',
+		exists: '이미 존재하는 스티커입니다.',
 	},
 	'command': '명령어',
 	'reply': '응답',
 	'permit': {
-		'all': '전체',
-		'manager': '관리자',
+		all: '전체',
+		manager: '관리자',
 	},
 	'rm-deferr': '기본 메시지는 삭제할 수 없습니다.',
 };

@@ -98,15 +98,15 @@ import { User, Play } from 'sopia-core';
 import SearchHeader from '../Search/Header.vue';
 
 @Component({
-	'components': {
+	components: {
 		SearchHeader,
 	},
 })
 export default class UserPage extends Mixins(GlobalMixins) {
 	public user: User = {} as User;
 	public image = {
-		'show': false,
-		'src': '',
+		show: false,
+		src: '',
 	};
 
 	public async created() {

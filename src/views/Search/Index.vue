@@ -85,7 +85,7 @@ const sleep = (msec: number) => {
 };
 
 @Component({
-	'components': {
+	components: {
 		SearchHeader,
 		LiveItem,
 	},
@@ -98,20 +98,20 @@ export default class Search extends Mixins(GlobalMixins) {
 
 	public searchTypes: any[] = [
 		{
-			'text': this.$t('lives.search-type.user'),
-			'value': ContentType.USER,
+			text: this.$t('lives.search-type.user'),
+			value: ContentType.USER,
 		},
 		{
-			'text': this.$t('lives.search-type.live'),
-			'value': ContentType.LIVE,
+			text: this.$t('lives.search-type.live'),
+			value: ContentType.LIVE,
 		},
 		{
-			'text': this.$t('lives.search-type.cast'),
-			'value': ContentType.CAST,
+			text: this.$t('lives.search-type.cast'),
+			value: ContentType.CAST,
 		},
 		{
-			'text': this.$t('lives.search-type.talk'),
-			'value': ContentType.TALK,
+			text: this.$t('lives.search-type.talk'),
+			value: ContentType.TALK,
 		},
 	];
 	public searchType: ContentType = ContentType.USER;

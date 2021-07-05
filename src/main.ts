@@ -32,19 +32,19 @@ const { app } = remote;
 Vue.use(Logger);
 Vue.use(LiquorTree);
 Vue.use(VueScroll, {
-	'ops': {
-		'rail': {
-			'background': '#000',
-			'opacity': 0,
-			'size': '8px',
+	ops: {
+		rail: {
+			background: '#000',
+			opacity: 0,
+			size: '8px',
 		},
-		'bar': {
-			'showDelay': 500,
-			'onlyShowBarOnScroll': true,
-			'background': '#7a7a7a',
-			'keepShow': false,
-			'opacity': 0.5,
-			'size': '6px',
+		bar: {
+			showDelay: 500,
+			onlyShowBarOnScroll: true,
+			background: '#7a7a7a',
+			keepShow: false,
+			opacity: 0.5,
+			size: '6px',
 		},
 	},
 });
@@ -92,5 +92,5 @@ new Vue({
 	router,
 	store,
 	vuetify,
-	'render': (h) => h(App),
+	render: (h) => h(App),
 }).$mount('#app');

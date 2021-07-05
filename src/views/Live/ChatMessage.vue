@@ -84,7 +84,7 @@ import GlobalMixins from '@/plugins/mixins';
 import { LiveEvent } from 'sopia-core';
 
 @Component({
-	'data': () => {
+	data: () => {
 		return {
 			LiveEvent,
 		};

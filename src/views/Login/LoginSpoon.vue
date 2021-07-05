@@ -82,7 +82,7 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 		try {
 			const user = await this.$sopia.login(this.auth.id, this.auth.pw, this.snsType);
 			this.$emit('logon', user);
-		} catch(err) {
+		} catch ( err ) {
 			// empty
 		}
 	}

@@ -2,11 +2,26 @@ import axios from 'axios';
 
 export class SopiaAPI {
 
-	private jwt: string = '';
-	private readonly host: string = 'http://222.117.116.148:4080';
 	public user: any;
 
-	constructor() {
+	private jwt: string = '';
+	private readonly host: string = 'http://222.117.116.148:4080';
+
+	public async login(id: string, pw: string) {
+		const res = await this.req('POST', '/auth/login/', {
+			id,
+			pw,
+		});
+
+		if ( res.error ) {
+			throw res;
+		}
+
+		const user = res.data[0];
+		this.jwt = user.token;
+		this.user = user;
+
+		return user;
 	}
 
 	private async req(method: string, url: string, data: any = {}) {
@@ -26,23 +41,6 @@ export class SopiaAPI {
 
 		const res = await axios(data);
 		return res.data;
-	}
-
-	public async login(id: string, pw: string) {
-		const res = await this.req('POST', '/auth/login/', {
-			id,
-			pw,
-		});
-
-		if ( res.error ) {
-			throw res;
-		}
-
-		const user = res.data[0];
-		this.jwt = user.token;
-		this.user = user;
-
-		return user;
 	}
 
 }

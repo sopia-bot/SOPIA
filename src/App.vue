@@ -60,6 +60,7 @@ export default class App extends Mixins(GlobalMixins) {
 		const auth = this.$cfg.get('auth');
 
 		if ( auth ) {
+			// empty
 		} else {
 			this.loginDialog = true;
 		}

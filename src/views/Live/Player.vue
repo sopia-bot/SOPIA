@@ -99,10 +99,10 @@ const IgnoreEvent = [
 ];
 
 @Component({
-	'components': {
+	components: {
 		ChatMessage,
 	},
-	'data': () => {
+	data: () => {
 		return {
 			LiveEvent,
 		};
@@ -144,25 +144,25 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 							const { v, h } = scroll.getScrollProcess();
 							const size =  scroll?._data?.bar?.vBar?.state?.size || 0;
 							if ( (size === 0 || size >= 0.5) || v >= 0.8 ) {
-								scroll.scrollBy({ 'dy': '100%' }, 100, 'easeInQuad');
+								scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
 							}
 					});
 				}
 			});
 			this.$evt.$on('live-block', async (id: number) => {
 				this.$confirm({
-					'title': this.$t('lives.block'),
-					'content': this.$t('lives.block-user'),
-					'okText': this.$t('confirm'),
-					'cancelText': this.$t('cancel'),
-					'ok': async () => {
+					title: this.$t('lives.block'),
+					content: this.$t('lives.block-user'),
+					okText: this.$t('confirm'),
+					cancelText: this.$t('cancel'),
+					ok: async () => {
 						await this.$sopia.liveManager.liveBlock(this.live, id);
 					},
 				});
 			});
 			{
 				const scroll: any = this.$refs['scroll'];
-				scroll.scrollBy({ 'dy': '100%' }, 100, 'easeInQuad');
+				scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
 			}
 
 			await this.$sopia.initSignatureSticker(this.live.author);

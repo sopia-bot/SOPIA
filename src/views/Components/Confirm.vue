@@ -50,48 +50,48 @@
 </template>
 <script>
 export default {
-	'name': 'Confirm',
-	'props': {
-		'type': {
-			'type': String,
-			'default': 'none',
+	name: 'Confirm',
+	props: {
+		type: {
+			type: String,
+			default: 'none',
 		},
-		'open': {
-			'type': Boolean,
-			'default': false,
+		open: {
+			type: Boolean,
+			default: false,
 		},
-		'title': {
-			'type': String,
-			'default': 'Confirm Title',
+		title: {
+			type: String,
+			default: 'Confirm Title',
 		},
-		'content': {
-			'type': String,
-			'default': 'Confirm Content',
+		content: {
+			type: String,
+			default: 'Confirm Content',
 		},
-		'textOk': {
-			'type': String,
-			'default': 'Ok',
+		textOk: {
+			type: String,
+			default: 'Ok',
 		},
-		'textCancel': {
-			'type': String,
-			'default': 'Cancel',
+		textCancel: {
+			type: String,
+			default: 'Cancel',
 		},
 	},
-	'data': () => {
+	data: () => {
 		return {
-			'icons': {
-				'info': 'mdi-information',
-				'warning': 'mdi-alert',
-				'error': 'mdi-close-circle',
-				'success': 'mdi-checkbox-marked-circle-outline',
-				'none': '',
+			icons: {
+				info: 'mdi-information',
+				warning: 'mdi-alert',
+				error: 'mdi-close-circle',
+				success: 'mdi-checkbox-marked-circle-outline',
+				none: '',
 			},
-			'colors': {
-				'info': '#81D4FA',
-				'warning': '#FFB74D',
-				'error': '#E53935',
-				'success': '#43A047',
-				'none': '',
+			colors: {
+				info: '#81D4FA',
+				warning: '#FFB74D',
+				error: '#E53935',
+				success: '#43A047',
+				none: '',
 			},
 		};
 	},

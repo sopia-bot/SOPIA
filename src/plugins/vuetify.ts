@@ -7,8 +7,8 @@ Vue.use(Vuetify);
 import ko from '../languages/ko/';
 
 export default new Vuetify({
-	'lang': {
-			'locales': { ko },
-			'current': 'ko',
+	lang: {
+			locales: { ko },
+			current: 'ko',
 	},
 } as UserVuetifyPreset);
