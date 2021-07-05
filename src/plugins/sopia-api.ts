@@ -2,40 +2,40 @@ import axios from 'axios';
 
 export class SopiaAPI {
 
-    private jwt: string = '';
-    private readonly host: string = 'http://222.117.116.148:4080';
+	private jwt: string = '';
+	private readonly host: string = 'http://222.117.116.148:4080';
 	public user: any;
 
-    constructor() {
-    }
+	constructor() {
+	}
 
-    private async req(method: string, url: string, data: any = {}) {
-        if ( !data['headers'] ) {
-            data = { data, headers: {} };
-        }
-        if ( url[0] !== '/' ) {
-            url = '/' + url;
-        }
+	private async req(method: string, url: string, data: any = {}) {
+		if ( !data['headers'] ) {
+			data = { data, headers: {} };
+		}
+		if ( url[0] !== '/' ) {
+			url = '/' + url;
+		}
 
-        data['url'] = this.host + url;
-        data['method'] = method;
+		data['url'] = this.host + url;
+		data['method'] = method;
 
-        if ( this.jwt ) {
-            data['headers']['authorization'] = 'Bearer ' + this.jwt;
-        }
+		if ( this.jwt ) {
+			data['headers']['authorization'] = 'Bearer ' + this.jwt;
+		}
 
-        const res = await axios(data);
-        return res.data;
-    }
+		const res = await axios(data);
+		return res.data;
+	}
 
-    public async login(id: string, pw: string) {
-        const res = await this.req('POST', '/auth/login/', {
-            id,
-            pw,
-        });
+	public async login(id: string, pw: string) {
+		const res = await this.req('POST', '/auth/login/', {
+			id,
+			pw,
+		});
 
 		if ( res.error ) {
-			throw Error(res.msg);
+			throw res;
 		}
 
 		const user = res.data[0];
@@ -43,6 +43,6 @@ export class SopiaAPI {
 		this.user = user;
 
 		return user;
-    }
+	}
 
 }
