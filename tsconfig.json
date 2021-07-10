@@ -9,6 +9,8 @@
 		"experimentalDecorators": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
 		"sourceMap": true,
 		"baseUrl": ".",
 		"types": [

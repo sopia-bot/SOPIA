@@ -23,7 +23,7 @@
 					height="250"
 					aspect-ratio="1.4"
 					class="elevation-0"
-					:src="live.imgUrl"
+					:src="live.img_url"
 					></v-img>
 
 				<v-card-text>
@@ -34,7 +34,7 @@
 					<v-list-item class="grow">
 						<v-list-item-avatar @click.stop="$assign('/user/' + live.author.id)">
 							<v-img
-								:src="live.author.profileUrl"></v-img>
+								:src="live.author.profile_url"></v-img>
 						</v-list-item-avatar>
 
 						<v-list-item-content style="min-width: 80px">
@@ -46,9 +46,9 @@
 							justify="end"
 							>
 							<v-icon class="mr-1">mdi-account</v-icon>
-							<span class="subheading mr-2">{{ live.memberCount }}</span>
+							<span class="subheading mr-2">{{ live.member_count }}</span>
 							<v-icon class="mr-1">mdi-heart</v-icon>
-							<span class="subheading mr-2">{{ live.likeCount }}</span>
+							<span class="subheading mr-2">{{ live.like_count }}</span>
 						</v-row>
 					</v-list-item>
 				</v-card-actions>
