@@ -92,7 +92,7 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 	public async snsLoginSpoon(snsType: SnsType) {
 		const snsLoginOpen = remote.getGlobal('snsLoginOpen');
 		try {
-			let user: any = await snsLoginOpen(this.$sopia.snsLoginURL(snsType)) as LogonUser;
+			let user: any = await snsLoginOpen(this.$sopia.snsLoginURL(snsType));
 			user = await this.$sopia.loginToken(user.id, user.token.replace('Bearer ', ''), user.refresh_token);
 			this.$emit('logon', user);
 		} catch {
