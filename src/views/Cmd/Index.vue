@@ -189,7 +189,7 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import CfgLite from '@/plugins/cfg-lite-ipc';
-import { Sticker, StickerCategory } from 'sopia-core';
+import { Sticker, StickerCategory } from '@sopia-bot/core';
 import giftCoin from '@/assets/gift_coin.png';
 
 export interface PresentStruct {

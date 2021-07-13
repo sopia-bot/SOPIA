@@ -27,7 +27,7 @@ html, body {
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User, Live, SpoonClient } from 'sopia-core';
+import { User, Live, SpoonClient } from '@sopia-bot/core';
 import CfgLite from '@/plugins/cfg-lite-ipc';
 import { SopiaAPI } from '@/plugins/sopia-api';
 

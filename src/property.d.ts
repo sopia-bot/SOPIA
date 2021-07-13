@@ -5,7 +5,7 @@
  * Copyright (c) Tree Some. Licensed under the MIT License.
  */
 import Vue from 'vue';
-import { SpoonClient } from 'sopia-core';
+import { SpoonClient } from '@sopia-bot/core';
 import CfgLite from 'cfg-lite';
 import { SopiaAPI } from '@/plugins/sopia-api';
 

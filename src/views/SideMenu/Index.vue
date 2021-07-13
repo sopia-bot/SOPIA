@@ -77,7 +77,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User } from 'sopia-core';
+import { User } from '@sopia-bot/core';
 import { routes } from '@/router/';
 
 @Component

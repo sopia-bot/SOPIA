@@ -81,7 +81,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { LiveEvent } from 'sopia-core';
+import { LiveEvent } from '@sopia-bot/core';
 
 @Component({
 	data: () => {

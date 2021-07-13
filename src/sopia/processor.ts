@@ -4,7 +4,7 @@
  *
  * Copyright (c) Tree Some. Licensed under the MIT License.
  */
-import { LiveEvent, User, SpoonClient, LiveSocket, Live } from 'sopia-core';
+import { LiveEvent, User, SpoonClient, LiveSocket, Live } from '@sopia-bot/core';
 import CfgLite from '@/plugins/cfg-lite-ipc';
 import logger from '@/plugins/logger';
 import Script from './script';

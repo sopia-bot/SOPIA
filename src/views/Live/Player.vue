@@ -86,7 +86,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Live, LiveSocket, LiveEvent, LiveType, User } from 'sopia-core';
+import { Live, LiveSocket, LiveEvent, LiveType, User } from '@sopia-bot/core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
 import SopiaProcesser from '@/sopia/processor';
 

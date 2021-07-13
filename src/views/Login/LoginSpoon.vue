@@ -65,7 +65,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { SnsType } from 'sopia-core';
+import { SnsType } from '@sopia-bot/core';
 const { remote } = window.require('electron');
 
 @Component

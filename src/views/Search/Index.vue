@@ -74,7 +74,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User, Live, Cast } from 'sopia-core';
+import { User, Live, Cast } from '@sopia-bot/core';
 import SearchHeader from './Header.vue';
 import LiveItem from '../Home/LiveItem.vue';
 

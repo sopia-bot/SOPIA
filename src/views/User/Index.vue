@@ -94,7 +94,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User, Live } from 'sopia-core';
+import { User, Live } from '@sopia-bot/core';
 import SearchHeader from '../Search/Header.vue';
 
 @Component({

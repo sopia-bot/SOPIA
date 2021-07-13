@@ -10,7 +10,7 @@ const fs = window.require('fs');
 
 // pkacage modules
 import Vue from 'vue';
-import * as spoon from 'sopia-core';
+import * as spoon from '@sopia-bot/core';
 import { v4 as uuidv4 } from 'uuid';
 import LiquorTree from 'liquor-tree';
 import VueScroll from 'vuescroll';
