@@ -13,7 +13,7 @@ import path from 'path';
 import CfgLite from 'cfg-lite';
 
 
-
+const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const CfgList: any = {};
@@ -49,6 +49,7 @@ declare global {
 	namespace NodeJS {
 		interface Global {
 			startTime: string;
+			snsLoginOpen: (u: string) => Promise<any>;
 		}
 	}
 }
@@ -68,6 +69,47 @@ const buildTime = (time: Date) => {
 	return `${yyyy}${mm}${dd}-${hh}${MM}${ss}`;
 };
 global.startTime = buildTime(new Date());
+
+global.snsLoginOpen = function(url: string) {
+	return new Promise((resolve, reject) => {
+		const snsBrowser = new BrowserWindow({
+			width: 800,
+			height: 800,
+			show: false,
+		});
+		snsBrowser.webContents.setUserAgent(USER_AGENT);
+
+		snsBrowser.show();
+
+		snsBrowser.once('close', (evt: any) => {
+			const sender = evt.sender;
+			const webContents = sender.webContents;
+
+			const tout = setTimeout(() => {
+				reject(new Error('Faild get localStorage data. (Timeout)'));
+				if ( !snsBrowser.isDestroyed() ) {
+					evt.sender.close();
+				}
+			}, 5000);
+
+			webContents.executeJavaScript(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`)
+				.then((res: string) => {
+					resolve(JSON.parse(res).result);
+				})
+				.catch(reject)
+				.finally(() => {
+					clearTimeout(tout);
+					evt.sender.close();
+				});
+
+			evt.preventDefault();
+		});
+
+		snsBrowser.loadURL(url, {
+			userAgent: USER_AGENT,
+		});
+	});
+};
 
 const createWindow = () => {
 	// Create the browser window.

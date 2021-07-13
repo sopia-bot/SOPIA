@@ -8,6 +8,7 @@
 	<div>
 		<v-tabs
 	  		v-model="tab"
+	 		color="indigo"
 	 		grow>
 			<v-tab
 	   			v-for="item in tabItem"
@@ -17,7 +18,7 @@
 		</v-tabs>
 		<v-card-text>
 			<v-text-field
-				:label="$t('app.login.id')"
+				:label="$t('app.login.spoon-id')"
 				v-model="auth.id"
 				color="indigo"
 				prepend-icon="mdi-account"
@@ -25,7 +26,7 @@
 				></v-text-field>
 
 			<v-text-field
-				:label="$t('app.login.password')"
+				:label="$t('app.login.spoon-password')"
 				v-model="auth.pw"
 				color="indigo"
 				prepend-icon="mdi-lock"
@@ -44,19 +45,19 @@
 				block dark
 				tile depressed
 	   			style="background-color: #4867AA;"
-				@click="loginSpoon"
+				@click="snsLoginSpoon('facebook')"
 				color="lighten-1">FACEBOOK</v-btn>
 
 			<v-btn
 				block dark
 				tile text
-				@click="loginSpoon"
+				@click="snsLoginSpoon('google')"
 				color="black">GOOGLE</v-btn>
 
 			<v-btn
 				block dark
 				tile depressed
-				@click="loginSpoon"
+				@click="snsLoginSpoon('apple')"
 				color="black darken-3">APPLE</v-btn>
 		</v-card-text>
 	</div>
@@ -65,6 +66,7 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { SnsType } from 'sopia-core';
+const { remote } = window.require('electron');
 
 @Component
 export default class LoginSpoon extends Mixins(GlobalMixins) {
@@ -83,7 +85,18 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 			const user = await this.$sopia.login(this.auth.id, this.auth.pw, this.snsType);
 			this.$emit('logon', user);
 		} catch ( err ) {
-			// empty
+			this.errorMsg = this.$t('app.login.login-fail');
+		}
+	}
+
+	public async snsLoginSpoon(snsType: SnsType) {
+		const snsLoginOpen = remote.getGlobal('snsLoginOpen');
+		try {
+			let user: any = await snsLoginOpen(this.$sopia.snsLoginURL(snsType)) as LogonUser;
+			user = await this.$sopia.loginToken(user.id, user.token.replace('Bearer ', ''), user.refresh_token);
+			this.$emit('logon', user);
+		} catch {
+			this.errorMsg = this.$t('app.login.login-fail');
 		}
 	}
 
