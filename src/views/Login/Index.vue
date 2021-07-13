@@ -24,10 +24,12 @@
 </template>
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
-import GlobalMixins from '@/plugins/mixins';
+import { UserDto } from '@sopia-bot/api-dto';
+import { LogonUser } from '@sopia-bot/core';
+
 import LoginSopia from '@/views/Login/LoginSopia.vue';
 import LoginSpoon from '@/views/Login/LoginSpoon.vue';
-import { User } from '@/interface/sopia';
+import GlobalMixins from '@/plugins/mixins';
 
 @Component({
 	components: {
@@ -41,7 +43,9 @@ export default class Login extends Mixins(GlobalMixins) {
 	public sopiaShow: boolean = false;
 	public spoonShow: boolean = true;
 
-	public async sopiaLogon(user: User) {
+	public spoonUser!: UserDto;
+
+	public async sopiaLogon(user: UserDto) {
 		if ( user.spoon_id === '0' ) {
 			this.sopiaShow = false;
 			this.spoonShow = true;
@@ -50,8 +54,11 @@ export default class Login extends Mixins(GlobalMixins) {
 		}
 	}
 
-	public async spoonLogon(user: User) {
-		// empty
+	public async spoonLogon(user: LogonUser) {
+		if ( this.spoonUser.spoon_id === '0' ) {
+			this.spoonUser.spoon_id = user.id.toString();
+			await this.$api.setUserInfo(this.spoonUser);
+		}
 	}
 
 }

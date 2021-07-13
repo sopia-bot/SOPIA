@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { UserDto } from '@sopia-bot/api-dto';
 
 export class SopiaAPI {
 
@@ -13,15 +14,15 @@ export class SopiaAPI {
 			pw,
 		});
 
-		if ( res.error ) {
-			throw res;
-		}
-
 		const user = res.data[0];
 		this.jwt = user.token;
 		this.user = user;
 
 		return user;
+	}
+
+	public async setUserInfo(data: UserDto) {
+		return await this.req('PATCH', '/user/info', data);
 	}
 
 	private async req(method: string, url: string, data: any = {}) {
@@ -40,6 +41,11 @@ export class SopiaAPI {
 		}
 
 		const res = await axios(data);
+
+		if ( res.data.error ) {
+			throw res.data;
+		}
+
 		return res.data;
 	}
 
