@@ -124,13 +124,14 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			});
 			this.liveSocket = await this.live.join();
 			this.liveSocket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
+				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
+					// Joined logon account event ignore
+					return;
+				}
+
 				SopiaProcesser(evt as any, this.liveSocket);
 
 				if ( IgnoreEvent.includes(evt.event) ) {
-					return;
-				}
-				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
-					// Joined logon account event ignore
 					return;
 				}
 

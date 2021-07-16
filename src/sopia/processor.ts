@@ -120,8 +120,7 @@ const processor = async (evt: any, sock: LiveSocket) => {
 					res = p.message;
 					break;
 				case LiveEvent.LIVE_MESSAGE:
-					const m = comment.find((c: any) => ckCmd(c, e.message));
-					console.log('msg', m);
+					const m = comment.find((c: any) => ckCmd(c, evt.update_component.message.value));
 					if ( m ) {
 						if ( m.permit === 'manager' ) {
 							if ( isAdmin(sock.Live as Live, e.author) ) {
@@ -134,8 +133,8 @@ const processor = async (evt: any, sock: LiveSocket) => {
 					break;
 			}
 
-			res = res.replace(/\[\[name\]\]/g, e.author.nickname)
-				.replace(/\[\[tag\]\]/g, e.author.tag);
+			res = res.replace(/\[\[name\]\]/g, (e.author || e.user).nickname)
+				.replace(/\[\[tag\]\]/g, (e.author || e.user).tag);
 
 			if ( evt.event === LiveEvent.LIVE_PRESENT ) {
 				res = res.replace(/\[\[sticker\]\]/g, e.sticker)
