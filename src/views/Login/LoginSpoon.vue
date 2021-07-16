@@ -65,7 +65,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { SnsType } from '@sopia-bot/core';
+import { SnsType, LogonUser } from '@sopia-bot/core';
 const { remote } = window.require('electron');
 
 @Component
@@ -94,7 +94,7 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 		try {
 			let user: any = await snsLoginOpen(this.$sopia.snsLoginURL(snsType));
 			user = await this.$sopia.loginToken(user.id, user.token.replace('Bearer ', ''), user.refresh_token);
-			this.$emit('logon', user);
+			this.$emit('logon', user as LogonUser);
 		} catch {
 			this.errorMsg = this.$t('app.login.login-fail');
 		}

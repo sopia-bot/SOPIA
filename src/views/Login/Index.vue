@@ -7,7 +7,7 @@
 <template>
 	<!-- S: Login Dialog -->
 	<v-dialog
-		v-model="show"
+		v-model="value"
 		persistent
 		max-width="450px"
 		width="80%">
@@ -39,26 +39,48 @@ import GlobalMixins from '@/plugins/mixins';
 })
 export default class Login extends Mixins(GlobalMixins) {
 
-	@Prop(Boolean) public show!: boolean;
-	public sopiaShow: boolean = false;
-	public spoonShow: boolean = true;
+	@Prop(Boolean) public value!: boolean;
+	public sopiaShow: boolean = true;
+	public spoonShow: boolean = false;
 
-	public spoonUser!: UserDto;
+	public sopiaUser!: UserDto;
 
 	public async sopiaLogon(user: UserDto) {
-		if ( user.spoon_id === '0' ) {
+		this.sopiaUser = user;
+		if ( this.sopiaUser.spoon_id === '0' ) {
 			this.sopiaShow = false;
 			this.spoonShow = true;
 		} else {
-			// empty
+			const { id, token, refresh_token } = this.$cfg.get('spoon');
+			if ( !token || !refresh_token ) {
+				this.sopiaShow = false;
+				this.spoonShow = true;
+			} else {
+				await this.$sopia.loginToken(id, token, refresh_token);
+				this.loginSpoon(this.$sopia.logonUser);
+			}
 		}
 	}
 
 	public async spoonLogon(user: LogonUser) {
-		if ( this.spoonUser.spoon_id === '0' ) {
-			this.spoonUser.spoon_id = user.id.toString();
-			await this.$api.setUserInfo(this.spoonUser);
+		if ( this.sopiaUser.spoon_id === '0' ) {
+			this.sopiaUser.spoon_id = user.id.toString();
+			await this.$api.setUserInfo(this.sopiaUser);
 		}
+
+		const { id, token, refresh_token } = this.$sopia.logonUser;
+		this.$cfg.set('spoon.id', id);
+		this.$cfg.set('spoon.token', token);
+		this.$cfg.set('spoon.refresh_token', refresh_token);
+		this.$cfg.save();
+
+		this.loginSpoon(this.$sopia.logonUser);
+	}
+
+	public loginSpoon(user: LogonUser) {
+		this.$emit('input', false);
+		this.sopiaShow = false;
+		this.spoonShow = false;
 	}
 
 }

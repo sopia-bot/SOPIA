@@ -6,7 +6,7 @@
 -->
 <template>
 	<v-app style="padding-left: 56px">
-		<login-dialog :show="loginDialog" />
+		<login-dialog v-model="loginDialog" />
 		<side-menu />
 		<v-sheet id="router-view" tile :key="$route.fullPath">
 			<transition name="scroll-y-reverse-transition">
