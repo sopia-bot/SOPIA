@@ -257,7 +257,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		}
 	}
 
-	public checkFolder() {
+	public checkFolder(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			const dist = this.$path('userData', this.targetFolder);
 			if ( !fs.existsSync(dist) ) {

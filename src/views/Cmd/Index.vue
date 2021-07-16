@@ -306,7 +306,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 		if ( idx === 0 ) {
 			this.$noti({
 				content: this.$t('cmd.rm-deferr'),
-				hrozontal: 'right',
+				horizontal: 'right',
 				vertical: 'top',
 			});
 			return;

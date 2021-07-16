@@ -153,12 +153,12 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				this.$confirm({
 					title: this.$t('lives.block'),
 					content: this.$t('lives.block-user'),
-					okText: this.$t('confirm'),
-					cancelText: this.$t('cancel'),
-					ok: async () => {
-						// TODO: this api is not support now
-						//await this.live.block(id);
-					},
+					textOk: this.$t('confirm'),
+					textCancel: this.$t('cancel'),
+				}).then((close) => {
+					// TODO: this api is not support now
+					//await this.live.block(id);
+					close();
 				});
 			});
 			{
