@@ -56,12 +56,15 @@ export default class App extends Mixins(GlobalMixins) {
 	public currentLive: Live = {} as Live;
 	public loginDialog: boolean = false;
 
-	public async mounted() {
+	public mounted() {
 		const auth = this.$cfg.get('auth');
 
 		if ( auth ) {
 			this.$api.user = auth.sopia;
-			this.$sopia.loginToken(auth.spoon.id, auth.spoon.token, auth.spoon.refresh_token);
+			this.$sopia.loginToken(auth.spoon.id, auth.spoon.token, auth.spoon.refresh_token)
+				.then((user) => {
+					this.$evt.$emit('user', user);
+				});
 		} else {
 			this.loginDialog = true;
 		}
