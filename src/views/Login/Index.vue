@@ -47,11 +47,12 @@ export default class Login extends Mixins(GlobalMixins) {
 
 	public async sopiaLogon(user: UserDto) {
 		this.sopiaUser = user;
+		//this.$cfg.set('sopia')
 		if ( this.sopiaUser.spoon_id === '0' ) {
 			this.sopiaShow = false;
 			this.spoonShow = true;
 		} else {
-			const { id, token, refresh_token } = this.$cfg.get('spoon');
+			const { id, token, refresh_token } = this.$cfg.get('auth.spoon') || {};
 			if ( !token || !refresh_token ) {
 				this.sopiaShow = false;
 				this.spoonShow = true;
@@ -63,15 +64,27 @@ export default class Login extends Mixins(GlobalMixins) {
 	}
 
 	public async spoonLogon(user: LogonUser) {
+		this.$logger.info('Spoon login user', user);
 		if ( this.sopiaUser.spoon_id === '0' ) {
 			this.sopiaUser.spoon_id = user.id.toString();
 			await this.$api.setUserInfo(this.sopiaUser);
 		}
 
+		if ( +this.sopiaUser.spoon_id !== user.id ) {
+			const close = await this.$modal({
+				title: this.$t('msg.alert'),
+				content: this.$t('app.login.error.diff_id'),
+				textOk: this.$t('confirm'),
+			});
+			close();
+			return;
+		}
+
 		const { id, token, refresh_token } = this.$sopia.logonUser;
-		this.$cfg.set('spoon.id', id);
-		this.$cfg.set('spoon.token', token);
-		this.$cfg.set('spoon.refresh_token', refresh_token);
+		this.$cfg.set('auth.spoon.id', id);
+		this.$cfg.set('auth.spoon.token', token);
+		this.$cfg.set('auth.spoon.refresh_token', refresh_token);
+		this.$cfg.set('auth.sopia', this.sopiaUser);
 		this.$cfg.save();
 
 		this.loginSpoon(this.$sopia.logonUser);

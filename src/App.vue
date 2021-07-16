@@ -60,7 +60,8 @@ export default class App extends Mixins(GlobalMixins) {
 		const auth = this.$cfg.get('auth');
 
 		if ( auth ) {
-			// empty
+			this.$api.user = auth.sopia;
+			this.$sopia.loginToken(auth.spoon.id, auth.spoon.token, auth.spoon.refresh_token);
 		} else {
 			this.loginDialog = true;
 		}

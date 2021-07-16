@@ -5,7 +5,6 @@ export class SopiaAPI {
 
 	public user: any;
 
-	private jwt: string = '';
 	private readonly host: string = 'http://222.117.116.148:4080';
 
 	public async login(id: string, pw: string) {
@@ -15,7 +14,6 @@ export class SopiaAPI {
 		});
 
 		const user = res.data[0];
-		this.jwt = user.token;
 		this.user = user;
 
 		return user;
@@ -36,8 +34,8 @@ export class SopiaAPI {
 		data['url'] = this.host + url;
 		data['method'] = method;
 
-		if ( this.jwt ) {
-			data['headers']['authorization'] = 'Bearer ' + this.jwt;
+		if ( this.user?.token ) {
+			data['headers']['authorization'] = 'Bearer ' + this.user.token;
 		}
 
 		const res = await axios(data);
