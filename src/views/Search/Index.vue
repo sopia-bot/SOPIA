@@ -36,7 +36,7 @@
 					<div v-if="searchType === 'user'">
 						<v-list-item>
 							<v-badge
-								v-if="search.currentLive"
+								v-if="search.current_live"
 								avatar
 								bottom
 								color="red accent-4"
@@ -44,14 +44,14 @@
 								offset-x="25"
 								offset-y="17">
 								<v-list-item-avatar
-									@click="$evt.$emit('live-join', search.currentLive.id)"
+									@click="$evt.$emit('live-join', search.current_live.id)"
 									style="cursor: pointer;"
 									class="ml-0">
-									<v-img :src="search.profileUrl"></v-img>
+									<v-img :src="search.profile_url"></v-img>
 								</v-list-item-avatar>
 							</v-badge>
 							<v-list-item-avatar v-else>
-								<v-img :src="search.profileUrl"></v-img>
+								<v-img :src="search.profile_url"></v-img>
 							</v-list-item-avatar>
 
 							<v-list-item-content>
@@ -74,7 +74,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User, Live, Cast } from '@sopia-bot/core';
+import { User, Live, Cast, HttpRequest } from '@sopia-bot/core';
 import SearchHeader from './Header.vue';
 import LiveItem from '../Home/LiveItem.vue';
 
@@ -98,7 +98,7 @@ const sleep = (msec: number) => {
 	},
 })
 export default class Search extends Mixins(GlobalMixins) {
-	//public searchManager!: ApiManager<(Cast|Live|User)>;
+	public searchManager!: any;
 	public searchList: Array<Cast|Live|User> = [];
 	public asyncMutex: boolean = false;
 	public loadComplete: boolean = false;
@@ -138,23 +138,33 @@ export default class Search extends Mixins(GlobalMixins) {
 		}
 		this.asyncMutex = true;
 
-		/*
-		TODO: searchManager to request Result
 		if ( this.searchManager ) {
-			if ( this.searchManager.response.next ) {
+			if ( this.searchManager.res.next ) {
 				this.searchManager = await this.searchManager.next();
-				this.searchList = this.searchList.concat(this.searchManager.data);
+				this.searchList = this.searchList.concat(this.searchManager.res.results);
 			}
 		} else {
-			this.searchManager = await this.$sopia.searchManager.search(this.searchQuery, this.searchType);
-			this.searchList = this.searchManager.data;
+			if ( this.searchType === ContentType.USER ) {
+				this.searchManager = await this.$sopia.api.search.user({
+					params: {
+						keyword: this.searchQuery,
+					},
+				});
+			} else {
+				this.searchManager = await this.$sopia.api.search.content({
+					params: {
+						keyword: this.searchQuery,
+						content_type: this.searchType,
+					},
+				});
+			}
+			this.searchList = this.searchManager.res.results;
 		}
 
 
-		if ( this.searchManager.response.next === '' ) {
+		if ( this.searchManager.res.next === '' ) {
 			this.loadComplete = true;
 		}
-		*/
 
 		this.asyncMutex = false;
 	}
