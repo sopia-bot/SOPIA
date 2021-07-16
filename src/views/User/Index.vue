@@ -25,11 +25,11 @@
 			<v-parallax
 				height="300"
 				class="pa-0"
-				:src="user.profileUrl">
+				:src="user.profile_url">
 				<v-row align="start" class="ma-0" style="background-color: rgba(0, 0 ,0, 0.6);">
 					<v-col cols="12" align="center" style="min-height: 72px;">
 						<v-chip
-		  					v-if="user.currentLive"
+		  					v-if="user.current_live"
 							class="ma-2"
 							@click="joinLive"
 							color="red darken-2"
@@ -41,7 +41,7 @@
 					<v-col cols="12">
 						<v-list-item>
 							<v-list-item-avatar size="60" style="border: 3px solid white; cursor: pointer;">
-								<v-img :src="user.profileUrl" @click="image.src = user.profileUrl; image.show = true;"></v-img>
+								<v-img :src="user.profile_url" @click="image.src = user.profile_url; image.show = true;"></v-img>
 							</v-list-item-avatar>
 
 							<v-list-item-content>
@@ -55,8 +55,8 @@
 							<v-list-item-content class="pa-0" style="min-height: 30px;">
 								<v-list-item-title>
 									<p class="white--text ma-0 ml-2 font-weight-bold">
-										<span class="mr-3">{{ user.followerCount }} {{ $t('users.fan') }}</span>
-										{{ user.followingCount }} {{ $t('users.following') }}
+										<span class="mr-3">{{ user.follower_count }} {{ $t('users.fan') }}</span>
+										{{ user.following_count }} {{ $t('users.following') }}
 									</p>
 								</v-list-item-title>
 							</v-list-item-content>
@@ -66,7 +66,7 @@
 				<v-row class="ma-0" style="background-color: rgba(0, 0 ,0, 0.6);">
 					<v-col cols="12" class="py-0 pl-6">
 						<v-btn
-							v-if="user.followStatus === 0"
+							v-if="user.follow_status === 0"
 							rounded large
 							width="200"
 							dark color="black"
