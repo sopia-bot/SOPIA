@@ -21,7 +21,7 @@
 					</v-icon>
 					{{ live.title }}
 				</v-app-bar>
-				<v-img :src="live.imgUrl" height="100%">
+				<v-img :src="live.img_url" height="100%">
 					<v-card
 						tile
 						height="100%"
@@ -130,6 +130,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 					return;
 				}
 				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
+					// Joined logon account event ignore
 					return;
 				}
 

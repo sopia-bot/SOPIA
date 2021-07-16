@@ -10,14 +10,14 @@
 			<v-list-item>
 				<v-list-item-avatar
 					style="cursor: pointer;"
-					@click="$assign('/user/' + evt.data.author.id)">
-					<v-img :src="evt.data.author.profileUrl"></v-img>
+					@click="$assign('/user/' + evt.data.user.id)">
+					<v-img :src="evt.data.user.profile_url"></v-img>
 				</v-list-item-avatar>
 
 				<v-list-item-content>
 					<span
 						class="white--text"
-						v-text="evt.data.author.nickname"></span>
+						v-text="evt.data.user.nickname"></span>
 				</v-list-item-content>
 
 				<v-list-item-action>
@@ -25,7 +25,7 @@
 						<v-btn
 							small icon
 							dark
-							@click="blockUser(evt.data.author.id)"
+							@click="blockUser(evt.data.user.id)"
 							color="red accent-2">
 							<v-icon>mdi-account-cancel</v-icon>
 						</v-btn>
@@ -40,7 +40,7 @@
 					width="100%"
 					style="background: rgba(0, 0, 0, 0.5);">
 					<v-list-item-content v-if="evt.event === LiveEvent.LIVE_MESSAGE" class="mx-4">
-						<pre style="white-space: pre-wrap;" v-text="evt.data.message"></pre>
+						<pre style="white-space: pre-wrap;" v-text="evt.update_component.message.value"></pre>
 					</v-list-item-content>
 					<v-list-item-content v-else-if="evt.event === LiveEvent.LIVE_PRESENT" class="mx-4">
 						<img style="width: 100%;" :src="getStickerImg()"></img>
