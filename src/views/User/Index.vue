@@ -29,7 +29,7 @@
 				<v-row align="start" class="ma-0" style="background-color: rgba(0, 0 ,0, 0.6);">
 					<v-col cols="12" align="center" style="min-height: 72px;">
 						<v-chip
-		  					v-if="user.current_live"
+		  					v-if="isLive"
 							class="ma-2"
 							@click="joinLive"
 							color="red darken-2"
@@ -94,7 +94,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User, Live } from '@sopia-bot/core';
+import { User, Live, CurrentLive } from '@sopia-bot/core';
+import { deserialize } from 'typescript-json-serializer';
 import SearchHeader from '../Search/Header.vue';
 
 @Component({
@@ -109,12 +110,25 @@ export default class UserPage extends Mixins(GlobalMixins) {
 		src: '',
 	};
 
+	get isLive() {
+		return !!this.user?.current_live?.id;
+	}
+
 	public async created() {
 		const { id } = this.$route.params;
 		if ( id ) {
-			const idNum = parseInt(id, 10);
-			const req = await this.$sopia.api.users.info(idNum);
+			let req: any = await this.$sopia.api.users.info(+id);
 			this.user = req.res.results[0];
+
+			req = await this.$sopia.api.users.live(+id);
+			const live = req.res.results[0];
+			console.log('live', live);
+			if ( live.is_live ) {
+				this.user.current_live = deserialize<CurrentLive>({
+					id: live.current_live_id,
+				}, CurrentLive);
+				console.log(this.user);
+			}
 		}
 	}
 

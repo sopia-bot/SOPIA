@@ -10,7 +10,7 @@
 		fixed
 		expand-on-hover
 		>
-		<v-list-item class="px-2" link>
+		<v-list-item class="px-2" link @click="$assign(userLink)">
 			<v-list-item-avatar color="black">
 				<v-img :src="user.profile_url"></v-img>
 			</v-list-item-avatar>
@@ -87,10 +87,16 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 	public CurPath: string = location.pathname;
 
 	public user: any = {
+		id: 0,
 		nickname: 'Not Login',
 		tag: 'Not Login',
 		profile_url: require('assets/default-profile.png'),
 	};
+
+	get userLink() {
+		console.log(this.user.id);
+		return `/user/${this.user.id}`;
+	}
 
 	public mounted() {
 		this.$evt.$on('user', (user: User) => {
@@ -105,6 +111,12 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			if ( user.profile_url ) {
 				this.user.profile_url = user.profile_url;
 			}
+
+			if ( user.id ) {
+				this.user.id = user.id;
+			}
+
+			console.log(this.user);
 		});
 	}
 
