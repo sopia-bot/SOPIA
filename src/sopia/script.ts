@@ -21,15 +21,24 @@ export class Script {
 		if ( fs.existsSync(index) ) {
 			const module: any = window.require(index);
 			for ( const [key, func] of Object.entries(module) ) {
-				if ( this.binds[key] ) {
-					this.binds[key].push(func);
+				if ( key === 'bootstrap' ) {
+					(func as () => void)();
 				} else {
-					this.binds[key] = [ func ];
+					if ( this.binds[key] ) {
+						this.binds[key].push(func);
+					} else {
+						this.binds[key] = [ func ];
+					}
 				}
 			}
 		} else {
 			logger.err('sopia', `Can not open script file [${index}].`);
 		}
+	}
+
+	public clear() {
+		this.binds = [];
+		this.files = [];
 	}
 
 	public run(event: any) {

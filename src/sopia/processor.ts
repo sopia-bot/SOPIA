@@ -20,6 +20,7 @@ const $path = (type: any, ...args: any) => {
 };
 
 window.reloadScript = () => {
+	Script.clear();
 	Script.add($path('userData', 'sopia/'));
 	const bundlePath = $path('userData', 'bundles');
 	
