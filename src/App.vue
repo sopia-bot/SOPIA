@@ -6,7 +6,7 @@
 -->
 <template>
 	<v-app style="padding-left: 56px">
-		<login-dialog v-model="loginDialog" />
+		<login-dialog v-model="loginDialog"/>
 		<side-menu />
 		<v-sheet id="router-view" tile :key="$route.fullPath">
 			<transition name="scroll-y-reverse-transition">
@@ -55,6 +55,7 @@ declare global {
 export default class App extends Mixins(GlobalMixins) {
 	public currentLive: Live = {} as Live;
 	public loginDialog: boolean = false;
+	public skipSopiaLogin: boolean = false;
 
 	public mounted() {
 		const auth = this.$cfg.get('auth');
@@ -62,8 +63,20 @@ export default class App extends Mixins(GlobalMixins) {
 		if ( auth ) {
 			this.$api.user = auth.sopia;
 			this.$sopia.loginToken(auth.spoon.id, auth.spoon.token, auth.spoon.refresh_token)
-				.then((user) => {
-					this.$evt.$emit('user', user);
+				.then(async (user) => {
+					const token = await this.$sopia.refreshToken(user.id, auth.spoon.token, auth.spoon.refresh_token);
+					if ( token ) {
+						auth.spoon.token = token;
+						this.$evt.$emit('user', user);
+						this.$cfg.set('auth.spoon.token', token);
+						this.$cfg.save();
+					} else {
+						throw Error('Invalid token');
+					}
+				})
+				.catch((err) => {
+					this.$evt.$emit('login:skip-sopia-login', auth.sopia);
+					this.loginDialog = true;
 				});
 		} else {
 			this.loginDialog = true;

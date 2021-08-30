@@ -19,17 +19,20 @@ const $path = (type: any, ...args: any) => {
 	return path.resolve(app.getPath(type), ...args);
 };
 
-Script.add($path('userData', 'sopia/'));
-const bundlePath = $path('userData', 'bundles');
-
-if ( !fs.existsSync(bundlePath) ) {
-	fs.mkdirSync(bundlePath);
+window.reloadScript = () => {
+	Script.add($path('userData', 'sopia/'));
+	const bundlePath = $path('userData', 'bundles');
+	
+	if ( !fs.existsSync(bundlePath) ) {
+		fs.mkdirSync(bundlePath);
+	}
+	
+	const bundles = fs.readdirSync(bundlePath);
+	for ( const bundle of bundles ) {
+		Script.add(path.join(bundlePath, bundle));
+	}	
 }
-
-const bundles = fs.readdirSync(bundlePath);
-for ( const bundle of bundles ) {
-	Script.add(path.join(bundlePath, bundle));
-}
+window.reloadScript();
 
 const CMD_PATH = $path('userData', 'cmd.cfg');
 
@@ -39,6 +42,7 @@ declare global {
 		$spoon: any;
 		$sopia: SpoonClient;
 		reloadCmdCfg: () => void;
+		reloadScript: () => void;
 	}
 }
 
@@ -79,7 +83,7 @@ const ckCmdEvent = (evt: any, sock: LiveSocket) => {
 		 evt.event !== LiveEvent.LIVE_LIKE &&
 		 evt.event !== LiveEvent.LIVE_PRESENT &&
 		 evt.event !== LiveEvent.LIVE_MESSAGE ) {
-		logger.debug('Event is not [JOIN, LIKE, PRESENT, MESSAGE]', evt.event);
+		logger.debug('sopia', 'Event is not [JOIN, LIKE, PRESENT, MESSAGE]', evt.event);
 		return false;
 	}
 

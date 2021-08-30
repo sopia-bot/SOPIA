@@ -45,6 +45,14 @@ export default class Login extends Mixins(GlobalMixins) {
 
 	public sopiaUser!: UserDto;
 
+	public created() {
+		this.$evt.$on('login:skip-sopia-login', (user: UserDto) => {
+			this.sopiaUser = user;
+			this.sopiaShow = false;
+			this.spoonShow = true;
+		});
+	}
+
 	public async sopiaLogon(user: UserDto) {
 		this.sopiaUser = user;
 		//this.$cfg.set('sopia')
