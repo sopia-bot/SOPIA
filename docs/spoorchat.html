@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="UTF-8">
+        <style>
+            #spoorDiv {
+                width: 100%;
+                height: 100%;
+                padding-top: 1.5rem;
+                display: table-cell;
+            }
+
+			.uk-range:after {
+				display: inline;
+				content: attr(value);
+				vertical-align: middle;
+				padding-left: 10px;
+				margin: auto;
+				line-height: 2.5em;
+			}
+
+			.spoor-log {
+				margin-bottom: 20px;
+			}
+
+			.spoor-log > div {
+				display: inline-block;
+			}
+
+			.spoor-log > div > p {
+				text-overflow: ellipsis;
+				overflow: hidden;
+				padding-top: 7px;
+				margin: unset !important;
+			}
+		</style>
+		<script src="resources/js/spoorchat.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div name="import-child" onload="SPOORCHATloading();">
+            <div id="spoorDiv" class="uk-animation-fade">
+				<!-- S:Modal -->
+				<div id="spoor-modal" class="uk-flex-top" uk-modal="bg-close: false;">
+					<div class="uk-modal-dialog uk-margin-auto-vertical">
+						<button class="uk-modal-close-default" type="button" uk-close></button>
+						<div class="uk-modal-header uk-background-sopia">
+							<h2 class="uk-modal-title uk-text-white">시그니처 추가</h2>
+						</div>
+						<div class="uk-modal-body">
+							<div class="uk-text-center uk-margin-bottom">
+								<a href="#" class="uk-icon-button" onclick="selectFile()" uk-icon="icon: folder"></a>
+								<a href="#" class="uk-icon-button uk-text-danger" onclick="recordFile()" uk-icon="icon: microphone"></a>
+							</div>
+							<div class="uk-text-center">
+								<code id="selected-file">
+									<i>파일을 선택해 주세요.</i>
+								</code>
+							</div>
+						</div>
+						<div class="uk-modal-footer">
+							<div class="uk-text-right uk-flex-wrap-around">
+								<span uk-icon="icon: info" class="uk-margin-small-right" uk-tooltip="도네이션 텍스트에서 대체될 음성의 문장을 설정합니다."></span>
+								<input type="text" id="signature-text" class="uk-input uk-input-spoon uk-text-right uk-width-1-2" placeholder="시그니처 텍스트">
+								<button type="button" class="uk-button uk-button-spoon uk-modal-close" onclick="addSignature()">등록</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- E:Modal -->
+                <!-- S:Spoorchat Setting -->
+				<div class="uk-margin uk-card-default spoor-card">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">Spoor Chat 설정</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<button id="spoorChat-save" onclick="spoorChatSave();" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									&nbsp;
+									<a href="#" name="toggle-body" class="uk-icon-link" uk-icon="icon: triangle-down; ratio: 1.5" data-view="true" data-target="#sc-setting-body"></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="uk-card-body uk-animation-slide-bottom-small" id="sc-setting-body">
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>Spoor Chat 사용</div>
+							<div class="uk-text-right">
+								<label class="switch">
+									<input id="enableSpoorChat" type="checkbox">
+									<span class="slider round"></span>
+								</label>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>목소리의 형태</div>
+							<div class="uk-text-right">
+								<div class="uk-inline">
+                                    <button
+                                        id="voiceType"
+                                        class="uk-button uk-button-default"
+                                        data-type="random"
+                                        uk-toggle="target: #voice-modal"
+                                        type="button">랜덤</button>
+								</div>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>최소 요구 스푼</div>
+							<div class="uk-text-right">
+								<input id="minimumSpoon" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>효과음 볼륨</div>
+							<div class="uk-text-right">
+								<input id="effectVolume" class="uk-range uk-text-right" oninput="this.setAttribute('value',this.value)" min="0" value="50" max="100" type="range">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>TTS 볼륨</div>
+							<div class="uk-text-right">
+								<input id="ttsVolume" class="uk-range uk-text-right" oninput="this.setAttribute('value',this.value)" min="0" value="100" max="100" type="range">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>Spoor 대기 시간 (초)</div>
+							<div class="uk-text-right">
+								<input id="toutSpoor" class="uk-input uk-input-spoon uk-text-right" onclick="this.focus();" type="number">
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>안내 멘트 사용</div>
+							<div class="uk-text-right">
+								<label class="switch">
+									<input id="enableInfoSend" type="checkbox">
+									<span class="slider round"></span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- S:Spoorchat Setting -->
+
+				<!-- S:Spoorchat Signature -->
+				<div class="uk-margin uk-card-default spoor-card">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">Spoor Signature</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<button id="signature-save" onclick="AllSettingSave(sopia.config.tts)" class="uk-button uk-button-spoon uk-button-small">SAVE</button>
+									&nbsp;
+									<a href="#" name="toggle-body" class="uk-icon-link" uk-icon="icon: triangle-down; ratio: 1.5" data-view="true" data-target="#spoor-signature-body"></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- S:Card Body -->
+					<div id="spoor-signature-body" class="uk-card-body uk-animation-slide-bottom-small"></div>
+					<!-- E:Card Body -->
+					<div class="uk-card-footer">
+						<div class="uk-inline uk-text-right" style="width: 100%;">
+							<a href="#" class="uk-icon-button" onclick="openSignatureModal()" uk-icon="icon: plus"></a>
+						</div>
+					</div>
+				</div>
+				<!-- E:Spoorchat Signature -->
+				
+				<!-- S:Spoorchat Log -->
+				<div class="uk-margin uk-card-default spoor-card">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">Spoor Chat 기록</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<button id="spoorChat-clear" onclick="spoorChatClear();" class="uk-button uk-button-spoon uk-button-small">CLEAR</button>
+									&nbsp;
+									<a href="#" name="toggle-body" class="uk-icon-link" uk-icon="icon: triangle-down; ratio: 1.5" data-view="true" data-target="#spoor-log-body"></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- S:Card Start -->
+					<div id="spoor-log-body" class="uk-card-body uk-animation-slide-bottom-small"></div>
+					<!-- E:Card Start -->
+				</div>
+				<!-- S:Spoorchat Log -->
+				
+
+				<!-- S:Voice Select Modal -->
+				<div id="voice-modal" ref="voice-modal" class="uk-flex-top" uk-modal>
+                    <div class="uk-modal-dialog uk-margin-auto-vertical" style="width: 800px;">
+                        <button class="uk-modal-close-default" type="button" uk-close></button>
+                        <div class="uk-modal-body">
+
+                            <ul uk-tab>
+                                <li class="uk-active">
+                                    <a href="#" @click="vtab = 'default'">DEFAULT</a>
+                                </li>
+                                <li>
+                                    <a href="#" @click="vtab = 'typecast'">TYPECAST</a>
+                                </li>
+                                <li>
+                                    <a href="#" @click="vtab = 'random'">RANDOM</a>
+                                </li>
+                            </ul>
+                            
+                            <!-- S: Nomal -->
+                            <div v-if="vtab === 'default'" style="max-height: 300px; overflow: auto; padding: 35px;">
+                                <div class="uk-child-width-1-2@s" uk-grid>
+                                    <div v-for="([key, val], idx) of Object.entries(voices)">
+                                        <div
+                                            @click="selectVoice(key);"
+                                            class="uk-card uk-card-default uk-box-shadow-small uk-box-shadow-hover-large"
+                                            style="cursor: pointer;">
+                                            <div class="uk-card-body">
+                                                <h5 class="text-overflow">{{ val.label }}</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- E: Nomal -->
+                            <!-- S: Typecast -->
+                            <div v-else-if="vtab === 'typecast'" style="max-height: 300px; overflow: auto; padding: 35px;">
+                                <!-- S: Login -->
+                                <div v-if="!user" class="uk-container">
+                                    <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+                                        <div class="uk-width-1-1@m">
+                                            <div style="width: 70%; margin: auto;">
+                                                <h3><a style="color: #f0b954;" href="https://typecast.ai/" target="_blank">Typecast</a>에서 이메일로 회원가입 후, 로그인하세요.</h3>
+                                                <!-- S:Id -->
+                                                <div class="uk-margin">
+                                                    <div class="uk-inline uk-width-1-1">
+                                                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                                        <input id="tc-email" v-model="tcEmail" class="uk-input uk-input-spoon uk-form-large" type="text" style="font-size: 10pt;" placeholder="Typecast 이메일">
+                                                    </div>
+                                                </div>
+                                                <!-- E:Id -->
+
+                                                <!-- S:Key -->
+                                                <div class="uk-margin">
+                                                    <div class="uk-inline uk-width-1-1">
+                                                        <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                                        <input id="tc-pw" v-model="tcPw" class="uk-input uk-input-spoon uk-form-large" type="password" style="font-size: 10pt;" placeholder="Typecast 비밀번호">
+                                                    </div>
+                                                </div>
+                                                <!-- E:Key -->
+
+                                                <button class="uk-button uk-button-spoon uk-button-large uk-width-1-1" @click="TCLogin">로그인</button>
+
+                                                <p style="color: #cfcfcf; font-size: 7pt;">해당 기능은 <a style="color: #F0D29C;" href="https://typecast.ai/" target="_blank">Typecast</a>의 비공식 API를 사용하며, 소피아는 이 기능을 사용함으로서 일어난 모든 일에 책임을 지지 않습니다.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- E: Login -->
+                                <!-- S: Voice -->
+                                <div v-else class="uk-container">
+                                    <div v-if="renderer" class="uk-child-width-1-2@s" uk-grid>
+                                        <div v-for="(voice, idx) of tcVoices" :key="voice.actor_id" v-if="voice.language == 'ko-kr'">
+                                            <div
+                                                @click="selectTCVoice(idx)"
+                                                class="uk-card uk-card-default uk-box-shadow-small uk-box-shadow-hover-large"
+                                                style="cursor: pointer;">
+                                                <div class="uk-card-body uk-flex" style="align-items: center;">
+                                                    <div class="uk-width-auto">
+                                                        <img class="uk-border-circle" width="50" height="50" :src="voice.img_url">
+                                                    </div>
+                                                    <div style="margin-left: 1rem;">
+                                                        <h3 style="margin: 0; font-size: 1rem;">{{ voice.name.ko }}</h3>
+                                                    </div>
+                                                    <div style="margin-left: auto;">
+                                                        <p style="margin: 0;">
+                                                            <a
+                                                                @click.stop="playTCVoice(idx)"
+                                                                :class="voice.playing ? 'uk-text-warning' : 'uk-text-success'"
+                                                                class="uk-icon-button uk-margin-small-right"
+                                                                :uk-icon="voice.playing ? 'ban' : 'play'"></a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- E: Voice -->
+                            </div>
+                            <!-- E: Typecast -->
+                            <!-- S: Random -->
+                            <div v-if="vtab === 'random'" style="max-height: 300px; overflow: auto; padding: 35px;">
+                                <div class="uk-child-width-1-1@s" uk-grid>
+                                    <table v-if="renderer" class="uk-table uk-table-middle uk-table-hover uk-table-divider uk-text-center">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 300px;" class="uk-text-center">
+                                                    <input class="uk-checkbox uk-checkbox-spoon" type="checkbox" :checked='isAllSel()' @click="allSelect">
+                                                    전체 선택
+                                                </th>
+                                                <th class="uk-text-center">이름</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(rand, idx) of randsel" :key="'rand-' + rand.label">
+                                                <td><input class="uk-checkbox uk-checkbox-spoon" name="rand-select" :checked='rand.use' @click="randsel[idx].use = !randsel[idx].use; voiceListReload();" type="checkbox"></td>
+                                                <td>
+                                                    <h5 class="text-overflow">{{ rand.label }}</h5>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- E: Random -->
+                        </div>
+                        <div class="uk-modal-footer uk-text-right">
+                            <button class="uk-button uk-button-default uk-modal-close" type="button">취소</button>
+                            <button class="uk-button uk-button-spoon" type="button" @click="apply">적용</button>
+                        </div>
+                    </div>
+				</div>
+				<!-- E:Voice Select Modal -->
+            </div>
+        </div>
+		<script type="text/javascript">
+			const recordFile = () => {
+				ipcRenderer.send('openRecordWindow');
+				ipcRenderer.once('RecordReturnValue', (event, file) => {
+					const selected = document.querySelector('#selected-file');
+					selected.dataset.file = file;
+					selected.innerText = file;
+				});
+            };
+
+			/**
+			 * @function selectFile
+			 * @ 로컬 컴퓨터에 있는 mp3 파일을 선택한다.
+			 */
+			const selectFile = (skip = false) => {
+				const files = dialog.showOpenDialog({
+					title: 'Select Signature Audio',
+					filters: [
+						{ name: 'Signature Audio', extensions: ['mp3', 'base64']}
+					],
+					properties: [ 'openFile' ]
+				});
+				if ( Array.isArray(files) && files.length > 0 ) {
+					const file = files[0];
+
+					if ( skip === false ) {
+						const selected = document.querySelector('#selected-file');
+						selected.innerText = file;
+						selected.dataset.file = file;
+					}
+
+					return file;
+				}
+			};
+
+			/**
+			 * @function appendSignature
+			 * 시그니처 아이템을 만들어 추가한다.
+			 */
+			const appendSignature = (sigName, file) => {
+
+				//TODO: 오른쪽 경로 UI를 Form 형태로 변형 및
+				//클릭시 수정가능한 모달 추가.
+				const grid = document.createElement('div');
+				grid.className = "uk-flex uk-flex-colum uk-width-1-1 spoor-log";
+
+				const leftText = document.createElement('div');
+				leftText.className = "uk-width-1-4";
+				leftText.innerText = sigName;
+
+				const rightDiv = document.createElement('div');
+				rightDiv.className = "uk-text-right uk-width-3-4";
+				rightDiv.addEventListener('click', (evt) => {
+					const newFile = selectFile(true);
+					input.placeholder = path.basename(newFile);
+					sopia.config.spoor.signature[sigName] = newFile;
+				});
+
+				const input = document.createElement('input');
+				input.className = "uk-margin-small-right uk-input uk-width-3-5";
+				input.disabled = true;
+				input.type = "text"
+				input.placeholder = path.basename(file);
+
+
+				const play = document.createElement('a');
+				play.href = "#";
+				play.className = "uk-icon-button uk-text-success uk-margin-small-right";
+				play.style="width: 36px;";
+				play.setAttribute('uk-icon', 'play');
+				play.addEventListener('click', (evt) => {
+					if ( sopia ) {
+						const buf = fs.readFileSync(file);
+						let audioBuf = null;
+						if ( path.extname(file) === ".base64" ) {
+							audioBuf = buf.toString('utf8')
+						} else {
+							audioBuf = buf.toB64Str();
+						}
+						
+						let audio = new Audio(audioBuf);
+						audio.onpause = () => {
+							audio.remove();
+							delete audio;
+						};
+						audio.play();
+					}
+					evt.stopPropagation();
+				});
+
+				const del = document.createElement('a');
+				del.href="#";
+				del.className = "uk-icon-button uk-text-danger";
+				del.setAttribute('uk-icon', 'trash');
+				del.style="width: 36px;";
+				del.addEventListener('click', (evt) => {
+					delete sopia.config.spoor.signature[sigName];
+					grid.remove();
+					evt.stopPropagation();
+				});
+
+				rightDiv.appendChild(input);
+				rightDiv.appendChild(play);
+				rightDiv.appendChild(del);
+
+				grid.appendChild(leftText);
+				grid.appendChild(rightDiv);
+
+				document.querySelector('#spoor-signature-body').appendChild(grid);
+			};
+
+			/**
+			 * @function addSignature
+			 * 시그니처 설정을 추가한다.
+			 */
+			const addSignature = () => {
+				const selected = document.querySelector('#selected-file');
+				const file = selected.dataset.file;
+				const sigInput = document.querySelector('#signature-text');
+				const sigName = sigInput.value;
+
+				sigInput.value = "";
+				selected.dataset.file = null;
+				selected.innerHTML = '<i>파일을 선택해 주세요.</i>';
+				if ( file ) {
+					appendSignature(sigName, file);
+					sopia.config.spoor.signature[sigName] = file;
+				}
+			};
+
+			/**
+			 * @function openSignatureModal
+			 * @param {event}
+			 * @시그니처를 추가하는 모달을 보여준다.
+			 */
+			const openSignatureModal = () => {
+				const modal = document.querySelector('#spoor-modal');
+				if ( modal ) {
+					UIkit.modal(modal).show();
+				}
+			};
+
+
+            /**
+			 * @function AllSettingSave
+			 * @param {Object} s [default sopia.config]
+			 * 소피아 설정을 config.json에 전체 저장한다.
+			 */
+             if ( typeof AllSettingSave === 'undefined' ) {
+                window.AllSettingSave = (s = sopia.config) => {
+                    fs.writeFile(getPath("./config.json"), JSON.stringify(s, null, '\t'), {encoding:'utf8'}, (err) => {
+                        if ( err ) {
+                            noti.error(err);
+                        }
+                    });
+                };
+			}
+            
+            /**
+			 * @function spoorChatSave
+			 * SpoorChat 설정에 대한 값을 변경하고 저장한다.
+			 */
+			const spoorChatSave = () => {
+				sopia.config.spoor.enable = document.querySelector('#enableSpoorChat').checked;
+				sopia.config.spoor.type = document.querySelector('#voiceType').dataset.type;
+				sopia.config.spoor.minspoon = document.querySelector('#minimumSpoon').value;
+				sopia.config.spoor.effectvolume = document.querySelector('#effectVolume').value;
+				sopia.config.spoor.ttsvolume = document.querySelector('#ttsVolume').value;
+				sopia.config.spoor.toutspoor = document.querySelector('#toutSpoor').value;
+				sopia.config.spoor.enableInfoSend = document.querySelector('#enableInfoSend').checked;
+				sopia.debug(sopia.config.spoor, "save");
+				AllSettingSave();
+            };
+            
+            /**
+            * @function voiceTypeSelect
+            * @param {MouseEvent} e
+            * Spoorchat 목소리 타입 dropmenu을 선택하는 함수.
+            */
+            const voiceTypeSelect = (e) => {
+                let voice = document.querySelector('#voiceType');
+                let li = e.target;
+                if ( li.tagName.toLowerCase() === "a" ) {
+                    li = li.parentElement;
+                }
+                
+                if ( voice ) {
+                    voice.innerText = li.innerText;
+                    voice.setAttribute('data-type', li.getAttribute('data-type'));
+                    
+                    let selected = document.querySelector('#voiceTypeItem>li.uk-active');
+                    if ( selected.className !== li.className ) {
+                        document.querySelectorAll('li[name="voiceTypeItems"]').forEach(element => {
+                            if ( element.getAttribute('data-type') === li.getAttribute('data-type') ) {
+                                element.className = "uk-active";
+                            } else {
+                                element.className = "";
+                            }
+                        });
+                    }
+                }
+			};
+			
+			/**
+			 * @function spoorChatClear
+			 * SpoorChat 의 모든 기록을 삭제한다.
+			 */
+			const spoorChatClear = () => {
+				document.querySelectorAll('div[name="spoor-log"]').forEach((element) => {
+					element.remove();
+				});
+			};
+
+			/**
+			 * @function spoorLog
+			 * SpoorChat 의 기록을 남긴다.
+			 */
+			let logBody = null;
+			let nowLogNum = 0;
+			const spoorLog = (chatData) => {
+				const logElement = document.createElement('div');
+				logElement.className = "uk-flex uk-flex-colum uk-width-1-1 spoor-log";
+				logElement.id = `spoor-log-${++nowLogNum}`;
+				logElement.setAttribute('name', `spoor-log`);
+
+				const leftDiv = document.createElement('div');
+				leftDiv.className = "uk-width-3-5";
+
+				const leftDivP = document.createElement('p');
+				leftDivP.innerText = chatData.message;
+
+				const rightDiv = document.createElement('div');
+				rightDiv.className = "uk-width-2-5 uk-text-right";
+
+				const pauseButton = document.createElement('a');
+				pauseButton.href = "#";
+				pauseButton.className = "uk-icon-button uk-text-warning uk-margin-small-right";
+				pauseButton.setAttribute('uk-icon', 'ban');
+				pauseButton.setAttribute('name', 'play-pause');
+				pauseButton.addEventListener('click', (evt) => {
+					if ( sopia ) {
+						if ( typeof sopia.tts.stop === "function" ) {
+							sopia.tts.stop();
+						}
+					}
+				});
+				
+				const playButton = document.createElement('a');
+				playButton.href = "#";
+				playButton.className = "uk-icon-button uk-margin-small-right";
+				playButton.setAttribute('uk-icon', 'play');
+				playButton.addEventListener('click', (evt) => {
+					if ( sopia ) {
+						chatData.replay = true;
+						sopia.tts.stack.push(chatData);
+						pauseButton.style="display: inline-flex";
+					}
+				});
+
+				const deleteButton = document.createElement('a');
+				deleteButton.href = "#";
+				deleteButton.className = "uk-icon-button uk-text-danger";
+				deleteButton.setAttribute('uk-icon', 'trash');
+				deleteButton.addEventListener('click', (evt) => {
+					logElement.remove();
+				});
+
+				leftDiv.appendChild(leftDivP);
+				rightDiv.appendChild(pauseButton);
+				rightDiv.appendChild(playButton);
+				rightDiv.appendChild(deleteButton);
+				logElement.appendChild(leftDiv);
+				logElement.appendChild(rightDiv);
+
+				if ( !logBody ) {
+					logBody = document.querySelector('#spoor-log-body');
+				}
+
+				logBody.appendChild(logElement);
+
+			};
+
+        </script>
+	</body>
+</html>

@@ -1,0 +1,188 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.flex {
+	display: flex;
+	flex-direction: row;
+	padding: 0px;
+	height:100vh;
+}
+
+nav {
+	top: 0;
+	z-index: 10;
+	width: 100%;
+	background: linear-gradient(0.25turn, #F0D29C, #F2B442);
+}
+
+.uk-tab > .uk-active > a {
+	border-color: #F2B442;
+}
+
+/* style로 지정하면 width에 의해 padding 값이 사라진다. */
+div[name="panel1"] {
+	padding-top: 80px;
+}
+
+#controls {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+/* import 된 유사템플릿을 부모에 전체로 채운다. */
+div[name="import-child"] {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+}
+
+.gutter.gutter-horizontal {
+	cursor: ew-resize;
+	background-color:#d1d1d1;
+}
+
+div.uk-grid-divider>div.uk-text-right {
+	width: 80%;
+}
+div.uk-grid-divider>div.uk-text-right>a {
+	text-align: right;
+	text-transform: none;
+    text-overflow: ellipsis;
+	width: 100%;
+	overflow: hidden;
+    white-space: nowrap;
+}
+
+/* The switch - the box around the slider */
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 60px;
+	height: 34px;
+	vertical-align:middle;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.slider:before {
+	position: absolute;
+	content: "";
+	height: 26px;
+	width: 26px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .slider {
+	background-color: #F2B442;
+}
+
+input:focus + .slider {
+	box-shadow: 0 0 1px #F2B442;
+}
+
+input:checked + .slider:before {
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+	border-radius: 34px;
+}
+
+.slider.round:before {
+	border-radius: 50%;
+}
+
+
+::-webkit-scrollbar {
+	width: 5px;  /* 세로축 스크롤바 길이 */
+	position: absolute;
+}
+::-webkit-scrollbar-track {
+	background-color: transparent;
+	width: 10px;
+	position: absolute;
+}
+::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background-color: rgba(128, 128, 128, 0.2);
+	position: absolute;
+}
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-button {
+	display: none;
+}
+
+ul.sopia-tab > li.uk-active > a::after,
+ul.sopia-tab > li > a:hover::after {
+	margin-left: 0.7rem;
+	content: attr(value);
+}
+
+.spoor-card {
+	width: 90%;
+	margin: auto;
+	margin-bottom: 20px;
+	background: rgba(100, 100, 100, 0.1) !important;
+	border: 1px solid white !important;
+	color: white;
+	box-shadow: 0 5px 15px rgba(150, 150, 150, 0.8) !important;
+}
+
+.spoor-card .uk-card-title {
+	color: white;
+}
+
+.spoor-card .uk-button-text,
+.spoor-card .uk-button-text:hover {
+	color: white;
+}
+
+.spoor-card .uk-button-text::before {
+	border-bottom: 1px solid white;
+}
+
+.spoor-card .uk-input,
+.spoor-card .uk-select,
+.spoor-card .uk-button-default,
+.spoor-card .uk-textarea {
+	background: rgba(70, 70, 70, 0.5);
+	color: white;
+}
+
+.spoor-card .uk-input:focus,
+.spoor-card .uk-select:focus,
+.spoor-card .uk-textarea:focus {
+	background: rgba(120, 120, 120, 0.5);
+	color: white;
+}
+
+.spoor-card .uk-icon-button {
+	background: rgba(0, 0, 0, 0);
+	color: #cfcfcf;
+	border: 1px solid;
+}

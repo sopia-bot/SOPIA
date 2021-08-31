@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			#codeTable {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#treeDivParent {
+				position:absolute; 
+				left:0; 
+				width: 220px;
+				height: calc(100% - 80px);
+				background-color: rgb(255, 253, 246);
+				overflow: auto;
+			}
+			#codeDiv {
+				margin-left:220px; 
+				width: calc(100% - 220px); 
+				height: 100%;
+			}
+			#code-tools {
+				text-align: left;
+				background-color: rgb(248, 244, 231);
+				position: fixed;
+				/* padding 10 + width 190 = 200 */
+				width: 210px;
+				padding: 5px 5px 10px 5px;
+				z-index: 101;
+			}
+
+			#treeDivParent::-webkit-scrollbar {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="codeTable" name="import-child" class="uk-animation-fade" style="overflow: hidden;">
+			<!-- S:Modal -->
+			<div id="code-modal" class="uk-flex-top" uk-modal>
+				<div class="uk-modal-dialog uk-margin-auto-vertical">
+					<button class="uk-modal-close-default" type="button" style="color: white;" uk-close></button>
+					<div class="uk-modal-header uk-background-danger">
+						<h4 id="err-title"  class="uk-text-white">알림</h4>
+					</div>
+					<div class="uk-modal-body">
+						<pre id="message" class="uk-text-emphasis"></pre>
+					</div>
+				</div>
+			</div>
+			<!-- E:Modal -->
+			<div id="treeDivParent">
+				<div id="code-tools">
+					<a id="openFolder"	href="#" onclick="openFolder();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: push" uk-tooltip="프로젝트 폴더를 엽니다."></a>
+					<a id="newFile"		href="#" onclick="newFile();"		class="uk-icon-link uk-margin-small-right" uk-icon="icon: file" uk-tooltip="선택한 폴더에 새로운 파일을 생성합니다."></a>
+					<a id="newFolder"	href="#" onclick="newFolder();"		class="uk-icon-link uk-margin-small-right" uk-icon="icon: folder" uk-tooltip="선택한 폴더에 새로운 폴더를 생성합니다."></a>
+					<a id="modifyName"	href="#" onclick="modifyName();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: pencil" uk-tooltip="선택한 파일 또는 폴더의 이름을 바꿉니다."></a>
+					<a id="deleteFile"	href="#" onclick="deleteFile();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: trash" uk-tooltip="선택한 파일 또는 폴더를 삭제합니다."></a>
+					<a id="refreshTree"	href="#" onclick="refreshTree();"	class="uk-icon-link uk-margin-small-right" uk-icon="icon: refresh" uk-tooltip="폴더 트리를 새로고침합니다."></a>
+				</div>
+				<div id="treeDiv">
+				</div>
+			</div>
+			<div id="codeDiv"></div>
+		</div>
+		<script type="text/javascript">
+			window.code = {
+				sopiaPath			: "sopia",
+				folderIconHTML		: '<span class="uk-icon uk-margin-small-right" uk-icon="icon: folder"></span>',
+				fileIconHTML		: '<span class="uk-icon uk-margin-small-right" uk-icon="icon: file-text"></span>',
+				nowSelectedTreeItem	: null,
+				folderSelected		: false,
+				seledtedDelay		: 500
+			};
+
+			/**
+			 * @function refreshTree
+			 * @param {String} fpath 해당 경로의 아이템을 선택한다.
+			 * 폴더 트리를 새로고침 한다.
+			 */
+			const refreshTree = (fpath) => {	
+				loadingTree(window.code.sopiaPath);
+				if ( fpath ) {
+					let spath = fpath.replace(window.code.sopiaPath+"\\", "");
+					setTimeout(() => {
+						treeItemSelect(spath.split("\\"));
+					}, window.code.seledtedDelay);
+				}
+			};
+
+			/**
+			 * @function openFolder
+			 * 프로젝트 폴더를 탐색기로 연다.
+			 */
+			const openFolder = () => {
+				shell.openItem(getPath(window.code.sopiaPath));
+			};
+
+
+			/**
+			 * @function createTreeSelector
+			 * @param {Array} levels 파일 경로 레벨
+			 * @param {Number} deep 현재 딥 레벨
+			 * @param {String} rtn 반환될 쿼리
+			 * 
+			 * @deep 과 @rtn 은 호출할 때 사용하지 않는다.
+			 * ex) createTreeSelector(["src", "vendors", "js"])
+			 * 	   -> "ul>li[data-level="src"]>ul>li[data-level="vendors"]>ul>li[data-level="js"]"
+			 */
+			const createTreeSelector = (levels, deep = 0, rtn = "") => {
+				if ( Array.isArray(levels) && deep < levels.length ) {
+					rtn += `ul>li[data-level="${levels[deep]}"]`;
+				} else {
+					return rtn.substring(0, rtn.length-1);
+				}
+				return createTreeSelector(levels, deep+1, rtn + ">");
+			};
+
+			/**
+			 * @function treeItemSelect
+			 * @param {Array} levels 파일 경로 레벨
+			 * @param {Number} deep 현재 딥 레벨
+			 * @dom   {HTMLElement} 현재 선택된 폴더 element
+			 * 
+			 * @deep과 @dom은 호출할 때 사용하지 않는다.
+			 * ex) treeItemSelect(["src", "vendors", "js"])
+			 */
+			const treeItemSelect = (levels, deep = 0, dom = document.querySelector('#treeDiv')) => {
+				if ( Array.isArray(levels) && deep < levels.length ) {
+					let s = dom.querySelector(`ul>li[data-level="${levels[deep]}"]`);
+					if ( s ) {
+						s.querySelector('li>a').click();
+						setTimeout(() => {
+							treeItemSelect(levels, deep+1, s)
+						}, window.code.seledtedDelay);
+					}
+				}
+			};
+
+			/**
+			 * @function newFile
+			 * 새로운 파일을 생성합니다.
+			 */
+			const newFile = () => {
+				UIkit.modal.prompt('New File Name', '').then(data => {
+					if ( data ) {
+						let fpath = window.code.sopiaPath;
+						if ( window.code.nowSelectedTreeItem ) {
+							fpath = window.code.nowSelectedTreeItem.getAttribute('data-path');
+						}
+						fpath = path.join(fpath, data);
+
+						if ( fs.existsSync(fpath) ) {
+							noti.error(`"${fpath}" 파일이 이미 있습니다!`);
+							return;
+						}
+
+						fs.writeFile(fpath, '', (err) => {
+							if ( err ) {
+								noti.error(err);
+							} else {
+								//파일 생성을 성공했을 때
+								refreshTree(fpath);
+							}
+						});
+					}
+				});
+			};
+
+			/**
+			 * @function newFolder
+			 * 새로운 폴더를 생성합니다.
+			 */
+			 const newFolder = () => {
+				UIkit.modal.prompt('New Folder Name', '').then(data => {
+					if ( data ) {
+						let fpath = window.code.sopiaPath;
+						if ( window.code.nowSelectedTreeItem ) {
+							fpath = window.code.nowSelectedTreeItem.getAttribute('data-path');
+						}
+						fpath = path.join(fpath, data);
+
+						if ( fs.existsSync(fpath) ) {
+							noti.error(`"${fpath}" 폴더가 이미 있습니다!`);
+							return;
+						}
+
+						fs.mkdir(fpath, (err) => {
+							if ( err ) {
+								noti.error(err);
+							} else {
+								//폴더 생성을 성공했을 때
+								refreshTree(fpath);
+							}
+						});
+					}
+				});
+			};
+
+			/**
+			 * @function modifyName
+			 * 선택한 폴더 또는 파일의 이름을 변경한다.
+			 */
+			const modifyName = () => {
+				if ( window.code.nowSelectedTreeItem ) {
+					let oriFilename = window.code.nowSelectedTreeItem.getAttribute('data-fullPath');
+					UIkit.modal.prompt("파일 이름 변경", path.basename(oriFilename) )
+					.then(data => {
+						if ( data ) {
+							let dstPath = path.join(path.dirname(oriFilename), data);
+							fs.rename(oriFilename, dstPath, (err, d) => {
+								if ( err ) {
+									noti.error(err);
+								} else {
+									noti.success("파일이름 변경 성공!", data);
+									refreshTree(dstPath);
+								}
+							});
+						}
+					});
+				} else {
+					noti.error("파일이 선택되지 않았습니다.");
+				}
+			};
+
+			/**
+			 * @function deleteFolderRecursive
+			 * @param {String} path_ 삭제할 폴더 경로
+			 * 내용이 비어있지 않은 폴더까지 삭제한다.
+			 */
+			const deleteFolderRecursive = (path_) => {
+				if ( fs.existsSync(path_) ) {
+					fs.readdirSync(path_).forEach((file,index) => {
+						let curPath = path.join(path_,file);
+						if(fs.lstatSync(curPath).isDirectory()) { // recurse
+							deleteFolderRecursive(curPath);
+						} else { // delete file
+							fs.unlinkSync(curPath);
+						}
+					});
+					fs.rmdirSync(path_);
+				}
+			};
+
+			/**
+			 * @function deleteFile
+			 * 선택한 폴더 또는 파일을 삭제한다.
+			 */
+			const deleteFile = () => {
+				if ( window.code.nowSelectedTreeItem ) {
+					UIkit.modal.confirm(`[${window.code.nowSelectedTreeItem.innerText}]. 정말로 삭제하시겠습니까?`)
+					.then(d => {
+						let file = window.code.nowSelectedTreeItem.getAttribute('data-fullPath');
+						if (fs.lstatSync(file).isDirectory()) {
+							deleteFolderRecursive(file);
+						} else {
+							fs.unlinkSync(file);
+						}
+						window.code.nowSelectedTreeItem = null;
+						refreshTree(file);
+					})
+					.catch(d => {
+
+					});
+				} else {
+					noti.error("파일이 선택되지 않았습니다.");
+				}
+			};
+
+			const getLanguage = (ext) => {
+				switch (ext) {
+					case ".htm":
+					case ".ejs":
+					case ".vue":
+					case ".html":
+						return 'html';
+				}
+				return "javascript";
+			}
+
+			/**
+			 * @function createFolderTree
+			 * @param {Object} finfo
+			 * @param {Number} dl
+			 * readFolder의 결과값인 finfo 기준으로 읽은 폴더 트리 엘리먼트를 생성한다.
+			 * dl 은 현재 깊이를 나타낸다
+			 */
+
+			const createFolderTree = (finfo, dl = 0) => {
+				if ( typeof finfo === "object" ) {
+					let ulElement = document.createElement('ul');
+					if ( dl === 0 ) {
+						ulElement.className = "uk-nav-default uk-nav-parent-icon uk-margin-small-left uk-margin-small-right";
+						ulElement.style = "height:calc(100% - 39px); margin-top:39px";
+					} else {
+						ulElement.className = "uk-nav-sub uk-nav-parent-icon";
+					}
+					ulElement.setAttribute('uk-nav', 'multiple: true');
+					
+					/* 폴더를 먼저 그린다. */
+					Object.keys(finfo["folders"]).forEach(cpath => {
+						let folderElement = document.createElement('li');
+						folderElement.className = "uk-parent";
+
+						let aElement = document.createElement('a');
+						aElement.href = "#";
+						aElement.innerHTML = window.code.folderIconHTML + path.basename(cpath);
+
+						folderElement.appendChild(aElement);
+						folderElement.setAttribute('data-path', cpath);
+						folderElement.setAttribute('data-level', path.basename(cpath));
+						folderElement.setAttribute('data-fullPath', cpath);
+
+						let crtn = createFolderTree(finfo["folders"][cpath], dl+1);
+						folderElement.appendChild(crtn);
+
+						folderElement.addEventListener('click', (e) => {
+							if ( window.code.folderSelected ) {
+								e.stopImmediatePropagation();
+								return;
+							}
+
+							if ( window.code.nowSelectedTreeItem && window.code.nowSelectedTreeItem.classList ) {
+								window.code.nowSelectedTreeItem.classList.remove("uk-active");
+							}
+							window.code.nowSelectedTreeItem = folderElement;
+							window.code.nowSelectedTreeItem.classList.add("uk-active");
+							window.code.folderSelected = true;
+							setTimeout(() => {
+								window.code.folderSelected = false;
+							}, window.code.seledtedDelay);
+						});
+
+						ulElement.appendChild(folderElement);
+					});
+					
+					/* 파일들 아이템을 그린다. */
+					finfo["files"].forEach(f => {
+						let fileElement = document.createElement('li');
+						let aElement = document.createElement('a');
+						aElement.innerHTML = window.code.fileIconHTML + path.basename(f);
+
+						fileElement.appendChild(aElement);
+						fileElement.setAttribute('data-path', path.dirname(f));
+						fileElement.setAttribute('data-level', path.basename(f));
+						fileElement.setAttribute('data-fullPath', f);
+
+						fileElement.addEventListener('click', (e) => {
+							if ( window.code.nowSelectedTreeItem && window.code.nowSelectedTreeItem.classList ) {
+								window.code.nowSelectedTreeItem.classList.remove("uk-active");
+							}
+							window.code.nowSelectedTreeItem = fileElement;
+							window.code.nowSelectedTreeItem.classList.add("uk-active");
+							window.code.folderSelected = true;
+							setTimeout(() => {
+								window.code.folderSelected = false;
+							}, window.code.seledtedDelay);
+
+							if ( fs.existsSync(f) ) {
+								window.code.viewPath = f;
+								if ( window.editor && window.editor.setValue ) {
+									const model = window.editor.getModel();
+									window.monaco.editor.setModelLanguage(model, getLanguage(path.extname(f)));
+									window.editor.setValue(fs.readFileSync(f, {encoding:"utf8"}));
+								} else {
+									setTimeout(() => {
+										if ( window.editor ) {
+											window.editor.setValue(fs.readFileSync(f));
+										} 
+									}, window.code.seledtedDelay);
+								}
+							}
+						});
+
+						ulElement.appendChild(fileElement);
+					});
+					return ulElement;
+				}
+			};
+
+			const loadingTree = (path) => {
+				//폴더를 읽어서 트리를 생성한다.
+				let target = "#treeDiv";
+				if ( (tmp = document.querySelector(target+">ul")) ) {
+					document.querySelector(target).removeChild(tmp);
+				}
+
+				let dirInfo = readFolder(path);
+				let createInfo = createFolderTree(dirInfo);
+				if ( createInfo ) {
+					document.querySelector(target).appendChild(createInfo);
+				}
+			};
+		</script>
+	</body>
+</html>

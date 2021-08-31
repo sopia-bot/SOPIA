@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="UTF-8">
+        
+		<script	src="vendors/js/uikit.min.js"		type="text/javascript"></script>
+        <script	src="vendors/js/uikit-icons.min.js"	type="text/javascript"></script>
+        
+		<link href="vendors/css/uikit.css"		rel="stylesheet">
+		<link href="resources/css/style.css"	rel="stylesheet">
+	</head>
+	<body>
+        <!-- S:Modal -->
+        <div id="modal" class="uk-flex-top" uk-modal>
+            <div class="uk-modal-dialog uk-margin-auto-vertical">
+                <button class="uk-modal-close-full" type="button" uk-close></button>
+
+                <div class="uk-modal-header">
+                    <h3 class="uk-modal-title">소피아 이용 약관</h3>
+                </div>
+
+                <div id="terms" class="uk-modal-body" uk-overflow-auto>
+                    <script type="text/javascript">
+                        const getPath = (path_, cur = false) => {
+                            const path = require('path');
+                            const app = require('electron').remote.app;
+                            let exePath = app.getPath('exe');
+                            let exe = path.basename(exePath);
+                            let p = app.getAppPath();
+                            if ( !exe.match("electron") && cur === false ) {
+                                p = path.dirname(exePath);
+                            }
+                            return path.join(p, path_);
+                        };
+
+                        const fs = require('fs');
+                        fs.readFile(getPath('/media/terms.txt'), { encoding: 'utf8' }, (err, data) => {
+                            document.querySelector('#terms').innerText = data;
+                        });
+                    </script>
+                </div>
+
+                <div class="uk-modal-footer uk-text-right">
+                    <span class="uk-margin-small-right">이용 약관을 전부 읽었으며, 이에 동의합니다.</span> 
+                    <button class="uk-button uk-button-spoon uk-modal-close" type="button">완료</button>
+                </div>
+            </div>
+        </div>
+        <!-- E:Modal -->
+
+        <!-- S:Login Page -->
+        <div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
+            <div class="uk-width-1-1">
+                <div class="uk-container">
+                    <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
+                        <div class="uk-width-1-1@m">
+                            <!-- S:Login Card -->
+                            <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                                <h3 class="uk-card-title uk-text-center">사용해 주셔서 감사합니다!</h3>
+                                <center><p>소피아는 인증해야만 사용가능합니다</p></center>
+                                
+                                <!-- S:Id -->
+                                <div class="uk-margin">
+                                    <div class="uk-inline uk-width-1-1">
+                                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                        <input id="id" class="uk-input uk-input-spoon uk-form-large" type="text" style="font-size: 10pt;" placeholder="@를 제외한 스푼 id">
+                                    </div>
+                                </div>
+                                <!-- E:Id -->
+
+                                <!-- S:Key -->
+                                <div class="uk-margin">
+                                    <div class="uk-inline uk-width-1-1">
+                                        <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                        <input id="key" class="uk-input uk-input-spoon uk-form-large" type="text" style="font-size: 10pt;" placeholder="발급받은 key">
+                                    </div>
+                                </div>
+                                <!-- E:Key -->
+
+                                <center><p style="font-size:8pt; color:#acacac;">인증 후 프로그램을 사용하는 것은 <a href="#modal" class="uk-link-spoon" uk-toggle>이용 약관</a>에 동의한 것으로 간주됩니다.</p></center>
+
+                                <div class="uk-margin">
+                                    <button class="uk-button uk-button-spoon uk-button-large uk-width-1-1" onclick="signSOPIA()">인증하기</button>
+                                </div>
+
+                                <div class="uk-text-small uk-text-center">
+                                    현재 UUID <span id="uuid" class="uk-text-spoon"></span>
+                                </div>
+                            </div>
+                            <!-- S:Login Card -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- E:Login Page -->
+        
+        <script type="text/javascript">
+            // 사용자 컴퓨터의 UUID를 생성한다.
+            function generateUUID() {
+                generateUUID.tail = generateUUID.tail || (function(nics) {
+                    var nic, index, addr, retn;
+                    for (nic in nics) { // try to obtain the MAC address from the IPv6 scope-local address
+                        for (index in nics[nic]) {
+                            addr = nics[nic][index];
+                            if (!addr.internal) {
+                                if (addr.address.indexOf('fe80::') === 0) { // found scope-local
+                                    retn = retn || addr.address.slice(6).split(/:/).map(function(v, i, a) {
+                                        return parseInt(v, 16);
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    if (!retn) { // no IPv6 so generate random MAC with multicast bit set
+                        index = Math.pow(2, 16);
+                        retn = [1, 2, 3, 4];
+                    }
+                    retn[3] = 0x10000 | retn[3];
+                    retn[2] = 0x10000 | retn[1] & 0xff00 | retn[2] & 0x00ff; // eliminate FFFE from xxxx:xxFF:FExx:xxxx
+                    retn[1] = 0x10000 | retn[0] ^ 0x0200; // invert bit#41
+                    retn = retn.map(function(v, i, a) {
+                        return v.toString(16).slice(1)
+                    });
+                    return retn[0] + '-' + retn[1] + retn[2] + retn[3];
+                })(require('os').networkInterfaces());
+                
+                var head = [5, 6];
+                return head.concat(generateUUID.tail).join('-');
+            };
+            document.querySelector('#uuid').innerText = generateUUID();
+            
+            /**
+            * @type {Object}
+            * 좌측 하단에 정보를 띄웁니다.
+            */
+            const noti = {
+                error : (errString) => {
+                    UIkit.notification({
+                        message: '<span uk-icon="icon: close"></span>&nbsp;'+
+                        '<label class="uk-text-small">에러 : <span class="uk-text-danger">' + errString + '</span></label>',
+                        pos: 'bottom-left'
+                    });
+                    console.error(errString);
+                },
+                success : (title, message) => {
+                    UIkit.notification({
+                        message: '<span uk-icon="icon: check"></span>&nbsp;'+
+                        `<label class="uk-text-small">${title} : <span class="uk-text-success">${message}</span></label>`,
+                        pos: 'bottom-left'
+                    });
+                },
+                info : (title, message) => {
+                    UIkit.notification({
+                        message: '<span uk-icon="icon: plus-circle"></span>&nbsp;'+
+                        `<label class="uk-text-small">${title} : <span class="uk-text-spoon">${message}</span></label>`,
+                        pos: 'bottom-left'
+                    });
+                }
+            };
+
+            const axios = require('axios');
+            const config = require(getPath('/config.json'));
+            function signSOPIA() {
+                let user = document.querySelector('#id').value.trim();
+                let key = document.querySelector('#key').value.trim();
+                let now = new Date();
+                let expire = new Date();
+                expire.setDate(expire.getDate() + 365);
+
+                const reqUrl = `${config['api-url']}/users/${key}.json`;
+                axios({
+                    url: reqUrl,
+                    method: 'get'
+                }).then(res => {
+                    const data = res.data;
+                    if ( data ) {
+                        if ( data.spoon_id === user ) {
+                            return axios({
+                                url: reqUrl,
+                                method: 'patch',
+                                data: {
+                                    mac: generateUUID(),
+                                    created: now,
+                                    expire_date: expire
+                                }
+                            });
+                        } else {
+                            throw new Error('이 시리얼 키는 다른 유저에게 할당되어 있습니다.');
+                        }
+                    } else {
+                        throw new Error('시리얼 키에 대한 정보가 없습니다.');
+                    }
+                }).then(res => {
+                    if ( res.status === 200 && res.data ) {
+                        const fs = require('fs');
+                        config.license = {
+                            "id": user,
+                            "key": key
+                        };
+                        const save = JSON.stringify(config, null, '\t');
+                        fs.writeFile(getPath('/config.json'), save, (err) => {
+                            if ( err ) {
+                                noti.error(err.message);
+                                return;
+                            }
+                            window.location.assign('index.html');
+                        });
+                    } else {
+                        throw new Error('시리얼 인증 요청에 문제가 생겼습니다.');
+                    }
+                }).catch(err => {
+                    noti.error(err.message);
+                });
+            }
+
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.search;
+                name = name.replace(/[\[\]]/g, '\\$&');
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+
+			// onload 이벤트
+			document.addEventListener('DOMContentLoaded', (evt) => {
+                const notification = getParameterByName('noti');
+                if ( notification ) {
+                    noti.error(notification);
+                }
+			});
+        </script>
+    </body>
+</html>

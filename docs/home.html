@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="vendors/js/highlight.pack.js" type="text/javascript"></script>
+		<link href="vendors/css/atom-one-light.css" rel="stylesheet">
+		<style>
+			#homeDiv {
+				width: 100%;
+				height: 100%;
+				padding-top: 1.5rem;
+				display: table-cell;
+			}
+			#console-output {
+				width: 100%; 
+				height:100%; 
+				overflow-y: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div name="import-child" style="display: table;">
+			<div id="homeDiv" class="uk-animation-fade">
+				<!-- S:LIVE INFO -->
+				<div class="uk-card uk-card-default spoor-card">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">라이브 정보</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<button class="uk-button uk-button-spoon uk-button-small" style="background-color: #00ab50;" onclick="webview.src = 'https://spooncast.net/kr/live/broadcast';">방송 하기</button>
+									<button class="uk-button uk-button-spoon uk-button-small" onclick="openDeveloperTools()">개발자 도구</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- S:LIVE INFO BODY -->
+					<div class="uk-card-body">
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>라이브 제목</div>
+							<div class="uk-text-right">
+								<a id="liveTitle" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>라이브 시작 시간</div>
+							<div class="uk-text-right">
+								<a id="liveStartTime" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>라이브 배경 URL</div>
+							<div class="uk-text-right">
+								<a id="liveBgUrl" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>현재 청취자 수</div>
+							<div class="uk-text-right">
+								<a id="liveMemberCount" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>누적 하트 수</div>
+							<div class="uk-text-right">
+								<a id="liveLikeCount" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>누적 청취자 수</div>
+							<div class="uk-text-right">
+								<a id="liveTotalMebmerCount" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 닉네임</div>
+							<div class="uk-text-right">
+								<a id="bjName" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 태그</div>
+							<div class="uk-text-right">
+								<a id="bjTag" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 PID</div>
+							<div class="uk-text-right">
+								<a id="bjPID" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 프로필 URL</div>
+							<div class="uk-text-right">
+								<a id="bjProfileUrl" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+						<div class="uk-grid-divider uk-child-width-expand@s" uk-grid>
+							<div>비제이 가입일</div>
+							<div class="uk-text-right">
+								<a id="bjDateJoined" href="#" onclick="copyAtag(this);" class="uk-button uk-button-text">Enjoy Radio!</a>
+							</div>
+						</div>
+					</div>
+					<!-- E:LIVE INFO BODY -->
+					<div class="uk-card-footer">
+						<div class="uk-inline" style="width: 100%;">
+							<span class="uk-form-icon uk-form-icon-flip uk-icon" uk-icon="icon: chevron-left"></span>
+							<input id="live-send" placeholder="대화를 입력하세요." class="uk-input uk-input-spoon" onclick="this.focus();" onkeydown="chatInputEvent(event);" type="text">
+						</div>
+					</div>
+				</div>
+				<!-- E:LIVE INFO -->
+				<!-- S:CONSOLE -->
+				<div class="uk-margin uk-card-default spoor-card">
+					<div class="uk-card-header">
+						<div uk-grid>
+							<div class="uk-width-1-2">
+								<h3 class="uk-card-title uk-margin-remove-bottom">Console</h3>
+							</div>
+							<div class="uk-width-1-2 uk-text-right">
+								<div class="uk-margin" style="margin-top: 5px;">
+									<label>스크롤 하단 고정&nbsp;<input id="console-scroll-fix" class="uk-checkbox uk-checkbox-spoon" type="checkbox" checked></label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="uk-card-body" style="height: 70vh;">
+						<div id="console-output"></div>
+					</div>
+					<div class="uk-card-footer">
+						<div class="uk-inline" style="width: 100%;">
+							<span class="uk-form-icon uk-form-icon-flip uk-icon" uk-icon="icon: chevron-left"></span>
+							<input id="console-input" class="uk-input uk-input-spoon" onclick="this.focus();" onkeydown="inputEvent(event);" type="text">
+						</div>
+					</div>
+				</div>
+				<!-- E:CONSOLE -->
+			</div>
+		</div>
+		<script type="text/javascript">
+			/** 
+			 * 대화입력창에 대한 이벤트.
+			 * 엔터를 누르면 스크립트가 실행이 되고, 
+			 * 위 아래키로 이전 스크립트를 바로 사용할 수 있다.
+			 */
+			const chatInputEvent = (e) => {
+				if (e.which === 13) {
+					if ( e.target.value === "" ) {
+						return;
+					}
+					sopia.send(e.target.value);
+					if ( !window.chatting ) {
+						window.chatting = {
+							stack: [],
+							idx: 0,
+							length: 0
+						};
+					} else {
+						if ( Array.isArray(window.chatting.stack) === false ) {
+							window.chatting.stack = [];
+						}
+						if ( typeof window.chatting.idx !== "number" ) {
+							window.chatting.idx = 0;
+						}
+						if ( typeof window.chatting.length !== "number" ) {
+							window.chatting.length = window.chatting.stack.length;
+						}
+					}
+					window.chatting.stack.push(e.target.value);
+					window.chatting.length = window.chatting.stack.length;
+					window.chatting.idx = window.chatting.length;
+					e.target.value = "";
+				} else if (e.which === 38 ) {
+					//arrow up
+					if ( window.chatting.idx > 0 ) {
+						window.chatting.idx--;
+						e.target.value = window.chatting.stack[window.chatting.idx];
+					}
+				} else if (e.which === 40 ) {
+					//arrow down
+					if ( window.chatting.idx < window.chatting.length ) {
+						window.chatting.idx++;
+						let val = window.chatting.stack[window.chatting.idx];
+						if ( val ) {
+							e.target.value = val;
+						} else {
+							e.target.value = "";
+						}
+					}
+				}
+			}
+			/** 
+			 * console-input 에 대한 이벤트.
+			 * 엔터를 누르면 스크립트가 실행이 되고, 
+			 * 위 아래키로 이전 스크립트를 바로 사용할 수 있다.
+			 */
+			const inputEvent = (e) => {
+				if (e.which === 13) {
+					//enter
+					if ( e.target.id === "console-input" ) {
+						if ( e.target.value.trim() === "" ) {
+							return;
+						}
+						try{
+							sopia.log("< "+e.target.value);
+							sopia.log("= "+eval(e.target.value), e.target.value);
+						} catch(err) {
+							sopia.error(err);
+						}
+						if ( !window.command ) {
+							window.command = {
+								stack: [],
+								idx: 0,
+								length: 0
+							};
+						} else {
+							if ( Array.isArray(window.command.stack) === false ) {
+								window.command.stack = [];
+							}
+							if ( typeof window.command.idx !== "number" ) {
+								window.command.idx = 0;
+							}
+							if ( typeof window.command.length !== "number" ) {
+								window.command.length = window.command.stack.length;
+							}
+						}
+						window.command.stack.push(e.target.value);
+						window.command.length = window.command.stack.length;
+						window.command.idx = window.command.length;
+						e.target.value = "";
+					}
+				} else if (e.which === 38 ) {
+					//arrow up
+					if ( window.command.idx > 0 ) {
+						window.command.idx--;
+						e.target.value = window.command.stack[window.command.idx];
+					}
+				} else if (e.which === 40 ) {
+					//arrow down
+					if ( window.command.idx < window.command.length ) {
+						window.command.idx++;
+						let val = window.command.stack[window.command.idx];
+						if ( val ) {
+							e.target.value = val;
+						} else {
+							e.target.value = "";
+						}
+					}
+				}
+			};
+
+			/**
+			 * @function openDeveloperTools
+			 * 개발자도구를 연다.
+			 */
+			const openDeveloperTools = (e) => {
+				ipcRenderer.send('openDevTool');
+			};
+		</script>
+	</body>
+</html>
