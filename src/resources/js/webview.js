@@ -33,7 +33,6 @@ const browserEvent = async (evt) => {
 				console.log('token', token, 'refToken', refToken);
 				await webview.executeJavaScript(`getProps().AuthActions.putTokens({ device_unique_id: '${unique_id}', refresh_token: '${refToken}', user_id: ${$sopia.user.id} });`);
 			}
-			
 			const t = $sopia.token || token;
 			console.log('Emit setAuthKey Event', t);
 			browserEvent({ event: 'setAuthKey', data: t });
@@ -179,14 +178,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     //webview의 로딩이 끝났을 때, BrowserInject.js 를 추가한다.
-    webview.addEventListener('dom-ready', () => {
+    webview.addEventListener('did-finish-load', () => {
         //3초 이내는 브라우저 로딩을 단 한 번으로 친다.
         if ( webview.isLoaded ) {
             return;
         }
         webview.isLoaded = true;
         setTimeout(async () => {
-            webview.isLoaded = false;
 			webview.insertCSS('.live-comment-list-item-container .comment-wrap .comment .comment-text.chat-highlight { border-color: #ffb047 !important }');
 			webview.insertCSS('.live-comment-list-item-container .comment-wrap .comment .comment-name .badge.subscribe { background-color: #ffb047 !important }');
 			const userStr = await webview.executeJavaScript('localStorage.SPOONCAST_KR_userInfo');

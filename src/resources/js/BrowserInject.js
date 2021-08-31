@@ -35,6 +35,7 @@ window.getReactInstance = (element) => {
 };
 
 window.getProps = (type = "live") => {
+	/*
 	const selectors = {
 		"live": "div.live-detail-container",
 		"app": "div.app-container"
@@ -45,6 +46,9 @@ window.getProps = (type = "live") => {
 		instance = getReactInstance(document.querySelector(selectors['app']));
 	}
 	return instance?instance.return.stateNode.props:null;
+	*/
+	let instance = getReactInstance(document.querySelector(('div.app-container')));
+	return instance ? instance.return.return.stateNode.props : null;
 };
 
 window.autoLogin = (type, id, pw) => {
@@ -157,7 +161,7 @@ window.toggleMute = () => {
 	document.querySelector('button.btn-control.btn-volume').click();
 };
 
-var userInfo = 
+var userInfo;
 window.getUserInfo = (id) => {
 	let props = getProps('app');
 	try {
@@ -185,7 +189,7 @@ window.getUserInfo = (id) => {
 		}, 1000);
 	}
 };
-getUserInfo();
+//getUserInfo();
 
 var liveInfo;
 window.getLiveInfo = (id) => {
@@ -215,7 +219,7 @@ window.getLiveInfo = (id) => {
 		}, 1000);
 	}
 };
-getLiveInfo();
+//getLiveInfo();
 
 function logging(a, b, c) {
 	let rtn = {
@@ -237,7 +241,6 @@ var logInterval = setInterval(() => {
 	setLogging();
 	logIntervalTime *= logIntervalTime;
 }, logIntervalTime * 1000);
-
 
 setInterval(() => {
 	if ( location.pathname !== '/kr/live/broadcast' ) {
