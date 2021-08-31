@@ -20,10 +20,12 @@ const rimraf = require('rimraf');
 const axios = require('axios');
 const { app, dialog, process } = require('electron').remote;
 const { clipboard, shell, ipcRenderer } = require('electron');
+const { deserialize } = require('typescript-json-serializer');
 
-const spoon = require('sopia-core');
-$sopia = new spoon.Client(USER_AGENT);
+const spoon = require('@sopia-bot/core');
+$sopia = new spoon.SpoonClient(USER_AGENT.replace(/ /g, ''));
 $sopia.wstype = spoon.WSType.NODE;
+$sopia.init();
 
 const loaded = {
 	spoor: false,

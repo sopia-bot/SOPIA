@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { NotiData } = require("sopia-core");
 const httpReq = require('request');
 
 let token = '';

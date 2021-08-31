@@ -19,7 +19,7 @@ const browserEvent = async (evt) => {
 			evt.data = evt.data.result;
 
 		case 'loginCallback':
-            const user = spoon.User.deserialize(evt.data);
+            const user = deserialize(evt.data, spoon.User);
 			$sopia.user = user;
 			console.log('setting user', $sopia.user);
             await asleep(1000);
@@ -42,8 +42,12 @@ const browserEvent = async (evt) => {
 		case 'setAuthKey':
 			if ( evt.data ) {
 				const token = evt.data.replace('Bearer ', '');
+				const refToken = await webview.executeJavaScript('localStorage.SPOONCAST_KR_refreshToken');
 				if ( $sopia.user ) {
-					sopia.debug('login', await $sopia.loginToken($sopia.user, token));
+					$sopia.logonUser = $sopia.user;
+					$sopia.logonUser.token = $sopia.token = token;
+					$sopia.logonUser.refresh_token = $sopia.refToken = refToken;
+					console.log('login', $sopia.logonUser);
 				} else {
 					$sopia.token = token;
 				}
@@ -59,6 +63,9 @@ const browserEvent = async (evt) => {
             }
             break;
 
+        case 'getLivesToken Success':
+			window.live_token = evt.data.data.results[0].jwt;
+			break;
         case 'live_shadowjoin':
 		case 'live_join':
 			try {
@@ -76,13 +83,17 @@ const browserEvent = async (evt) => {
                     return;
                 }
                 
-				let sock = $sopia.liveSocketMap.get(liveId);
+				let sock = $sopia.liveMap.get(liveId);
 				if ( sock ) {
 					writeLog('INFO', `Destroy socket join at ${liveId}`);
 					sock.destroy();
                 }
 
-				sopia.sock = await $sopia.liveManager.liveJoin(liveId);
+				const liveStruct = new spoon.LiveInfo();
+				liveStruct.id = liveId;
+				liveStruct._client = $sopia;
+
+				sopia.sock = await liveStruct.join(window.live_token);
 				sopia.sock.on(spoon.LiveEvent.LIVE_EVENT_ALL, sopia.onmessage);
 				writeLog('INFO', `Create socket join at ${liveId}`);
                 sopia.me = $sopia.user;
@@ -107,7 +118,7 @@ const browserEvent = async (evt) => {
 				const nDay = nowDate.yyyymmdd('-');
 				const nTime = nowDate.hhMMss('-') + '-' + nowDate.getMilliseconds();
 
-				const live = await $sopia.liveManager.liveInfo(liveId);
+				const { res: { results: [ live ] } } = await $sopia.api.lives.info(liveId);
 				sopia.live = live;
 				const roomData = {
 					title: live.title,
