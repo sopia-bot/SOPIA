@@ -4,7 +4,7 @@
 //  주석 : sopia 객체를 생성하는 스크립트                       //
 ///////////////////////////////////////////////////////////////
 
-const { LiveEvent } = require('sopia-core');
+const { LiveEvent } = require('@sopia-bot/core');
 
 /**
  * @sopia 의 객체를 생성한다.
