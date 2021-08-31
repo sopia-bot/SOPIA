@@ -10,8 +10,8 @@ const target = `SOPIA-${package.version}`;
 
 fs.renameSync('./release-builds/SOPIA-win32-ia32', path.join('./release-builds', target));
 
-for ( const item of fs.readdirSync('./static') ) {
-	const src = path.join('./static', item);
+for ( const item of fs.readdirSync('./static-dir') ) {
+	const src = path.join('./static-dir', item);
 	fs.cpSync(src, path.join('./release-builds', target, item), { recursive: true, force: true });
 }
 

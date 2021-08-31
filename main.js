@@ -210,7 +210,6 @@ function createWindow () {
 	mainWindow.on('ready-to-show', () => {
 		try {
 			//if ( DEBUG_MODE ) {
-			/*
 				session.defaultSession.cookies.flushStore();
 				session.defaultSession.cookies.get({}, (error, cookies) => {
 					cookies.forEach((cookie) => {
@@ -227,7 +226,6 @@ function createWindow () {
 						});
 					});
 				});
-				*/
             //}
 			session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
 				details.requestHeaders['User-Agent'] = USER_AGENT;
