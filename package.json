@@ -45,7 +45,6 @@
 		"@sanillajs/sanilla": "^1.0.4",
 		"@sopia-bot/core": "^2.1.6",
 		"axios": "^0.21.1",
-		"neuro.umd.js": "^0.1.11",
 		"request": "^2.88.2",
 		"rimraf": "^3.0.2",
 		"typescript-json-serializer": "^3.4.4"
