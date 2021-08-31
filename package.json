@@ -1,12 +1,12 @@
 {
 	"name": "sopia",
-	"version": "1.10.5",
+	"version": "1.11.2",
 	"description": "A Spooncast manager A.I Program",
 	"main": "main.js",
 	"scripts": {
 		"start": "electron . DEBUG",
-		"build": " npm run build:docs && npm run pbuild:win32",
-		"build:docs": "node docs.js",
+		"build": "npm run pbuild:win32 && npm run release",
+		"release": "node build.js",
 		"pbuild:win32": "electron-packager . SOPIA --asar --overwrite --platform=win32 --arch=ia32 --out=release-builds --icon=\".\\sopia.ico\" --ignore=release-builds --ignore=bundles --ignore=test --ignore=media --ignore=SOPIAUpdater"
 	},
 	"build": {
