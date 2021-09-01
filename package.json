@@ -45,7 +45,7 @@
 	},
 	"dependencies": {
 		"@sanillajs/sanilla": "^1.0.4",
-		"@sopia-bot/core": "^2.1.6",
+		"@sopia-bot/core": "^2.1.8",
 		"axios": "^0.21.1",
 		"request": "^2.88.2",
 		"rimraf": "^3.0.2",

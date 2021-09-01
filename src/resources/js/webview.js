@@ -58,7 +58,7 @@ const browserEvent = async (evt) => {
             if ( sopia.sock ) {
                 sopia.sock.destroy();
                 sopia.sock = null;
-				writeLog('INFO', `Destroy socket join at ${liveId} because live leave`);
+				writeLog('INFO', `Destroy socket because live leave`);
             }
             break;
 
@@ -85,6 +85,7 @@ const browserEvent = async (evt) => {
 				let sock = $sopia.liveMap.get(liveId);
 				if ( sock ) {
 					writeLog('INFO', `Destroy socket join at ${liveId}`);
+					console.log('socket', sock);
 					sock.destroy();
                 }
 
