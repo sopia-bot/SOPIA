@@ -15,11 +15,18 @@ const browserEvent = async (evt) => {
 
 	switch ( evt.event.trim() ) {
 
+		case 'snsLogin':
+			window.loginType = evt.data;
+			break;
+
 		case 'snsLoginCallback':
 			evt.data = evt.data.result;
 
 		case 'loginCallback':
             const user = deserialize(evt.data, spoon.User);
+			if ( window.loginType ) {
+				user.sns_type = window.loginType;
+			}
 			$sopia.user = user;
 			console.log('setting user', $sopia.user);
             await asleep(1000);
