@@ -822,16 +822,17 @@ sopia.onmessage = async (e) => {
 				func(e);
 			}
         }
-        
-		if ( (e.event !== LiveEvent.LIVE_MESSAGE && e.event !== LiveEvent.LIVE_LAZY_UPDATE) && data.author.tag === sopia.me.tag ) {
-			return;
-		}
 
 		let send_event = true;
 
 		e.event = e.event.replace("live_", "").trim();
 
 		if ( data.live && e.event !== "message" ) {
+			if ( [LiveEvent.LIVE_LAZY_UPDATE,LiveEvent.LIVE_HEALTH].includes(e.event) ) {
+				if ( !data.author ) {
+					return;
+				}
+			}
 			sopia.live = data.live;
 		} else if ( e.event === "message" ) {
 			// legasy code support
@@ -839,6 +840,11 @@ sopia.onmessage = async (e) => {
 			if ( !data.author ) {
 				data.author = data.user;
 			}
+
+			if ( data.author.tag === sopia.me.tag ) {
+				return;
+			}
+
 			// spoorchat
 			let idx = sopia.tts.user.findIndex(item => item.id === data.author.id);
 			if ( idx >= 0 ) {
@@ -888,10 +894,10 @@ sopia.onmessage = async (e) => {
 			let live = data.live;
 			document.querySelector('#liveTitle').innerText = live.title;
 			document.querySelector('#liveStartTime').innerText = new Date(live.created).toLocaleString();
-			document.querySelector('#liveBgUrl').innerText = live.imgUrl;
-			document.querySelector('#liveMemberCount').innerText = live.memberCount;
-			document.querySelector('#liveLikeCount').innerText = live.likeCount;
-			document.querySelector('#liveTotalMebmerCount').innerText = live.totalMemberCount;
+			document.querySelector('#liveBgUrl').innerText = live.img_url;
+			document.querySelector('#liveMemberCount').innerText = live.member_count;
+			document.querySelector('#liveLikeCount').innerText = live.like_count;
+			document.querySelector('#liveTotalMebmerCount').innerText = live.total_member_count;
 
 			//비제이 정보
 			if ( live.author ) {
@@ -899,14 +905,15 @@ sopia.onmessage = async (e) => {
 				document.querySelector('#bjName').innerText = author.nickname;
 				document.querySelector('#bjTag').innerText = author.tag;
 				document.querySelector('#bjPID').innerText = author.id;
-				document.querySelector('#bjProfileUrl').innerText = author.profileUrl;
-				document.querySelector('#bjDateJoined').innerText = new Date(author.dateJoined).toLocaleString();
+				document.querySelector('#bjProfileUrl').innerText = author.profile_url;
+				document.querySelector('#bjDateJoined').innerText = new Date(author.date_joined).toLocaleString();
 			}
 		}
 
 		// spoor chat
 		if ( sopia.config.spoor.enable === true && e.event === "present" ) {
 			if ( (data.amount * data.combo) >= sopia.config.spoor.minspoon ) {
+				console.log(`[SPOORCHAT] Ready recive spoorchat message for ${data.author}`);
 				sopia.tts.user.push({ id: data.author.id, tick: 0, sticker: data.sticker, combo: data.combo });
 			}
 		}
