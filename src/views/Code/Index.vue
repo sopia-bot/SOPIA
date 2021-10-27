@@ -307,6 +307,8 @@ export default class Code extends Mixins(GlobalMixins) {
 					type: 'error',
 					title: rtn.msg,
 					content: `At line ${rtn.line}.<br>${rtn.syntax}`,
+				}).then((close) => {
+					close();
 				});
 				return;
 			}
@@ -326,6 +328,8 @@ export default class Code extends Mixins(GlobalMixins) {
 				type: 'error',
 				title: 'Error',
 				content: err.message,
+			}).then((close) => {
+				close();
 			});
 		}
 	}
