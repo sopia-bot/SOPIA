@@ -216,6 +216,15 @@ export default class TreeView extends Mixins(GlobalMixins) {
 			return;
 		}
 
+		const m: any = this.newName.match(/[a-zA-Z0-9._-]*/);
+		if ( !m || m[0] !== this.newName ) {
+			this.$noti({
+				type: 'error',
+				content: this.$t('code.msg.special-char'),
+			});
+			return;
+		}
+
 		if ( this.nbnew ) {
 			const target = path.join(this.nbdir, this.newName);
 			if ( fs.existsSync(target) ) {
