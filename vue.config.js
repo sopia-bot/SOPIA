@@ -9,6 +9,9 @@ module.exports = {
 				"@": path.join(__dirname, "src"),
 			},
 		},
+		module: {
+			exprContextCritical: false,
+		},
 		plugins: [
 			new MonacoEditorPlugin({
 				// https://github.com/Microsoft/monaco-editor-webpack-plugin#options
@@ -23,5 +26,6 @@ module.exports = {
 	},
 	transpileDependencies: [
 		"vuetify"
-	]
+	],
+	runtimeCompiler: true,
 }

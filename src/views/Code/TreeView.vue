@@ -234,7 +234,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		if ( target === oldTarget ) {
 			return;
 		}
-		
+
 		if ( fs.existsSync(target) ) {
 			this.$logger.err('code', `Exists file or directory. [${target}]`);
 			this.$modal({
