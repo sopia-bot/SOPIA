@@ -5,7 +5,7 @@
  * Copyright (c) Raravel. Licensed under the MIT License.
 -->
 <template>
-	<v-main class="custom indigo lighten-5">
+	<v-main class="custom indigo lighten-5" style="overflow-y: auto;">
 		<!-- S: Present List Dialog -->
 		<v-dialog
 			v-model="present"
@@ -87,8 +87,18 @@
 					</v-col>
 				</v-row>
 				<v-divider></v-divider>
-				<v-row align="center">
-					<v-col cols="12" align="center">
+				<v-row align="end" class="mt-4 mb-0">
+					<v-col cols="8" align="left">
+						<span class="text-caption" style="font-size: 11pt !important;" v-html="$t('cmd.'+setType+'-ex')"></span>
+					</v-col>
+					<v-col cols="4" align="right">
+						<v-btn tile dark color="green darken-2" @click="save">
+							{{ $t('apply') }}
+						</v-btn>
+					</v-col>
+				</v-row>
+				<v-row align="center" class="mt-0">
+					<v-col cols="12" align="center" class="pt-0">
 						<v-textarea
 							v-if="setType === 'join'"
 		  					color="indigo"
@@ -103,18 +113,24 @@
 							counter
 							row="5"></v-textarea>
 						<v-container v-else-if="setType === 'present'">
+							<v-row align="center">
+								<v-col cols="12" class="px-0">
+									<v-btn block tile dark color="indigo" @click="present = true;">{{ $t('add') }}</v-btn>
+								</v-col>
+							</v-row>
 							<div v-if="render.present" class="my-6">
 								<v-row class="ma-0" v-for="(present, idx) in livePresent" :key="'present_' + present.sticker" align="center">
-									<v-col class="pa-0" cols="4">
+									<v-col class="pa-0" cols="5">
 										<v-btn
 											tile block
 											color="transparent"
 											depressed>
 											<img :src="present.src" width="50px" />
-											{{ present.title }}
+											<v-spacer></v-spacer>
+											{{ substr(present.description) }}
 										</v-btn>
 									</v-col>
-									<v-col cols="6" class="pa-0">
+									<v-col cols="5" class="pa-0">
 										<v-text-field
 											class="pt-0"
 											v-model="present.message"
@@ -127,13 +143,13 @@
 									</v-col>
 								</v-row>
 							</div>
-							<v-row align="center">
-								<v-col cols="12" class="px-0">
-									<v-btn block tile dark color="indigo" @click="present = true;">{{ $t('add') }}</v-btn>
-								</v-col>
-							</v-row>
 						</v-container>
 						<v-container v-else-if="setType === 'message'">
+							<v-row align="center">
+								<v-col cols="12" class="px-0">
+									<v-btn block tile dark color="indigo" @click="addMessageEvent">{{ $t('add') }}</v-btn>
+								</v-col>
+							</v-row>
 							<v-row class="ma-0" align="center" v-for="(message, idx) in liveMessage" :key="'message_' + message.cmd + idx">
 								<v-col cols="3" class="pa-0">
 									<v-text-field
@@ -158,27 +174,12 @@
 									</v-select>
 								</v-col>
 								<v-col cols="1" class="pa-0 text-right">
-										<v-btn icon depressed>
-											<v-icon color="red darken-3" @click="delMessageEvent(idx);">mdi-close-circle</v-icon>
-										</v-btn>
-									</v-col>
-							</v-row>
-							<v-row align="center">
-								<v-col cols="12" class="px-0">
-									<v-btn block tile dark color="indigo" @click="addMessageEvent">{{ $t('add') }}</v-btn>
+									<v-btn icon depressed>
+										<v-icon color="red darken-3" @click="delMessageEvent(idx);">mdi-close-circle</v-icon>
+									</v-btn>
 								</v-col>
 							</v-row>
 						</v-container>
-					</v-col>
-				</v-row>
-				<v-row align="start">
-					<v-col cols="8" align="left">
-						<span class="text-caption" style="font-size: 11pt !important;" v-html="$t('cmd.'+setType+'-ex')"></span>
-					</v-col>
-					<v-col cols="4" align="right">
-						<v-btn tile dark color="indigo" @click="save">
-							{{ $t('apply') }}
-						</v-btn>
 					</v-col>
 				</v-row>
 			</v-col>
@@ -195,7 +196,7 @@ import giftCoin from '@/assets/gift_coin.png';
 export interface PresentStruct {
 	sticker: string;
 	src: string;
-	title: string;
+	description: string;
 	message: string;
 }
 
@@ -296,7 +297,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 		}
 		this.livePresent.push({
 			sticker: sticker.name,
-			title: sticker.title,
+			description: sticker.description,
 			src: sticker.image_thumbnail,
 			message: '',
 		});
@@ -344,6 +345,15 @@ export default class Cmd extends Mixins(GlobalMixins) {
 		});
 		this.$logger.success('cmd', `Save success config file. [${this.cfgPath}]`, this.cfg.get());
 		window.reloadCmdCfg();
+	}
+
+	public substr(str: string) {
+		if ( str ) {
+			if ( str.length > 5 ) {
+				return str.substr(0, 5) + '...';
+			}
+		}
+		return str;
 	}
 
 }

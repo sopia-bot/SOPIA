@@ -145,12 +145,14 @@ const createWindow = () => {
 
 	win.webContents.session.webRequest.onBeforeSendHeaders(
 		(details, callback) => {
-		  	const { requestHeaders } = details;
-		  	UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', ['*']);
-			callback({ requestHeaders });
+			const { requestHeaders } = details;
+			UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', ['*']);
+			callback({
+				requestHeaders,
+			});
 		},
 	);
-	  
+
 	win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
 		const { responseHeaders } = details;
 		UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*']);
