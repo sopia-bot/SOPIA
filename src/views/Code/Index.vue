@@ -221,10 +221,13 @@ export default class Code extends Mixins(GlobalMixins) {
 				const stat = fs.statSync(file.fullPath);
 				if ( stat.isDirectory() ) {
 					dir = file.fullPath;
+				} else {
+					dir = path.dirname(file.fullPath);
 				}
 			}
 		}
 
+		this.$evt.$emit('code:rename');
 		if ( this.openFiles.length > 0 && this.selectedFile >= 0 ) {
 			this.$evt.$emit('code:rename', dir, 'RENAME');
 		} else {

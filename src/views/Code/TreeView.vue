@@ -101,7 +101,6 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		this.$evt.$off('code:rename');
 		this.$evt.$on('code:rename', (dir: string) => {
 			const node = this.selectedNode;
-			console.log('???', dir);
 			this.nbdir = dir;
 			this.nbtype = 'RENAME';
 			if ( node ) {
@@ -219,6 +218,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 			return;
 		}
 
+
 		const m: any = this.newName.match(/[a-zA-Z0-9\._-]*/);
 		if ( !m && m[0] !== this.newName ) {
 			this.$noti({
@@ -229,12 +229,20 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		}
 
 		const target = path.join(this.nbdir, this.newName);
+		const oldTarget = this.selectedNode.data.value;
+
+		if ( target === oldTarget ) {
+			return;
+		}
+		
 		if ( fs.existsSync(target) ) {
 			this.$logger.err('code', `Exists file or directory. [${target}]`);
 			this.$modal({
 				type: 'error',
 				title: 'Error',
 				content: this.$t('code.msg.exists'),
+			}).then((close) => {
+				close();
 			});
 			return;
 		}
@@ -251,7 +259,6 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				fs.mkdirSync(target);
 				break;
 			case 'RENAME':
-				const oldTarget = this.selectedNode.data.value;
 				fs.renameSync(oldTarget, target);
 				this.$logger.success('code', `Rename [${oldTarget}] -> [${target}]`);
 				break;
