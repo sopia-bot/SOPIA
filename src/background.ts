@@ -111,6 +111,24 @@ global.snsLoginOpen = function(url: string) {
 	});
 };
 
+// https://pratikpc.medium.com/bypassing-cors-with-electron-ab7eaf331605
+function UpsertKeyValue(obj: Record<string, string|string[]>|undefined, keyToChange: string, value: string[]) {
+	const keyToChangeLower = keyToChange.toLowerCase();
+	if ( !obj ) {
+		return;
+	}
+	for (const key of Object.keys(obj)) {
+		if (key.toLowerCase() === keyToChangeLower) {
+			// Reassign old key
+			obj[key] = value;
+			// Done
+			return;
+		}
+	}
+	// Insert at end instead
+	obj[keyToChange] = value;
+}
+
 const createWindow = () => {
 	// Create the browser window.
 	win = new BrowserWindow({
@@ -123,6 +141,23 @@ const createWindow = () => {
 			enableRemoteModule: true,
 			webSecurity: !isDevelopment,
 		},
+	});
+
+	win.webContents.session.webRequest.onBeforeSendHeaders(
+		(details, callback) => {
+		  	const { requestHeaders } = details;
+		  	UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', ['*']);
+			callback({ requestHeaders });
+		},
+	);
+	  
+	win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+		const { responseHeaders } = details;
+		UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*']);
+		UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Headers', ['*']);
+		callback({
+			responseHeaders,
+		});
 	});
 
 	if (process.env.WEBPACK_DEV_SERVER_URL) {

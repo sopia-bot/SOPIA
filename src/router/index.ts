@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import bundle from './bundle';
+//import bundle from './bundle';
 
 Vue.use(VueRouter);
 
@@ -11,6 +11,7 @@ export interface RouteConfig {
 	icon?: string;
 	childs?: RouteConfig[];
 	isMenu?: boolean;
+	redirect?: string;
 }
 
 export const routes: RouteConfig[] = [
@@ -91,6 +92,11 @@ export const routes: RouteConfig[] = [
 		isMenu: true,
 	},
 	*/
+	{
+		name: 'default',
+		path: '*',
+		redirect: '/',
+	},
 ];
 
 const router = new VueRouter({
