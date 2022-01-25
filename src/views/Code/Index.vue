@@ -212,9 +212,21 @@ export default class Code extends Mixins(GlobalMixins) {
 	}
 
 	public TB_Rename() {
-		this.$evt.$emit('code:rename');
+		let dir = this.$path('userData', this.$route.params.folder);
+		if ( this.selectedDir ) {
+			dir = this.selectedDir;
+		} else if ( this.selectedFile >= 0 ) {
+			const file: TabFile = this.openFiles[this.selectedFile];
+			if ( file ) {
+				const stat = fs.statSync(file.fullPath);
+				if ( stat.isDirectory() ) {
+					dir = file.fullPath;
+				}
+			}
+		}
+
 		if ( this.openFiles.length > 0 && this.selectedFile >= 0 ) {
-			this.$evt.$emit('code:rename');
+			this.$evt.$emit('code:rename', dir, 'RENAME');
 		} else {
 			this.$logger.err('code', 'Can not rename file or directory.');
 		}

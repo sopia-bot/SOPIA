@@ -71,7 +71,6 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 	public namebox: boolean = false;
 	public newName: string = '';
-	public oldName: string = '';
 	public nbnew: boolean = false; // true: new file or directory
 	public nbdir: string = '';
 	public nbtype: 'FILE' | 'DIR' | 'RENAME' = 'FILE';
@@ -100,9 +99,10 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		});
 
 		this.$evt.$off('code:rename');
-		this.$evt.$on('code:rename', () => {
+		this.$evt.$on('code:rename', (dir: string) => {
 			const node = this.selectedNode;
-			this.oldName = this.newName;
+			console.log('???', dir);
+			this.nbdir = dir;
 			this.nbtype = 'RENAME';
 			if ( node ) {
 				const sel = this.$refs[node.data.value] as HTMLElement;
@@ -193,7 +193,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 					const ni = this.$refs['name-input'] as any;
 					ni.focus();
 				});
-				this.newName = str;
+				this.newName = str.trim();
 			});
 		});
 	}
@@ -228,49 +228,37 @@ export default class TreeView extends Mixins(GlobalMixins) {
 			return;
 		}
 
-		if ( this.nbnew ) {
-			const target = path.join(this.nbdir, this.newName);
-			if ( fs.existsSync(target) ) {
-				this.$logger.err('code', `Exists file or directory. [${target}]`);
-				this.$modal({
-					type: 'error',
-					title: 'Error',
-					content: this.$t('code.msg.exists'),
-				});
-				return;
-			}
-
-			if ( !fs.existsSync(this.nbdir) ) {
-				this.$logger.err('code', `No such file or directory. [${this.nbdir}]`);
-			}
-
-			switch ( this.nbtype ) {
-				case 'FILE':
-					fs.writeFileSync(target, '');
-					break;
-				case 'DIR':
-					fs.mkdirSync(target);
-					break;
-				case 'RENAME':
-					const oldTarget = path.join(this.nbdir, this.oldName);
-					fs.renameSync(oldTarget, target);
-					break;
-			}
-
-			this.nbnew = false;
-			this.$evt.$emit('code:tree-rerender');
-		} else {
-			const node = this.selectedNode;
-			const oriP = node.data.value;
-			const dirP = path.dirname(oriP);
-			const newP = path.join(dirP, this.newName);
-
-			this.namebox = false;
-
-			fs.renameSync(oriP, newP);
-			this.$logger.success(`Rename [${oriP}] -> [${newP}]`);
-			this.$evt.$emit('code:tree-rerender', newP, !node.hasChildren());
+		const target = path.join(this.nbdir, this.newName);
+		if ( fs.existsSync(target) ) {
+			this.$logger.err('code', `Exists file or directory. [${target}]`);
+			this.$modal({
+				type: 'error',
+				title: 'Error',
+				content: this.$t('code.msg.exists'),
+			});
+			return;
 		}
+
+		if ( !fs.existsSync(this.nbdir) ) {
+			this.$logger.err('code', `No such file or directory. [${this.nbdir}]`);
+		}
+
+		switch ( this.nbtype ) {
+			case 'FILE':
+				fs.writeFileSync(target, '');
+				break;
+			case 'DIR':
+				fs.mkdirSync(target);
+				break;
+			case 'RENAME':
+				const oldTarget = this.selectedNode.data.value;
+				fs.renameSync(oldTarget, target);
+				this.$logger.success('code', `Rename [${oldTarget}] -> [${target}]`);
+				break;
+		}
+
+		this.nbnew = false;
+		this.$evt.$emit('code:tree-rerender');
 	}
 
 	public checkFolder(): Promise<void> {
