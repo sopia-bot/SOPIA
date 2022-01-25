@@ -71,9 +71,10 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 	public namebox: boolean = false;
 	public newName: string = '';
+	public oldName: string = '';
 	public nbnew: boolean = false; // true: new file or directory
 	public nbdir: string = '';
-	public nbtype: 'FILE' | 'DIR' = 'FILE';
+	public nbtype: 'FILE' | 'DIR' | 'RENAME' = 'FILE';
 
 	get selectedNode(): any {
 		const treeRef = this.$refs.tree as any;
@@ -101,6 +102,8 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		this.$evt.$off('code:rename');
 		this.$evt.$on('code:rename', () => {
 			const node = this.selectedNode;
+			this.oldName = this.newName;
+			this.nbtype = 'RENAME';
 			if ( node ) {
 				const sel = this.$refs[node.data.value] as HTMLElement;
 				const position = sel.getBoundingClientRect();
@@ -216,8 +219,8 @@ export default class TreeView extends Mixins(GlobalMixins) {
 			return;
 		}
 
-		const m: any = this.newName.match(/[a-zA-Z0-9._-]*/);
-		if ( !m || m[0] !== this.newName ) {
+		const m: any = this.newName.match(/[a-zA-Z0-9\._-]*/);
+		if ( !m && m[0] !== this.newName ) {
 			this.$noti({
 				type: 'error',
 				content: this.$t('code.msg.special-char'),
@@ -247,6 +250,10 @@ export default class TreeView extends Mixins(GlobalMixins) {
 					break;
 				case 'DIR':
 					fs.mkdirSync(target);
+					break;
+				case 'RENAME':
+					const oldTarget = path.join(this.nbdir, this.oldName);
+					fs.renameSync(oldTarget, target);
 					break;
 			}
 

@@ -315,6 +315,7 @@ export default class Code extends Mixins(GlobalMixins) {
 
 			fs.writeFileSync(openedFile.fullPath, openedFile.contents, { encoding: 'utf8' });
 			openedFile.oriContents = openedFile.contents;
+			openedFile.isEdit = false;
 
 			this.$noti({
 				type: 'success',
