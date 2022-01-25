@@ -15,7 +15,7 @@
 	"main": "background.js",
 	"dependencies": {
 		"@sopia-bot/api-dto": "^1.0.1",
-		"@sopia-bot/core": "^2.1.4",
+		"@sopia-bot/core": "^2.1.8",
 		"@types/electron-devtools-installer": "^2.2.0",
 		"@types/uuid": "^8.0.0",
 		"axios": "^0.19.2",

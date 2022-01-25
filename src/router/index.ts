@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import bundle from './bundle';
 
 Vue.use(VueRouter);
 
@@ -66,11 +67,13 @@ export const routes: RouteConfig[] = [
 		icon: 'mdi-code-braces',
 		isMenu: true,
 		childs: [
+			/*
 			{
 				name: 'Bundles',
 				path: '/code/bundles/',
 				icon: 'mdi-puzzle',
 			},
+			*/
 			{
 				name: 'Sopia',
 				path: '/code/sopia/',
@@ -78,6 +81,8 @@ export const routes: RouteConfig[] = [
 			},
 		],
 	},
+	//bundle,
+	/*
 	{
 		name: 'Setting',
 		path: '/setting/',
@@ -85,6 +90,7 @@ export const routes: RouteConfig[] = [
 		icon: 'mdi-cog',
 		isMenu: true,
 	},
+	*/
 ];
 
 const router = new VueRouter({

@@ -23,16 +23,16 @@ window.reloadScript = () => {
 	Script.clear();
 	Script.add($path('userData', 'sopia/'));
 	const bundlePath = $path('userData', 'bundles');
-	
+
 	if ( !fs.existsSync(bundlePath) ) {
 		fs.mkdirSync(bundlePath);
 	}
-	
+
 	const bundles = fs.readdirSync(bundlePath);
 	for ( const bundle of bundles ) {
 		Script.add(path.join(bundlePath, bundle));
-	}	
-}
+	}
+};
 window.reloadScript();
 
 const CMD_PATH = $path('userData', 'cmd.cfg');

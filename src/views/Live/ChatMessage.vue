@@ -11,7 +11,7 @@
 				<v-list-item-avatar
 					style="cursor: pointer;"
 					@click="$assign('/user/' + evt.data.user.id)">
-					<v-img :src="evt.data.user.profile_url"></v-img>
+					<v-img :src="profileURL"></v-img>
 				</v-list-item-avatar>
 
 				<v-list-item-content>
@@ -43,7 +43,7 @@
 						<pre style="white-space: pre-wrap;" v-text="evt.update_component.message.value"></pre>
 					</v-list-item-content>
 					<v-list-item-content v-else-if="evt.event === LiveEvent.LIVE_PRESENT" class="mx-4">
-						<img style="width: 100%;" :src="getStickerImg()"></img>
+						<img style="width: 100%;" :src="stickerImg"></img>
 						<h4 class="text-center mb-3">
 							{{ evt.data.amount }}{{ $t('spoon') }}
 							<span v-if="evt.data.combo > 1" class="font-weight-bold indigo--text text--accent-1">X {{ evt.data.combo }}</span>
@@ -93,14 +93,24 @@ import { LiveEvent } from '@sopia-bot/core';
 export default class ChatMessage extends Mixins(GlobalMixins) {
 	@Prop(Object) public evt: any;
 
+	public defaultProfileUrl = require('assets/default-profile.png');
+
+	public created() {
+		if ( this.evt.data.author ) {
+			this.evt.data.user = this.evt.data.author;
+		}
+	}
+
+	get profileURL() {
+		return this.evt.data.user?.profile_url || this.defaultProfileUrl;
+	}
+
 	public blockUser(id: number) {
 		this.$evt.$emit('live-block', id);
 	}
 
-	public getStickerImg() {
-		// TODO: this api is not support now
-		//return (this.$sopia.findSticker(this.evt.data.sticker)?.imageThumbnail) as string;
-		return '';
+	get stickerImg() {
+		return this.$sopia.sticker.findSticker(this.evt.data.sticker)?.image_thumbnail;
 	}
 }
 </script>

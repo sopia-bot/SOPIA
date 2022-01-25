@@ -28,13 +28,13 @@
 										style="cursor: pointer;"
 										:elevation="hover ? 12 : 0">
 										<v-img
-											:src="sticker.imageThumbnail"
+											:src="sticker.image_thumbnail"
 											class="white--text align-center"
 											:gradient="hover ? 'to bottom, rgba(0,0,0,.7), rgba(0,0,0,.7)' : ''"
 											width="100%">
 											<v-row v-if="hover" align="center">
 												<v-col cols="12" class="pb-0" align="center">
-													<h3>{{ sticker.title }}</h3>
+													<h3>{{ sticker.description }}</h3>
 												</v-col>
 												<v-col cols="12" class="pt-0" align="center">
 													<v-chip color="transparent">
