@@ -30,7 +30,11 @@ window.reloadScript = () => {
 
 	const bundles = fs.readdirSync(bundlePath);
 	for ( const bundle of bundles ) {
-		Script.add(path.join(bundlePath, bundle));
+		const target = path.join(bundlePath, bundle);
+		const stat = fs.statSync(target);
+		if ( stat.isDirectory() ) {
+			Script.add(target);
+		}
 	}
 };
 window.reloadScript();

@@ -74,7 +74,9 @@ Vue.config.errorHandler = function(err: any, vm: any, info) {
 	let str = '';
 	str += `${new Date().toLocaleString()}\n`;
 	str += `ReferenceError: ${err.message}\n`;
-	str += `${err.stack.split('\n')[1]}\n`;
+	if ( err.stack ) {
+		str += `${err.stack.split('\n')[1]}\n`;
+	}
 	str += `    - ${vm.$options._componentTag}::${info}\n\n`;
 
 

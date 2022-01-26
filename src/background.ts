@@ -6,11 +6,12 @@
  */
 'use strict';
 
-import { app, session, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, session, protocol, BrowserWindow, ipcMain, dialog, IpcMainEvent } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import path from 'path';
 import CfgLite from 'cfg-lite';
+import { ZipFile } from '@arkiv/zip';
 
 
 const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
@@ -19,7 +20,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const CfgList: any = {};
 const getPath = (type: any, ...args: any) => path.resolve(app.getPath(type), ...args);
 
-ipcMain.on('cfg-lite', (evt: any, prop: string, file: string, ...args: any) => {
+ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: any) => {
 	const key = path.basename(file);
 	let rtn: any = null;
 	if ( prop === 'new' ) {
@@ -33,6 +34,17 @@ ipcMain.on('cfg-lite', (evt: any, prop: string, file: string, ...args: any) => {
 	}
 
 	evt.returnValue = rtn;
+});
+
+ipcMain.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
+	console.log('start create zip', src, dst);
+	ZipFile.CreateFromDirectory(src, dst);
+	console.log('created zip sucess');
+	evt.returnValue = true;
+});
+
+ipcMain.handle('open-dialog', async (event, options: any) => {
+	return await dialog.showOpenDialog(options);
 });
 
 

@@ -40,8 +40,8 @@ import GlobalMixins from '@/plugins/mixins';
 export default class Login extends Mixins(GlobalMixins) {
 
 	@Prop(Boolean) public value!: boolean;
-	public sopiaShow: boolean = false; // 베타 버전은 소피아 서버와 연동하지 않는다.
-	public spoonShow: boolean = true;
+	public sopiaShow: boolean = true;
+	public spoonShow: boolean = false;
 
 	public sopiaUser!: UserDto;
 
@@ -55,7 +55,7 @@ export default class Login extends Mixins(GlobalMixins) {
 
 	public async sopiaLogon(user: UserDto) {
 		this.sopiaUser = user;
-		//this.$cfg.set('sopia')
+		this.$cfg.set('sopia', this.sopiaUser);
 		if ( this.sopiaUser.spoon_id === '0' ) {
 			this.sopiaShow = false;
 			this.spoonShow = true;
@@ -73,14 +73,11 @@ export default class Login extends Mixins(GlobalMixins) {
 
 	public async spoonLogon(user: LogonUser) {
 		this.$logger.info('Spoon login user', user);
-		/*
 		if ( this.sopiaUser.spoon_id === '0' ) {
 			this.sopiaUser.spoon_id = user.id.toString();
 			await this.$api.setUserInfo(this.sopiaUser);
 		}
-		*/
 
-		/*
 		if ( +this.sopiaUser.spoon_id !== user.id ) {
 			const close = await this.$modal({
 				title: this.$t('msg.alert'),
@@ -90,7 +87,6 @@ export default class Login extends Mixins(GlobalMixins) {
 			close();
 			return;
 		}
-		*/
 
 		const { id, token, refresh_token } = this.$sopia.logonUser;
 		this.$cfg.set('auth.spoon.id', id);

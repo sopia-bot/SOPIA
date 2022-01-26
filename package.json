@@ -14,6 +14,7 @@
 	},
 	"main": "background.js",
 	"dependencies": {
+		"@arkiv/zip": "^1.1.8",
 		"@sopia-bot/api-dto": "^1.0.1",
 		"@sopia-bot/core": "^2.1.8",
 		"@types/electron-devtools-installer": "^2.2.0",

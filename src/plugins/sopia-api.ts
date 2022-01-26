@@ -23,7 +23,7 @@ export class SopiaAPI {
 		return await this.req('PATCH', '/user/info', data);
 	}
 
-	private async req(method: string, url: string, data: any = {}) {
+	public async req(method: string, url: string, data: any = {}) {
 		if ( !data['headers'] ) {
 			data = { data, headers: {} };
 		}
@@ -40,9 +40,9 @@ export class SopiaAPI {
 
 		const res = await axios(data);
 
-		if ( res.data.error ) {
-			throw res.data;
-		}
+		//if ( res.data.error ) {
+		//	throw res.data;
+		//}
 
 		return res.data;
 	}

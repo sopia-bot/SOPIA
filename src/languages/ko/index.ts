@@ -10,6 +10,7 @@ import code from './code/';
 import lives from './lives/';
 import users from './users/';
 import cmd from './cmd/';
+import bundle from './bundle/';
 
 export default {
 	app,
@@ -18,6 +19,7 @@ export default {
 	lives,
 	users,
 	cmd,
+	bundle,
 	// common
 	'msg': {
 		alert: '알림',
@@ -31,4 +33,8 @@ export default {
 	'add': '추가',
 	'save-success': '저장에 성공했습니다.',
 	'login': '로그인',
+	'error': '오류',
+	'errors': {
+		'file-not-found': '$0 파일을 찾을 수 없습니다.',
+	},
 };

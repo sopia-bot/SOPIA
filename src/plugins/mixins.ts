@@ -36,9 +36,20 @@ const jsOrPath = (code: string) => {
 
 @Component
 export default class Mixin extends VueDecorator {
-	public $t(key: string) {
+	public $t(key: string, ...args: string[]) {
 		const tmp: any = this;
-		return tmp.$vuetify.lang.t('$vuetify.' + key);
+
+		let str = tmp.$vuetify.lang.t('$vuetify.' + key);
+
+		args.forEach((arg: string, idx: number) => {
+			const regx = new RegExp(`\\$${idx}`, 'g');
+			str = str.replace(regx, arg);
+		});
+
+		str = str.replace(/{{\s*([\w.-]*)?\s*}}/g,
+		(org: string, arg1: string) => this.$vuetify.lang.t('$vuetify.' + arg1));
+
+		return str;
 	}
 
 	public mount(component: any, options: any = {}, selector?: (string | HTMLElement)) {
