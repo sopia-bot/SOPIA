@@ -4,10 +4,11 @@ const vm = window.require('vm');
 const { remote } = window.require('electron');
 const { app } = remote;
 import { RouteConfig } from './index';
+import { BundlePackage } from '@/interface/bundle';
 
 export interface BundleInfo {
 	dir: string;
-	pkg: any;
+	pkg: BundlePackage;
 	name: string;
 	page?: string;
 }
@@ -24,7 +25,7 @@ if ( Array.isArray(dirs) ) {
 		const info: BundleInfo = {
 			name: dir,
 			dir: p,
-			pkg: null,
+			pkg: {} as BundlePackage,
 		};
 
 		if ( fs.existsSync(pkgPath) ) {

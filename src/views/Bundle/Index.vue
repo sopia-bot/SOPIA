@@ -16,7 +16,7 @@ import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import Store from './Store.vue';
 import path from 'path';
-import { BundleInfo } from '@/router/bundle';
+import { BundlePackage } from '@/interface/bundle';
 const fs = window.require('fs');
 const vm = window.require('vm');
 
@@ -29,7 +29,7 @@ export default class Bundle extends Mixins(GlobalMixins) {
 
 	public basePath: string = this.$path('userData', 'bundles');
 	public bundlePath: string = path.join(this.basePath, this.$route.params.bundle);
-	public package!: BundleInfo;
+	public package!: BundlePackage;
 	public page: any = null;
 
 	get isStore() {
