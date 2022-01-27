@@ -11,7 +11,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import path from 'path';
 import CfgLite from 'cfg-lite';
-import { ZipFile } from '@arkiv/zip';
+import { ZipFile, ZipArchive } from '@arkiv/zip';
 
 
 const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
@@ -37,9 +37,13 @@ ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: 
 });
 
 ipcMain.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
-	console.log('start create zip', src, dst);
 	ZipFile.CreateFromDirectory(src, dst);
-	console.log('created zip sucess');
+	evt.returnValue = true;
+});
+
+ipcMain.on('zip:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
+	const archive = new ZipArchive('', Buffer.from(b64str, 'base64'));
+	archive.ExtractAll(dst);
 	evt.returnValue = true;
 });
 

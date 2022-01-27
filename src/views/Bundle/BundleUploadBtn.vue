@@ -15,6 +15,34 @@ const fs = window.require('fs');
 @Component
 export default class BundleUploadButton extends Mixins(GlobalMixins) {
 
+	public async checkPackageProperty(pkg: any, key: string) {
+		if ( !pkg[key] ) {
+			this.$logger.err('bundle', 'Did not have name property in package.json', pkg);
+			const close = await this.$modal({
+				type: 'error',
+				title: this.$t('error'),
+				content: this.$t('bundle.store.error.must-be', key),
+			});
+			close();
+			return false;
+		}
+		return true;
+	}
+
+	public async checkFile(src: string) {
+		if ( !fs.existsSync(src) ) {
+			this.$logger.err('bundle', 'Could not find index.js from bundle', src);
+			const close = await this.$modal({
+				type: 'error',
+				title: this.$t('error'),
+				content: this.$t('errors.file-not-found', path.basename(src)),
+			});
+			close();
+			return false;
+		}
+		return true;
+	}
+
 	public async uploadBundle() {
 		const result = await ipcRenderer.invoke('open-dialog', {
 			properties: ['openDirectory'],
@@ -29,28 +57,17 @@ export default class BundleUploadButton extends Mixins(GlobalMixins) {
 		const target = result.filePaths[0];
 
 		const indexFile = path.join(target, 'index.js');
-		if ( !fs.existsSync(indexFile) ) {
-			this.$logger.err('bundle', 'Could not find index.js from bundle', indexFile);
-			this.$modal({
-				type: 'error',
-				title: this.$t('error'),
-				content: this.$t('errors.file-not-found', 'index.js'),
-			}).then((close) => {
-				close();
-			});
+		if ( !await this.checkFile(indexFile) ) {
 			return;
 		}
 
 		const packageFile = path.join(target, 'package.json');
-		if ( !fs.existsSync(packageFile) ) {
-			this.$logger.err('bundle', 'Could not find package.json from bundle', packageFile);
-			this.$modal({
-				type: 'error',
-				title: this.$t('error'),
-				content: this.$t('errors.file-not-found', 'package.json'),
-			}).then((close) => {
-				close();
-			});
+		if ( !await this.checkFile(packageFile) ) {
+			return;
+		}
+
+		const readmeFile = path.join(target, 'README.md');
+		if ( !await this.checkFile(readmeFile) ) {
 			return;
 		}
 
@@ -59,28 +76,16 @@ export default class BundleUploadButton extends Mixins(GlobalMixins) {
 		const pkg = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
 		this.$logger.debug('bundle', 'Package content', packageFile, pkg);
 
-		if ( !pkg.name ) {
-			this.$logger.err('bundle', 'Did not have name property in package.json', pkg);
-			this.$modal({
-				type: 'error',
-				title: this.$t('error'),
-				content: this.$t('bundle.store.error.must-be', 'name'),
-			}).then((close) => {
-				close();
-			});
+		if ( !await this.checkPackageProperty(pkg, 'name') ) {
 			return;
 		}
 
-		if ( !pkg.version ) {
-			this.$logger.err('bundle', 'Did not have version property in package.json', pkg);
-			this.$modal({
-				type: 'error',
-				title: this.$t('error'),
-				content: this.$t('bundle.store.error.must-be', 'version'),
-			}).then((close) => {
-				close();
-			});
+		if ( !await this.checkPackageProperty(pkg, 'version') ) {
 			return;
+		}
+
+		if ( !pkg.description ) {
+			pkg.description = 'No description';
 		}
 
 		const zipFile = target + '.zip';

@@ -10,7 +10,7 @@
 			<v-spacer></v-spacer>
 			<bundle-upload-button/>
 		</v-app-bar>
-		<v-main class="pa-0">
+		<v-main class="pa-4">
 			<v-row class="ma-0">
 				<v-col cols="4" v-for="(bundle) in bundleList" :key="bundle.name">
 					<bundle-item :pkg="bundle" />
@@ -23,7 +23,7 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import BundleUploadButton from './BundleUploadBtn.vue';
-import BundleItem from './BundleItem.vue';
+import BundleItem from './BundleItem/Index.vue';
 import { BundlePackage } from '@/interface/bundle';
 
 @Component({
