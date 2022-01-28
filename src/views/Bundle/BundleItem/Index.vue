@@ -24,7 +24,7 @@
 				</v-card>
 			</template>
 		</v-hover>
-		<v-dialog v-model="detail">
+		<v-dialog v-model="detail" flat>
 			<Detail :pkg="pkg"/>
 		</v-dialog>
 	</div>
