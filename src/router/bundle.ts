@@ -16,31 +16,33 @@ export interface BundleInfo {
 let ret: RouteConfig[] = [];
 const basePath = path.resolve(app.getPath('userData'), 'bundles');
 
-const dirs = fs.readdirSync(basePath);
-if ( Array.isArray(dirs) ) {
-	ret = dirs
-	.map((dir) => {
-		const p = path.resolve(basePath, dir);
-		const pkgPath = path.resolve(p, 'package.json');
-		const info: BundleInfo = {
-			name: dir,
-			dir: p,
-			pkg: {} as BundlePackage,
-		};
+export function bundleReadDir() {
+	const dirs = fs.readdirSync(basePath);
+	if ( Array.isArray(dirs) ) {
+		return dirs.map((dir) => {
+			const p = path.resolve(basePath, dir);
+			const pkgPath = path.resolve(p, 'package.json');
+			const info: BundleInfo = {
+				name: dir,
+				dir: p,
+				pkg: {} as BundlePackage,
+			};
 
-		if ( fs.existsSync(pkgPath) ) {
-			info.pkg = JSON.parse(fs.readFileSync(pkgPath, { encoding: 'utf8' }));
-		}
-		return info;
-	})
-	.filter((info) => info.pkg && info.pkg.page)
-	.map((info) => {
-		return {
-			name: info.name,
-			path: path.join('/bundle/' + path.basename(info.dir)),
-			icon: info.pkg.icon || 'mdi-tangram',
-		};
-	}) as RouteConfig[];
+			if ( fs.existsSync(pkgPath) ) {
+				info.pkg = JSON.parse(fs.readFileSync(pkgPath, { encoding: 'utf8' }));
+			}
+			return info;
+		})
+		.filter((info) => info.pkg && info.pkg.page)
+		.map((info) => {
+			return {
+				name: info.name,
+				path: path.join('/bundle/' + path.basename(info.dir)),
+				icon: info.pkg.icon || 'mdi-tangram',
+			};
+		}) as RouteConfig[];
+	}
+	return [] as RouteConfig[];
 }
 
 export default {

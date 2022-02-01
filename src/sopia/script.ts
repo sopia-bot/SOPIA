@@ -41,10 +41,10 @@ export class Script {
 		this.files = [];
 	}
 
-	public run(event: any) {
+	public run(event: any, sock: any) {
 		if ( Array.isArray(this.binds[event.event]) ) {
 			for ( const module of this.binds[event.event] ) {
-				module(event);
+				module(event, sock);
 			}
 		}
 	}

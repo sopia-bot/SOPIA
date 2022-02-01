@@ -159,7 +159,7 @@ const processor = async (evt: any, sock: LiveSocket) => {
 	}
 	/* E: Cmd */
 
-	Script.run(evt);
+	Script.run(evt, sock);
 };
 
 export default processor;

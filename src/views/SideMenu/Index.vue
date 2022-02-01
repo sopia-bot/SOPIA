@@ -78,13 +78,15 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { User } from '@sopia-bot/core';
-import { routes } from '@/router/';
+import { routes, RouteConfig } from '@/router/';
+import { bundleReadDir } from '@/router/bundle';
 
 @Component
 export default class SideMenu extends Mixins(GlobalMixins) {
 
 	public readonly Routes: any = routes;
 	public CurPath: string = location.pathname;
+	public bundles: RouteConfig[] = [];
 
 	public user: any = {
 		id: 0,
@@ -117,6 +119,10 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			}
 
 			console.log(this.user);
+		});
+
+		this.$evt.$on('sidemenu:bundle-reload', () => {
+			this.bundles = bundleReadDir();
 		});
 	}
 
