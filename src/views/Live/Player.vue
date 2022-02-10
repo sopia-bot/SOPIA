@@ -5,7 +5,7 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
 <template>
-	<div v-if="live && live.id">
+	<div v-show="live && live.id">
 		<div v-if="fullScreen">
 			<v-card
 				tile
@@ -105,6 +105,7 @@ const IgnoreEvent = [
 	data: () => {
 		return {
 			LiveEvent,
+			benched: 0,
 		};
 	},
 })
