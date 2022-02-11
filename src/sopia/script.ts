@@ -6,11 +6,19 @@
  */
 const fs = window.require('fs');
 const path = window.require('path');
+const vm = window.require('vm');
+import SopiaContext from './context';
 import logger from '@/plugins/logger';
 
+interface Context {
+	sopia: SopiaContext;
+	console: Console;
+	require: (p: string) => any;
+	logger: any;
+}
+
 export class Script {
-	private files: string[] = [];
-	private binds: any = {};
+	private contexts: Context[] = [];
 
 	constructor() {
 		// empty
@@ -19,17 +27,27 @@ export class Script {
 	public add(folder: string) {
 		const index = path.join(folder, 'index.js');
 		if ( fs.existsSync(index) ) {
-			const module: any = window.require(index);
-			for ( const [key, func] of Object.entries(module) ) {
-				if ( key === 'bootstrap' ) {
-					(func as () => void)();
-				} else {
-					if ( this.binds[key] ) {
-						this.binds[key].push(func);
-					} else {
-						this.binds[key] = [ func ];
+			const source: string = fs.readFileSync(index, 'utf8');
+			const script = new vm.Script(source);
+			const context: Context = {
+				sopia: new SopiaContext(index),
+				console,
+				require: (p: string) => {
+					const t = path.resolve(folder, p);
+					if ( fs.existsSync(t) ) {
+						return window.require(t);
 					}
-				}
+					return window.require(p);
+				},
+				logger,
+			};
+			try {
+				script.runInNewContext(context, {
+					displayErrors: true,
+				});
+				this.contexts.push(context);
+			} catch (err) {
+				console.error(err);
 			}
 		} else {
 			logger.err('sopia', `Can not open script file [${index}].`);
@@ -37,14 +55,18 @@ export class Script {
 	}
 
 	public clear() {
-		this.binds = [];
-		this.files = [];
+		if ( Array.isArray(this.contexts) ) {
+			for ( const context of this.contexts ) {
+				context.sopia.itv.clear();
+			}
+		}
+		this.contexts = [];
 	}
 
 	public run(event: any, sock: any) {
-		if ( Array.isArray(this.binds[event.event]) ) {
-			for ( const module of this.binds[event.event] ) {
-				module(event, sock);
+		if ( Array.isArray(this.contexts) ) {
+			for ( const context of this.contexts ) {
+				context.sopia.emit(event.event, event, sock);
 			}
 		}
 	}

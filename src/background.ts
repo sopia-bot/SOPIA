@@ -156,6 +156,7 @@ const createWindow = () => {
 			nodeIntegration: true,
 			enableRemoteModule: true,
 			webSecurity: !isDevelopment,
+			backgroundThrottling: false,
 		},
 	});
 

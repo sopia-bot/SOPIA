@@ -13,7 +13,7 @@ export interface BundleInfo {
 	page?: string;
 }
 
-let ret: RouteConfig[] = [];
+const ret: RouteConfig[] = [];
 const basePath = path.resolve(app.getPath('userData'), 'bundles');
 
 export function bundleReadDir() {
