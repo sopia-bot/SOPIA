@@ -38,13 +38,29 @@ export class SopiaAPI {
 			data['headers']['authorization'] = 'Bearer ' + this.user.token;
 		}
 
-		const res = await axios(data);
+		try {
+			const res = await axios(data);
+			return res.data;
+		} catch(err) {
+			if ( err.response ) {
+				const data = err.response.data as any;
+				if ( data.message === 'jwt_expired' ) {
+					await this.refreshToken();
+					return await this.req(method, url, data);
+				}
+			}
+		}
+	}
 
-		//if ( res.data.error ) {
-		//	throw res.data;
-		//}
-
-		return res.data;
+	private async refreshToken() {
+		const res = await axios({
+			url: this.host + '/auth/refresh',
+			method: 'post',
+			data: {
+				refresh_token: this.user.refresh_token,
+			},
+		});
+		this.user = res.data[0];
 	}
 
 }
