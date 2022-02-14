@@ -24,23 +24,42 @@ export class Script {
 		// empty
 	}
 
+	private createNewContext(index: string): Context {
+		const folder = path.dirname(index);
+		const context = {
+			sopia: new SopiaContext(index),
+			console,
+			atob,
+			btoa,
+			require: (p: string) => {
+				const module = {
+					exports: {},
+				};
+				const tmpCtx = vm.createContext({
+					...context,
+					module,
+					exports: module.exports,
+				});
+				const t = path.resolve(folder, p);
+				if ( fs.existsSync(t) ) {
+					const source = fs.readFileSync(t, 'utf8');
+					const script = new vm.Script(source);
+					script.runInNewContext(tmpCtx);
+					return tmpCtx.module.exports;
+				}
+				return window.require(p);
+			},
+			logger,
+		};
+		return context;
+	}
+
 	public add(folder: string) {
 		const index = path.join(folder, 'index.js');
 		if ( fs.existsSync(index) ) {
 			const source: string = fs.readFileSync(index, 'utf8');
 			const script = new vm.Script(source);
-			const context: Context = {
-				sopia: new SopiaContext(index),
-				console,
-				require: (p: string) => {
-					const t = path.resolve(folder, p);
-					if ( fs.existsSync(t) ) {
-						return window.require(t);
-					}
-					return window.require(p);
-				},
-				logger,
-			};
+			const context: Context = this.createNewContext(index);
 			try {
 				script.runInNewContext(context, {
 					displayErrors: true,
