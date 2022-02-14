@@ -1,7 +1,6 @@
 /* tslint:disable:max-classes-per-file */
 
 import { EventEmitter } from '@sopia-bot/core';
-import { setInterval as interval } from 'timers';
 
 interface RecordItem {
 	func: () => void;
@@ -75,7 +74,7 @@ export class Timer {
 
 export class Timeout extends Timer {
 
-};
+}
 
 export class Interval extends Timer {
 
