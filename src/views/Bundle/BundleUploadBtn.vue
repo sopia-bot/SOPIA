@@ -115,6 +115,7 @@ export default class BundleUploadButton extends Mixins(GlobalMixins) {
 			version: pkg.version,
 			data: fs.readFileSync(zipFile, 'base64'),
 		});
+		fs.unlinkSync(zipFile);
 
 		if ( res.error ) {
 			this.$logger.err('bundle', 'Package upload error', res);
@@ -128,7 +129,6 @@ export default class BundleUploadButton extends Mixins(GlobalMixins) {
 			return;
 		}
 
-		fs.unlinkSync(zipFile);
 		this.$logger.success('bundle', 'Bundle upload done.');
 
 		this.$modal({

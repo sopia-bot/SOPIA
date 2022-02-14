@@ -23,7 +23,7 @@ export class SopiaAPI {
 		return await this.req('PATCH', '/user/info', data);
 	}
 
-	public async req(method: string, url: string, data: any = {}) {
+	public async req(method: string, url: string, data: any = {}): Promise<any> {
 		if ( !data['headers'] ) {
 			data = { data, headers: {} };
 		}
@@ -41,10 +41,10 @@ export class SopiaAPI {
 		try {
 			const res = await axios(data);
 			return res.data;
-		} catch(err) {
+		} catch (err) {
 			if ( err.response ) {
-				const data = err.response.data as any;
-				if ( data.message === 'jwt_expired' ) {
+				const res = err.response.data as any;
+				if ( res.message === 'jwt_expired' ) {
 					await this.refreshToken();
 					return await this.req(method, url, data);
 				}

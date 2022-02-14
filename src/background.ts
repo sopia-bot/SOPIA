@@ -37,8 +37,14 @@ ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: 
 });
 
 ipcMain.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
-	ZipFile.CreateFromDirectory(src, dst);
-	evt.returnValue = true;
+	console.log('zip:create', src, dst);
+	try {
+		ZipFile.CreateFromDirectory(src, dst);
+		evt.returnValue = true;
+	} catch (err) {
+		console.error(err);
+		evt.returnValue = false;
+	}
 });
 
 ipcMain.on('zip:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
