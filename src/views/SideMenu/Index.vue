@@ -43,7 +43,7 @@
 							</v-list-item-content>
 						</template>
 						<v-list-item
-							v-for="child in route.childs"
+							v-for="child in route.childs.filter(c => !!c.path)"
 							@click="$assign(child.path)"
 							:class="CurPath === child.path ? 'indigo lighten-5' : ''"
 							:key="route.name + child.name">

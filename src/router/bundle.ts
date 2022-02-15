@@ -12,8 +12,6 @@ export interface BundleInfo {
 	name: string;
 	page?: string;
 }
-
-const ret: RouteConfig[] = [];
 const basePath = path.resolve(app.getPath('userData'), 'bundles');
 
 export function bundleReadDir() {
@@ -44,6 +42,8 @@ export function bundleReadDir() {
 	}
 	return [] as RouteConfig[];
 }
+
+const ret: RouteConfig[] = bundleReadDir();
 
 export default {
 	name: 'Bundle',
