@@ -40,8 +40,11 @@ export class SopiaAPI {
 
 		try {
 			const res = await axios(data);
+			if ( res.data.error ) {
+				throw { response: res };
+			}
 			return res.data;
-		} catch (err) {
+		} catch (err: any) {
 			if ( err.response ) {
 				const res = err.response.data as any;
 				if ( res.msg === 'jwt_expired' ) {
