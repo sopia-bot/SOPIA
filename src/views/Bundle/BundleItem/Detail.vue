@@ -11,14 +11,20 @@
 			<v-btn
 				v-if="isPackageUsing"
 				color="red darken-1"
-				dark tile depressed
+				tile depressed
+				:dark="!loading"
+				:loading="loading"
+				:disabled="loading"
 				@click="uninstall">
 				{{ $t('uninstall') }}
 			</v-btn>
 			<v-btn
 				v-else
 				color="indigo darken-1"
-				dark tile depressed
+				tile depressed
+				:dark="!loading"
+				:loading="loading"
+				:disabled="loading"
 				@click="install">
 				{{ $t('install') }}
 			</v-btn>
@@ -29,7 +35,6 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 import BundleMixin from '../bundle-mixin';
 import { BundlePackage } from '@/interface/bundle';
-import path from 'path';
 import hljs from 'highlight.js';
 
 const fs = window.require('fs');
@@ -42,8 +47,6 @@ const mappingLanguage = (language: string) => {
 	}
 	return language;
 };
-
-console.log('marked', marked);
 
 marked.setOptions({
 	langPrefix: 'hljs language-',
@@ -66,6 +69,8 @@ export default class BundleItemDetail extends Mixins(BundleMixin) {
 	public isPackageUsing = false;
 	public readme: string = '';
 
+	public loading: boolean = false;
+
 	get readmeMarkdown() {
 		return marked.marked(this.readme).replace(/\n/g, '<br>');
 	}
@@ -81,13 +86,19 @@ export default class BundleItemDetail extends Mixins(BundleMixin) {
 	}
 
 	public async install() {
-		this.bundleInstall(this.pkg);
+		this.loading = true;
+		await this.bundleInstall(this.pkg);
 		this.updatePackageUsing();
+		this.$evt.$emit('sidemenu:bundle-reload');
+		this.loading = false;
 	}
 
 	public async uninstall() {
+		this.loading = true;
 		await this.bundleUninstall(this.pkg);
 		this.updatePackageUsing();
+		this.$evt.$emit('sidemenu:bundle-reload');
+		this.loading = false;
 	}
 
 	private updatePackageUsing() {

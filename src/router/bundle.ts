@@ -43,7 +43,20 @@ export function bundleReadDir() {
 	return [] as RouteConfig[];
 }
 
-const ret: RouteConfig[] = bundleReadDir();
+export function createBundleRouter() {
+	return [
+		{
+			name: 'store',
+			path: '/bundle/store',
+			icon: 'mdi-basket',
+		},
+		...bundleReadDir(),
+		{
+			path: '',
+			redirect: '/bundle/store/',
+		},
+	];
+}
 
 export default {
 	name: 'Bundle',
@@ -51,16 +64,5 @@ export default {
 	component: () => import('@/views/Bundle/Index.vue'),
 	icon: 'mdi-puzzle',
 	isMenu: true,
-	childs: [
-		{
-			name: 'store',
-			path: '/bundle/store',
-			icon: 'mdi-basket',
-		},
-		...ret,
-		{
-			path: '',
-			redirect: '/bundle/store/',
-		},
-	],
+	childs: createBundleRouter(),
 } as RouteConfig;

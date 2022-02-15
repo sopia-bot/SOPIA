@@ -114,7 +114,6 @@ export default class App extends Mixins(GlobalMixins) {
 			.filter((bundle) => {
 				const pkgPath = path.join(bundleDirectory, bundle.name, 'package.json');
 				const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-				console.log('pkg', pkg, 'bundle', bundle);
 				return pkg.version !== bundle.version;
 			});
 
