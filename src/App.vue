@@ -7,6 +7,7 @@
 <template>
 	<v-app style="padding-left: 56px">
 		<login-dialog v-model="loginDialog"/>
+		<bundle-update-dialog v-model="bundleUpdateDialogShow" :items="bundleUpdateList" />
 		<side-menu />
 		<v-sheet id="router-view" tile :key="$route.fullPath">
 			<transition name="scroll-y-reverse-transition">
@@ -29,11 +30,15 @@ import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { User, Live, SpoonClient } from '@sopia-bot/core';
 import CfgLite from '@/plugins/cfg-lite-ipc';
-import { SopiaAPI } from '@/plugins/sopia-api';
+import path from 'path';
+import { BundlePackage } from '@/interface/bundle';
 
 import SideMenu from '@/views/SideMenu/Index.vue';
 import LivePlayer from '@/views/Live/Player.vue';
 import LoginDialog from '@/views/Login/Index.vue';
+import BundleUpdateDialog from '@/views/Bundle/UpdateDialog.vue';
+
+const fs = window.require('fs');
 
 declare global {
 	interface Window {
@@ -50,12 +55,15 @@ declare global {
 		SideMenu,
 		LivePlayer,
 		LoginDialog,
+		BundleUpdateDialog,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {
 	public currentLive: Live = {} as Live;
 	public loginDialog: boolean = false;
 	public skipSopiaLogin: boolean = false;
+	public bundleUpdateDialogShow: boolean = false;
+	public bundleUpdateList: BundlePackage[] = [];
 
 	public mounted() {
 		const auth = this.$cfg.get('auth');
@@ -88,6 +96,29 @@ export default class App extends Mixins(GlobalMixins) {
 				this.currentLive = req.res.results[0];
 			});
 		});
+
+		this.checkBundleUpldate();
+	}
+
+	public async checkBundleUpldate() {
+		const bundleDirectory = this.$path('userData', 'bundles');
+		const updateRequest = fs.readdirSync(bundleDirectory)
+			.filter((item: string) => fs.lstatSync(path.join(bundleDirectory, item)).isDirectory())
+			.map((item: string) => this.$api.req('GET', `/bundle/${item}`));
+
+		const bundleInfoList = (await Promise.all(updateRequest) as any[])
+			.map((res) => res.data[0])
+			.filter((bundle) => {
+				const pkgPath = path.join(bundleDirectory, bundle.name, 'package.json');
+				const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+				console.log('pkg', pkg, 'bundle', bundle);
+				return pkg.version !== bundle.version;
+			});
+
+		if ( bundleInfoList.length > 0 ) {
+			this.bundleUpdateList = bundleInfoList;
+			this.bundleUpdateDialogShow = true;
+		}
 	}
 
 }

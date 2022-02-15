@@ -37,6 +37,7 @@ export default {
 	'errors': {
 		'file-not-found': '$0 파일을 찾을 수 없습니다.',
 	},
+	'close': '닫기',
 	'install': '설치',
 	'success': '성공',
 	'uninstall': '제거',

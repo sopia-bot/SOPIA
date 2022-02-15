@@ -7,27 +7,13 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
-import GlobalMixins from '@/plugins/mixins';
+import BundleMixins from './bundle-mixin';
 import path from 'path';
 const { ipcRenderer } = window.require('electron');
 const fs = window.require('fs');
 
 @Component
-export default class BundleUploadButton extends Mixins(GlobalMixins) {
-
-	public async checkPackageProperty(pkg: any, key: string) {
-		if ( !pkg[key] ) {
-			this.$logger.err('bundle', 'Did not have name property in package.json', pkg);
-			const close = await this.$modal({
-				type: 'error',
-				title: this.$t('error'),
-				content: this.$t('bundle.store.error.must-be', key),
-			});
-			close();
-			return false;
-		}
-		return true;
-	}
+export default class BundleUploadButton extends Mixins(BundleMixins) {
 
 	public async checkFile(src: string) {
 		if ( !fs.existsSync(src) ) {

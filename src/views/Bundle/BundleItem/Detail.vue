@@ -27,12 +27,11 @@
 </template>
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
-import GlobalMixins from '@/plugins/mixins';
+import BundleMixin from '../bundle-mixin';
 import { BundlePackage } from '@/interface/bundle';
 import path from 'path';
 import hljs from 'highlight.js';
 
-const { ipcRenderer } = window.require('electron');
 const fs = window.require('fs');
 const marked = window.require('marked');
 
@@ -60,11 +59,10 @@ marked.setOptions({
 
 
 @Component
-export default class BundleItemDetail extends Mixins(GlobalMixins) {
+export default class BundleItemDetail extends Mixins(BundleMixin) {
 
 	@Prop(Object) public pkg!: BundlePackage;
 
-	public bundlePath = path.join(this.$path('userData', 'bundles'), this.pkg.name);
 	public isPackageUsing = false;
 	public readme: string = '';
 
@@ -83,43 +81,17 @@ export default class BundleItemDetail extends Mixins(GlobalMixins) {
 	}
 
 	public async install() {
-		const res = await this.$api.req('GET', `/bundle/download/${this.pkg.name}/${this.pkg.version}/`);
-		ipcRenderer.sendSync('zip:uncompress-buffer', res.data[0], this.bundlePath);
+		this.bundleInstall(this.pkg);
 		this.updatePackageUsing();
-
-		this.$noti({
-			type: 'success',
-			horizontal: 'right',
-			vertical: 'bottom',
-			content: this.$t('bundle.store.install-scucess', this.pkg.name),
-			timeout: 3000,
-		});
 	}
 
 	public async uninstall() {
-		this.$confirm({
-			title: this.$t('bundle.store.remove-bundle'),
-			content: this.$t('bundle.store.remove-bundle-desc', this.pkg.name),
-			textOk: this.$t('yes'),
-			textCancel: this.$t('no'),
-		}).then((close) => {
-			fs.rmdirSync(this.bundlePath, { recursive: true });
-			this.updatePackageUsing();
-			this.$noti({
-				type: 'success',
-				horizontal: 'right',
-				vertical: 'bottom',
-				content: this.$t('bundle.store.remove-bundle-success', this.pkg.name),
-				timeout: 3000,
-			});
-			close();
-		}).catch((close) => {
-			close();
-		});
+		await this.bundleUninstall(this.pkg);
+		this.updatePackageUsing();
 	}
 
 	private updatePackageUsing() {
-		this.isPackageUsing = fs.existsSync(this.bundlePath);
+		this.isPackageUsing = fs.existsSync(this.getBundlePath(this.pkg));
 	}
 
 }

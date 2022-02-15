@@ -48,6 +48,7 @@ ipcMain.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
 });
 
 ipcMain.on('zip:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
+	console.log('zip:uncompress-buffer', dst);
 	const archive = new ZipArchive('', Buffer.from(b64str, 'base64'));
 	archive.ExtractAll(dst);
 	evt.returnValue = true;
