@@ -7,6 +7,8 @@
 const fs = window.require('fs');
 const path = window.require('path');
 const vm = window.require('vm');
+
+import CfgLite from '@/plugins/cfg-lite-ipc';
 import SopiaContext from './context';
 import logger from '@/plugins/logger';
 
@@ -15,6 +17,7 @@ interface Context {
 	console: Console;
 	require: (p: string) => any;
 	logger: any;
+	cfg: CfgLite;
 }
 
 export class Script {
@@ -67,6 +70,7 @@ export class Script {
 			console,
 			atob,
 			btoa,
+			cfg: new CfgLite(path.join(folder, 'config.cfg')),
 			require: (p: string) => {
 				const module = {
 					exports: {},
