@@ -44,8 +44,8 @@ export class SopiaAPI {
 		} catch (err) {
 			if ( err.response ) {
 				const res = err.response.data as any;
-				if ( res.message === 'jwt_expired' ) {
-					await this.refreshToken();
+				if ( res.msg === 'jwt_expired' ) {
+					await this.refreshToken.call(this);
 					return await this.req(method, url, data);
 				}
 			}
@@ -60,7 +60,11 @@ export class SopiaAPI {
 				refresh_token: this.user.refresh_token,
 			},
 		});
-		this.user = res.data[0];
+		this.user.token = res.data.data[0].token;
+		this.user.refresh_token = res.data.data[0].refresh_token;
+
+		window.appCfg.set('auth.sopia', this.user);
+		window.appCfg.save();
 	}
 
 }
