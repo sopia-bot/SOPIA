@@ -5,10 +5,11 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
 <template>
-	<v-app style="padding-left: 56px">
+	<v-app style="">
 		<login-dialog v-model="loginDialog"/>
 		<bundle-update-dialog v-model="bundleUpdateDialogShow" :items="bundleUpdateList" />
 		<side-menu />
+		<side-menu-remocon/>
 		<v-sheet id="router-view" tile :key="$route.fullPath">
 			<transition name="scroll-y-reverse-transition">
 				<router-view />
@@ -37,6 +38,7 @@ import SideMenu from '@/views/SideMenu/Index.vue';
 import LivePlayer from '@/views/Live/Player.vue';
 import LoginDialog from '@/views/Login/Index.vue';
 import BundleUpdateDialog from '@/views/Bundle/UpdateDialog.vue';
+import SideMenuRemocon from '@/views/SideMenu/Remocon.vue';
 
 const fs = window.require('fs');
 
@@ -56,6 +58,7 @@ declare global {
 		LivePlayer,
 		LoginDialog,
 		BundleUpdateDialog,
+		SideMenuRemocon,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {

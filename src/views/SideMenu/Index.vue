@@ -6,9 +6,8 @@
 -->
 <template>
 	<v-navigation-drawer
-		permanent
-		fixed
-		expand-on-hover
+		fixed app
+		v-model="$store.state.sideopen"
 		>
 		<v-list-item class="px-2" link @click="$assign(userLink)">
 			<v-list-item-avatar color="black">
