@@ -17,6 +17,8 @@ import GlobalMixins from '@/plugins/mixins';
 import Store from './Store.vue';
 import path from 'path';
 import { BundlePackage } from '@/interface/bundle';
+import * as VuetifyComponents from 'vuetify/lib/components';
+
 const fs = window.require('fs');
 const vm = window.require('vm');
 
@@ -71,10 +73,11 @@ export default class Bundle extends Mixins(GlobalMixins) {
 		const context = { module: {} };
 		vmScript.runInNewContext(context);
 
-		const component = {
+		const component: any = {
 			template,
 			...context.module,
 		};
+		component.components = { ...VuetifyComponents };
 		this.page = component;
 	}
 
