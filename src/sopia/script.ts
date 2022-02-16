@@ -12,35 +12,38 @@ import CfgLite from '@/plugins/cfg-lite-ipc';
 import SopiaContext from './context';
 import logger from '@/plugins/logger';
 
-interface Context {
+export interface Context {
+	__BUNDLE_NAME__: string;
+	__BUNDLE_DIR__: string;
 	sopia: SopiaContext;
 	console: Console;
+	atob: (str: string) => string;
+	btoa: (str: string) => string;
 	require: (p: string) => any;
 	logger: any;
 	cfg: CfgLite;
+	Audio: any;
+	module?: any;
+	exports?: any;
 }
 
 export class Script {
-	private contexts: Context[] = [];
+
+	public contexts: any[] = [];
 
 	constructor() {
 		// empty
 	}
 
-	public add(folder: string) {
+	public async add(folder: string) {
 		const index = path.join(folder, 'index.js');
 		if ( fs.existsSync(index) ) {
-			const source: string = fs.readFileSync(index, 'utf8');
-			const script = new vm.Script(source);
-			const context: Context = this.createNewContext(index);
-			try {
-				script.runInNewContext(context, {
-					displayErrors: true,
-				});
-				this.contexts.push(context);
-			} catch (err) {
-				console.error(err);
-			}
+			const context = window.require(index);
+			this.contexts.push({
+				name: path.basename(folder),
+				dir: folder,
+				context,
+			});
 		} else {
 			logger.err('sopia', `Can not open script file [${index}].`);
 		}
@@ -57,41 +60,13 @@ export class Script {
 
 	public run(event: any, sock: any) {
 		if ( Array.isArray(this.contexts) ) {
-			for ( const context of this.contexts ) {
-				context.sopia.emit(event.event, event, sock);
+			for ( const { context } of this.contexts ) {
+				if ( typeof context[event.event] === 'function' ) {
+					context[event.event](event, sock);
+				}
+				//context.sopia.emit(event.event, event, sock);
 			}
 		}
-	}
-
-	private createNewContext(index: string): Context {
-		const folder = path.dirname(index);
-		const context = {
-			sopia: new SopiaContext(index),
-			console,
-			atob,
-			btoa,
-			cfg: new CfgLite(path.join(folder, 'config.cfg')),
-			require: (p: string) => {
-				const module = {
-					exports: {},
-				};
-				const tmpCtx = vm.createContext({
-					...context,
-					module,
-					exports: module.exports,
-				});
-				const t = path.resolve(folder, p);
-				if ( fs.existsSync(t) ) {
-					const source = fs.readFileSync(t, 'utf8');
-					const script = new vm.Script(source);
-					script.runInNewContext(tmpCtx);
-					return tmpCtx.module.exports;
-				}
-				return window.require(p);
-			},
-			logger,
-		};
-		return context;
 	}
 
 }

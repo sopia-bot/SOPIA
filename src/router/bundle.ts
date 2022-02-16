@@ -33,9 +33,10 @@ export function bundleReadDir() {
 		})
 		.filter((info) => info.pkg && info.pkg.page)
 		.map((info) => {
+			console.log(path.basename(info.dir));
 			return {
 				name: info.name,
-				path: path.join('/bundle/' + path.basename(info.dir)),
+				path: '/bundle/' + path.basename(info.dir),
 				icon: info.pkg.icon || 'mdi-tangram',
 			};
 		}) as RouteConfig[];

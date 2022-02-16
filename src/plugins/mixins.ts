@@ -85,7 +85,7 @@ export default class Mixin extends VueDecorator {
 	}
 
 	public $path(type: any, ...args: any) {
-		return path.resolve(app.getPath(type), ...args);
+		return path.join(app.getPath(type), ...args);
 	}
 
 	public jsSyntax(code: string) {

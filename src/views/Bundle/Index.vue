@@ -18,6 +18,7 @@ import Store from './Store.vue';
 import path from 'path';
 import { BundlePackage } from '@/interface/bundle';
 import * as VuetifyComponents from 'vuetify/lib/components';
+import RuntimeScript, { Context } from '@/sopia/script';
 
 const fs = window.require('fs');
 const vm = window.require('vm');
@@ -39,7 +40,7 @@ export default class Bundle extends Mixins(GlobalMixins) {
 	}
 
 	public getInnerString(txt: string, tag: string) {
-		const regx = new RegExp(`<${tag}>((?:.|\n)*)?</${tag}>`);
+		const regx = new RegExp(`<${tag}>((?:.|\r|\n)*)?</${tag}>`);
 		const m: any = txt.match(regx);
 		if ( m ) {
 			return m[1];
@@ -70,7 +71,9 @@ export default class Bundle extends Mixins(GlobalMixins) {
 			.replace(/export\s+default\s+{/, 'module = {');
 
 		const vmScript = new vm.Script(script);
-		const context = { module: {} };
+		const context: Context & {module?: {}} = RuntimeScript.contexts.find((ctx: Context) =>
+			ctx.__BUNDLE_NAME__ === this.package.name) as Context;
+		context.module = {};
 		vmScript.runInNewContext(context);
 
 		const component: any = {

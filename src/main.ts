@@ -61,10 +61,12 @@ const appCfgPath = path.join(app.getPath('userData'), 'app.cfg');
 
 declare global {
 	interface Window {
+		logger: any;
 		appCfg: CfgLite;
 	}
 }
 
+window.logger = Logger;
 Vue.prototype.$cfg = window.appCfg = new CfgLite(appCfgPath);
 
 // config

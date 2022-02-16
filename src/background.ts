@@ -13,7 +13,6 @@ import path from 'path';
 import CfgLite from 'cfg-lite';
 import { ZipFile, ZipArchive } from '@arkiv/zip';
 
-
 const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 

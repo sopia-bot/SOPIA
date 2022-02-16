@@ -29,9 +29,9 @@ function worker() {
 
 
 // 개발모드로 실행시 핫리로드로 인한 여러번 겹쳐 실행됨을 방지
-let runner = 0;
-if ( runner === 0 )  {
-	runner += 1;
+(window as any).runner = 0;
+if ( (window as any).runner === 0 )  {
+	(window as any).runner += 1;
 	setImmediate(worker);
 }
 
@@ -41,11 +41,18 @@ export class Timer {
 
 	protected isLoop = false;
 
-	public add(key: string, func: () => void, ms: number) {
+	constructor() {
+		this.add = this.add.bind(this);
+		this.abort = this.abort.bind(this);
+		this.clear = this.clear.bind(this);
+	}
+
+	public add(key: string, func: any, ms: number) {
 		if ( worksheet[key] ) {
 			return 0 as any;
 		}
 
+		console.log('add timer', key, func, ms);
 		worksheet[key] = {
 			key,
 			func,
@@ -74,6 +81,10 @@ export class Timer {
 
 export class Timeout extends Timer {
 
+	constructor() {
+		super();
+	}
+
 }
 
 export class Interval extends Timer {
@@ -92,6 +103,12 @@ export default class Context extends EventEmitter {
 
 	constructor(private name: string) {
 		super();
+		this.sleep = this.sleep.bind(this);
+	}
+
+	public sleep(ms: number) {
+		//return new Promise((r) => this.timeout.add('sleep' + Date.now(), r, ms));
+		return new Promise((r) => setTimeout(r, ms));
 	}
 
 }
