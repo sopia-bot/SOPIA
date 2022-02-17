@@ -86,17 +86,17 @@ export default class Home extends Mixins(GlobalMixins) {
 		this.asyncMutex = true;
 
 		if ( this.liveManager ) {
-			if ( this.liveManager.res.next ) {
-				this.liveManager = await this.liveManager.next();
-				this.liveList = this.liveList.concat(this.liveManager.data);
+
+			if ( this.liveManager.res.next === '' ) {
+				this.loadComplete = true;
+			} else {
+				const res = await this.liveManager.next();
+				this.liveManager.res = res;
+				this.liveList = this.liveList.concat(res.results);
 			}
 		} else {
 			this.liveManager = await this.$sopia.api.lives.popular();
 			this.liveList = this.liveManager.res.results;
-		}
-
-		if ( this.liveManager.res.next === '' ) {
-			this.loadComplete = true;
 		}
 
 		this.asyncMutex = false;
