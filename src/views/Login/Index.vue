@@ -75,6 +75,8 @@ export default class Login extends Mixins(GlobalMixins) {
 		this.$logger.info('Spoon login user', user);
 		if ( this.sopiaUser.spoon_id === '0' ) {
 			this.sopiaUser.spoon_id = user.id.toString();
+			this.sopiaUser.name = user.tag;
+			this.sopiaUser.gender = user.gender;
 			await this.$api.setUserInfo(this.sopiaUser);
 		}
 
