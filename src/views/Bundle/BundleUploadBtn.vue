@@ -122,6 +122,7 @@ export default class BundleUploadButton extends Mixins(BundleMixins) {
 			title: this.$t('success'),
 			content: this.$t('bundle.store.upload-success'),
 		}).then((close) => {
+			this.$evt.$emit('store:reload');
 			close();
 		});
 	}

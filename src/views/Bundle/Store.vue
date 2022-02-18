@@ -36,7 +36,13 @@ export default class BundleStore extends Mixins(GlobalMixins) {
 
 	public bundleList: BundlePackage[] = [];
 
-	public async created() {
+	public created() {
+		this.refreshBundleList();
+		this.$evt.$off('store:reload');
+		this.$evt.$on('store:reload', this.refreshBundleList.bind(this));
+	}
+
+	public async refreshBundleList() {
 		const res = await this.$api.req('GET', '/bundle/');
 		this.bundleList = res.data;
 	}
