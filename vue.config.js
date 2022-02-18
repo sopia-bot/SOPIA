@@ -2,6 +2,19 @@ const path = require('path');
 const MonacoEditorPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
+	pluginOptions: {
+		electronBuilder: {
+			builderOptions: {
+				publish: [
+					{
+						"provider": "s3",
+						"bucket": "sopia-v3",
+						"region": "ap-northeast-2",
+					},
+				],
+			},
+		},
+	},
 	configureWebpack: {
 		resolve: {
 			alias: {
