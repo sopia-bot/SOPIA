@@ -5,7 +5,12 @@ export class SopiaAPI {
 
 	public user: any;
 
-	private readonly host: string = 'http://222.117.116.148:4080';
+	public protocol: string = 'https';
+	public host: string = 'api.sopia.dev';
+
+	get ApiURL() {
+		return `${this.protocol}://${this.host}`;
+	}
 
 	public async login(id: string, pw: string) {
 		const res = await this.req('POST', '/auth/login/', {
@@ -31,7 +36,7 @@ export class SopiaAPI {
 			url = '/' + url;
 		}
 
-		data['url'] = this.host + url;
+		data['url'] = this.ApiURL + url;
 		data['method'] = method;
 
 		if ( this.user?.token ) {
@@ -54,7 +59,7 @@ export class SopiaAPI {
 
 	private async refreshToken() {
 		const res = await axios({
-			url: this.host + '/auth/refresh',
+			url: this.ApiURL + '/auth/refresh',
 			method: 'post',
 			data: {
 				refresh_token: this.user.refresh_token,

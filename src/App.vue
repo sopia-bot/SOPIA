@@ -110,6 +110,7 @@ export default class App extends Mixins(GlobalMixins) {
 			.map((item: string) => this.$api.req('GET', `/bundle/${item}`));
 
 		const bundleInfoList = (await Promise.all(updateRequest) as any[])
+			.filter((res) => !res.error)
 			.map((res) => res.data[0])
 			.filter((bundle) => {
 				const pkgPath = path.join(bundleDirectory, bundle.name, 'package.json');

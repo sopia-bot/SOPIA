@@ -18,7 +18,7 @@ import { NotiOption, ModalOption, ConfirmOption } from '@/interface/Components';
 const path = window.require('path');
 const fs = window.require('fs');
 const vm = window.require('vm');
-const { remote } = window.require('electron');
+const { remote, ipcRenderer } = window.require('electron');
 const { app } = remote;
 
 const jsOrPath = (code: string) => {
@@ -233,6 +233,10 @@ export default class Mixin extends VueDecorator {
 		return new Promise((resolve, reject) => {
 			setTimeout(resolve, ms);
 		});
+	}
+
+	get isDevelopment(): boolean {
+		return ipcRenderer.sendSync('isdev');
 	}
 
 }

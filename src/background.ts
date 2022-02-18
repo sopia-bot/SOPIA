@@ -53,6 +53,10 @@ ipcMain.on('zip:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: str
 	evt.returnValue = true;
 });
 
+ipcMain.on('isdev', (evt: IpcMainEvent) => {
+	evt.returnValue = isDevelopment;
+});
+
 ipcMain.handle('open-dialog', async (event, options: any) => {
 	return await dialog.showOpenDialog(options);
 });

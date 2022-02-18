@@ -25,7 +25,7 @@ import CfgLite from '@/plugins/cfg-lite-ipc';
 import { SopiaAPI } from '@/plugins/sopia-api';
 
 import App from '@/App.vue';
-const { remote } = electron;
+const { remote, ipcRenderer } = electron;
 const { app } = remote;
 
 // Vue Use
@@ -49,25 +49,37 @@ Vue.use(VueScroll, {
 	},
 });
 
+window.isDevelopment = ipcRenderer.sendSync('isdev');
+const appCfgPath = path.join(app.getPath('userData'), 'app.cfg');
+Vue.prototype.$cfg = window.appCfg = new CfgLite(appCfgPath);
+Vue.prototype.$api = new SopiaAPI();
+
+const api = window.appCfg.get('api');
+if ( api ) {
+	if ( api.host ) {
+		Vue.prototype.$api.host = api.host;
+	}
+	if ( api.protocol ) {
+		Vue.prototype.$api.protocol = api.protocol;
+	}
+}
+
 Vue.config.productionTip = false;
 window.$spoon = spoon;
 Vue.prototype.$sopia = window.$sopia = new spoon.SpoonClient(uuidv4()); // TODO: set country
-Vue.prototype.$api = new SopiaAPI();
 
 // Event Bus
 Vue.prototype.$evt = new Vue();
 
-const appCfgPath = path.join(app.getPath('userData'), 'app.cfg');
 
 declare global {
 	interface Window {
 		logger: any;
 		appCfg: CfgLite;
+		isDevelopment: boolean;
 	}
 }
-
 window.logger = Logger;
-Vue.prototype.$cfg = window.appCfg = new CfgLite(appCfgPath);
 
 // config
 Vue.config.errorHandler = function(err: any, vm: any, info) {
