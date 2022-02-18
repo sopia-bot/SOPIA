@@ -68,27 +68,33 @@ export default class App extends Mixins(GlobalMixins) {
 	public bundleUpdateDialogShow: boolean = false;
 	public bundleUpdateList: BundlePackage[] = [];
 
-	public mounted() {
+	public async mounted() {
 		const auth = this.$cfg.get('auth');
 
 		if ( auth && auth.sopia && auth.spoon ) {
-			this.$api.user = auth.sopia;
-			this.$sopia.loginToken(auth.spoon.id, auth.spoon.token, auth.spoon.refresh_token)
-				.then(async (user) => {
-					const token = await this.$sopia.refreshToken(user.id, auth.spoon.token, auth.spoon.refresh_token);
-					if ( token ) {
-						auth.spoon.token = token;
-						this.$evt.$emit('user', user);
-						this.$cfg.set('auth.spoon.token', token);
-						this.$cfg.save();
-					} else {
-						throw Error('Invalid token');
-					}
-				})
-				.catch((err) => {
-					this.$evt.$emit('login:skip-sopia-login', auth.sopia);
-					this.loginDialog = true;
-				});
+			const res = await this.$api.req('GET', `/user/${auth.sopia.user_id}`);
+			if ( res.error ) {
+				this.$cfg.delete('auth');
+				this.loginDialog = true;
+			} else {
+				this.$api.user = auth.sopia;
+				this.$sopia.loginToken(auth.spoon.id, auth.spoon.token, auth.spoon.refresh_token)
+					.then(async (user) => {
+						const token = await this.$sopia.refreshToken(user.id, auth.spoon.token, auth.spoon.refresh_token);
+						if ( token ) {
+							auth.spoon.token = token;
+							this.$evt.$emit('user', user);
+							this.$cfg.set('auth.spoon.token', token);
+							this.$cfg.save();
+						} else {
+							throw Error('Invalid token');
+						}
+					})
+					.catch((err) => {
+						this.$evt.$emit('login:skip-sopia-login', auth.sopia);
+						this.loginDialog = true;
+					});
+			}
 		} else {
 			this.loginDialog = true;
 		}
@@ -100,7 +106,10 @@ export default class App extends Mixins(GlobalMixins) {
 			});
 		});
 
-		this.checkBundleUpldate();
+
+		if ( !this.loginDialog ) {
+			this.checkBundleUpldate();
+		}
 	}
 
 	public async checkBundleUpldate() {
