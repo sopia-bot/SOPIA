@@ -5,7 +5,7 @@
  * Copyright (c) raravel. Licensed under the MIT License.
  */
 
-exports.charWrapper =
+export const charWrapper =
 	(str) => str.toString()
 		.replace(/\\/g, '')
 		.replace(/\./g, '')

@@ -5,10 +5,10 @@
  * Copyright (c) raravel. Licensed under the MIT License.
  */
 
-const axios = require('axios');
+const axios = window.require('axios');
 const API_KEY = atob('QUl6YVN5REZPNTMyWUh5Ykl0amkxaTdaaGhEUVdEV0NpcjNrUkZZ');
 
-module.exports = async function(text, option) {
+export default async function(text, option) {
 	if ( !text ) {
 		return '';
 	}

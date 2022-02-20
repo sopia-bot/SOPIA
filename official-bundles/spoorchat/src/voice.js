@@ -5,8 +5,9 @@
  * Copyright (c) raravel. Licensed under the MIT License.
  */
 
-const fs = require('fs');
-const { charWrapper } = require('./utils.js');
+const fs = window.require('fs');
+const path = window.require('path');
+import { charWrapper } from './utils.js';
 
 class Media {
 	p = '';
@@ -15,8 +16,12 @@ class Media {
 	prefix = 'data:audio/mp3;base64,';
 	volume = 50; /* percentage */
 
-	constructor(volume) {
-		this.volume = volume;
+	constructor(volume = 50) {
+		this.volume = volume ?? 50;
+		this.readFile = this.readFile.bind(this);
+		this.bufferSet = this.bufferSet.bind(this);
+		this._wait = this._wait.bind(this);
+		this.play = this.play.bind(this);
 	}
 
 	readFile(p) {
@@ -24,7 +29,7 @@ class Media {
 		this.status = 1;
 		fs.readFile(this.p, 'base64', (err, data) => {
 			if ( err ) {
-				logger.err(err);
+				logger.err('spoorchat', err);
 				throw Error(err);
 			}
 
@@ -34,22 +39,22 @@ class Media {
 	}
 
 	bufferSet(b64str) {
-		this.audio = new Audio(this.prefix + data);
-		this.audio.volume = this.volume * 0.01;
+		this.audio = new Audio(this.prefix + b64str);
+		this.audio.volume = parseFloat(this.volume / 100);
 		this.status = 2;
 		return this;
 	}
 
 	_sleep(ms) {
-		return new Promise((r) => sopia.timeout.add('media:sleep', r, ms));
+		return new Promise((r) => setTimeout(r, ms));
 	}
 
 	async _wait() {
-		if ( this.ready === 0 ) {
+		if ( this.status === 0 ) {
 			throw Error('Media buffer data is not set. code: ' + this.ready);
 		}
 
-		while ( this.ready === 1 ) {
+		while ( this.status === 1 ) {
 			await this._sleep(10);
 		}
 	}
@@ -76,13 +81,22 @@ class Media {
 
 class VoiceWorker {
 
-	_effect = 'sounds/default.mp3';
+	_effect = path.join(__dirname, 'sounds', 'default.mp3');
 	_signature = {};
 	_text = '';
 	_voiceEngine = async () => {};
 	_voiceOption = {};
 	_readyVoiceList = [];
 	_voiceCount = 0;
+
+	constructor() {
+		this._playReadyVoice = this._playReadyVoice.bind(this);
+		this.effect = this.effect.bind(this);
+		this.text = this.text.bind(this);
+		this.signature = this.signature.bind(this);
+		this.engine = this.engine.bind(this);
+		this._signatureParser = this._signatureParser.bind(this);
+	}
 
 	async play() {
 		const effectPlaying = new Media()
@@ -110,7 +124,7 @@ class VoiceWorker {
 	}
 
 	_sleep(ms) {
-		return new Promise((r) => sopia.timeout.add('voice-worker:sleep', r, ms));
+		return new Promise((r) => setTimeout(r, ms));
 	}
 
 	async _playReadyVoice() {
@@ -130,7 +144,7 @@ class VoiceWorker {
 	}
 
 	text(str) {
-		this.text = str;
+		this._text = str;
 		return this;
 	}
 
@@ -166,6 +180,9 @@ class VoiceWorker {
 		return this._text.split(regx);
 	}
 
+	static New() {
+		return new VoiceWorker();
+	}
 }
 
-module.exports = VoiceWorker;
+export default VoiceWorker;

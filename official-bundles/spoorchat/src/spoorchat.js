@@ -4,7 +4,7 @@
  *
  * Copyright (c) raravel. Licensed under the MIT License.
  */
-const VoiceWorker = require('./voice.js');
+import VoiceWorker from './voice.js';
 
 const rand = (num=0, min=0) => Math.floor(Math.random() * (num)) + min;
 
@@ -17,7 +17,7 @@ class SpoorChat {
 
 	options = {
 		min: 1, /* spoon */
-		timeout: 3, /* sec */
+		timeout: 30, /* sec */
 		effectVolume: 50, /* percentage */
 		voiceVolume: 50, /* percentage */
 		voice: 'random',
@@ -25,6 +25,8 @@ class SpoorChat {
 	};
 
 	constructor() {
+		//this.options = cfg.get('options');
+
 		this.processor = this.processor.bind(this);
 		this.presentEvent = this.presentEvent.bind(this);
 		this.chatEvent = this.chatEvent.bind(this);
@@ -71,8 +73,6 @@ class SpoorChat {
 			this._running = false;
 			throw Error('Voice is null');
 		}
-		
-
 		const worker = new VoiceWorker()
 			.text(item.message)
 			.signature(this.options.signature)
@@ -84,17 +84,29 @@ class SpoorChat {
 		this._running = false;
 	}
 
-	chatEvent({ data }, sock) {
-		const idx = this._presentedStack.findIndex((item) => item.id === data.author.id);
+	chatEvent(evt, sock) {
+		const idx = this._presentedStack.findIndex((item) => item.id === evt.data.user.id);
+		
 		if ( idx >= 0 ){
-			const presented = this._presentedStack.splice(idx, 1);
+			const [presented] = this._presentedStack.splice(idx, 1);
 			const stack = {
-				message: data.update_component.message.value,
-				combo: presented.combo,
-				sticker: presented.sticker,
+				message: evt.update_component.message.value,
+				combo: presented.combo || 1,
+				sticker: presented.sticker || 'sticker_kr_juice',
 			};
 			this._chatStack.push(stack);
 			logger.info('spoorchat', 'Add prcoess stack', stack);
+		}
+
+		if ( evt.data.user.tag === 'a.i_sopia' ) {
+			const stack = {
+				message: evt.update_component.message.value,
+				combo: 1,
+				sticker: 'sticker_kr_juice',
+			};
+			this._chatStack.push(stack);
+			logger.info('spoorchat', 'Add prcoess stack', stack);
+			this.processor();
 		}
 	}
 
@@ -115,4 +127,4 @@ class SpoorChat {
 
 }
 
-module.exports = new SpoorChat();
+export default new SpoorChat();
