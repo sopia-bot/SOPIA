@@ -6,66 +6,75 @@
  */
 const fs = window.require('fs');
 const path = window.require('path');
-const vm = window.require('vm');
+import './context';
 
-import CfgLite from '@/plugins/cfg-lite-ipc';
-import SopiaContext from './context';
 import logger from '@/plugins/logger';
-
-export interface Context {
-	__BUNDLE_NAME__: string;
-	__BUNDLE_DIR__: string;
-	sopia: SopiaContext;
-	console: Console;
-	atob: (str: string) => string;
-	btoa: (str: string) => string;
-	require: (p: string) => any;
-	logger: any;
-	cfg: CfgLite;
-	Audio: any;
-	module?: any;
-	exports?: any;
-}
 
 export class Script {
 
-	public contexts: any[] = [];
+	public boxs: any[] = [];
 
 	constructor() {
-		// empty
+		this.add = this.add.bind(this);
+		this.abort = this.abort.bind(this);
+		this.clear = this.clear.bind(this);
+		this.run = this.run.bind(this);
+		this.reload = this.reload.bind(this);
 	}
 
 	public async add(folder: string) {
 		const index = path.join(folder, 'index.js');
 		if ( fs.existsSync(index) ) {
-			const context = window.require(index);
-			this.contexts.push({
-				name: path.basename(folder),
+			const name = path.basename(folder);
+			const context = (window as any)['bctx'].new(name);
+			const module = window.require(index);
+			const box = {
+				name,
+				file: index,
 				dir: folder,
+				module,
 				context,
-			});
+			};
+			this.boxs.push(box);
 		} else {
 			logger.err('sopia', `Can not open script file [${index}].`);
 		}
 	}
 
+	public abort(name: string) {
+		const idx = this.boxs.findIndex((b: any) => b.name === name);
+		const box = this.boxs[idx];
+		if ( box ) {
+			(window as any)['bctx'].destroy(name);
+			delete window.require.cache[box.file];
+			this.boxs.splice(idx, 1);
+		}
+	}
+
 	public clear() {
-		if ( Array.isArray(this.contexts) ) {
-			for ( const context of this.contexts ) {
-				context.sopia.itv.clear();
+		if ( Array.isArray(this.boxs) ) {
+			for ( const module of this.boxs ) {
+				module.context.destroy();
 			}
 		}
-		this.contexts = [];
+		this.boxs = [];
 	}
 
 	public run(event: any, sock: any) {
-		if ( Array.isArray(this.contexts) ) {
-			for ( const { context } of this.contexts ) {
-				if ( typeof context[event.event] === 'function' ) {
-					context[event.event](event, sock);
+		if ( Array.isArray(this.boxs) ) {
+			for ( const { module } of this.boxs ) {
+				if ( typeof module[event.event] === 'function' ) {
+					module[event.event](event, sock);
 				}
-				//context.sopia.emit(event.event, event, sock);
 			}
+		}
+	}
+
+	public reload(name: string) {
+		const box = this.boxs.find((b: any) => b.name === name);
+		if ( box ) {
+			this.abort(name);
+			this.add(box.dir);
 		}
 	}
 

@@ -37,7 +37,9 @@ window.reloadScript = () => {
 		}
 	}
 };
-window.reloadScript();
+window.addEventListener('DOMContentLoaded', () => {
+	window.reloadScript();
+});
 
 const CMD_PATH = $path('userData', 'cmd.cfg');
 

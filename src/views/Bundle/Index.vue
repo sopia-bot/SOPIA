@@ -18,7 +18,7 @@ import Store from './Store.vue';
 import path from 'path';
 import { BundlePackage } from '@/interface/bundle';
 import * as VuetifyComponents from 'vuetify/lib/components';
-import RuntimeScript, { Context } from '@/sopia/script';
+import Scripts from '@/sopia/script';
 
 const fs = window.require('fs');
 const vm = window.require('vm');
@@ -71,14 +71,23 @@ export default class Bundle extends Mixins(GlobalMixins) {
 			.replace(/export\s+default\s+{/, 'module = {');
 
 		const vmScript = new vm.Script(script);
-		const context: Context & {module?: {}} = RuntimeScript.contexts.find((ctx: Context) =>
-			ctx.__BUNDLE_NAME__ === this.package.name) as Context;
+		const context: any = {};
 		context.module = {};
+		context.window = window;
+		context.__dirname = this.bundlePath;
+		context.console = console;
 		vmScript.runInNewContext(context);
 
 		const component: any = {
 			template,
 			...context.module,
+			mixins: [Mixins(GlobalMixins)],
+		};
+		if ( !component.methods ) {
+			component.methods = {};
+		}
+		component.methods.reload = () => {
+			Scripts.reload(this.package.name);
 		};
 		component.components = { ...VuetifyComponents };
 		this.page = component;

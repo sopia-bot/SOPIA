@@ -1,114 +1,89 @@
 /* tslint:disable:max-classes-per-file */
 
-import { EventEmitter } from '@sopia-bot/core';
+class Interval {
+	private itv: any = {};
 
-interface RecordItem {
-	func: () => void;
-	ms: number;
-	key: string;
-	isLoop: boolean;
-	nextTime: number;
-}
-
-
-const worksheet: Record<string, RecordItem> = {};
-function worker() {
-	for ( const [key, val] of Object.entries(worksheet) ) {
-		const now = Date.now();
-		if ( now >= val.nextTime ) {
-			setImmediate(val.func);
-			if ( val.isLoop ) {
-				val.nextTime = now + val.ms;
-			} else {
-				delete worksheet[key];
-			}
-		}
-	}
-	setImmediate(worker);
-}
-
-
-// 개발모드로 실행시 핫리로드로 인한 여러번 겹쳐 실행됨을 방지
-(window as any).runner = 0;
-if ( (window as any).runner === 0 )  {
-	(window as any).runner += 1;
-	setImmediate(worker);
-}
-
-
-
-export class Timer {
-
-	protected isLoop = false;
-
-	constructor() {
-		this.add = this.add.bind(this);
-		this.abort = this.abort.bind(this);
-		this.clear = this.clear.bind(this);
-	}
-
-	public add(key: string, func: any, ms: number) {
-		if ( worksheet[key] ) {
-			return 0 as any;
-		}
-
-		console.log('add timer', key, func, ms);
-		worksheet[key] = {
-			key,
+	public add(name: string, func: () => void, ms: number) {
+		this.itv[name] = {
+			name,
 			func,
 			ms,
-			isLoop: this.isLoop,
-			nextTime: Date.now() + ms,
+			id: setInterval(func, ms),
 		};
 	}
 
-	public abort(key: string) {
-		if ( worksheet[key] ) {
-			delete worksheet[key];
+	public abort(name: string) {
+		if ( this.itv[name] ) {
+			clearInterval(this.itv[name].id);
+			delete this.itv[name];
 		}
 	}
 
 	public clear() {
-		const rs = Object.values(worksheet);
-		for ( const r of rs ) {
-			if ( r.isLoop === this.isLoop ) {
-				this.abort(r.key);
-			}
+		for ( const key of Object.keys(this.itv) ) {
+			this.abort(key);
+		}
+	}
+}
+
+class Timeout {
+	private tout: any = {};
+
+	public add(name: string, func: () => void, ms: number) {
+		this.tout[name] = {
+			name,
+			func,
+			ms,
+			id: setTimeout(() => {
+				this.abort(name);
+				func();
+			}, ms),
+		};
+	}
+
+	public abort(name: string) {
+		if ( this.tout[name] ) {
+			clearTimeout(this.tout[name].id);
+			delete this.tout[name];
 		}
 	}
 
+	public clear() {
+		for ( const key of Object.keys(this.tout) ) {
+			this.abort(key);
+		}
+	}
 }
 
-export class Timeout extends Timer {
+class Context {
+	public itv = new Interval();
+	public timeout = new Timeout();
 
-	constructor() {
-		super();
+	constructor(public name: string) {
+
 	}
 
+	public clear() {
+		this.itv.clear();
+		this.timeout.clear();
+	}
 }
 
-export class Interval extends Timer {
+const contexts: Record<string, Context> = {};
 
-	constructor() {
-		super();
-		this.isLoop = true;
-	}
-
-}
-
-export default class Context extends EventEmitter {
-
-	public itv: Interval = new Interval();
-	public timeout: Timeout = new Timeout();
-
-	constructor(private name: string) {
-		super();
-		this.sleep = this.sleep.bind(this);
-	}
-
-	public sleep(ms: number) {
-		//return new Promise((r) => this.timeout.add('sleep' + Date.now(), r, ms));
-		return new Promise((r) => setTimeout(r, ms));
-	}
-
-}
+(window as any)['bctx'] = {
+	get(name: string) {
+		return contexts[name];
+	},
+	new(name: string) {
+		if ( !contexts[name] ) {
+			return contexts[name] = new Context(name);
+		}
+	},
+	destroy(name: string) {
+		if ( contexts[name] ) {
+			contexts[name].clear();
+			delete contexts[name];
+		}
+	},
+};
