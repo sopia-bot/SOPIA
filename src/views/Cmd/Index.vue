@@ -158,9 +158,10 @@
 										v-model="message.command"/>
 								</v-col>
 								<v-col cols="6" class="py-0">
-									<v-text-field
+									<v-textarea
 										:placeholder="$t('cmd.reply')"
 										color="indigo darken-3"
+										rows="1"
 										v-model="message.message"/>
 								</v-col>
 								<v-col cols="2" class="pa-0">

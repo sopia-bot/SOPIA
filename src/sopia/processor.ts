@@ -145,7 +145,8 @@ const processor = async (evt: any, sock: LiveSocket) => {
 			}
 
 			res = res.replace(/\[\[name\]\]/g, (e.author || e.user).nickname)
-				.replace(/\[\[tag\]\]/g, (e.author || e.user).tag);
+				.replace(/\[\[tag\]\]/g, (e.author || e.user).tag)
+				.replace(/\n/, '\\n');
 
 			if ( evt.event === LiveEvent.LIVE_PRESENT ) {
 				res = res.replace(/\[\[sticker\]\]/g, e.sticker)
@@ -155,6 +156,7 @@ const processor = async (evt: any, sock: LiveSocket) => {
 			}
 
 			if ( res ) {
+				logger.debug('cmd', `Send message [${res}]`);
 				sock.message(res);
 			}
 		}
