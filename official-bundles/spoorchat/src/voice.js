@@ -82,10 +82,12 @@ class Media {
 class VoiceWorker {
 
 	_effect = path.join(__dirname, 'sounds', 'default.mp3');
+	_effectVolume = 50;
 	_signature = {};
 	_text = '';
 	_voiceEngine = async () => {};
 	_voiceOption = {};
+	_voiceVolume = 50;
 	_readyVoiceList = [];
 	_voiceCount = 0;
 
@@ -99,7 +101,7 @@ class VoiceWorker {
 	}
 
 	async play() {
-		const effectPlaying = new Media()
+		const effectPlaying = new Media(this._effectVolume)
 			.readFile(this._effect)
 			.play();
 
@@ -109,13 +111,13 @@ class VoiceWorker {
 		for ( const arg of args ) {
 			if ( this._signature[arg] ) {
 				this._readyVoiceList.push(
-					new Media()
+					new Media(this._voiceVolume)
 						.readFile(this._siganture[arg])
 				);
 			} else {
 				const b64str = await this._voiceEngine(arg, this._voiceOption);
 				this._readyVoiceList.push(
-					new Media()
+					new Media(this._voiceVolume)
 						.bufferSet(b64str)
 				);
 			}
@@ -140,6 +142,16 @@ class VoiceWorker {
 
 	effect(p) {
 		this._effect = p;
+		return this;
+	}
+
+	effectVolume(volume = 50) {
+		this._effectVolume = volume;
+		return this;
+	}
+
+	voiceVolume(volume = 50) {
+		this._voiceVolume = volume;
 		return this;
 	}
 

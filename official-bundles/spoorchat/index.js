@@ -23,7 +23,7 @@ const charWrapper =
  */
 
 const fs = window.require('fs');
-const path = window.require('path');
+const path$1 = window.require('path');
 
 class Media {
 	p = '';
@@ -97,11 +97,13 @@ class Media {
 
 class VoiceWorker {
 
-	_effect = path.join(__dirname, 'sounds', 'default.mp3');
+	_effect = path$1.join(__dirname, 'sounds', 'default.mp3');
+	_effectVolume = 50;
 	_signature = {};
 	_text = '';
 	_voiceEngine = async () => {};
 	_voiceOption = {};
+	_voiceVolume = 50;
 	_readyVoiceList = [];
 	_voiceCount = 0;
 
@@ -115,7 +117,7 @@ class VoiceWorker {
 	}
 
 	async play() {
-		const effectPlaying = new Media()
+		const effectPlaying = new Media(this._effectVolume)
 			.readFile(this._effect)
 			.play();
 
@@ -125,13 +127,13 @@ class VoiceWorker {
 		for ( const arg of args ) {
 			if ( this._signature[arg] ) {
 				this._readyVoiceList.push(
-					new Media()
+					new Media(this._voiceVolume)
 						.readFile(this._siganture[arg])
 				);
 			} else {
 				const b64str = await this._voiceEngine(arg, this._voiceOption);
 				this._readyVoiceList.push(
-					new Media()
+					new Media(this._voiceVolume)
 						.bufferSet(b64str)
 				);
 			}
@@ -156,6 +158,16 @@ class VoiceWorker {
 
 	effect(p) {
 		this._effect = p;
+		return this;
+	}
+
+	effectVolume(volume = 50) {
+		this._effectVolume = volume;
+		return this;
+	}
+
+	voiceVolume(volume = 50) {
+		this._voiceVolume = volume;
 		return this;
 	}
 
@@ -207,8 +219,11 @@ class VoiceWorker {
  *
  * Copyright (c) raravel. Licensed under the MIT License.
  */
+const CfgLite = window.appCfg.__proto__.constructor;
+const path = window.require('path');
 
 const rand = (num=0, min=0) => Math.floor(Math.random() * (num)) + min;
+const cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
 
 class SpoorChat {
 
@@ -227,7 +242,7 @@ class SpoorChat {
 	};
 
 	constructor() {
-		//this.options = cfg.get('options');
+		this.options = cfg.get('options');
 
 		this.processor = this.processor.bind(this);
 		this.presentEvent = this.presentEvent.bind(this);
@@ -242,6 +257,11 @@ class SpoorChat {
 
 	addVoice(obj) {
 		this._voiceList.push(obj);
+		cfg.set('voice-list', this._voiceList.map((voice) => ({
+			text: voice.label,
+			value: voice.name,
+		})));
+		cfg.save();
 	}
 
 	async processor() {
@@ -278,17 +298,19 @@ class SpoorChat {
 		const worker = new VoiceWorker()
 			.text(item.message)
 			.signature(this.options.signature)
-			.engine(voice.engine, voice.option);
+			.engine(voice.engine, voice.option)
+			.effectVolume(this.options.effectVolume)
+			.voiceVolume(this.options.voiceVolume);
 
 		await worker.play();
-		
+
 
 		this._running = false;
 	}
 
 	chatEvent(evt, sock) {
 		const idx = this._presentedStack.findIndex((item) => item.id === evt.data.user.id);
-		
+
 		if ( idx >= 0 ){
 			const [presented] = this._presentedStack.splice(idx, 1);
 			const stack = {
@@ -404,7 +426,7 @@ spoorChat.addVoice({
 	engine: GoogleVoice,
 });
 spoorChat.addVoice({
-	name: 'minsu',
+	name: 'minsang',
 	label: '민상',
 	option: {
 		languageCode: 'ko-KR',
@@ -414,7 +436,8 @@ spoorChat.addVoice({
 	engine: GoogleVoice,
 });
 
-//sopia.itv.add('spootchat', spoorChat.processor, 1000);
+const sopia = window.bctx.get('spoorchat');
+sopia.itv.add('spootchat', spoorChat.processor, 1000);
 
 
 exports.live_present = spoorChat.presentEvent;

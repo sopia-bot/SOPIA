@@ -34,10 +34,10 @@
 				<v-divider></v-divider>
 				<!-- S: options.min -->
 				<v-row class="ma-0" align="center">
-					<v-col cols="8" align="left" class="pa-0">
+					<v-col :cols="leftCol" align="left" class="pa-0">
 						최소 스푼 개수
 					</v-col>
-					<v-col cols="4" align="right" class="pa-0">
+					<v-col :cols="rightCol" align="right" class="pa-0">
 						<v-text-field
 							v-model="options.min"
 							color="indigo darken-1"
@@ -49,10 +49,10 @@
 				<!-- E: options.min -->
 				<!-- S: options.timeout -->
 				<v-row class="ma-0" align="center">
-					<v-col cols="8" align="left" class="pa-0">
+					<v-col :cols="leftCol" align="left" class="pa-0">
 						최대 채팅 입력 대기 시간
 					</v-col>
-					<v-col cols="4" align="right" class="pa-0">
+					<v-col :cols="rightCol" align="right" class="pa-0">
 						<v-text-field
 							v-model="options.timeout"
 							color="indigo darken-1"
@@ -64,38 +64,42 @@
 				<!-- E: options.timeout -->
 				<!-- S: options.effectVolume -->
 				<v-row class="ma-0" align="center">
-					<v-col cols="8" align="left" class="pa-0">
+					<v-col :cols="leftCol" align="left" class="pa-0">
 						효과음 볼륨
 					</v-col>
-					<v-col cols="4" align="right" class="pa-0">
-						<v-text-field
+					<v-col :cols="rightCol" align="right" class="pa-0">
+						<v-slider
 							v-model="options.effectVolume"
 							color="indigo darken-1"
-							type="number">
-						</v-text-field>
+	   						:label="options.effectVolume.toString()"
+							max="100"
+							min="0">
+						</v-slider>
 					</v-col>
 				</v-row>
 				<!-- E: options.effectVolume -->
 				<!-- S: options.voiceVolume -->
 				<v-row class="ma-0" align="center">
-					<v-col cols="8" align="left" class="pa-0">
+					<v-col :cols="leftCol" align="left" class="pa-0">
 						목소리 볼륨
 					</v-col>
-					<v-col cols="4" align="right" class="pa-0">
-						<v-text-field
+					<v-col :cols="rightCol" align="right" class="pa-0">
+						<v-slider
 							v-model="options.voiceVolume"
 							color="indigo darken-1"
-							type="number">
-						</v-text-field>
+	   						:label="options.voiceVolume.toString()"
+							max="100"
+							min="0">
+						</v-slider>
 					</v-col>
 				</v-row>
 				<!-- E: options.voiceVolume -->
 				<!-- S: options.voiceVolume -->
 				<v-row class="ma-0" align="center">
-					<v-col cols="8" align="left" class="pa-0">
+					<v-col :cols="leftCol" align="left" class="pa-0">
 						목소리 유형
 					</v-col>
-					<v-col cols="4" align="right" class="pa-0">
+					<v-col :cols="rightCol" align="right" class="pa-0">
 						<v-overflow-btn
 							v-model="options.voice"
 							:items="voiceList"
@@ -113,25 +117,23 @@
 	</v-main>
 </template>
 <script>
+const path = window.require('path');
+const CfgLite = window.appCfg.__proto__.constructor;
+const cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
 export default {
 	data: () => ({
 		enable: cfg.get('enable'),
 		options: cfg.get('options'),
 		voiceList: [],
+		leftCol: 7,
+		rightCol: 5,
 	}),
 	mounted() {
-		console.log('enable?', cfg.get('enable'));
-		if ( typeof spoorChat !== 'undefined' ) {
-			this.voiceList = spoorChat._voiceList.map((voice) => ({
-				text: voice.label,
-				value: voice.name,
-			}));
-			this.voiceList.push({
-				text: '랜덤',
-				value: 'random',
-			});
-			console.log(this.voiceList);
-		}
+		this.voiceList = cfg.get('voice-list') || [];
+		this.voiceList.push({
+			text: '랜덤',
+			value: 'random',
+		});
 	},
 	methods: {
 		voiceSelect(val) {
@@ -139,7 +141,16 @@ export default {
 		},
 		save() {
 			cfg.set('options', this.options);
+			cfg.set('enable', this.enable);
 			cfg.save();
+			this.$noti({
+				type: 'success',
+				content: '저장에 성공했습니다.',
+				horizontal: 'right',
+				vertical: 'end',
+				timeout: 3000,
+			});
+			this.reload();
 		},
 	},
 }

@@ -38,7 +38,7 @@ spoorChat.addVoice({
 	engine: GoogleVoice,
 });
 spoorChat.addVoice({
-	name: 'minsu',
+	name: 'minsang',
 	label: '민상',
 	option: {
 		languageCode: 'ko-KR',
@@ -48,7 +48,8 @@ spoorChat.addVoice({
 	engine: GoogleVoice,
 });
 
-//sopia.itv.add('spootchat', spoorChat.processor, 1000);
+const sopia = window.bctx.get('spoorchat');
+sopia.itv.add('spootchat', spoorChat.processor, 1000);
 
 
 exports.live_present = spoorChat.presentEvent;

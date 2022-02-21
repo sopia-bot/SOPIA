@@ -5,8 +5,11 @@
  * Copyright (c) raravel. Licensed under the MIT License.
  */
 import VoiceWorker from './voice.js';
+const CfgLite = window.appCfg.__proto__.constructor;
+const path = window.require('path');
 
 const rand = (num=0, min=0) => Math.floor(Math.random() * (num)) + min;
+const cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
 
 class SpoorChat {
 
@@ -25,7 +28,7 @@ class SpoorChat {
 	};
 
 	constructor() {
-		//this.options = cfg.get('options');
+		this.options = cfg.get('options');
 
 		this.processor = this.processor.bind(this);
 		this.presentEvent = this.presentEvent.bind(this);
@@ -40,6 +43,11 @@ class SpoorChat {
 
 	addVoice(obj) {
 		this._voiceList.push(obj);
+		cfg.set('voice-list', this._voiceList.map((voice) => ({
+			text: voice.label,
+			value: voice.name,
+		})));
+		cfg.save();
 	}
 
 	async processor() {
@@ -76,17 +84,19 @@ class SpoorChat {
 		const worker = new VoiceWorker()
 			.text(item.message)
 			.signature(this.options.signature)
-			.engine(voice.engine, voice.option);
+			.engine(voice.engine, voice.option)
+			.effectVolume(this.options.effectVolume)
+			.voiceVolume(this.options.voiceVolume);
 
 		await worker.play();
-		
+
 
 		this._running = false;
 	}
 
 	chatEvent(evt, sock) {
 		const idx = this._presentedStack.findIndex((item) => item.id === evt.data.user.id);
-		
+
 		if ( idx >= 0 ){
 			const [presented] = this._presentedStack.splice(idx, 1);
 			const stack = {
