@@ -5,22 +5,12 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
 <template>
-	<div v-show="live && live.id">
-		<div v-if="fullScreen">
+	<div v-if="live && live.id">
+		<div v-show="fullScreen">
 			<v-card
 				tile
 				class="full-screen">
-				<v-app-bar
-					dark
-					color="indigo accent-5"
-					style="cursor: pointer;"
-					@click="fullScreen = false;"
-					flat>
-					<v-icon left>
-						mdi-chevron-down
-					</v-icon>
-					{{ live.title }}
-				</v-app-bar>
+				<player-bar :live="live" @screen:close="fullScreen = false" @close="liveLeave"/>
 				<v-img :src="live.img_url" height="100%">
 					<v-card
 						tile
@@ -68,7 +58,7 @@
 			</v-card>
 		</div>
 		<div
-			v-else
+			v-if="!fullScreen"
 			class="minify-button">
 			<v-btn
 				tile dark
@@ -89,6 +79,7 @@ import GlobalMixins from '@/plugins/mixins';
 import { Live, LiveSocket, LiveEvent, LiveType, User } from '@sopia-bot/core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
 import SopiaProcesser from '@/sopia/processor';
+import PlayerBar from './PlayerBar.vue';
 
 const IgnoreEvent = [
 	LiveEvent.LIVE_STATE,
@@ -101,6 +92,7 @@ const IgnoreEvent = [
 @Component({
 	components: {
 		ChatMessage,
+		PlayerBar,
 	},
 	data: () => {
 		return {
@@ -152,6 +144,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 					});
 				}
 			});
+			this.$evt.$off('live-block');
 			this.$evt.$on('live-block', async (id: number) => {
 				this.$confirm({
 					title: this.$t('lives.block'),
@@ -193,6 +186,11 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				this.chat = '';
 			});
 		}
+	}
+
+	public liveLeave() {
+		this.liveSocket.destroy();
+		this.$evt.$emit('live-leave');
 	}
 
 	public userType(user: User) {

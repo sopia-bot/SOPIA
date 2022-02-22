@@ -99,11 +99,17 @@ export default class App extends Mixins(GlobalMixins) {
 			this.loginDialog = true;
 		}
 
+		this.$evt.$off('live-join');
 		this.$evt.$on('live-join', async (live: number) => {
 			const req = await this.$sopia.api.lives.info(live);
 			this.$nextTick(async () => {
 				this.currentLive = req.res.results[0];
 			});
+		});
+
+		this.$evt.$off('live-leave');
+		this.$evt.$on('live-leave', () => {
+			this.currentLive = {} as Live;
 		});
 
 
