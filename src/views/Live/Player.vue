@@ -18,7 +18,8 @@
 						style="background: rgba(0, 0, 0, 0.7) !important;">
 						<vue-scroll
 							ref="scroll"
-							style="max-height: calc(100% - 158px); height: calc(100% - 158px);">
+							style="max-height: calc(100% - 158px); height: calc(100% - 158px);"
+							:style="{ marginTop: $vuetify.breakpoint.mobile ? '56px' : '64px' }">
 							<v-row class="ma-0">
 								<v-col cols="12">
 									<div
