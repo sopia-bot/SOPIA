@@ -36,9 +36,9 @@ import { Component, Mixins, Prop } from 'vue-property-decorator';
 import BundleMixin from '../bundle-mixin';
 import { BundlePackage } from '@/interface/bundle';
 import hljs from 'highlight.js';
+import * as marked from 'marked/lib/marked.umd.js';
 
 const fs = window.require('fs');
-const marked = window.require('marked');
 
 const mappingLanguage = (language: string) => {
 	switch ( language ) {
