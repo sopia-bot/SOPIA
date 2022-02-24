@@ -89,6 +89,7 @@ export default class BundleItemDetail extends Mixins(BundleMixin) {
 		this.loading = true;
 		await this.bundleInstall(this.pkg);
 		this.updatePackageUsing();
+		window.reloadScript();
 		this.$evt.$emit('sidemenu:bundle-reload');
 		this.loading = false;
 	}
@@ -97,6 +98,7 @@ export default class BundleItemDetail extends Mixins(BundleMixin) {
 		this.loading = true;
 		await this.bundleUninstall(this.pkg);
 		this.updatePackageUsing();
+		window.reloadScript();
 		this.$evt.$emit('sidemenu:bundle-reload');
 		this.loading = false;
 	}
