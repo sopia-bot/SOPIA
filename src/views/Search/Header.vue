@@ -7,7 +7,7 @@
 <template>
 	<v-app-bar
 		color="indigo darken-4"
-		class="custom"
+		class="search-custom"
 		dark>
 		<v-spacer></v-spacer>
 
@@ -93,22 +93,22 @@ export default class SearchHeader extends Mixins(GlobalMixins) {
 	}
 }
 </script>
-<style scope>
-.custom div.v-text-field__details,
-.custom div.v-messages.theme--light,
-.custom div.v-messages.theme--dark {
+<style>
+.search-custom div.v-text-field__details,
+.search-custom div.v-messages.theme--light,
+.search-custom div.v-messages.theme--dark {
 	min-height: 0;
 }
-.custom .theme--dark.v-text-field--solo > .v-input__control > .v-input__slot {
+.search-custom .theme--dark.v-text-field--solo > .v-input__control > .v-input__slot {
 	box-shadow: unset !important;
 	background: transparent !important;
 }
 
-.custom .v-input__slot {
+.search-custom .v-input__slot {
 	margin-bottom: 0;
 }
 
-.custom .theme--dark.v-overflow-btn:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot:hover {
+.search-custom .theme--dark.v-overflow-btn:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot:hover {
 	background: #303F9F;
 }
 </style>
