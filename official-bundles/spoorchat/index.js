@@ -360,7 +360,7 @@ var spoorChat = new SpoorChat();
  * Copyright (c) raravel. Licensed under the MIT License.
  */
 
-const axios = window.require('axios');
+const axios = window.axios;
 const API_KEY = atob('QUl6YVN5REZPNTMyWUh5Ykl0amkxaTdaaGhEUVdEV0NpcjNrUkZZ');
 
 async function GoogleVoice(text, option) {
