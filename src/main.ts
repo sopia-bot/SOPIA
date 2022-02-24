@@ -23,6 +23,7 @@ import vuetify from '@/plugins/vuetify';
 import Logger from '@/plugins/logger';
 import CfgLite from '@/plugins/cfg-lite-ipc';
 import { SopiaAPI } from '@/plugins/sopia-api';
+import axios, { AxiosInstance } from 'axios';
 
 import App from '@/App.vue';
 const { remote, ipcRenderer } = electron;
@@ -53,6 +54,7 @@ window.isDevelopment = ipcRenderer.sendSync('isdev');
 const appCfgPath = path.join(app.getPath('userData'), 'app.cfg');
 Vue.prototype.$cfg = window.appCfg = new CfgLite(appCfgPath);
 Vue.prototype.$api = new SopiaAPI();
+window.axios = axios;
 
 const api = window.appCfg.get('api');
 if ( api ) {
@@ -77,6 +79,7 @@ declare global {
 		logger: any;
 		appCfg: CfgLite;
 		isDevelopment: boolean;
+		axios: AxiosInstance;
 	}
 }
 window.logger = Logger;
