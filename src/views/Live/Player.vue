@@ -88,6 +88,7 @@ const IgnoreEvent = [
 	LiveEvent.LIVE_FAILOVER,
 	LiveEvent.LIVE_RANK,
 	LiveEvent.LIVE_RANKLIST,
+	LiveEvent.LIVE_LAZY_UPDATE,
 ];
 
 @Component({

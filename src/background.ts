@@ -10,11 +10,23 @@ import { app, session, protocol, BrowserWindow, ipcMain, dialog, IpcMainEvent } 
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import path from 'path';
+import fs from 'fs';
 import CfgLite from 'cfg-lite';
 import { ZipFile, ZipArchive } from '@arkiv/zip';
 
 const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
 const isDevelopment = process.env.NODE_ENV !== 'production';
+
+/* INIT DIR */
+const bundleDir = path.join(app.getPath('userData'), 'bundles');
+if ( !fs.existsSync(bundleDir) ) {
+	fs.mkdirSync(bundleDir);
+}
+
+const sopiaDir = path.join(app.getPath('userData'), 'sopia');
+if ( !fs.existsSync(sopiaDir) ) {
+	fs.mkdirSync(sopiaDir);
+}
 
 const CfgList: any = {};
 const getPath = (type: any, ...args: any) => path.resolve(app.getPath(type), ...args);
