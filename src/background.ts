@@ -6,73 +6,15 @@
  */
 'use strict';
 
-import { app, session, protocol, BrowserWindow, ipcMain, dialog, IpcMainEvent } from 'electron';
+import { app, session, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import path from 'path';
-import fs from 'fs';
-import CfgLite from 'cfg-lite';
-import { ZipFile, ZipArchive } from '@arkiv/zip';
 
-const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
+
+import './init';
+import './ipc-handler';
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
-
-/* INIT DIR */
-const bundleDir = path.join(app.getPath('userData'), 'bundles');
-if ( !fs.existsSync(bundleDir) ) {
-	fs.mkdirSync(bundleDir);
-}
-
-const sopiaDir = path.join(app.getPath('userData'), 'sopia');
-if ( !fs.existsSync(sopiaDir) ) {
-	fs.mkdirSync(sopiaDir);
-}
-
-const CfgList: any = {};
-const getPath = (type: any, ...args: any) => path.resolve(app.getPath(type), ...args);
-
-ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: any) => {
-	const key = path.basename(file);
-	let rtn: any = null;
-	if ( prop === 'new' ) {
-		CfgList[key] = new CfgLite(file, args[0]);
-	} else {
-		if ( typeof CfgList[key][prop] === 'function' ) {
-			rtn = CfgList[key][prop](...args);
-		} else {
-			rtn = CfgList[key][prop];
-		}
-	}
-
-	evt.returnValue = rtn;
-});
-
-ipcMain.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
-	console.log('zip:create', src, dst);
-	try {
-		ZipFile.CreateFromDirectory(src, dst);
-		evt.returnValue = true;
-	} catch (err) {
-		console.error(err);
-		evt.returnValue = false;
-	}
-});
-
-ipcMain.on('zip:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
-	console.log('zip:uncompress-buffer', dst);
-	const archive = new ZipArchive('', Buffer.from(b64str, 'base64'));
-	archive.ExtractAll(dst);
-	evt.returnValue = true;
-});
-
-ipcMain.on('isdev', (evt: IpcMainEvent) => {
-	evt.returnValue = isDevelopment;
-});
-
-ipcMain.handle('open-dialog', async (event, options: any) => {
-	return await dialog.showOpenDialog(options);
-});
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -93,61 +35,7 @@ declare global {
 }
 
 console.log('Developement:', isDevelopment);
-app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 
-const buildTime = (time: Date) => {
-	const yyyy = time.getFullYear();
-	const mm = (time.getMonth() + 1).toString().padStart(2, '0');
-	const dd = (time.getDate()).toString().padStart(2, '0');
-
-	const hh = time.getHours().toString().padStart(2, '0');
-	const MM = time.getMinutes().toString().padStart(2, '0');
-	const ss = time.getSeconds().toString().padStart(2, '0');
-
-	return `${yyyy}${mm}${dd}-${hh}${MM}${ss}`;
-};
-global.startTime = buildTime(new Date());
-
-global.snsLoginOpen = function(url: string) {
-	return new Promise((resolve, reject) => {
-		const snsBrowser = new BrowserWindow({
-			width: 800,
-			height: 800,
-			show: false,
-		});
-		snsBrowser.webContents.setUserAgent(USER_AGENT);
-
-		snsBrowser.show();
-
-		snsBrowser.once('close', (evt: any) => {
-			const sender = evt.sender;
-			const webContents = sender.webContents;
-
-			const tout = setTimeout(() => {
-				reject(new Error('Faild get localStorage data. (Timeout)'));
-				if ( !snsBrowser.isDestroyed() ) {
-					evt.sender.close();
-				}
-			}, 5000);
-
-			webContents.executeJavaScript(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`)
-				.then((res: string) => {
-					resolve(JSON.parse(res).result);
-				})
-				.catch(reject)
-				.finally(() => {
-					clearTimeout(tout);
-					evt.sender.close();
-				});
-
-			evt.preventDefault();
-		});
-
-		snsBrowser.loadURL(url, {
-			userAgent: USER_AGENT,
-		});
-	});
-};
 
 // https://pratikpc.medium.com/bypassing-cors-with-electron-ab7eaf331605
 function UpsertKeyValue(obj: Record<string, string|string[]>|undefined, keyToChange: string, value: string[]) {
