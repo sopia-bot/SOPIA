@@ -14,12 +14,12 @@ import Confirm from '@/views/Components/Confirm.vue';
 import Notification from '@/views/Components/Notification.vue';
 
 import { NotiOption, ModalOption, ConfirmOption } from '@/interface/Components';
+import { getAppPath } from './ipc-renderer';
 
 const path = window.require('path');
 const fs = window.require('fs');
 const vm = window.require('vm');
-const { remote, ipcRenderer } = window.require('electron');
-const { app } = remote;
+const { ipcRenderer } = window.require('electron');
 
 const jsOrPath = (code: string) => {
 	try {
@@ -85,7 +85,7 @@ export default class Mixin extends VueDecorator {
 	}
 
 	public $path(type: any, ...args: any) {
-		return path.join(app.getPath(type), ...args);
+		return path.join(getAppPath(type), ...args);
 	}
 
 	public jsSyntax(code: string) {

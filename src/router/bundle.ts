@@ -1,8 +1,7 @@
 const path = window.require('path');
 const fs = window.require('fs');
 const vm = window.require('vm');
-const { remote } = window.require('electron');
-const { app } = remote;
+import { getAppPath } from '@/plugins/ipc-renderer';
 import { RouteConfig } from './index';
 import { BundlePackage } from '@/interface/bundle';
 
@@ -12,7 +11,7 @@ export interface BundleInfo {
 	name: string;
 	page?: string;
 }
-const basePath = path.resolve(app.getPath('userData'), 'bundles');
+const basePath = path.resolve(getAppPath('userData'), 'bundles');
 
 export function bundleReadDir() {
 	const dirs = fs.readdirSync(basePath);

@@ -8,15 +8,14 @@ import { LiveEvent, User, SpoonClient, LiveSocket, Live } from '@sopia-bot/core'
 import CfgLite from '@/plugins/cfg-lite-ipc';
 import logger from '@/plugins/logger';
 import Script from './script';
+import { getAppPath } from '@/plugins/ipc-renderer';
 
 
 const fs = window.require('fs');
 const path = window.require('path');
-const { remote } = window.require('electron');
-const { app } = remote;
 
 const $path = (type: any, ...args: any) => {
-	return path.resolve(app.getPath(type), ...args);
+	return path.resolve(getAppPath(type), ...args);
 };
 
 window.reloadScript = () => {

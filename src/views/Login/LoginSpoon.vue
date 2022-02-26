@@ -66,7 +66,7 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { SnsType, LogonUser } from '@sopia-bot/core';
-const { remote } = window.require('electron');
+import { snsLoginOpen } from '@/plugins/ipc-renderer';
 
 @Component
 export default class LoginSpoon extends Mixins(GlobalMixins) {
@@ -90,7 +90,6 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 	}
 
 	public async snsLoginSpoon(snsType: SnsType) {
-		const snsLoginOpen = remote.getGlobal('snsLoginOpen');
 		try {
 			let user: any = await snsLoginOpen(this.$sopia.snsLoginURL(snsType));
 			user = await this.$sopia.loginToken(user.id, user.token.replace('Bearer ', ''), user.refresh_token);

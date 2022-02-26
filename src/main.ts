@@ -26,8 +26,8 @@ import { SopiaAPI } from '@/plugins/sopia-api';
 import axios, { AxiosInstance } from 'axios';
 
 import App from '@/App.vue';
-const { remote, ipcRenderer } = electron;
-const { app } = remote;
+import { getAppPath, getStartTime } from './plugins/ipc-renderer';
+const { ipcRenderer } = electron;
 
 // Vue Use
 Vue.use(Logger);
@@ -51,7 +51,7 @@ Vue.use(VueScroll, {
 });
 
 window.isDevelopment = ipcRenderer.sendSync('isdev');
-const appCfgPath = path.join(app.getPath('userData'), 'app.cfg');
+const appCfgPath = path.join(getAppPath('userData'), 'app.cfg');
 Vue.prototype.$cfg = window.appCfg = new CfgLite(appCfgPath);
 Vue.prototype.$api = new SopiaAPI();
 window.axios = axios;
@@ -97,11 +97,11 @@ Vue.config.errorHandler = function(err: any, vm: any, info) {
 	str += `    - ${vm.$options._componentTag}::${info}\n\n`;
 
 
-	const logDir = path.join(app.getPath('userData'), 'logs');
+	const logDir = path.join(getAppPath('userData'), 'logs');
 	if ( !fs.existsSync(logDir) ) {
 		fs.mkdirSync(logDir);
 	}
-	const sTime = remote.getGlobal('startTime');
+	const sTime = getStartTime();
 	const logFile = path.join(logDir, `${sTime}-error.log`);
 
 	fs.appendFileSync(logFile, str, 'utf8');
