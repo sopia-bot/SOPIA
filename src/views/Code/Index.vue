@@ -7,7 +7,7 @@
 <template>
 	<v-main style="overflow-y: hidden;">
 		<v-row class="ma-0 h-100v" style=" overflow-y: hidden;">
-			<v-col cols="4" md="3" lg="2" class="pa-0 d-none d-sm-block h-100v" style="border-right: 1px solid #E8EAF6;">
+			<v-col cols="4" md="3" class="pa-0 d-none d-sm-block h-100v" style="border-right: 1px solid #E8EAF6;">
 				<v-row class="ma-0" style="border-bottom: 1px solid #E8EAF6;">
 					<v-col cols="12" style="padding-top: 10px; padding-bottom: 10px;" align="center">
 						<!-- S:Toolbar -->
@@ -28,7 +28,7 @@
 					<!-- E:Folder Tree -->
 				</v-row>
 			</v-col>
-			<v-col cols="12" sm="8" md="9" lg="10" class="pa-0" v-if="openFiles.length > 0">
+			<v-col cols="12" sm="8" md="9" class="pa-0" v-if="openFiles.length > 0">
 				<v-tabs
 					v-model="selectedFile"
 	 				background-color="indigo lighten-1"

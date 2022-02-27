@@ -3,6 +3,7 @@
 		tile dark fixed
 		color="indigo darken-4"
 		class="side-menu-btn"
+		v-if="!$vuetify.breakpoint.lg"
 		ref="menu"
 		:style="{ left, top, }"
 		@mouseover="hover"
