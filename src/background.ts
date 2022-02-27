@@ -6,12 +6,17 @@
  */
 'use strict';
 
-import { app, session, protocol, BrowserWindow } from 'electron';
+import { app, session, protocol, BrowserWindow, dialog } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
+import { autoUpdater } from 'electron-updater';
+import log from 'electron-log';
+
 import './init';
 import { USER_AGENT } from './ipc-handler';
+
+autoUpdater.logger = log;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -92,6 +97,10 @@ const createWindow = () => {
 	win.on('closed', () => {
 		win = null;
 	});
+
+	if ( !isDevelopment ) {
+		autoUpdater.checkForUpdates();
+	}
 };
 
 // Quit when all windows are closed.
@@ -149,3 +158,44 @@ if (isDevelopment) {
 		});
 	}
 }
+
+// 업데이트 오류시
+autoUpdater.on('error', function(error) {
+	console.error('error', error);
+});
+
+// 업데이트 체크
+autoUpdater.on('checking-for-update', async () => {
+	console.log('Checking-for-update');
+});
+
+// 업데이트할 내용이 있을 때
+autoUpdater.on('update-available', async () => {
+	console.log('A new update is available');
+});
+
+// 업데이트할 내용이 없을 때
+autoUpdater.on('update-not-available', async () => {
+	console.log('update-not-available');
+});
+
+
+//다운로드 완료되면 업데이트
+autoUpdater.on('update-downloaded', async (event, releaseNotes, releaseName) => {
+	console.log('update-downloaded');
+	const options = {
+		type: 'info',
+		buttons: ['재시작', '종료'],
+		title: '업데이트 중입니다.',
+		message: process.platform === 'win32' ? releaseNotes : releaseName,
+		detail: '새로운 버전이 다운로드 되었습니다. 애플리케이션을 재시작하여 업데이트를 적용해 주세요.'
+	};
+	const { response } = await dialog.showMessageBox(win as BrowserWindow, options);
+
+	if (response === 0) {
+		autoUpdater.quitAndInstall();
+	} else {
+		app.quit();
+		app.exit();
+	}
+});

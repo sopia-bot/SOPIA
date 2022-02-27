@@ -1,6 +1,6 @@
 {
 	"name": "sopia-v3",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "A Spooncast manager A.I Program",
 	"private": true,
 	"scripts": {
@@ -21,6 +21,8 @@
 		"@sopia-bot/core": "^2.1.8",
 		"axios": "^0.19.2",
 		"cfg-lite": "^1.1.3",
+		"electron-log": "^4.4.6",
+		"electron-updater": "^4.6.5",
 		"highlight.js": "^11.4.0",
 		"liquor-tree": "^0.2.70",
 		"marked": "^4.0.12",
