@@ -12,6 +12,7 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import path from 'path';
 
 import './init';
 import { USER_AGENT } from './ipc-handler';
@@ -63,6 +64,7 @@ const createWindow = () => {
 			webSecurity: !isDevelopment,
 			backgroundThrottling: false,
 		},
+		icon: path.join(__dirname, '../public/icon_.png'),
 	});
 
 	win.webContents.session.webRequest.onBeforeSendHeaders(

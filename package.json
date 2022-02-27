@@ -11,6 +11,7 @@
 		"electron:build": "vue-cli-service electron:build",
 		"electron:window:build": "vue-cli-service.cmd electron:build -p always",
 		"electron:serve": "vue-cli-service electron:serve",
+		"electron:icon-build": "electron-icon-builder --input=public/icon.png --output=build --flatten",
 		"postinstall": "electron-builder install-app-deps",
 		"postuninstall": "electron-builder install-app-deps"
 	},
@@ -52,6 +53,7 @@
 		"electron": "^17.1.0",
 		"electron-builder": "^22.14.13",
 		"electron-devtools-installer": "^3.1.0",
+		"electron-icon-builder": "^2.0.1",
 		"monaco-editor-webpack-plugin": "^1.9.0",
 		"sass": "~1.32.12",
 		"sass-loader": "^10.2.0",

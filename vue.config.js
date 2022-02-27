@@ -12,6 +12,7 @@ module.exports = {
 						"region": "ap-northeast-2",
 					},
 				],
+				productName: 'SOPIAv3',
 			},
 		},
 	},
