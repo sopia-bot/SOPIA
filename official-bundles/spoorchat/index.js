@@ -360,17 +360,17 @@ var spoorChat = new SpoorChat();
  * Copyright (c) raravel. Licensed under the MIT License.
  */
 
-const axios = window.axios;
-const API_KEY = atob('QUl6YVN5REZPNTMyWUh5Ykl0amkxaTdaaGhEUVdEV0NpcjNrUkZZ');
+const axios$1 = window.axios;
+const API_KEY$1 = atob('QUl6YVN5REZPNTMyWUh5Ykl0amkxaTdaaGhEUVdEV0NpcjNrUkZZ');
 
 async function GoogleVoice(text, option) {
 	if ( !text ) {
 		return '';
 	}
-	const res = await axios({
+	const res = await axios$1({
 		url: `https://texttospeech.googleapis.com/v1/text:synthesize`,
 		params: {
-			key: API_KEY,
+			key: API_KEY$1,
 			alt: 'json',
 		},
 		method: 'post',
@@ -388,6 +388,33 @@ async function GoogleVoice(text, option) {
 	return res.data.audioContent.toString('base64');
 }
 
+const axios = window.axios;
+const API_KEY = atob('S2FrYW9BSyA3YjJmNzY2ZTIwZDI4NWY3YmQ3MzA2OWVjNTIwYjI5Mg');
+
+/*
+option: {
+	voice: string
+}
+*/
+async function KakaoVoice(text, option) {
+	if ( !text ) {
+		return '';
+	}
+
+	const res = await axios({
+		url: 'https://kakaoi-newtone-openapi.kakao.com/v1/synthesize',
+		method: 'post',
+		data: `<speak><voice name="${option.voice}">${text}</voice></speak>`,
+		headers: {
+			'Content-Type': 'application/xml',
+			'Authorization': API_KEY,
+		},
+		responseType: 'arraybuffer',
+	});
+
+	return Buffer.from(res.data, 'binary').toString('base64');
+}
+
 /*
  * index.js
  * Created on Fri Jan 28 2022
@@ -395,6 +422,7 @@ async function GoogleVoice(text, option) {
  * Copyright (c) raravel. Licensed under the MIT License.
  */
 
+/* S: GOOGLE */
 spoorChat.addVoice({
 	name: 'minji',
 	label: '민지',
@@ -435,6 +463,42 @@ spoorChat.addVoice({
 	},
 	engine: GoogleVoice,
 });
+/* E: GOOGLE */
+
+/* S: KAKAO */
+spoorChat.addVoice({
+	name: 'spring',
+	label: '봄',
+	option: {
+		voice: 'WOMAN_READ_CALM',
+	},
+	engine: KakaoVoice,
+});
+spoorChat.addVoice({
+	name: 'ryan',
+	label: '라이언',
+	option: {
+		voice: 'MAN_READ_CALM',
+	},
+	engine: KakaoVoice,
+});
+spoorChat.addVoice({
+	name: 'naomi',
+	label: '나오미',
+	option: {
+		voice: 'WOMAN_DIALOG_BRIGHT',
+	},
+	engine: KakaoVoice,
+});
+spoorChat.addVoice({
+	name: 'nick',
+	label: '닉',
+	option: {
+		voice: 'MAN_DIALOG_BRIGHT',
+	},
+	engine: KakaoVoice,
+});
+/* E: KAKAO */
 
 const sopia = window.bctx.get('spoorchat');
 sopia.itv.add('spootchat', spoorChat.processor, 1000);
