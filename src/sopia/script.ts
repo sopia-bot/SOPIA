@@ -54,7 +54,7 @@ export class Script {
 	public clear() {
 		if ( Array.isArray(this.boxs) ) {
 			for ( const module of this.boxs ) {
-				module.context.destroy();
+				this.abort.call(this, module.name);
 			}
 		}
 		this.boxs = [];
