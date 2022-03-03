@@ -2,6 +2,7 @@ import path from 'path';
 import { app, BrowserWindow , ipcMain, IpcMainEvent, dialog } from 'electron';
 import puppeteer from 'puppeteer-core';
 import { URL } from 'url';
+import { execSync } from 'child_process';
 
 import CfgLite from 'cfg-lite';
 import { ZipFile, ZipArchive } from '@arkiv/zip';
@@ -14,6 +15,14 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const CfgList: any = {};
 const getPath = (type: any, ...args: any) => path.resolve(app.getPath(type), ...args);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+const launcher = function(cmd: string) {
+	try {
+		return execSync(cmd).toString('utf8').replace(/\n/g , '');
+	} catch {
+		return '';
+	}
+};
 
 ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: any) => {
 	const key = path.basename(file);
@@ -83,53 +92,60 @@ function pickProgram(list: string[]) {
 }
 
 const snsLoginOpenByPuppeteer = (url: string) => new Promise(async (resolve, reject) => {
+	let executablePath = '';
 	if ( process.platform === 'win32' ) {
-		const executablePath = pickProgram([
+		executablePath = pickProgram([
 			`C:\\Program Files\\Mozilla Firefox\\firefox.exe`,
 			`C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe`,
 			`C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe`,
 			`C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe`,
 		]);
-
-		if ( executablePath === '' ) {
-			console.log(`Can not find supported browser list.`);
-			reject();
-			return;
-		}
-
-		const browser = await puppeteer.launch({
-			executablePath,
-			headless: false,
-			defaultViewport: null,
-			product: path.parse(executablePath).name === 'firefox' ? 'firefox' : 'chrome',
-			//args,
-		});
-
-		const [page] = await browser.pages();
-		await page.goto(url);
-		page.on('framenavigated', async (frame) => {
-			const furl = frame.url();
-			const parsedUrl = new URL(furl);
-			if ( parsedUrl.host === 'www.spooncast.net' ) {
-				let res = await page.evaluate(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`);
-
-				for ( let i = 0; i < 5 && !res; i++ ) {
-					await sleep(1000);
-					res = await page.evaluate(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`);
-				}
-
-				browser.close();
-
-				try {
-					resolve(JSON.parse(res).result);
-				} catch {
-					reject();
-				}
-			}
-		});
-		//await browser.close();
+	} else if ( process.platform === 'linux' ) {
+		executablePath = pickProgram([
+			launcher('which firefox'),
+			launcher('which google-chrome'),
+			launcher('which chrome'),
+			launcher('which chromium'),
+			launcher('which brave-browser'),
+		]);
 	}
 
+	if ( executablePath === '' ) {
+		console.log(`Can not find supported browser list.`);
+		reject();
+		return;
+	}
+
+	const browser = await puppeteer.launch({
+		executablePath,
+		headless: false,
+		defaultViewport: null,
+		product: path.parse(executablePath).name === 'firefox' ? 'firefox' : 'chrome',
+		//args,
+	});
+
+	const [page] = await browser.pages();
+	await page.goto(url);
+	page.on('framenavigated', async (frame) => {
+		const furl = frame.url();
+		const parsedUrl = new URL(furl);
+		if ( parsedUrl.host === 'www.spooncast.net' ) {
+			let res = await page.evaluate(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`);
+
+			for ( let i = 0; i < 5 && !res; i++ ) {
+				await sleep(1000);
+				res = await page.evaluate(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`);
+			}
+
+			browser.close();
+
+			try {
+				resolve(JSON.parse(res).result);
+			} catch {
+				reject();
+			}
+		}
+	});
 });
 
 const snsLoginOpenByElectron = function(url: string) {
@@ -205,3 +221,4 @@ ipcMain.handle('sns-login-open', async (evt, url: string) => {
 ipcMain.handle('open-dialog', async (event, options: any) => {
 	return await dialog.showOpenDialog(options);
 });
+

@@ -100,7 +100,11 @@ const createWindow = () => {
 		win = null;
 	});
 
-	if ( !isDevelopment ) {
+	if ( isDevelopment ) {
+		win.once('ready-to-show', () => {
+			win?.show();
+		});
+	} else {
 		autoUpdater.checkForUpdates();
 	}
 };
@@ -190,7 +194,7 @@ autoUpdater.on('update-downloaded', async (event, releaseNotes, releaseName) => 
 		buttons: ['재시작', '종료'],
 		title: '업데이트 중입니다.',
 		message: process.platform === 'win32' ? releaseNotes : releaseName,
-		detail: '새로운 버전이 다운로드 되었습니다. 애플리케이션을 재시작하여 업데이트를 적용해 주세요.'
+		detail: '새로운 버전이 다운로드 되었습니다. 애플리케이션을 재시작하여 업데이트를 적용해 주세요.',
 	};
 	const { response } = await dialog.showMessageBox(win as BrowserWindow, options);
 
