@@ -13,6 +13,7 @@ export default {
 		diff_id: '기존에 등록되어 있는 스푼 아이디와 다른 계정입니다.',
 		fail_chk_pw: '비밀번호 확인이 다릅니다.',
 		exists_user_id: '이미 있는 아이디입니다.',
+		policy: '{{ app.login.policy-agree-0 }} {{ app.login.policy-agree-1 }} {{ app.login.policy-agree-2 }}에 동의하셔야 가입 가능합니다.',
 	},
 	'phone': '전화번호',
 	'email': '이메일',
@@ -22,4 +23,8 @@ export default {
 	'sign-in': '회원가입',
 	'return-login': '로그인으로 돌아가기',
 	'sign-success': '회원가입 되었습니다.<br>로그인 해주세요.',
+	'policy-agree-0': '이용약관',
+	'policy-agree-1': '및',
+	'policy-agree-2': '개인정보처리방침',
+	'policy-agree-3': '에 동의합니다.',
 };

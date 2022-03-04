@@ -6,6 +6,15 @@
 -->
 <template>
 	<div>
+		<v-dialog
+			v-model="dialog">
+			<v-card>
+				<v-card-text class="pt-6" v-html="markdown">
+					
+				</v-card-text>
+			</v-card>
+		</v-dialog>
+
 		<v-card-title class="text-center d-block">
 			{{ signinMode ? $t('app.login.sign-title') : $t('app.login.title') }}
 		</v-card-title>
@@ -34,6 +43,26 @@
 				prepend-icon="mdi-lock"
 				type="password"
 				></v-text-field>
+
+			<v-checkbox
+				v-if="signinMode"
+				v-model="policy"
+				color="indigo darken-2">
+				<template v-slot:label>
+					<div>
+						<a
+							class="indigo--text text--darken-1"
+							href="#"
+							@click.stop="showTerm">{{ $t('app.login.policy-agree-0') }}</a>
+						{{ $t('app.login.policy-agree-1') }}
+						<a
+							class="indigo--text text--darken-1"
+							href="#"
+							@click.stop="showPrivacy">{{ $t('app.login.policy-agree-2') }}</a>
+						{{ $t('app.login.policy-agree-3') }}
+					</div>
+				</template>
+			</v-checkbox>
 
 			<p class="red--text">{{ errorMsg }}</p>
 
@@ -68,6 +97,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
+import * as marked from 'marked/lib/marked.umd.js';
 
 @Component
 export default class LoginSopia extends Mixins(GlobalMixins) {
@@ -75,6 +105,9 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 	public auth = { id: '', pw: '', pwChk: '' };
 	public errorMsg: string = '';
 	public signinMode = false;
+	public policy = false;
+	public dialog = false;
+	public markdown = '';
 
 	public async loginSopia() {
 		try {
@@ -103,6 +136,11 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 			return;
 		}
 
+		if ( !this.policy ) {
+			this.errorMsg = this.$t('app.login.error.policy');
+			return;
+		}
+
 		try {
 			const res = await this.$api.req('PUT', '/auth/sign/', {
 				name: this.auth.id,
@@ -120,6 +158,7 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 				content: this.$t('app.login.sign-success'),
 			}).then((close) => {
 				this.auth = { id: '', pw: '', pwChk: '' };
+				this.errorMsg = '';
 				this.signinMode = false;
 				close();
 			});
@@ -127,6 +166,18 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 			this.$logger.err('login', err);
 			this.errorMsg = err.message;
 		}
+	}
+
+	public async showTerm() {
+		const res = await this.$api.req('GET', '/contents/term/');
+		this.markdown = marked.marked(res.data[0]).replace(/\n/g, '<br>');
+		this.dialog = true;
+	}
+
+	public async showPrivacy() {
+		const res = await this.$api.req('GET', '/contents/privacy/');
+		this.markdown = marked.marked(res.data[0]).replace(/\n/g, '<br>');
+		this.dialog = true;
 	}
 
 }
