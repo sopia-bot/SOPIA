@@ -27,15 +27,19 @@ export class Script {
 		if ( fs.existsSync(index) ) {
 			const name = path.basename(folder);
 			const context = (window as any)['bctx'].new(name);
-			const module = window.require(index);
-			const box = {
-				name,
-				file: index,
-				dir: folder,
-				module,
-				context,
-			};
-			this.boxs.push(box);
+			try {
+				const module = window.require(index);
+				const box = {
+					name,
+					file: index,
+					dir: folder,
+					module,
+					context,
+				};
+				this.boxs.push(box);
+			} catch (e) {
+				logger.err('sopia', `Failed load script file [${index}]`, e);
+			}
 		} else {
 			logger.err('sopia', `Can not open script file [${index}].`);
 		}
