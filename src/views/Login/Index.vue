@@ -105,6 +105,8 @@ export default class Login extends Mixins(GlobalMixins) {
 		this.$evt.$emit('user', user);
 		this.sopiaShow = false;
 		this.spoonShow = false;
+
+		this.$api.activityLog('logon');
 	}
 
 }

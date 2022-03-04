@@ -86,6 +86,8 @@ export default class App extends Mixins(GlobalMixins) {
 							this.$evt.$emit('user', user);
 							this.$cfg.set('auth.spoon.token', token);
 							this.$cfg.save();
+
+							await this.$api.activityLog('logon');
 						} else {
 							throw Error('Invalid token');
 						}
@@ -104,6 +106,7 @@ export default class App extends Mixins(GlobalMixins) {
 			const req = await this.$sopia.api.lives.info(live);
 			this.$nextTick(async () => {
 				this.currentLive = req.res.results[0];
+				await this.$api.activityLog('live-join', req.res.results[0].id.toString());
 			});
 		});
 

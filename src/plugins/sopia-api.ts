@@ -28,6 +28,10 @@ export class SopiaAPI {
 		return await this.req('PATCH', '/user/info', data);
 	}
 
+	public async activityLog(tag: string, data: string = '') {
+		return await this.req('PUT', '/contents/activity/', { tag, data });
+	}
+
 	public async req(method: string, url: string, data: any = {}): Promise<any> {
 		if ( !data['headers'] ) {
 			data = { data, headers: {} };
