@@ -112,6 +112,11 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 	public async loginSopia() {
 		try {
 			const user = await this.$api.login(this.auth.id, this.auth.pw);
+			if ( !user ) {
+				this.errorMsg = this.$t('app.login.error.login_fail');
+				return;
+			}
+
 			this.$store.commit('user', user);
 			this.errorMsg = '';
 			this.$emit('logon', this.$store.getters.user);
