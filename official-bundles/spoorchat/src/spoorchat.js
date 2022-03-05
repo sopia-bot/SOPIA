@@ -63,11 +63,11 @@ class SpoorChat {
 			return;
 		}
 
-		const item = this._chatStack.shift();
-
 		if ( this._running ) {
 			return;
 		}
+
+		const item = this._chatStack.shift();
 		this._running = true;
 
 		let voice = null;
@@ -89,7 +89,6 @@ class SpoorChat {
 			.voiceVolume(this.options.voiceVolume);
 
 		await worker.play();
-
 
 		this._running = false;
 	}

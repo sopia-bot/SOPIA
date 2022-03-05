@@ -90,6 +90,7 @@ class VoiceWorker {
 	_voiceVolume = 50;
 	_readyVoiceList = [];
 	_voiceCount = 0;
+	_resolve = () => {};
 
 	constructor() {
 		this._playReadyVoice = this._playReadyVoice.bind(this);
@@ -100,29 +101,35 @@ class VoiceWorker {
 		this._signatureParser = this._signatureParser.bind(this);
 	}
 
-	async play() {
-		const effectPlaying = new Media(this._effectVolume)
-			.readFile(this._effect)
-			.play();
+	play() {
+		return new Promise(async (resolve, reject) => {
+			this._resolve = resolve.bind(this);
+			const effectPlaying = new Media(this._effectVolume)
+				.readFile(this._effect)
+				.play();
 
-		const args = this._signatureParser();
-		this._voiceCount = args.length;
-		effectPlaying.then(this._playReadyVoice.bind(this));
-		for ( const arg of args ) {
-			if ( this._signature[arg] ) {
-				this._readyVoiceList.push(
-					new Media(this._voiceVolume)
-						.readFile(this._siganture[arg])
-				);
-			} else {
-				const b64str = await this._voiceEngine(arg, this._voiceOption);
-				this._readyVoiceList.push(
-					new Media(this._voiceVolume)
-						.bufferSet(b64str)
-				);
+			const args = this._signatureParser();
+			this._voiceCount = args.length;
+			effectPlaying.then(this._playReadyVoice.bind(this));
+			for ( const arg of args ) {
+				if ( this._signature[arg] ) {
+					this._readyVoiceList.push(
+						new Media(this._voiceVolume)
+							.readFile(this._siganture[arg])
+					);
+				} else {
+					const b64str = await this._voiceEngine(arg, this._voiceOption);
+					if ( b64str ) {
+						this._readyVoiceList.push(
+							new Media(this._voiceVolume)
+								.bufferSet(b64str)
+						);
+					} else {
+						this._voiceCount--;
+					}
+				}
 			}
-		}
-
+		});
 	}
 
 	_sleep(ms) {
@@ -134,10 +141,12 @@ class VoiceWorker {
 			if ( this._readyVoiceList.length > 0 ) {
 				const media = this._readyVoiceList.shift();
 				await media.play();
+				this._voiceCount--;
 			} else {
 				await this._sleep(10);
 			}
 		}
+		this._resolve();
 	}
 
 	effect(p) {
