@@ -36,7 +36,7 @@
 					<div v-if="searchType === 'user'">
 						<v-list-item>
 							<v-badge
-								v-if="search.current_live"
+								v-if="search.current_live_id"
 								avatar
 								bottom
 								color="red accent-4"
@@ -44,7 +44,7 @@
 								offset-x="25"
 								offset-y="17">
 								<v-list-item-avatar
-									@click="$evt.$emit('live-join', search.current_live.id)"
+									@click="$evt.$emit('live-join', search.current_live_id)"
 									style="cursor: pointer;"
 									class="ml-0">
 									<v-img :src="search.profile_url"></v-img>
