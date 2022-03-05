@@ -112,7 +112,7 @@ export default class Home extends Mixins(GlobalMixins) {
 				this.liveSubscribed.push(myLive);
 			}
 
-			const req = await this.$sopia.api.lives.subcribed();
+			const req = await this.$sopia.api.lives.subscribed();
 			const lives = req.res.results;
 			for ( const live of lives ) {
 				this.liveSubscribed.push(live);
@@ -128,7 +128,7 @@ export default class Home extends Mixins(GlobalMixins) {
 				this.liveSubscribed.push(myLive);
 			}
 
-			const req = await this.$sopia.api.lives.subcribed();
+			const req = await this.$sopia.api.lives.subscribed();
 			const lives = req.res.results;
 			for ( const live of lives ) {
 				this.liveSubscribed.push(live);
