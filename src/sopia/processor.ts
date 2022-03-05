@@ -58,16 +58,17 @@ window.reloadCmdCfg = () => {
 	cfg = new CfgLite(CMD_PATH);
 };
 
-const isAdmin = (live: Live, user: User|number) => {
-	if ( !live || (!live.manager_ids && !live.author) ) {
-		return;
-	}
+const managerObj: any = {};
 
-	if ( user instanceof User ) {
+const isAdmin = (live: Live, user: User|number) => {
+	if ( typeof user === 'object' ) {
+		if ( user.is_dj ) {
+			return true;
+		}
 		user = user.id;
 	}
 
-	return live.author.id === user || live.manager_ids.includes(user);
+	return managerObj[live.id].includes(user);
 };
 
 const DEFAULT_CMD_PREFIX = '!';
@@ -105,6 +106,11 @@ const ckCmdEvent = (evt: any, sock: LiveSocket) => {
 const processor = async (evt: any, sock: LiveSocket) => {
 	logger.debug('sopia', `receive event [${evt.event}]`, evt);
 
+	if ( evt.event === LiveEvent.LIVE_LAZY_UPDATE ||
+		 evt.event === LiveEvent.LIVE_UPDATE ) {
+		managerObj[evt.data.live.id] = evt.data.live.manager_ids;
+	}
+
 	/* S: Cmd */
 	if ( ckCmdEvent(evt, sock) ) {
 		if ( window.appCfg.get('cmd.use') === true && fs.existsSync(CMD_PATH) ) {
@@ -133,7 +139,7 @@ const processor = async (evt: any, sock: LiveSocket) => {
 					const m = comment.find((c: any) => ckCmd(c, evt.update_component.message.value));
 					if ( m ) {
 						if ( m.permit === 'manager' ) {
-							if ( isAdmin(sock.Live as Live, e.author) ) {
+							if ( isAdmin(sock.Live as Live, e.user) ) {
 								res = m.message;
 							}
 						} else {
