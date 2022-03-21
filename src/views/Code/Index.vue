@@ -4,6 +4,7 @@
  *
  * Copyright (c) Tree Some. Licensed under the MIT License.
 -->
+<script src="../../router/index.ts"></script>
 <template>
 	<v-main style="overflow-y: hidden;">
 		<v-row class="ma-0 h-100v" style=" overflow-y: hidden;">
@@ -173,8 +174,17 @@ export default class Code extends Mixins(GlobalMixins) {
 		},
 	];
 
+	get folder() {
+		const m = this.$route.path.match(/\/code\/(.*)?\//);
+		if ( m ) {
+			return m[1];
+		}
+		this.$logger.err('code', 'No selected folder');
+		return '';
+	}
+
 	public TB_NewFile() {
-		let dir = this.$path('userData', this.$route.params.folder);
+		let dir = this.$path('userData', this.folder);
 		if ( this.selectedDir ) {
 			dir = this.selectedDir;
 		} else if ( this.selectedFile >= 0 ) {
@@ -193,7 +203,7 @@ export default class Code extends Mixins(GlobalMixins) {
 	}
 
 	public TB_NewFolder() {
-		let dir = this.$path('userData', this.$route.params.folder);
+		let dir = this.$path('userData', this.folder);
 		if ( this.selectedDir ) {
 			dir = this.selectedDir;
 		} else if ( this.selectedFile >= 0 ) {
@@ -212,7 +222,7 @@ export default class Code extends Mixins(GlobalMixins) {
 	}
 
 	public TB_Rename() {
-		let dir = this.$path('userData', this.$route.params.folder);
+		let dir = this.$path('userData', this.folder);
 		if ( this.selectedDir ) {
 			dir = this.selectedDir;
 		} else if ( this.selectedFile >= 0 ) {

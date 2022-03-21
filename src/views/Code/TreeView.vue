@@ -11,7 +11,7 @@
 			width="260px"
 			style="height: 70px;"
 			content-class="custom namebox px-4 py-1"
-			@click:outside="nbOutsideClick"
+			@click:outside.stop="nbOutsideClick"
 			@keydown="nbKeydown"
 			ref="namebox">
 			<v-text-field
@@ -65,7 +65,6 @@ export default class TreeView extends Mixins(GlobalMixins) {
 	public folderKey: number = 0;
 	public folderTree: any = [];
 	public oriFolderTree: any = [];
-	public targetFolder: string = '';
 	public selectPath: string = '';
 	/* E:For Tree */
 
@@ -84,9 +83,17 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		}
 	}
 
+	get targetFolder() {
+		const m = this.$route.path.match(/\/code\/(.*)?\//);
+		if ( m ) {
+			return m[1];
+		}
+		this.$logger.err('code', 'No selected folder');
+		return '';
+	}
+
 	public mounted() {
 		this.treeRenderer = false;
-		this.targetFolder = this.$route.params.folder;
 		this.folderTree = this.buildFolderTree(this.$path('userData', this.targetFolder));
 
 		this.$evt.$off('code:new');
@@ -229,7 +236,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		}
 
 		const target = path.join(this.nbdir, this.newName);
-		const oldTarget = this.selectedNode.data.value;
+		const oldTarget = this.selectedNode?.data.value;
 
 		if ( target === oldTarget ) {
 			return;
