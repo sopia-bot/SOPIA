@@ -35,7 +35,7 @@ export function bundleReadDir() {
 			console.log(path.basename(info.dir));
 			return {
 				name: info.name,
-				path: '/bundle/' + path.basename(info.dir),
+				path: '/bundle/' + path.basename(info.dir) + '/',
 				icon: info.pkg.icon || 'mdi-tangram',
 			};
 		}) as RouteConfig[];
@@ -47,7 +47,7 @@ export function createBundleRouter() {
 	return [
 		{
 			name: 'store',
-			path: '/bundle/store',
+			path: '/bundle/store/',
 			icon: 'mdi-basket',
 		},
 		...bundleReadDir(),

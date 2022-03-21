@@ -31,12 +31,21 @@ const vm = window.require('vm');
 export default class Bundle extends Mixins(GlobalMixins) {
 
 	public basePath: string = this.$path('userData', 'bundles');
-	public bundlePath: string = path.join(this.basePath, this.$route.params.bundle);
+	public bundlePath: string = path.join(this.basePath, this.bundle);
 	public package!: BundlePackage;
 	public page: any = null;
 
+	get bundle() {
+		const m = this.$route.path.match(/\/bundle\/(.*)?\//);
+		if ( m ) {
+			return m[1];
+		}
+		this.$logger.err('bundle', 'Wrong path ', this.$route.path);
+		return '';
+	}
+
 	get isStore() {
-		return this.$route.params.bundle === 'store';
+		return this.bundle === 'store';
 	}
 
 	public getInnerString(txt: string, tag: string) {
