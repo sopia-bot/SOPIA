@@ -9,7 +9,7 @@ export interface RouteConfig {
 	path: string;
 	component?: any;
 	icon?: string;
-	childs?: RouteConfig[];
+	children?: RouteConfig[];
 	isMenu?: boolean;
 	redirect?: string;
 }
@@ -34,29 +34,33 @@ export const routes: RouteConfig[] = [
 	},
 	{
 		name: 'Command',
-		path: '/cmd/:type/',
+		path: '/cmd/:types/',
 		component: () => import('@/views/Cmd/Index.vue'),
 		isMenu: true,
 		icon: 'mdi-powershell',
-		childs: [
+		children: [
 			{
 				name: 'Join',
 				path: '/cmd/join/',
+				component: () => import('@/views/Cmd/Join.vue'),
 				icon: 'mdi-door',
 			},
 			{
 				name: 'Like',
 				path: '/cmd/like/',
+				component: () => import('@/views/Cmd/Like.vue'),
 				icon: 'mdi-heart',
 			},
 			{
 				name: 'Present',
 				path: '/cmd/present/',
+				component: () => import('@/views/Cmd/Present.vue'),
 				icon: 'mdi-gift',
 			},
 			{
 				name: 'Message',
 				path: '/cmd/message/',
+				component: () => import('@/views/Cmd/Message.vue'),
 				icon: 'mdi-message-alert',
 			},
 		],
@@ -67,7 +71,7 @@ export const routes: RouteConfig[] = [
 		component: () => import('@/views/Code/Index.vue'),
 		icon: 'mdi-code-braces',
 		isMenu: true,
-		childs: [
+		children: [
 			{
 				name: 'Bundles',
 				path: '/code/bundles/',

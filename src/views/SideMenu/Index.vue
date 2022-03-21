@@ -35,14 +35,14 @@
 						:prepend-icon="route.icon"
 						color="indigo--text text--darken-1"
 						:value="isSelectGroup(route.path)"
-						v-if="Array.isArray(route.childs)">
+						v-if="Array.isArray(route.children)">
 						<template v-slot:activator>
 							<v-list-item-content>
 								<v-list-item-title class="text-uppercase">{{ route.name }}</v-list-item-title>
 							</v-list-item-content>
 						</template>
 						<v-list-item
-							v-for="child in route.childs.filter(c => !!c.path)"
+							v-for="child in route.children.filter(c => !!c.path)"
 							@click="$assign(child.path)"
 							:class="CurPath === child.path ? 'indigo lighten-5' : ''"
 							:key="route.name + child.name">
