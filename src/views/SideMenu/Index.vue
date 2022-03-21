@@ -45,14 +45,15 @@
 							v-for="child in route.children.filter(c => !!c.path)"
 							@click="$assign(child.path)"
 							:class="CurPath === child.path ? 'indigo lighten-5' : ''"
+							dense
 							:key="route.name + child.name">
-							<v-list-item-title class="text-uppercase">
-								<span :class="CurPath === child.path ? 'indigo--text' : ''">
+							<v-list-item-subtitle class="text-uppercase ml-6 text-caption font-weight-light">
+								<span :class="$route.path === child.path ? 'indigo--text' : ''">
 									{{ getDisplayText(child) }}
 								</span>
-							</v-list-item-title>
+							</v-list-item-subtitle>
 							<v-list-item-icon>
-								<v-icon :class="CurPath === child.path ? 'indigo--text' : ''">{{ child.icon }}</v-icon>
+								<v-icon :class="$route.path === child.path ? 'indigo--text' : ''">{{ child.icon }}</v-icon>
 							</v-list-item-icon>
 						</v-list-item>
 					</v-list-group>
