@@ -38,7 +38,7 @@
 						v-if="Array.isArray(route.children)">
 						<template v-slot:activator>
 							<v-list-item-content>
-								<v-list-item-title class="text-uppercase">{{ route.name }}</v-list-item-title>
+								<v-list-item-title class="text-uppercase">{{ getDisplayText(route) }}</v-list-item-title>
 							</v-list-item-content>
 						</template>
 						<v-list-item
@@ -48,7 +48,7 @@
 							:key="route.name + child.name">
 							<v-list-item-title class="text-uppercase">
 								<span :class="CurPath === child.path ? 'indigo--text' : ''">
-									{{ child.name }}
+									{{ getDisplayText(child) }}
 								</span>
 							</v-list-item-title>
 							<v-list-item-icon>
@@ -65,7 +65,7 @@
 						<v-list-item-icon>
 							<v-icon>{{ route.icon }}</v-icon>
 						</v-list-item-icon>
-						<v-list-item-title class="text-uppercase">{{ route.name }}</v-list-item-title>
+						<v-list-item-title class="text-uppercase">{{ getDisplayText(route) }}</v-list-item-title>
 					</v-list-item>
 					<!-- E:Single -->
 				</div>
@@ -135,6 +135,14 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 		}
 
 		return false;
+	}
+
+	public getDisplayText(router: RouteConfig) {
+		let text = this.$t('page.' + router.name);
+		if ( text === '$vuetify.page.' + router.name ) {
+			text = router.name;
+		}
+		return text;
 	}
 
 }

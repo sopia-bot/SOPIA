@@ -64,5 +64,5 @@ export default {
 	component: () => import('@/views/Bundle/Index.vue'),
 	icon: 'mdi-puzzle',
 	isMenu: true,
-	childs: createBundleRouter(),
+	children: createBundleRouter(),
 } as RouteConfig;

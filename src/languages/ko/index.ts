@@ -11,6 +11,7 @@ import lives from './lives/';
 import users from './users/';
 import cmd from './cmd/';
 import bundle from './bundle/';
+import page from './page';
 
 export default {
 	app,
@@ -20,6 +21,7 @@ export default {
 	users,
 	cmd,
 	bundle,
+	page,
 	// common
 	'msg': {
 		alert: '알림',
