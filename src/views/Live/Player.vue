@@ -77,7 +77,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Live, LiveSocket, LiveEvent, LiveType, User } from '@sopia-bot/core';
+import { Live, LiveInfo, LiveEvent, LiveType, User } from '@sopia-bot/core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
 import SopiaProcesser from '@/sopia/processor';
 import PlayerBar from './PlayerBar.vue';
@@ -107,24 +107,23 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	@Prop(Object) public live!: Live;
 
 	public fullScreen: boolean = true;
-	public liveSocket!: LiveSocket;
 	public liveEvents: any = [];
 
 	public chat: string = '';
 
 	public async created() {
 		if ( this.live ) {
-			this.$sopia.liveMap.forEach((socket: LiveSocket, liveId: number) => {
+			this.$sopia.liveMap.forEach((live: LiveInfo, liveId: number) => {
 				//socket.destroy(); TODO:
 			});
-			this.liveSocket = await this.live.join();
-			this.liveSocket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
+			await this.live.join();
+			this.live.socket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
 				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
 					// Joined logon account event ignore
 					return;
 				}
 
-				SopiaProcesser(evt as any, this.liveSocket);
+				SopiaProcesser(evt as any, this.live.socket);
 
 				if ( IgnoreEvent.includes(evt.event) ) {
 					return;
@@ -183,7 +182,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 							.replace(/\\/g, '\\\\')
 							.replace(/\n/g, '\\n');
 			this.$logger.debug('live', `send message [${chat}]`);
-			this.liveSocket.message(chat);
+			this.live.socket.message(chat);
 			this.$nextTick(() => {
 				this.chat = '';
 			});
@@ -191,7 +190,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	}
 
 	public liveLeave() {
-		this.liveSocket.destroy();
+		this.live.socket.destroy();
 		this.$evt.$emit('live-leave');
 	}
 

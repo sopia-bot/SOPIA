@@ -58,8 +58,6 @@ window.reloadCmdCfg = () => {
 	cfg = new CfgLite(CMD_PATH);
 };
 
-const managerObj: any = {};
-
 const isAdmin = (live: Live, user: User|number) => {
 	if ( typeof user === 'object' ) {
 		if ( user.is_dj ) {
@@ -68,7 +66,7 @@ const isAdmin = (live: Live, user: User|number) => {
 		user = user.id;
 	}
 
-	return managerObj[live.id].includes(user);
+	return live.manager_ids.includes(user);
 };
 
 const DEFAULT_CMD_PREFIX = '!';
@@ -105,11 +103,6 @@ const ckCmdEvent = (evt: any, sock: LiveSocket) => {
 
 const processor = async (evt: any, sock: LiveSocket) => {
 	logger.debug('sopia', `receive event [${evt.event}]`, evt);
-
-	if ( evt.event === LiveEvent.LIVE_LAZY_UPDATE ||
-		 evt.event === LiveEvent.LIVE_UPDATE ) {
-		managerObj[evt.data.live.id] = evt.data.live.manager_ids;
-	}
 
 	/* S: Cmd */
 	if ( ckCmdEvent(evt, sock) ) {

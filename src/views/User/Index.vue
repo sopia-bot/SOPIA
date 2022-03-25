@@ -94,7 +94,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User, Live, CurrentLive } from '@sopia-bot/core';
+import { User, Live } from '@sopia-bot/core';
 import { deserialize } from 'typescript-json-serializer';
 import SearchHeader from '../Search/Header.vue';
 
@@ -124,9 +124,9 @@ export default class UserPage extends Mixins(GlobalMixins) {
 			const live = req.res.results[0];
 			console.log('live', live);
 			if ( live.is_live ) {
-				this.user.current_live = deserialize<CurrentLive>({
+				this.user.current_live = deserialize<Live>({
 					id: live.current_live_id,
-				}, CurrentLive);
+				}, Live);
 				console.log(this.user);
 			}
 		}
