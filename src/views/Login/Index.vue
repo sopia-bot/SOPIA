@@ -51,7 +51,7 @@ export default class Login extends Mixins(GlobalMixins) {
 			this.sopiaShow = false;
 			this.spoonShow = true;
 		});
-		const sopia = this.$cfg.get('auth.sopia');;
+		const sopia = this.$cfg.get('auth.sopia');
 		if ( sopia ) {
 			this.$evt.$emit('login:skip-sopia-login', sopia);
 		}

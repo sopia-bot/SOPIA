@@ -342,6 +342,8 @@ export default class Code extends Mixins(GlobalMixins) {
 			openedFile.oriContents = openedFile.contents;
 			openedFile.isEdit = false;
 
+			window.reloadScript();
+
 			this.$noti({
 				type: 'success',
 				content: this.$t('code.msg.save-success'),
