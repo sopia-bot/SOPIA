@@ -8,12 +8,14 @@ Vue.use(Vuex);
 interface State {
 	user?: User;
 	sideopen: boolean;
+	loginDialog: boolean;
 }
 
 export default new Vuex.Store({
 	state: {
 		user: undefined,
 		sideopen: false,
+		loginDialog: false,
 	},
 	getters: {
 		user(state: State) {

@@ -19,6 +19,11 @@
 				<v-list-item-subtitle style="font-size: 0.6rem !important;">@{{ user.tag }}</v-list-item-subtitle>
 			</v-list-item-content>
 		</v-list-item>
+		<v-list-item>
+			<v-list-item-content class="py-0">
+				<v-btn text color="red" larg @click="spoonLogout">{{ $t('spoon-logout') }}</v-btn>
+			</v-list-item-content>
+		</v-list-item>
 
 		<v-divider></v-divider>
 
@@ -144,6 +149,12 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			text = router.name;
 		}
 		return text;
+	}
+
+	public spoonLogout() {
+		this.$cfg.delete('auth.spoon');
+		this.$cfg.save();
+		this.$store.state.loginDialog = true;
 	}
 
 }

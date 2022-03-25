@@ -45,4 +45,5 @@ export default {
 	'uninstall': '제거',
 	'yes': '예',
 	'no': '아니오',
+	'spoon-logout': '스푼 로그아웃',
 };

@@ -6,7 +6,7 @@
 -->
 <template>
 	<v-app style="">
-		<login-dialog v-model="loginDialog"/>
+		<login-dialog v-if="$store.state.loginDialog" v-model="$store.state.loginDialog"/>
 		<bundle-update-dialog v-model="bundleUpdateDialogShow" :items="bundleUpdateList" />
 		<side-menu />
 		<side-menu-remocon/>
@@ -63,8 +63,6 @@ declare global {
 })
 export default class App extends Mixins(GlobalMixins) {
 	public currentLive: Live = {} as Live;
-	public loginDialog: boolean = false;
-	public skipSopiaLogin: boolean = false;
 	public bundleUpdateDialogShow: boolean = false;
 	public bundleUpdateList: BundlePackage[] = [];
 
@@ -75,7 +73,7 @@ export default class App extends Mixins(GlobalMixins) {
 			const res = await this.$api.req('GET', `/user/${auth.sopia.user_id}`);
 			if ( res.error ) {
 				this.$cfg.delete('auth');
-				this.loginDialog = true;
+				this.$store.state.loginDialog = true;
 			} else {
 				this.$api.user = auth.sopia;
 				this.$sopia.loginToken(auth.spoon.id, auth.spoon.token, auth.spoon.refresh_token)
@@ -94,11 +92,11 @@ export default class App extends Mixins(GlobalMixins) {
 					})
 					.catch((err) => {
 						this.$evt.$emit('login:skip-sopia-login', auth.sopia);
-						this.loginDialog = true;
+						this.$store.state.loginDialog = true;
 					});
 			}
 		} else {
-			this.loginDialog = true;
+			this.$store.state.loginDialog = true;
 		}
 
 		this.$evt.$off('live-join');
@@ -116,7 +114,7 @@ export default class App extends Mixins(GlobalMixins) {
 		});
 
 
-		if ( !this.loginDialog ) {
+		if ( !this.$store.state.loginDialog ) {
 			this.checkBundleUpldate();
 		}
 	}

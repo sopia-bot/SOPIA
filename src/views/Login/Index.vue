@@ -51,6 +51,14 @@ export default class Login extends Mixins(GlobalMixins) {
 			this.sopiaShow = false;
 			this.spoonShow = true;
 		});
+		const sopia = this.$cfg.get('auth.sopia');;
+		if ( sopia ) {
+			this.$evt.$emit('login:skip-sopia-login', sopia);
+		}
+	}
+
+	public beforeUnmount() {
+		this.$evt.$off('login:skip-sopia-login');
 	}
 
 	public async sopiaLogon(user: UserDto) {
@@ -71,14 +79,13 @@ export default class Login extends Mixins(GlobalMixins) {
 		}
 	}
 
+
 	public async spoonLogon(user: LogonUser) {
 		this.$logger.info('Spoon login user', user);
-		if ( this.sopiaUser.spoon_id === '0' ) {
-			this.sopiaUser.spoon_id = user.id.toString();
-			this.sopiaUser.name = user.tag;
-			this.sopiaUser.gender = user.gender;
-			await this.$api.setUserInfo(this.sopiaUser);
-		}
+		this.sopiaUser.spoon_id = user.id.toString();
+		this.sopiaUser.name = user.tag;
+		this.sopiaUser.gender = user.gender;
+		await this.$api.setUserInfo(this.sopiaUser);
 
 		if ( +this.sopiaUser.spoon_id !== user.id ) {
 			const close = await this.$modal({
