@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@arkiv/zip": "^1.1.10",
 		"@sopia-bot/api-dto": "^1.0.1",
-		"@sopia-bot/core": "^2.1.10",
+		"@sopia-bot/core": "^2.1.11",
 		"axios": "^0.19.2",
 		"cfg-lite": "^1.1.3",
 		"electron-log": "^4.4.6",
