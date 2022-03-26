@@ -71,6 +71,13 @@ export class SopiaAPI {
 				refresh_token: this.user.refresh_token,
 			},
 		});
+		if ( res.data.error ) {
+			switch ( res.data.msg ) {
+				case 'expired':
+					window.logout();
+					break;
+			}
+		}
 		this.user.token = res.data.data[0].token;
 		this.user.refresh_token = res.data.data[0].refresh_token;
 

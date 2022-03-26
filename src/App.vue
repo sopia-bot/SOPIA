@@ -49,6 +49,7 @@ declare global {
 		$sopia: SpoonClient;
 		reloadCfg: () => void;
 		appCfg: CfgLite;
+		logout: () => void;
 	}
 }
 
@@ -68,6 +69,12 @@ export default class App extends Mixins(GlobalMixins) {
 
 	public async mounted() {
 		const auth = this.$cfg.get('auth');
+
+		window.logout = () => {
+			this.$cfg.delete('auth');
+			this.$cfg.save();
+			window.location.reload();
+		};
 
 		if ( auth && auth.sopia && auth.spoon ) {
 			const res = await this.$api.req('GET', `/user/${auth.sopia.user_id}`);
