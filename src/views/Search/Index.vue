@@ -4,6 +4,7 @@
  *
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
+<script src="../../../node_modules/@sopia-bot/core/dist/api/client/index.js"></script>
 <template>
 	<v-main class="custom indigo lighten-5" style="min-height: 100vh;">
 		<search-header></search-header>
@@ -138,6 +139,9 @@ export default class Search extends Mixins(GlobalMixins) {
 		}
 		this.asyncMutex = true;
 
+		console.log('type', this.searchType);
+		console.log('query', this.searchQuery);
+		console.log('manager', this.searchManager);
 		if ( this.searchManager ) {
 			if ( this.searchManager.res.next ) {
 				this.searchManager = await this.searchManager.next();
@@ -150,6 +154,7 @@ export default class Search extends Mixins(GlobalMixins) {
 						keyword: this.searchQuery,
 					},
 				});
+				console.log('???', this.searchManager);
 			} else {
 				this.searchManager = await this.$sopia.api.search.content({
 					params: {

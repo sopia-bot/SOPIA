@@ -111,7 +111,7 @@ export default class UserPage extends Mixins(GlobalMixins) {
 	};
 
 	get isLive() {
-		return !!this.user?.current_live?.id;
+		return !!this.user?.current_live_id;
 	}
 
 	public async created() {
@@ -123,12 +123,6 @@ export default class UserPage extends Mixins(GlobalMixins) {
 			req = await this.$sopia.api.users.live(+id);
 			const live = req.res.results[0];
 			console.log('live', live);
-			if ( live.is_live ) {
-				this.user.current_live = deserialize<Live>({
-					id: live.current_live_id,
-				}, Live);
-				console.log(this.user);
-			}
 		}
 	}
 
@@ -143,7 +137,7 @@ export default class UserPage extends Mixins(GlobalMixins) {
 	}
 
 	public async joinLive() {
-		this.$evt.$emit('live-join', this.user.current_live.id);
+		this.$evt.$emit('live-join', this.user.current_live_id);
 	}
 }
 </script>

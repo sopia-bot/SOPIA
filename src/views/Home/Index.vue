@@ -105,8 +105,8 @@ export default class Home extends Mixins(GlobalMixins) {
 	public async mounted() {
 		this.$evt.$on('user', async (user: User) => {
 			this.liveSubscribed = [];
-			if ( user.current_live ) {
-				const myLiveId = user.current_live.id;
+			if ( user.current_live_id ) {
+				const myLiveId = user.current_live_id;
 				const myLiveReq = await this.$sopia.api.lives.info(myLiveId);
 				const myLive = myLiveReq.res.results[0];
 				this.liveSubscribed.push(myLive);
@@ -121,8 +121,8 @@ export default class Home extends Mixins(GlobalMixins) {
 		this.getNextLiveList();
 		if ( window.user ) {
 			this.liveSubscribed = [];
-			if ( window.user.current_live ) {
-				const myLiveId = window.user.current_live.id;
+			if ( window.user.current_live_id ) {
+				const myLiveId = window.user.current_live_id;
 				const myLiveReq = await this.$sopia.api.lives.info(myLiveId);
 				const myLive = myLiveReq.res.results[0];
 				this.liveSubscribed.push(myLive);
