@@ -94,8 +94,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { User, Live } from '@sopia-bot/core';
-import { deserialize } from 'typescript-json-serializer';
+import { User } from '@sopia-bot/core';
 import SearchHeader from '../Search/Header.vue';
 
 @Component({
@@ -111,7 +110,7 @@ export default class UserPage extends Mixins(GlobalMixins) {
 	};
 
 	get isLive() {
-		return !!this.user?.current_live_id;
+		return !!this.user?.current_live?.id;
 	}
 
 	public async created() {
@@ -119,10 +118,6 @@ export default class UserPage extends Mixins(GlobalMixins) {
 		if ( id ) {
 			let req: any = await this.$sopia.api.users.info(+id);
 			this.user = req.res.results[0];
-
-			req = await this.$sopia.api.users.live(+id);
-			const live = req.res.results[0];
-			console.log('live', live);
 		}
 	}
 
@@ -137,7 +132,7 @@ export default class UserPage extends Mixins(GlobalMixins) {
 	}
 
 	public async joinLive() {
-		this.$evt.$emit('live-join', this.user.current_live_id);
+		this.$evt.$emit('live-join', this.user.current_live.id);
 	}
 }
 </script>
