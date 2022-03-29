@@ -25,7 +25,7 @@ const launcher = function(cmd: string) {
 };
 
 ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: any) => {
-	const key = path.basename(file);
+	const key = file;
 	let rtn: any = null;
 	if ( prop === 'new' ) {
 		CfgList[key] = new CfgLite(file, args[0]);
