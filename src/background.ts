@@ -30,7 +30,7 @@ protocol.registerSchemesAsPrivileged([
 	{ scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
 
-console.log('Developement:', isDevelopment);
+console.log('Development:', isDevelopment);
 
 
 // https://pratikpc.medium.com/bypassing-cors-with-electron-ab7eaf331605
