@@ -68,7 +68,12 @@ export class Script {
 		if ( Array.isArray(this.boxs) ) {
 			for ( const { module } of this.boxs ) {
 				if ( typeof module[event.event] === 'function' ) {
-					module[event.event](event, sock);
+					try {
+						module[event.event](event, sock);
+					} catch (err) {
+						console.error(err);
+						// ignore error
+					}
 				}
 			}
 		}
