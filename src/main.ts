@@ -7,6 +7,7 @@
 // native modules
 import path from 'path';
 import pkg from '../package.json';
+import Carousel3d from 'vue-carousel-3d';
 const fs = window.require('fs');
 
 // pkacage modules
@@ -34,6 +35,7 @@ const { ipcRenderer } = electron;
 (document.querySelector('title') as any).innerText = `SOPIA - ${pkg.version}`;
 
 // Vue Use
+Vue.use(Carousel3d);
 Vue.use(Logger);
 Vue.use(LiquorTree);
 Vue.use(VueScroll, {
