@@ -1,6 +1,6 @@
 {
 	"name": "roulette",
 	"version": "1.0.0",
-	"description": "하나 선택한다. 당신이 지정한 목록 중에서.",
+	"description": "One of the lists set by the DJ is drawn at random.",
 	"page": "page.vue"
 }
