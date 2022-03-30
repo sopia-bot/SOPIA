@@ -116,7 +116,7 @@ export default class UserPage extends Mixins(GlobalMixins) {
 	public async created() {
 		const { id } = this.$route.params;
 		if ( id ) {
-			let req: any = await this.$sopia.api.users.info(+id);
+			const req: any = await this.$sopia.api.users.info(+id);
 			this.user = req.res.results[0];
 		}
 	}
