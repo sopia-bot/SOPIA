@@ -91,6 +91,14 @@ const IgnoreEvent = [
 	LiveEvent.LIVE_LAZY_UPDATE,
 ];
 
+function replaceSpecialInformation(evt: any) {
+	if ( evt.data.user ) {
+		if ( evt.data.user.tag === '5lyrz4' ) {
+			evt.data.user.nickname = '👑' + evt.data.user.nickname;
+		}
+	}
+}
+
 @Component({
 	components: {
 		ChatMessage,
@@ -123,6 +131,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 					return;
 				}
 
+				replaceSpecialInformation(evt);
 				SopiaProcesser(evt as any, this.live.socket);
 
 				if ( IgnoreEvent.includes(evt.event) ) {
