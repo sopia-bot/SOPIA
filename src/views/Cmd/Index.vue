@@ -107,6 +107,8 @@ export default class Cmd extends Mixins(GlobalMixins) {
 			horizontal: 'right',
 			vertical: 'top',
 		});
+		this.$cfg.set('cmd.use', this.use);
+		this.$cfg.save();
 		this.$logger.success('cmd', `Save success config file. [${this.cfgPath}]`, this.cfg.get());
 		window.reloadCmdCfg();
 	}
