@@ -6,6 +6,7 @@
  */
 // native modules
 import path from 'path';
+import pkg from '../package.json';
 const fs = window.require('fs');
 
 // pkacage modules
@@ -28,6 +29,9 @@ import axios, { AxiosInstance } from 'axios';
 import App from '@/App.vue';
 import { getAppPath, getStartTime } from './plugins/ipc-renderer';
 const { ipcRenderer } = electron;
+
+/* tslint:disable-next-line */
+(document.querySelector('title') as any).innerText = `SOPIA - ${pkg.version}`;
 
 // Vue Use
 Vue.use(Logger);

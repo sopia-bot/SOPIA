@@ -9,10 +9,12 @@
 import { app, session, protocol, BrowserWindow, dialog } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import path from 'path';
+
+import pkg from '../package.json';
+console.log(pkg);
 
 import './init';
 import { USER_AGENT } from './ipc-handler';
@@ -64,6 +66,7 @@ const createWindow = () => {
 			webSecurity: !isDevelopment,
 			backgroundThrottling: false,
 		},
+		title: `SOPIA - ${pkg.version}`,
 		icon: path.join(__dirname, '../public/icon_.png'),
 	});
 
