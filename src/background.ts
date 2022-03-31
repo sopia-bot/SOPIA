@@ -191,20 +191,5 @@ autoUpdater.on('update-not-available', async () => {
 
 //다운로드 완료되면 업데이트
 autoUpdater.on('update-downloaded', async (event, releaseNotes, releaseName) => {
-	console.log('update-downloaded');
-	const options = {
-		type: 'info',
-		buttons: ['재시작', '종료'],
-		title: '업데이트 중입니다.',
-		message: process.platform === 'win32' ? releaseNotes : releaseName,
-		detail: '새로운 버전이 다운로드 되었습니다. 애플리케이션을 재시작하여 업데이트를 적용해 주세요.',
-	};
-	const { response } = await dialog.showMessageBox(win as BrowserWindow, options);
-
-	if (response === 0) {
-		autoUpdater.quitAndInstall();
-	} else {
-		app.quit();
-		app.exit();
-	}
+	win?.webContents.send('app:update', releaseName);
 });

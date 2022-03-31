@@ -7,6 +7,7 @@ import { execSync } from 'child_process';
 import CfgLite from 'cfg-lite';
 import { ZipFile, ZipArchive } from '@arkiv/zip';
 import fs from 'fs';
+import {autoUpdater} from 'electron-updater';
 
 export const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36';
 
@@ -64,6 +65,10 @@ ipcMain.on('isdev', (evt: IpcMainEvent) => {
 
 ipcMain.on('app:get-path', (evt: IpcMainEvent, type: string) => {
 	evt.returnValue = app.getPath(type as any);
+});
+
+ipcMain.on('update', (evt: IpcMainEvent) => {
+	autoUpdater.quitAndInstall();
 });
 
 const buildTime = (time: Date): string => {

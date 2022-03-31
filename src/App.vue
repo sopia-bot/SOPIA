@@ -6,6 +6,7 @@
 -->
 <template>
 	<v-app style="">
+		<update-dialog />
 		<login-dialog v-if="$store.state.loginDialog" v-model="$store.state.loginDialog"/>
 		<bundle-update-dialog v-model="bundleUpdateDialogShow" :items="bundleUpdateList" />
 		<side-menu />
@@ -39,6 +40,7 @@ import LivePlayer from '@/views/Live/Player.vue';
 import LoginDialog from '@/views/Login/Index.vue';
 import BundleUpdateDialog from '@/views/Bundle/UpdateDialog.vue';
 import SideMenuRemocon from '@/views/SideMenu/Remocon.vue';
+import UpdateDialog from '@/views/Components/UpdateDialog.vue';
 
 const fs = window.require('fs');
 
@@ -60,6 +62,7 @@ declare global {
 		LoginDialog,
 		BundleUpdateDialog,
 		SideMenuRemocon,
+		UpdateDialog,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {
