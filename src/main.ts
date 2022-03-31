@@ -7,7 +7,6 @@
 // native modules
 import path from 'path';
 import pkg from '../package.json';
-import Carousel3d from 'vue-carousel-3d';
 const fs = window.require('fs');
 
 // pkacage modules
@@ -16,7 +15,11 @@ import * as spoon from '@sopia-bot/core';
 import { v4 as uuidv4 } from 'uuid';
 import LiquorTree from 'liquor-tree';
 import VueScroll from 'vuescroll';
+import Carousel3d from 'vue-carousel-3d';
+import VueSweetalert2 from 'vue-sweetalert2';
 const electron = window.require('electron');
+
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 // custom modules
 import router from '@/router';
@@ -35,6 +38,7 @@ const { ipcRenderer } = electron;
 (document.querySelector('title') as any).innerText = `SOPIA - ${pkg.version}`;
 
 // Vue Use
+Vue.use(VueSweetalert2);
 Vue.use(Carousel3d);
 Vue.use(Logger);
 Vue.use(LiquorTree);

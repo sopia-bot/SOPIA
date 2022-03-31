@@ -88,12 +88,12 @@ export default class Login extends Mixins(GlobalMixins) {
 		await this.$api.setUserInfo(this.sopiaUser);
 
 		if ( +this.sopiaUser.spoon_id !== user.id ) {
-			const close = await this.$modal({
+			await this.$swal({
+				icon: 'warning',
 				title: this.$t('msg.alert'),
-				content: this.$t('app.login.error.diff_id'),
-				textOk: this.$t('confirm'),
+				html: this.$t('app.login.error.diff_id'),
+				confirmButtonText: this.$t('confirm'),
 			});
-			close();
 			return;
 		}
 

@@ -160,10 +160,14 @@ export default class CmdMessage extends Mixins(GlobalMixins) {
 		const valid = this.livePresent.find((p: PresentStruct) => p.sticker === sticker.name);
 
 		if ( valid ) {
-			this.$noti({
-				content: this.$t('cmd.sticker.exists'),
-				horizontal: 'right',
-				vertical: 'top',
+			this.$swal({
+				icon: 'error',
+				html: this.$t('cmd.sticker.exists'),
+				toast: true,
+				position: 'top-end',
+				timer: 3000,
+				showConfirmButton: false,
+				showCloseButton: false,
 			});
 			return;
 		}
@@ -177,10 +181,13 @@ export default class CmdMessage extends Mixins(GlobalMixins) {
 
 	public delPresentEvent(idx: number) {
 		if ( idx === 0 ) {
-			this.$noti({
-				content: this.$t('cmd.rm-deferr'),
-				horizontal: 'right',
-				vertical: 'top',
+			this.$swal({
+				html: this.$t('cmd.rm-deferr'),
+				toast: true,
+				icon: 'error',
+				position: 'top-end',
+				showCloseButton: false,
+				showConfirmButton: false,
 			});
 			return;
 		}

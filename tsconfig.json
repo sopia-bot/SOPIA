@@ -15,7 +15,8 @@
 		"baseUrl": ".",
 		"types": [
 			"webpack-env",
-			"vuetify"
+		  "vuetify",
+		  "vue-sweetalert2"
 		],
 		"lib": [
 			"esnext",

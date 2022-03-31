@@ -102,11 +102,16 @@ export default class Cmd extends Mixins(GlobalMixins) {
 	public save() {
 		this.$evt.$emit('cmd:save');
 		this.$evt.$emit('cmd:reload');
-		this.$noti({
-			content: this.$t('save-success'),
-			horizontal: 'right',
-			vertical: 'top',
+		this.$swal({
+			icon: 'success',
+			toast: true,
+			position: 'top-end',
+			html: this.$t('save-success'),
+			showCloseButton: false,
+			showConfirmButton: false,
+			timer: 5000,
 		});
+
 		this.$cfg.set('cmd.use', this.use);
 		this.$cfg.save();
 		this.$logger.success('cmd', `Save success config file. [${this.cfgPath}]`, this.cfg.get());

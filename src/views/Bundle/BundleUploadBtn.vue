@@ -18,12 +18,11 @@ export default class BundleUploadButton extends Mixins(BundleMixins) {
 	public async checkFile(src: string) {
 		if ( !fs.existsSync(src) ) {
 			this.$logger.err('bundle', 'Could not find index.js from bundle', src);
-			const close = await this.$modal({
-				type: 'error',
+			await this.$swal({
+				icon: 'error',
 				title: this.$t('error'),
-				content: this.$t('errors.file-not-found', path.basename(src)),
+				html: this.$t('errors.file-not-found', path.basename(src)),
 			});
-			close();
 			return false;
 		}
 		return true;
@@ -84,12 +83,10 @@ export default class BundleUploadButton extends Mixins(BundleMixins) {
 
 		if ( !fs.existsSync(zipFile) ) {
 			this.$logger.err('bundle', 'Create zip file error.', zipFile);
-			this.$modal({
-				type: 'error',
+			await this.$swal({
+				icon: 'error',
 				title: this.$t('error'),
-				content: this.$t('bundle.store.error.create-error'),
-			}).then((close) => {
-				close();
+				html: this.$t('bundle.store.error.create-error'),
 			});
 			return;
 		}
@@ -105,25 +102,20 @@ export default class BundleUploadButton extends Mixins(BundleMixins) {
 
 		if ( res.error ) {
 			this.$logger.err('bundle', 'Package upload error', res);
-			this.$modal({
-				type: 'error',
+			await this.$swal({
+				icon: 'error',
 				title: this.$t('error'),
-				content: this.$t('bundle.store.error.' + res.msg),
-			}).then((close) => {
-				close();
+				html: this.$t('bundle.store.error.' + res.msg),
 			});
 			return;
 		}
 
 		this.$logger.success('bundle', 'Bundle upload done.');
 
-		this.$modal({
-			type: 'success',
+		this.$swal({
+			icon: 'success',
 			title: this.$t('success'),
-			content: this.$t('bundle.store.upload-success'),
-		}).then((close) => {
-			this.$evt.$emit('store:reload');
-			close();
+			html: this.$t('bundle.store.upload-success'),
 		});
 	}
 }

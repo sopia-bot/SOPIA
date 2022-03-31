@@ -173,7 +173,6 @@ export default class Home extends Mixins(GlobalMixins) {
 				live.author = u as User;
 				return live;
 			});
-			console.log(this.livePartner);
 		}
 	}
 

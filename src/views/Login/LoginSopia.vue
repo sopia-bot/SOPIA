@@ -157,16 +157,16 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 				this.errorMsg = this.$t('app.login.error.' + res.msg);
 				return;
 			}
-			this.$modal({
-				type: 'success',
+
+			await this.$swal({
+				icon: 'success',
 				title: this.$t('success'),
-				content: this.$t('app.login.sign-success'),
-			}).then((close) => {
-				this.auth = { id: '', pw: '', pwChk: '' };
-				this.errorMsg = '';
-				this.signinMode = false;
-				close();
+				html: this.$t('app.login.sign-success'),
 			});
+
+			this.auth = { id: '', pw: '', pwChk: '' };
+			this.errorMsg = '';
+			this.signinMode = false;
 		} catch ( err ) {
 			this.$logger.err('login', err);
 			this.errorMsg = err.message;

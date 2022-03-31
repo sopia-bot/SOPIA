@@ -328,12 +328,11 @@ export default class Code extends Mixins(GlobalMixins) {
 					break;
 			}
 			if ( !rtn.result ) {
-				this.$modal({
-					type: 'error',
+				this.$swal({
 					title: rtn.msg,
-					content: `At line ${rtn.line}.<br>${rtn.syntax}`,
-				}).then((close) => {
-					close();
+					html: `At line ${rtn.line}.<br>${rtn.syntax}`,
+					icon: 'error',
+					confirmButtonText: this.$t('confirm'),
 				});
 				return;
 			}
@@ -344,20 +343,20 @@ export default class Code extends Mixins(GlobalMixins) {
 
 			window.reloadScript();
 
-			this.$noti({
-				type: 'success',
-				content: this.$t('code.msg.save-success'),
-				horizontal: 'right',
-				vertical: 'bottom',
-				timeout: 2000,
+			this.$swal({
+				toast: true,
+				icon: 'success',
+				text: this.$t('code.msg.save-success'),
+				position: 'top-end',
+				timer: 2000,
+				showCloseButton: false,
+				showConfirmButton: false,
 			});
 		} catch (err) {
-			this.$modal({
-				type: 'error',
-				title: 'Error',
-				content: err.message,
-			}).then((close) => {
-				close();
+			this.$swal({
+				icon: 'error',
+				title: this.$t('error'),
+				text: err.message,
 			});
 		}
 	}

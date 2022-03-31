@@ -17,12 +17,11 @@ export default class BundleMixin extends Mixins(GlobalMixins) {
 	public async checkPackageProperty(pkg: BundlePackage, key: keyof BundlePackage) {
 		if ( !pkg[key] ) {
 			this.$logger.err('bundle', 'Did not have name property in package.json', pkg);
-			const close = await this.$modal({
-				type: 'error',
+			const close = await this.$swal({
+				icon: 'error',
 				title: this.$t('error'),
-				content: this.$t('bundle.store.error.must-be', key),
+				html: this.$t('bundle.store.error.must-be', key),
 			});
-			close();
 			return false;
 		}
 		return true;
@@ -31,53 +30,53 @@ export default class BundleMixin extends Mixins(GlobalMixins) {
 	public async bundleInstall(pkg: BundlePackage, showNoti: boolean = true) {
 		const res = await this.$api.req('GET', `/bundle/download/${pkg.name}/${pkg.version}/`);
 		if ( !res.data[0] ) {
-			this.$modal({
-				type: 'error',
+			await this.$swal({
+				icon: 'error',
 				title: this.$t('error'),
-				content: this.$t('bundle.download-fail'),
-			}).then((close) => {
-				close();
-			}).catch((close) => {
-				close();
+				html: this.$t('bundle.download-fail'),
 			});
 			return;
 		}
 		ipcRenderer.sendSync('zip:uncompress-buffer', res.data[0], this.getBundlePath(pkg));
 
 		if ( showNoti ) {
-			this.$noti({
-				type: 'success',
-				horizontal: 'right',
-				vertical: 'bottom',
-				content: this.$t('bundle.store.install-scucess', pkg.name),
-				timeout: 3000,
+			this.$swal({
+				icon: 'success',
+				toast: true,
+				position: 'top-end',
+				html: this.$t('bundle.store.install-scucess', pkg.name),
+				timer: 3000,
+				showCloseButton: false,
+				showConfirmButton: false,
 			});
 		}
 	}
 
 	public bundleUninstall(pkg: BundlePackage, showNoti: boolean = true) {
 		return new Promise((resolve, reject) => {
-			this.$confirm({
+			this.$swal({
+				icon: 'question',
 				title: this.$t('bundle.store.remove-bundle'),
-				content: this.$t('bundle.store.remove-bundle-desc', pkg.name),
-				textOk: this.$t('yes'),
-				textCancel: this.$t('no'),
-			}).then((close) => {
-				fs.rmdirSync(this.getBundlePath(pkg), { recursive: true });
-				if ( showNoti ) {
-				this.$noti({
-						type: 'success',
-						horizontal: 'right',
-						vertical: 'bottom',
-						content: this.$t('bundle.store.remove-bundle-success', pkg.name),
-						timeout: 3000,
-					});
+				html: this.$t('bundle.store.remove-bundle-desc', pkg.name),
+				showCancelButton: true,
+				confirmButtonText: this.$t('yes'),
+				cancelButtonText: this.$t('no'),
+			}).then((result) => {
+				if ( result.isConfirmed ) {
+					fs.rmdirSync(this.getBundlePath(pkg), { recursive: true });
+					if ( showNoti ) {
+						this.$swal({
+							icon: 'success',
+							toast: true,
+							position: 'top-end',
+							timer: 3000,
+							showCloseButton: false,
+							showConfirmButton: false,
+							html: this.$t('bundle.store.remove-bundle-success', pkg.name),
+						});
+					}
 				}
-				close();
 				resolve(null);
-			}).catch((close) => {
-				close();
-				reject();
 			});
 		});
 	}

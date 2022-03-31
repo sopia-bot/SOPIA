@@ -120,10 +120,10 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				this.openNameBox(x, y, sel.innerText);
 			} else {
 				this.$logger.err('code', 'No selected file.');
-				this.$modal({
-					type: 'error',
-					title: 'Error',
-					content: this.$t('code.msg.no-selected'),
+				this.$swal({
+					icon: 'error',
+					title: this.$t('error'),
+					html: this.$t('code.msg.no-selected'),
 				});
 			}
 		});
@@ -141,10 +141,10 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				this.$evt.$emit('code:tree-rerender', node.data.value, !node.hasChildren());
 			} else {
 				this.$logger.err('code', 'No selected file.');
-				this.$modal({
-					type: 'error',
-					title: 'Error',
-					content: this.$t('code.msg.no-selected'),
+				this.$swal({
+					icon: 'error',
+					title: this.$t('error'),
+					html: this.$t('code.msg.no-selected'),
 				});
 			}
 		});
@@ -228,9 +228,14 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 		const m: any = this.newName.match(/[a-zA-Z0-9\._-]*/);
 		if ( !m && m[0] !== this.newName ) {
-			this.$noti({
-				type: 'error',
-				content: this.$t('code.msg.special-char'),
+			this.$swal({
+				icon: 'error',
+				html: this.$t('code.msg.special-char'),
+				toast: true,
+				timer: 3000,
+				position: 'top-end',
+				showCloseButton: false,
+				showConfirmButton: false,
 			});
 			return;
 		}
@@ -244,12 +249,10 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 		if ( fs.existsSync(target) ) {
 			this.$logger.err('code', `Exists file or directory. [${target}]`);
-			this.$modal({
-				type: 'error',
-				title: 'Error',
-				content: this.$t('code.msg.exists'),
-			}).then((close) => {
-				close();
+			this.$swal({
+				icon: 'error',
+				title: this.$t('error'),
+				html: this.$t('code.msg.exists'),
 			});
 			return;
 		}

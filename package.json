@@ -39,6 +39,7 @@
 		"vue-monaco": "^1.2.1",
 		"vue-property-decorator": "^9.1.2",
 		"vue-router": "^3.5.1",
+		"vue-sweetalert2": "^5.0.2",
 		"vuescroll": "^4.16.1",
 		"vuetify": "^2.5.3",
 		"vuex": "^3.6.2"
