@@ -9,11 +9,19 @@
 	<v-dialog
 		v-model="value"
 		persistent
+		fullscreen
 		max-width="450px"
 		width="80%">
 		<v-card>
-			<v-row class="ma-0">
-				<v-col cols="12" align="center">
+			<v-row class="ma-0" style="height: 100vh;" align="center">
+				<v-col cols="6" class="blue-grey lighten-5"  style="height: 100%;">
+					<v-row style="height: 100%;" align="center">
+						<v-col cols="12" class="text-center">
+							<img alt="" src="../../assets/sopia.png" style="width: 100%">
+						</v-col>
+					</v-row>
+				</v-col>
+				<v-col cols="6" align="center" transition="fade-transition">
 					<login-sopia v-if="sopiaShow" @logon="sopiaLogon"/>
 					<login-spoon v-if="spoonShow" @logon="spoonLogon"/>
 				</v-col>

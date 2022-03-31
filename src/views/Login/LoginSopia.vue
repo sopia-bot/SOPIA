@@ -18,7 +18,7 @@
 		<v-card-title class="text-center d-block">
 			{{ signinMode ? $t('app.login.sign-title') : $t('app.login.title') }}
 		</v-card-title>
-		<v-card-text>
+		<v-card-text class="px-14">
 			<v-text-field
 				:label="$t('app.login.id')"
 				v-model="auth.id"
@@ -76,7 +76,7 @@
 					block depressed
 					tile text
 					color="red darken-1"
-					@click="signinMode = false"
+					@click="signinMode = false; errorMsg = ''"
 					>{{ $t('app.login.return-login') }}</v-btn>
 			</div>
 			<div v-else>
@@ -85,11 +85,13 @@
 					tile depressed
 					@click="loginSopia"
 					color="indigo darken-3">{{ $t('login') }}</v-btn>
-				<v-btn
-					block dark text
-					tile depressed
-					@click="signinMode = true"
-					color="indigo darken-3">{{ $t('app.login.sign-in') }}</v-btn>
+				<p class="text-caption mt-6">
+					{{ $t('app.login.sign-description') }}
+					<span
+						class="indigo--text text--darken-2 font-weight-bold"
+						style="cursor: pointer;"
+						@click="signinMode = true; errorMsg = ''">{{ $t('app.login.sign-in') }}</span>
+				</p>
 			</div>
 		</v-card-text>
 	</div>
@@ -110,6 +112,15 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 	public markdown = '';
 
 	public async loginSopia() {
+		if ( !this.auth.id.trim() ) {
+			this.errorMsg = this.$t('app.login.error.input_id');
+			return;
+		}
+		if ( !this.auth.pw.trim() ) {
+			this.errorMsg = this.$t('app.login.error.input_pw');
+			return;
+		}
+
 		try {
 			const user = await this.$api.login(this.auth.id, this.auth.pw);
 			if ( !user ) {

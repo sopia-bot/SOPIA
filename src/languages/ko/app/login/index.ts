@@ -5,6 +5,8 @@ export default {
 	'password': '소피아 계정 비밀번호',
 	'password-check': '비밀번호 확인',
 	'error': {
+		input_id: '아이디를 입력해 주세요',
+		input_pw: '비밀번호를 입력해 주세요',
 		id_length: '아이디는 4글자 이상입니다.',
 		pw_length: '비밀번호는 8글자 이상입니다.',
 		validate_error: '아이디와 비밀번호는 8글자 이상입니다.',
@@ -17,6 +19,9 @@ export default {
 	},
 	'phone': '전화번호',
 	'email': '이메일',
+	'google': '구글 계정으로 로그인',
+	'facebook': '페이스북 계정으로 로그인',
+	'apple': '애플 계정으로 로그인',
 	'spoon-id': '스푼 계정 아이디',
 	'spoon-password': '스푼 계정 비밀번호',
 	'login-fail': '로그인 실패',
@@ -27,4 +32,5 @@ export default {
 	'policy-agree-1': '및',
 	'policy-agree-2': '개인정보처리방침',
 	'policy-agree-3': '에 동의합니다.',
+	'sign-description': '아직 소피아 계정이 없나요?',
 };
