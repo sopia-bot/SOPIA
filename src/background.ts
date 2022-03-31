@@ -191,5 +191,6 @@ autoUpdater.on('update-not-available', async () => {
 
 //다운로드 완료되면 업데이트
 autoUpdater.on('update-downloaded', async (event, releaseNotes, releaseName) => {
-	win?.webContents.send('app:update', releaseName);
+	console.log('update-downloaded');
+	autoUpdater.quitAndInstall();
 });

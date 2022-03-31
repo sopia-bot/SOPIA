@@ -37,60 +37,49 @@
 	color: #303F9F;
 	font-weight: 500;
 }
+#release-note blockquote {
+	padding: 0 1em;
+	color: #768390;
+	border-left: 0.25em solid #444c56;
+}
 </style>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import axios from 'axios';
 import { marked } from 'marked/lib/marked.umd.js';
-import { IpcRendererEvent } from 'electron';
-const { ipcRenderer } = window.require('electron');
+import pkg from '../../../package.json';
 
 @Component
 export default class UpdateDialog extends Mixins(GlobalMixins) {
 
 	public async created() {
-		this.alertUpdate = this.alertUpdate.bind(this);
-		ipcRenderer.on('app:update', this.alertUpdate);
-	}
-
-	public beforeUnmount() {
-		ipcRenderer.removeListener('app:update', this.alertUpdate);
-	}
-
-	public async alertUpdate(evt: IpcRendererEvent, version: string) {
-		if ( this.$cfg.get(`skip-update.${version}`) ) {
+		if ( this.$cfg.get(`viewed-release-note.${pkg.version}`) ) {
 			return;
 		}
+		await this.alertUpdate();
+	}
+
+	public async alertUpdate() {
 		let releaseNote = this.$t('app.release.can-not-load');
 		try {
-			const res = await axios.get(`https://api.github.com/repos/sopia-bot/SOPIA/releases/tags/${version}`);
+			const res = await axios.get(`https://api.github.com/repos/sopia-bot/SOPIA/releases/tags/${pkg.version}`);
 			releaseNote = res.data.body;
 		} catch {
 			// ignore
 		}
-		const result = await this.$swal({
+
+		await this.$swal({
 			icon: 'info',
-			title: this.$t('app.release.alert-update'),
+			title: this.$t('app.release.alert-update', pkg.version),
 			html: `
 				<div class="pa-4" id="release-note">${marked(releaseNote)}</div>
 			`,
-			showCancelButton: true,
-			showDenyButton: true,
-			denyButtonText: this.$t('app.release.skip'),
-			confirmButtonText: this.$t('app.release.update'),
-			cancelButtonText: this.$t('app.release.after'),
+			confirmButtonText: this.$t('confirm'),
 		});
-		if ( result.isConfirmed ) {
-			// update now
-			ipcRenderer.send('update');
-		} else if ( result.isDenied ) {
-			// skip update this version
-			this.$cfg.set(`skip-update.${version}`, true);
-			this.$cfg.save();
-		} else if ( result.isDismissed ) {
-			// after alert
-		}
+
+		this.$cfg.set(`viewed-release-note.${pkg.version}`, true);
+		this.$cfg.save();
 	}
 
 }

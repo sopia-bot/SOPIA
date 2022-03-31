@@ -67,10 +67,6 @@ ipcMain.on('app:get-path', (evt: IpcMainEvent, type: string) => {
 	evt.returnValue = app.getPath(type as any);
 });
 
-ipcMain.on('update', (evt: IpcMainEvent) => {
-	autoUpdater.quitAndInstall();
-});
-
 const buildTime = (time: Date): string => {
 	const yyyy = time.getFullYear();
 	const mm = (time.getMonth() + 1).toString().padStart(2, '0');
