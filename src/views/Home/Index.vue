@@ -9,24 +9,23 @@
 		<search-header></search-header>
 		<vue-scroll @handle-scroll="scrollEvent" style="max-height: calc(100vh - 64px);">
 			<div style="max-height: calc(100vh - 58px);">
-				<v-row class="ma-0" align="center">
+				<v-row class="ma-0" align="center" v-if="livePartner.length">
 					<v-col
-							cols="12"
-							class="mt-6">
+						cols="12"
+						class="mt-6">
 						<h1
-								class="ml-3 mt-3 text-center text-overline"
-								style="font-size: 1.8rem !important;">{{ $t('home.partner-dj') }}</h1>
+							class="ml-3 mt-3 text-center text-overline"
+							style="font-size: 1.8rem !important;">{{ $t('home.partner-dj') }}</h1>
 					</v-col>
 					<v-col cols="12">
 						<carousel-3d
 							:autoplay="true"
-							autoplayTimeout="5000"
+							:autoplayTimeout="5000"
 							:autoplayHoverPause="true"
 							:animationSpeed="1200"
 							:controls-visible="true"
 							width="640"
 							height="400"
-							v-if="livePartner.length"
 							:clickable="false">
 							<slide
 								v-for="(live, idx) of livePartner"
@@ -67,7 +66,7 @@
 						</carousel-3d>
 					</v-col>
 				</v-row>
-				<v-row v-if="liveList" class="ma-0" align="center">
+				<v-row v-if="liveSubscribed.length" class="ma-0" align="center">
 					<v-col
 						cols="12"
 						class="mt-6">
@@ -164,6 +163,7 @@ export default class Home extends Mixins(GlobalMixins) {
 	public async created() {
 		const req = await this.$sopia.api.users.followings(4324890);
 		if ( Array.isArray(req.res.results) ) {
+			this.$store.commit('partners', req.res.results);
 			this.livePartner = (await Promise.all(
 					req.res.results.filter((user) => user.current_live?.id)
 				.map((user) => this.$sopia.api.lives.info(user.current_live.id)),
