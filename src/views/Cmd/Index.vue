@@ -81,7 +81,7 @@ import CfgLite from '@/plugins/cfg-lite-ipc';
 })
 export default class Cmd extends Mixins(GlobalMixins) {
 	public setType: string = 'join';
-	public use: boolean = true;
+	public use: boolean = this.$cfg.get('cmd.use');
 	public cfgPath: string = this.$path('userData', 'cmd.cfg');
 	public cfg: CfgLite = new CfgLite(this.cfgPath);
 
