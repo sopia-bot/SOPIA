@@ -239,4 +239,8 @@ export default class Mixin extends VueDecorator {
 		return ipcRenderer.sendSync('isdev');
 	}
 
+	get language(): string {
+		return this.$vuetify.lang.current;
+	}
+
 }

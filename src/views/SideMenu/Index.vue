@@ -144,6 +144,10 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 	}
 
 	public getDisplayText(router: RouteConfig) {
+		if ( router.translated ) {
+			return router.name;
+		}
+
 		let text = this.$t('page.' + router.name);
 		if ( text === '$vuetify.page.' + router.name ) {
 			text = router.name;

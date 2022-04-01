@@ -4,6 +4,7 @@ const vm = window.require('vm');
 import { getAppPath } from '@/plugins/ipc-renderer';
 import { RouteConfig } from './index';
 import { BundlePackage } from '@/interface/bundle';
+import Vuetify from '../plugins/vuetify';
 
 export interface BundleInfo {
 	dir: string;
@@ -15,6 +16,7 @@ const basePath = path.resolve(getAppPath('userData'), 'bundles');
 
 export function bundleReadDir() {
 	const dirs = fs.readdirSync(basePath);
+	const lang = Vuetify.framework.lang.current;
 	if ( Array.isArray(dirs) ) {
 		return dirs.map((dir) => {
 			const p = path.resolve(basePath, dir);
@@ -31,12 +33,16 @@ export function bundleReadDir() {
 			return info;
 		})
 		.filter((info) => info.pkg && info.pkg.page)
-		.map((info) => {
-			console.log(path.basename(info.dir));
+		.map((info: any) => {
+			let name = info.name;
+			if ( info.pkg['name:' + lang] ) {
+				name = info.pkg['name:' + lang];
+			}
 			return {
-				name: info.name,
+				name,
 				path: '/bundle/' + path.basename(info.dir) + '/',
 				icon: info.pkg.icon || 'mdi-tangram',
+				translated: true,
 			};
 		}) as RouteConfig[];
 	}

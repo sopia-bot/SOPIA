@@ -21,7 +21,7 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
-import GlobalMixins from '@/plugins/mixins';
+import BundleMixins from './bundle-mixin';
 import BundleUploadButton from './BundleUploadBtn.vue';
 import BundleItem from './BundleItem/Index.vue';
 import { BundlePackage } from '@/interface/bundle';
@@ -32,7 +32,7 @@ import { BundlePackage } from '@/interface/bundle';
 		BundleItem,
 	},
 })
-export default class BundleStore extends Mixins(GlobalMixins) {
+export default class BundleStore extends Mixins(BundleMixins) {
 
 	public bundleList: BundlePackage[] = [];
 

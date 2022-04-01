@@ -12,6 +12,7 @@ export interface RouteConfig {
 	children?: RouteConfig[];
 	isMenu?: boolean;
 	redirect?: string;
+	translated?: boolean;
 }
 
 export const routes: RouteConfig[] = [

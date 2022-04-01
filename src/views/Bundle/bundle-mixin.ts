@@ -10,6 +10,22 @@ import path from 'path';
 export default class BundleMixin extends Mixins(GlobalMixins) {
 	public bundleRootPath = this.$path('userData', 'bundles');
 
+	get description() {
+		const pkg = (this as any).pkg as any || {};
+		if ( pkg['description:' + this.language] ) {
+			return pkg['description:' + this.language];
+		}
+		return pkg.description;
+	}
+
+	get name() {
+		const pkg = (this as any).pkg as any || {};
+		if ( pkg['name:' + this.language] ) {
+			return pkg['name:' + this.language];
+		}
+		return pkg.name;
+	}
+
 	public getBundlePath(pkg: BundlePackage) {
 		return path.join(this.bundleRootPath, pkg.name);
 	}

@@ -12,7 +12,7 @@
 					max-height="170px">
 					<v-card-title>
 						<v-row align="end" class="ma-0">
-							{{ pkg.name}}
+							{{ name }}
 							<span class="text-caption mb-1 ml-auto text--secondary">^{{ pkg.version }}</span>
 						</v-row>
 					</v-card-title>
@@ -20,19 +20,19 @@
 						<p class="ma-0">{{ pkg.owner_name }}</p>
 					</v-card-subtitle>
 					<v-card-text class="text--primary">
-						{{ pkg.description }}
+						{{ description }}
 					</v-card-text>
 				</v-card>
 			</template>
 		</v-hover>
 		<v-dialog v-model="detail" flat fullscreen persistent>
-			<Detail :pkg="pkg"/>
+			<Detail :pkg="pkg" @close="detail = false;"/>
 		</v-dialog>
 	</div>
 </template>
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
-import GlobalMixins from '@/plugins/mixins';
+import BundleMixins from '../bundle-mixin';
 import { BundlePackage } from '@/interface/bundle';
 import Detail from './Detail.vue';
 
@@ -41,7 +41,7 @@ import Detail from './Detail.vue';
 		Detail,
 	},
 })
-export default class BundleItem extends Mixins(GlobalMixins) {
+export default class BundleItem extends Mixins(BundleMixins) {
 
 	@Prop(Object) public pkg!: BundlePackage;
 
