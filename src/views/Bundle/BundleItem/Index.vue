@@ -1,3 +1,4 @@
+<script src="../bundle-mixin.ts"></script>
 <template>
 	<div>
 		<v-hover>
@@ -24,7 +25,7 @@
 				</v-card>
 			</template>
 		</v-hover>
-		<v-dialog v-model="detail" flat>
+		<v-dialog v-model="detail" flat fullscreen persistent>
 			<Detail :pkg="pkg"/>
 		</v-dialog>
 	</div>

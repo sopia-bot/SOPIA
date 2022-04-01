@@ -4,6 +4,9 @@ export interface BundlePackage {
 	description: string;
 	page: string;
 	icon: string;
+	idx: number;
+	owner: number;
+	owner_name: string;
 }
 
 export default {};
