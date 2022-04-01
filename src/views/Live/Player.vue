@@ -92,10 +92,11 @@ const IgnoreEvent = [
 ];
 
 function replaceSpecialInformation(evt: any) {
-	if ( evt.data.user ) {
-		if ( evt.data.user.tag === '5lyrz4' ) {
-			evt.data.user.nickname = '👑' + evt.data.user.nickname;
-		}
+	if ( evt.data?.user?.tag === '5lyrz4' ) {
+		evt.data.user.nickname = '👑' + evt.data.user.nickname;
+	}
+	if ( evt.data?.author?.tag === '5lyrz4' ) {
+		evt.data.author.nickname = '👑' + evt.data.author.nickname;
 	}
 }
 
