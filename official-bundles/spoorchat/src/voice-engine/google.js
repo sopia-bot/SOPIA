@@ -6,7 +6,7 @@
  */
 
 const axios = window.axios;
-const API_KEY = atob('QUl6YVN5REZPNTMyWUh5Ykl0amkxaTdaaGhEUVdEV0NpcjNrUkZZ');
+const API_KEY = atob('QUl6YVN5Q0NUTmFaQ2JKenJpVnVmV1dSNDlldU85QU9ZODVaajFj');
 
 export default async function(text, option) {
 	if ( !text ) {

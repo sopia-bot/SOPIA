@@ -1,6 +1,6 @@
 {
 	"name": "spoorchat",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Donation text to speech bundle",
 	"page": "page.vue"
 }

@@ -369,7 +369,7 @@ var spoorChat = new SpoorChat();
  */
 
 const axios$1 = window.axios;
-const API_KEY$1 = atob('QUl6YVN5REZPNTMyWUh5Ykl0amkxaTdaaGhEUVdEV0NpcjNrUkZZ');
+const API_KEY$1 = atob('QUl6YVN5Q0NUTmFaQ2JKenJpVnVmV1dSNDlldU85QU9ZODVaajFj');
 
 async function GoogleVoice(text, option) {
 	if ( !text ) {

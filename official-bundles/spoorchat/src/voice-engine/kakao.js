@@ -23,5 +23,7 @@ export default async function(text, option) {
 		responseType: 'arraybuffer',
 	});
 
+	console.log('kakao', res);
+
 	return Buffer.from(res.data, 'binary').toString('base64');
 }
