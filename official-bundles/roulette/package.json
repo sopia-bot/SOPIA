@@ -1,6 +1,8 @@
 {
 	"name": "roulette",
-	"version": "1.0.0",
+	"name:ko": "룰렛",
+	"version": "1.0.1",
 	"description": "One of the lists set by the DJ is drawn at random.",
+	"description:ko": "DJ 가 설정한 목록 중에 하나를 랜덤으로 선택합니다.",
 	"page": "page.vue"
 }

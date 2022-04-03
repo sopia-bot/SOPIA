@@ -1,5 +1,52 @@
 <template>
 	<v-main>
+		<!-- S: Present List Dialog -->
+		<v-dialog
+			v-model="present"
+			max-width="600"
+			width="80%">
+		<v-card>
+			<v-card-title>
+				{{ $t('cmd.sticker.list') }}
+			</v-card-title>
+			<v-card-text>
+				<v-row class="ma-0">
+					<v-col
+						cols="6" md="4"
+						v-for="(sticker, idx) in validStickers"
+						:key="sticker.name"
+						@click="selectPresent(sticker, idx); present = false;">
+						<v-hover>
+							<template v-slot:default="{ hover }">
+								<v-card
+									style="cursor: pointer;"
+									:elevation="hover ? 12 : 0">
+									<v-img
+										:src="sticker.image_thumbnail"
+										class="white--text align-center"
+										:gradient="hover ? 'to bottom, rgba(0,0,0,.7), rgba(0,0,0,.7)' : ''"
+										width="100%">
+									<v-row v-if="hover" align="center">
+										<v-col cols="12" class="pb-0" align="center">
+											<h3>{{ sticker.title }}</h3>
+										</v-col>
+										<v-col cols="12" class="pt-0" align="center">
+											<v-chip color="transparent">
+												<v-img width="20px" :src="gift_coin"/>
+												<span class="ml-2 white--text">{{ sticker.price }}</span>
+											</v-chip>
+										</v-col>
+									</v-row>
+									</v-img>
+								</v-card>
+							</template>
+						</v-hover>
+					</v-col>
+				</v-row>
+			</v-card-text>
+		</v-card>
+		</v-dialog>
+		<!-- E: Present List Dialog -->
 		<v-row align="center" class="ma-0" style="height: 100vh;">
 			<v-col
 					offset="1"
@@ -13,15 +60,14 @@
 					<v-col cols="8" align="left">
 						<v-row class="ma-0" align="center">
 							<span
-									class="text-capitalize text-overline indigo--text text--darken-4"
-									style="font-size: 2rem !important;">룰렛</span>
+								class="text-capitalize text-overline indigo--text text--darken-4"
+								style="font-size: 2rem !important;">룰렛</span>
 							<v-switch
-									v-model="enable"
-									color="indigo"
-									inset
-									class="ml-3"
-									label="사용"
-							>
+								v-model="enable"
+								color="indigo"
+								inset
+								class="ml-3"
+								label="사용">
 							</v-switch>
 						</v-row>
 					</v-col>
@@ -32,21 +78,99 @@
 					</v-col>
 				</v-row>
 				<v-divider></v-divider>
+				<!-- S: options.type -->
+				<v-row class="ma-0 mt-4" align="center">
+					<v-col :cols="leftCol" align="left" class="pa-0">
+						작동 방식
+					</v-col>
+					<v-col :cols="rightCol" align="right" class="pa-0">
+						<v-select
+							v-model="options.type"
+							color="indigo darken-1"
+							:items="type">
+						</v-select>
+					</v-col>
+				</v-row>
+				<!-- E: options.type -->
 				<!-- S: options.min -->
-				<v-row class="ma-0" align="center">
+				<v-row v-if="options.type === 'min'" class="ma-0" align="center">
 					<v-col :cols="leftCol" align="left" class="pa-0">
 						최소 스푼 개수
 					</v-col>
 					<v-col :cols="rightCol" align="right" class="pa-0">
 						<v-text-field
-								v-model="options.min"
-								color="indigo darken-1"
-								type="number"
-								suffix="개">
+							v-model="options.min"
+							color="indigo darken-1"
+							type="number"
+							suffix="개">
 						</v-text-field>
 					</v-col>
 				</v-row>
 				<!-- E: options.min -->
+				<!-- S: options.select -->
+				<v-row v-if="options.type === 'select'" class="ma-0" align="center">
+					<v-col :cols="leftCol" align="left" class="pa-0">
+						스푼 선택
+					</v-col>
+					<v-col :cols="rightCol" align="right" class="pa-0">
+						<v-btn
+							tile
+							width="240px"
+							color="transparent"
+							depressed
+							@click="present = true">
+							<img
+								v-if="options.present.image_thumbnail"
+								:src="options.present.image_thumbnail"
+								width="50px"
+								:alt="options.present.title"/>
+							{{ substr(options.present.title) }}
+						</v-btn>
+					</v-col>
+				</v-row>
+				<!-- E: options.select -->
+				<!-- S: options.auto -->
+				<v-row class="ma-0" align="center">
+					<v-col :cols="leftCol" align="left" class="pa-0">
+						자동 룰렛 시작
+						<v-menu
+							v-model="menu"
+							:close-on-content-click="false"
+							:nudge-width="200"
+							offset-x >
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn
+									color="indigo"
+									dark icon
+									v-bind="attrs"
+									v-on="on">
+									<v-icon>mdi-help-circle</v-icon>
+								</v-btn>
+							</template>
+
+							<v-card>
+								<v-container>
+									<v-row class="ma-0">
+										<v-col>
+											<p class="ma-0">해당 기능을 사용하지 않으면<br>스푼을 쏜 이용자가 <code>!룰렛</code> 명령어를 입력해야 합니다.</p>
+										</v-col>
+									</v-row>
+								</v-container>
+							</v-card>
+						</v-menu>
+					</v-col>
+					<v-col :cols="rightCol" align="right" class="pa-0">
+						<v-spacer></v-spacer>
+						<v-switch
+							v-model="options.auto"
+							color="indigo"
+							inset
+							class="ml-3"
+							label="사용">
+						</v-switch>
+					</v-col>
+				</v-row>
+				<!-- E: options.auto -->
 				<!-- S: options.useEffect -->
 				<!--
 				<v-row class="ma-0" align="center">
@@ -73,11 +197,11 @@
 					</v-col>
 					<v-col :cols="rightCol" align="right" class="pa-0">
 						<v-slider
-								v-model="options.effectVolume"
-								color="indigo darken-1"
-								:label="options.effectVolume.toString()"
-								max="100"
-								min="0">
+							v-model="options.effectVolume"
+							color="indigo darken-1"
+							:label="options.effectVolume.toString()"
+							max="100"
+							min="0">
 						</v-slider>
 					</v-col>
 				</v-row>
@@ -111,7 +235,7 @@
 							hide-details
 							single-line></v-text-field>
 					</v-col>
-					<v-col cols="4" class="py-0">
+					<v-col cols="3" class="py-0">
 						<v-text-field
 							:value="item.percentage"
 							@input="keyInput(this, $event, idx, 'percentage')"
@@ -122,6 +246,14 @@
 							single-line>
 						</v-text-field>
 					</v-col>
+					<v-col cols="1" class="py-0">
+						<v-btn
+							icon color="red darken-1"
+							style="margin-top: 15px;"
+							@click="deleteItem(idx)">
+							<v-icon>mdi-delete</v-icon>
+						</v-btn>
+					</v-col>
 				</v-row>
 			</v-col>
 		</v-row>
@@ -131,6 +263,7 @@
 const path = window.require('path');
 const CfgLite = window.appCfg.__proto__.constructor;
 const cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
+const fs = window.require('fs');
 
 const copy = (obj) => JSON.parse(JSON.stringify(obj));
 
@@ -142,11 +275,47 @@ export default {
 		listCopy: [],
 		leftCol: 7,
 		rightCol: 5,
+		type: [
+			{
+				text: '지정 스푼',
+				value: 'select',
+			},
+			{
+				text: '최소 스푼',
+				value: 'min',
+			},
+		],
+		validStickers: [],
+		present: false,
+		gift_coin: '',
+		menu: false,
 	}),
-	mounted() {
+	async mounted() {
 		this.listCopy = copy(this.list);
+		const p = path.join(__dirname, 'gift_coin.png');
+		this.gift_coin = 'data:image/png;base64,' + fs.readFileSync(p, 'base64');
+
+		if ( !this.$sopia.sticker.stickers ) {
+			await this.asleep(2000);
+		}
+		this.$sopia.sticker.stickers.categories.forEach((category) => {
+			if ( !category.is_used ) {
+				return;
+			}
+
+			category.stickers.forEach((sticker) => {
+				if ( sticker.is_used ) {
+					this.validStickers.push(sticker);
+				}
+			});
+		});
 	},
 	methods: {
+		asleep(ms) {
+			return new Promise((resolve) => {
+				setTimeout(resolve, ms);
+			});
+		},
 		addNewItem() {
 			this.list.push({
 				value: '',
@@ -167,6 +336,22 @@ export default {
 			});
 			this.listCopy = copy(tmp);
 			this.list = tmp;
+		},
+		deleteItem(idx) {
+			console.log('delete', idx, this.list);
+			this.listCopy.splice(idx, 1);
+			this.list = copy(this.listCopy);
+		},
+		selectPresent(sticker, idx) {
+			this.options.present = sticker;
+		},
+		substr(str) {
+			if ( str ) {
+				if ( str.length > 15 ) {
+					return str.substr(0, 15) + '...';
+				}
+			}
+			return str;
 		},
 		save() {
 			this.listRefresh();

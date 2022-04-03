@@ -3,6 +3,7 @@ const path = window.require('path');
 const cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
 
 const Q = [];
+const tmpQ = [];
 let running = false;
 
 const startSpeech = [
@@ -170,17 +171,43 @@ async function processor() {
 	}
 }
 
+function checkPresent(data) {
+	if ( cfg.get('options.type') === 'select' ) {
+		const present = cfg.get('options.present');
+		return present.name === data.sticker;
+	}
+
+	const num = data.amount * data.combo;
+	return num >= cfg.get('options.min');
+}
+
 exports.live_present = (evt, sock) => {
 	if ( !cfg.get('enable') ) {
 		return false;
 	}
 
-	const num = evt.data.amount * evt.data.combo;
-	if ( num >= cfg.get('options.min') ) {
+	if ( checkPresent(evt.data) ) {
 		evt.sock = sock;
-		Q.push(evt);
-		if ( running === false ) {
+		tmpQ.push(evt);
+		if ( running === false && cfg.get('options.auto') ) {
+			Q.push(tmpQ.shift());
 			processor();
+		}
+	}
+}
+
+exports.live_message = (evt, sock) => {
+	const message = evt.update_component.message.value;
+	if ( message === '!룰렛' ) {
+		const idx = tmpQ.findIndex((item) => item.data.author.id === evt.data.user.id);
+		if ( idx !== -1 ) {
+			const [tmp] = tmpQ.splice(idx, 1);
+			console.log('idx', idx, tmp);
+			tmp.sock = sock;
+			Q.push(tmp);
+			if ( !running ) {
+				processor();
+			}
 		}
 	}
 }
