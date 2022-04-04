@@ -10,4 +10,5 @@ export default {
 	'remove-bundle-desc': '$0 번들을 삭제하시겠습니까?<br>* 방송에서 사용하고 있는 경우 오류가 발생할 수 있습니다.',
 	'remove-bundle-success': '$0 번들이 삭제되었습니다.',
 	'install-scucess': '$0 번들이 설치되었습니다.',
+	'move-bundle-page': '번들 설정 페이지로 이동',
 };

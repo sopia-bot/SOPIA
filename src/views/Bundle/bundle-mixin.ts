@@ -1,6 +1,7 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { BundlePackage } from '@/interface/bundle';
+import { SweetAlertOptions } from 'sweetalert2';
 
 const { ipcRenderer } = window.require('electron');
 const fs = window.require('fs');
@@ -53,10 +54,12 @@ export default class BundleMixin extends Mixins(GlobalMixins) {
 			});
 			return;
 		}
-		ipcRenderer.sendSync('zip:uncompress-buffer', res.data[0], this.getBundlePath(pkg));
+
+		const p = this.getBundlePath(pkg);
+		ipcRenderer.sendSync('zip:uncompress-buffer', res.data[0], p);
 
 		if ( showNoti ) {
-			this.$swal({
+			const option: SweetAlertOptions = {
 				icon: 'success',
 				toast: true,
 				position: 'top-end',
@@ -64,6 +67,20 @@ export default class BundleMixin extends Mixins(GlobalMixins) {
 				timer: 3000,
 				showCloseButton: false,
 				showConfirmButton: false,
+				showCancelButton: true,
+				cancelButtonText: this.$t('close'),
+			};
+
+			if ( pkg.page ) {
+				option.showConfirmButton = true;
+				option.confirmButtonText = this.$t('bundle.store.move-bundle-page');
+			}
+
+			this.$swal(option).then((result) => {
+				if ( pkg.page && result.isConfirmed ) {
+					this.$emit('close');
+					this.$assign(`/bundle/${path.basename(p)}/`);
+				}
 			});
 		}
 	}
@@ -88,6 +105,8 @@ export default class BundleMixin extends Mixins(GlobalMixins) {
 							timer: 3000,
 							showCloseButton: false,
 							showConfirmButton: false,
+							showCancelButton: true,
+							cancelButtonText: this.$t('close'),
 							html: this.$t('bundle.store.remove-bundle-success', pkg.name),
 						});
 					}

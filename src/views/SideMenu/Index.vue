@@ -127,7 +127,7 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			console.log('sidemenu update');
 			for ( const route of this.Routes ) {
 				if ( route.name.toLowerCase() === 'bundle' ) {
-					route.childs = createBundleRouter();
+					route.children = createBundleRouter();
 					break;
 				}
 			}
