@@ -165,6 +165,9 @@ async function processor() {
 	}
 
 	running = false;
+	if ( cfg.get('options.auto') && tmpQ.length ) {
+		Q.push(tmpQ.shift());
+	}
 	if ( Q.length ) {
 		await sleep(2000);
 		await processor();
@@ -202,7 +205,6 @@ exports.live_message = (evt, sock) => {
 		const idx = tmpQ.findIndex((item) => item.data.author.id === evt.data.user.id);
 		if ( idx !== -1 ) {
 			const [tmp] = tmpQ.splice(idx, 1);
-			console.log('idx', idx, tmp);
 			tmp.sock = sock;
 			Q.push(tmp);
 			if ( !running ) {

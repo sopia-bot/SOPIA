@@ -359,12 +359,14 @@ export default {
 			cfg.set('enable', this.enable);
 			cfg.set('list', this.list);
 			cfg.save();
-			this.$noti({
-				type: 'success',
-				content: '저장에 성공했습니다.',
-				horizontal: 'right',
-				vertical: 'end',
-				timeout: 3000,
+			this.$swal({
+				icon: 'success',
+				html: '저장에 성공했습니다.',
+				position: 'top-end',
+				toast: true,
+				showCloseButton: false,
+				showConfirmButton: false,
+				timer: 3000,
 			});
 			this.reload();
 		},
