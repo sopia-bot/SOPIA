@@ -17,7 +17,7 @@
 				<v-col cols="6" class="blue-grey lighten-5"  style="height: 100%;">
 					<v-row style="height: 100%;" align="center">
 						<v-col cols="12" class="text-center">
-							<img alt="" src="../../assets/sopia.png" style="width: 100%">
+							<img alt="" src="../../assets/sopia-sd.png" style="width: 100%">
 						</v-col>
 					</v-row>
 				</v-col>
