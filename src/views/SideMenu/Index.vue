@@ -6,7 +6,7 @@
 -->
 <template>
 	<v-navigation-drawer
-		fixed app
+		fixed temporary
 		v-model="$store.state.sideopen"
 		>
 		<v-list-item class="px-2" link @click="$assign(userLink)">
