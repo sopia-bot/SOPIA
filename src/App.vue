@@ -42,7 +42,6 @@ import LoginDialog from '@/views/Login/Index.vue';
 import BundleUpdateDialog from '@/views/Bundle/UpdateDialog.vue';
 import SideMenuRemocon from '@/views/SideMenu/Remocon.vue';
 import UpdateDialog from '@/views/Components/UpdateDialog.vue';
-import WebRtcInit from './webrtc-test';
 
 const fs = window.require('fs');
 
@@ -96,7 +95,6 @@ export default class App extends Mixins(GlobalMixins) {
 							this.$evt.$emit('user', user);
 							this.$cfg.set('auth.spoon.token', token);
 							this.$cfg.save();
-							WebRtcInit(this.$sopia);
 
 							await this.$api.activityLog('logon');
 						} else {

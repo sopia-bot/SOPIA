@@ -72,7 +72,12 @@ const createWindow = () => {
 
 	win.webContents.session.webRequest.onBeforeSendHeaders(
 		(details, callback) => {
-			const { requestHeaders } = details;
+			const { url, resourceType, requestHeaders } = details;
+			if ( resourceType === 'webSocket' ) {
+				if ( !!url.match(/^wss:\/\/.{2}-ssm.spooncast.net\//) ) {
+					requestHeaders['Origin'] = 'https://www.spooncast.net';
+				}
+			}
 			UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', ['*']);
 			callback({
 				requestHeaders,
