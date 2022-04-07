@@ -354,6 +354,18 @@ export default {
 			return str;
 		},
 		save() {
+			let sum = 0;
+			this.list.forEach((item) => sum += item.percentage);
+			if ( sum > 100 ) {
+				this.$swal({
+					icon: 'error',
+					html: `아이템들의 총 확률은 100을 넘길 수 없습니다.<br>현재: ${sum}%`,
+					title: '에러',
+				});
+				return;
+			}
+
+
 			this.listRefresh();
 			cfg.set('options', this.options);
 			cfg.set('enable', this.enable);

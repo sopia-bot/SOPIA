@@ -117,18 +117,43 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const rand = (num=0, min=0) => Math.floor(Math.random() * (num)) + min;
 const random = (items) => items[rand(items.length)];
 
+function sumArray(arr) {
+	let s = 0;
+	arr.forEach((a) => s += a);
+	return s;
+}
+
 function randomOnPickByPer(list = []) {
-	const percentage = rand(100);
+	let percentage = Math.random();
 	let pickItems = [];
 	let pickItem;
 	let cumulative = 0;
+	let sum = 0;
+	let sumList = {};
+
+
+	list.forEach((l) => {
+		if ( !sumList[l.percentage] ) {
+			sumList[l.percentage] = [];
+		}
+		sumList[l.percentage].push(l);
+	});
+	sum = sumArray(Object.keys(sumList).map((p) => +p)) / 100;
+	percentage *= sum;
 
 	list = list.sort((a, b) => a.percentage - b.percentage);
+	if ( !list.find((l) => l.value === '꽝') ) {
+		let p = 0;
+		list.push({
+			value: '꽝',
+			percentage: 100 - (sum * 100),
+		});
+	}
 
-	for ( const item of list ) {
-		cumulative = item.percentage;
+	for ( const [per, value] of Object.entries(sumList) ) {
+		cumulative += (+per / 100);
 		if ( percentage <= cumulative ) {
-			pickItems = list.filter(i => i.percentage === item.percentage);
+			pickItems = value;
 			break;
 		}
 	}
@@ -142,6 +167,7 @@ function randomOnPickByPer(list = []) {
 
 	return pickItem;
 }
+
 
 async function processor() {
 	if ( running ) {
@@ -157,7 +183,7 @@ async function processor() {
 	}
 
 	const item = randomOnPickByPer(cfg.get('list'));
-	if ( item ) {
+	if ( item && item.value !== '꽝' ) {
 		e.item = item;
 		await random(winSpeech)(e, sock);
 	} else {
