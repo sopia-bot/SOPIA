@@ -17,7 +17,7 @@
 				<v-list-item-content>
 					<span
 						class="white--text"
-						v-text="evt.data.user.nickname"></span>
+						v-text="author.nickname"></span>
 				</v-list-item-content>
 
 				<v-list-item-action>
@@ -56,19 +56,19 @@
 			class="indigo--text text--lighten-4 font-weight-bold mt-4"
 			style="overflow-wrap: anywhere;"
 			v-else-if="evt.event === LiveEvent.LIVE_JOIN">
-			{{ evt.data.author.nickname }}{{ $t('lives.notice.join') }}
+			{{ author.nickname }}{{ $t('lives.notice.join') }}
 		</p>
 		<p
 			class="indigo--text text--lighten-4 font-weight-bold mt-4"
 			style="overflow-wrap: anywhere;"
 			v-else-if="evt.event === LiveEvent.LIVE_LIKE">
-			{{ evt.data.author.nickname }}{{ $t('lives.notice.like') }}
+			{{ author.nickname }}{{ $t('lives.notice.like') }}
 		</p>
 		<p
 			class="red--text text--lighten-2 font-weight-bold mt-4"
 			style="overflow-wrap: anywhere;"
 			v-else-if="evt.event === LiveEvent.LIVE_BLOCK">
-			{{ evt.data.author.nickname }}{{ $t('lives.notice.block') }}
+			{{ author.nickname }}{{ $t('lives.notice.block') }}
 		</p>
 		<p
 			class="red--text text--lighten-2 font-weight-bold mt-4"
@@ -81,7 +81,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { LiveEvent } from '@sopia-bot/core';
+import { LiveEvent, User } from '@sopia-bot/core';
 
 @Component({
 	data: () => {
@@ -95,10 +95,8 @@ export default class ChatMessage extends Mixins(GlobalMixins) {
 
 	public defaultProfileUrl = require('assets/default-profile.png');
 
-	public created() {
-		if ( this.evt.data.author ) {
-			this.evt.data.user = this.evt.data.author;
-		}
+	get author(): User {
+		return this.evt.data.user || this.evt.data.author;
 	}
 
 	get profileURL() {

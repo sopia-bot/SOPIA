@@ -1,7 +1,6 @@
 import {
 	SpoonClient,
 	EventEmitter,
-	User,
 	Live,
 } from '@sopia-bot/core';
 import axios from 'axios';
@@ -23,7 +22,6 @@ export class SSMConnector extends EventEmitter {
 	private gfi = '';
 	private msid = '';
 	private tag = '';
-	private user!: User;
 	private keepAliveItv!: NodeJS.Timer;
 	private live!: Live;
 	private url = '';
@@ -89,6 +87,11 @@ export class SSMConnector extends EventEmitter {
 		}
 		logger.info('SSM', '[CLI -> SRV]', data);
 		this.ws.send(data);
+	}
+
+	public destroy() {
+		this.ws.close();
+		this.pc.close();
 	}
 
 	private async create() {

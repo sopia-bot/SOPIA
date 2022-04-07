@@ -18,8 +18,11 @@
 						style="background: rgba(0, 0, 0, 0.7) !important;">
 						<vue-scroll
 							ref="scroll"
-							style="max-height: calc(100% - 158px); height: calc(100% - 158px);"
-							:style="{ marginTop: $vuetify.breakpoint.mobile ? '56px' : '64px' }">
+							:style="{
+								marginTop: $vuetify.breakpoint.mobile ? '56px' : '64px',
+								maxHeight: scrollHeight,
+								height: scrollHeight,
+							}">
 							<v-row class="ma-0">
 								<v-col cols="12">
 									<div
@@ -30,30 +33,7 @@
 								</v-col>
 							</v-row>
 						</vue-scroll>
-						<!-- S:SendChat -->
-						<v-row class="ma-0" align="center">
-							<v-col cols="9">
-								<v-textarea
-									:label="$t('lives.input-chat')"
-		 							class="ml-2"
-		 							@keydown="keyEvent"
-									color="indigo lighten-4"
-									no-resize dark
-									rows="1"
-									v-model="chat"></v-textarea>
-							</v-col>
-							<v-col cols="3" align="right">
-								<v-btn
-									dark depressed
-									tile
-									class="mr-2"
-		 							@click="sendMessage"
-									color="indigo accent-5">
-									{{ $t('send') }}
-								</v-btn>
-							</v-col>
-						</v-row>
-						<!-- E:SendChat -->
+						<player-footer v-model="footMenuOpen" menu-height="200px"/>
 					</v-card>
 				</v-img>
 			</v-card>
@@ -81,6 +61,8 @@ import { Live, LiveInfo, LiveEvent, LiveType, User } from '@sopia-bot/core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
 import SopiaProcesser from '@/sopia/processor';
 import PlayerBar from './PlayerBar.vue';
+import PlayerFooter from './PlayerFooter.vue';
+import { Player } from './player';
 
 const IgnoreEvent = [
 	LiveEvent.LIVE_STATE,
@@ -104,6 +86,7 @@ function replaceSpecialInformation(evt: any) {
 	components: {
 		ChatMessage,
 		PlayerBar,
+		PlayerFooter,
 	},
 	data: () => {
 		return {
@@ -117,8 +100,16 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 
 	public fullScreen: boolean = true;
 	public liveEvents: any = [];
+	public footMenuOpen: boolean = false;
 
-	public chat: string = '';
+	public player!: Player;
+
+	public get scrollHeight() {
+		if ( this.footMenuOpen ) {
+			return 'calc(100% - 358px)';
+		}
+		return 'calc(100% - 158px)';
+	}
 
 	public async created() {
 		if ( this.live ) {
@@ -126,6 +117,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				//socket.destroy(); TODO:
 			});
 			await this.live.join();
+			this.player = new Player(this.live);
 			this.live.socket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
 				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
 					// Joined logon account event ignore
@@ -180,24 +172,9 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 		}
 	}
 
-	public keyEvent(evt: KeyboardEvent) {
-		if ( evt.shiftKey === false && evt.keyCode === 13 ) {
-			// enter
-			this.sendMessage();
-			evt.preventDefault();
-		}
-	}
-
-	public sendMessage() {
-		if ( this.chat.trim() ) {
-			const chat = this.chat
-							.replace(/\\/g, '\\\\')
-							.replace(/\n/g, '\\n');
-			this.$logger.debug('live', `send message [${chat}]`);
-			this.live.socket.message(chat);
-			this.$nextTick(() => {
-				this.chat = '';
-			});
+	public beforeUnmount() {
+		if ( this.player ) {
+			this.player.destroy();
 		}
 	}
 
