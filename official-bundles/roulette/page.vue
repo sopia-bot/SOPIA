@@ -354,6 +354,8 @@ export default {
 			return str;
 		},
 		save() {
+			this.listRefresh();
+			
 			let sum = 0;
 			this.list.forEach((item) => sum += item.percentage);
 			if ( sum > 100 ) {
@@ -364,9 +366,6 @@ export default {
 				});
 				return;
 			}
-
-
-			this.listRefresh();
 			cfg.set('options', this.options);
 			cfg.set('enable', this.enable);
 			cfg.set('list', this.list);
