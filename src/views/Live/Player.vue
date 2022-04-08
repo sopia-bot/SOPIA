@@ -116,7 +116,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 		}
 		return 'calc(100% - 158px)';
 	}
-	
+
 	public get isManager() {
 		return (this.live.socket.Live as Live).manager_ids.includes(this.$store.getters.user.id);
 	}
@@ -127,7 +127,13 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				//socket.destroy(); TODO:
 			});
 			await this.live.join();
+
 			this.player.connect(this.live);
+			if ( this.$cfg.get('player.isMute') ) {
+				this.player.volume = 0;
+			} else {
+				this.player.volume = (this.$cfg.get('player.volume') || 50) * 0.01;
+			}
 			this.alertTimer = setInterval(() => {
 				if ( this.isManager ) {
 					this.live.socket.message(this.$t('lives.alert', pkg.version));
@@ -199,6 +205,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	}
 
 	public liveLeave() {
+		this.player.destroy();
 		this.live.socket.destroy();
 		this.$evt.$emit('live-leave');
 	}

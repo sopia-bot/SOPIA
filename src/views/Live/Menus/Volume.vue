@@ -81,6 +81,13 @@ export default class PlayerMenuVolume extends Mixins(GlobalMixins) {
 
 	public toggleMute() {
 		this.isMute = !this.isMute;
+		if ( this.player ) {
+			if ( this.isMute ) {
+				this.player.volume = 0;
+			} else {
+				this.player.volume = this.volume * 0.01;
+			}
+		}
 		this.$cfg.set('player.isMute', this.isMute);
 		this.$cfg.save();
 	}

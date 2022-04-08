@@ -36,7 +36,7 @@
 			style="position: relative; overflow-y: auto;"
 			:style="{ height: menuHeight, maxHeight: menuHeight }">
 			<v-col cols="3" v-for="(menu, idx) of menuList" :key="'menu'+idx" align="center">
-				<component :is="menu" :live="live"></component>
+				<component :is="menu" :live="live" :player="player"></component>
 			</v-col> 
 		</v-row>
 	</div>

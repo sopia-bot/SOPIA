@@ -37,6 +37,8 @@ export class Player {
 	public connect(live: Live) {
 		this.live = live;
 
+		console.log('player', live);
+
 		if ( this.engine === 'sing' ) {
 			// WEB
 			(async () => {
@@ -54,7 +56,7 @@ export class Player {
 			logger.err('live', 'Unknown live engine name', this.live);
 			throw Error('Unknown live engine name');
 		}
-		this.audio.pause();
+		this.audio.play();
 
 	}
 
