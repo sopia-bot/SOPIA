@@ -84,7 +84,7 @@ import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { User } from '@sopia-bot/core';
 import { routes, RouteConfig } from '@/router/';
-import { createBundleRouter } from '@/router/bundle';
+import { bundleReadDir } from '@/router/bundle';
 
 @Component
 export default class SideMenu extends Mixins(GlobalMixins) {
@@ -127,11 +127,20 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			console.log('sidemenu update');
 			for ( const route of this.Routes ) {
 				if ( route.name.toLowerCase() === 'bundle' ) {
-					route.children = createBundleRouter();
+					route.children = [
+						{
+							name: 'store',
+							path: '/bundle/store',
+							component: () => import('@/views/Bundle/Store.vue'),
+							icon: 'mdi-basket',
+						},
+						...bundleReadDir(),
+					];
 					break;
 				}
 			}
 		});
+		this.$evt.$emit('sidemenu:bundle-reload');
 	}
 
 	public isSelectGroup(key: string) {
