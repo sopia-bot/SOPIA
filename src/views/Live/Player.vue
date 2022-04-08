@@ -33,7 +33,11 @@
 								</v-col>
 							</v-row>
 						</vue-scroll>
-						<player-footer v-model="footMenuOpen" menu-height="200px"/>
+						<player-footer
+							v-model="footMenuOpen"
+							menu-height="230px"
+							:live="live"
+							:player="player" />
 					</v-card>
 				</v-img>
 			</v-card>
@@ -102,7 +106,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public liveEvents: any = [];
 	public footMenuOpen: boolean = false;
 
-	public player!: Player;
+	public player: Player = new Player();
 
 	public get scrollHeight() {
 		if ( this.footMenuOpen ) {
@@ -117,7 +121,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				//socket.destroy(); TODO:
 			});
 			await this.live.join();
-			this.player = new Player(this.live);
+			this.player.connect(this.live);
 			this.live.socket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
 				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
 					// Joined logon account event ignore

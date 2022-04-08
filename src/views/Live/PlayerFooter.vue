@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div style="height: 358px;">
 		<!-- S:SendChat -->
 		<v-row class="ma-0" align="center">
 			<v-col cols="1" class="pl-2">
@@ -33,10 +33,11 @@
 			v-if="value"
 			class="ma-0"
 			align="center"
-			:style="{ height: menuHeight }">
-			<v-col cols="12" align="center">
-
-			</v-col>
+			style="position: relative; overflow-y: auto;"
+			:style="{ height: menuHeight, maxHeight: menuHeight }">
+			<v-col cols="3" v-for="(menu, idx) of menuList" :key="'menu'+idx" align="center">
+				<component :is="menu" :live="live"></component>
+			</v-col> 
 		</v-row>
 	</div>
 </template>
@@ -44,13 +45,20 @@
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { Live } from '@sopia-bot/core';
+import { Player } from './player';
 
 @Component
 export default class LivePlayerFooter extends Mixins(GlobalMixins) {
 	@Prop(Object) public live!: Live;
 	@Prop(Boolean) public value!: boolean;
 	@Prop(String) public menuHeight!: string;
+	@Prop(Object) public player!: Player;
 	public chat: string = '';
+
+	public menuList: any[] = [
+		() => import('./Menus/Volume.vue'),
+		() => import('./Menus/Like.vue'),
+	];
 
 	public keyEvent(evt: KeyboardEvent) {
 		if ( !evt.shiftKey && evt.keyCode === 13 ) {

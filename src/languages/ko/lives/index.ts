@@ -22,4 +22,11 @@ export default {
 	},
 	'block': '강제퇴장',
 	'block-user': '님을 강퇴하시겠습니까?',
+	'errors': {
+		'fail-like': '좋아요를 보낼 수 없습니다.',
+	},
+	'menu': {
+		volume: '소리 설정',
+		like: '좋아요',
+	},
 };

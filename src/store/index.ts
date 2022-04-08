@@ -10,6 +10,7 @@ interface State {
 	sideopen: boolean;
 	loginDialog: boolean;
 	partners: User[];
+	liked: boolean;
 }
 
 export default new Vuex.Store({
@@ -18,6 +19,7 @@ export default new Vuex.Store({
 		sideopen: false,
 		loginDialog: false,
 		partners: [],
+		liked: false,
 	},
 	getters: {
 		user(state: State) {
