@@ -117,7 +117,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 		return 'calc(100% - 158px)';
 	}
 
-	public get isManager() {
+	public isManager() {
 		return (this.live.socket.Live as Live).manager_ids.includes(this.$store.getters.user.id);
 	}
 
@@ -135,7 +135,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				this.player.volume = (this.$cfg.get('player.volume') || 50) * 0.01;
 			}
 			this.alertTimer = setInterval(() => {
-				if ( this.isManager ) {
+				if ( this.isManager() ) {
 					this.live.socket.message(this.$t('lives.alert', pkg.version));
 				}
 			}, 1000 * 60 * 10 /* 10min */);
@@ -146,7 +146,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				}
 
 				replaceSpecialInformation(evt);
-				if ( this.isManager ) {
+				if ( this.isManager() ) {
 					SopiaProcesser(evt as any, this.live.socket);
 				}
 
