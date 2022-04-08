@@ -29,6 +29,7 @@
 		"highlight.js": "^11.4.0",
 		"liquor-tree": "^0.2.70",
 		"marked": "^4.0.12",
+		"npkgi": "^1.0.5",
 		"puppeteer-core": "^13.4.0",
 		"rimraf": "^3.0.2",
 		"tslib": "^2.3.0",

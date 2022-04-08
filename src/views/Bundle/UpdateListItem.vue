@@ -22,9 +22,6 @@ export default class UpdateListItem extends Mixins(BundleMixin) {
 	public mounted() {
 		this.$off('install');
 		this.$on('install:start', () => {
-			this.message = this.$t('bundle.update.remove-dir', this.pkg.name);
-			fs.rmdirSync(this.getBundlePath(this.pkg), { recursive: true });
-
 			this.message = this.$t('bundle.update.download');
 			this.bundleInstall(this.pkg, false)
 				.then(() => {

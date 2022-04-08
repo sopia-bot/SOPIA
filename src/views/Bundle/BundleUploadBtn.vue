@@ -79,7 +79,7 @@ export default class BundleUploadButton extends Mixins(BundleMixins) {
 			fs.unlinkSync(zipFile);
 		}
 
-		ipcRenderer.sendSync('zip:create', target, zipFile);
+		ipcRenderer.sendSync('package:create', target, zipFile);
 
 		if ( !fs.existsSync(zipFile) ) {
 			this.$logger.err('bundle', 'Create zip file error.', zipFile);

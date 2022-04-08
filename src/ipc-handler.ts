@@ -3,18 +3,19 @@ import { app, BrowserWindow , ipcMain, IpcMainEvent, dialog } from 'electron';
 import puppeteer from 'puppeteer-core';
 import { URL } from 'url';
 import { execSync } from 'child_process';
+import { install as npmInstall, InstallItem, InstallOptions } from 'npkgi';
 
 import CfgLite from 'cfg-lite';
 import { ZipFile, ZipArchive } from '@arkiv/zip';
 import fs from 'fs';
-import {autoUpdater} from 'electron-updater';
 
 export const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-const CfgList: any = {};
-const getPath = (type: any, ...args: any) => path.resolve(app.getPath(type), ...args);
+type PathType = 'home' | 'appData' | 'userData' | 'cache' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps';
+const CfgList: Record<string, any> = {};
+const getPath = (type: PathType, ...args: string[]) => path.resolve(app.getPath(type), ...args);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const launcher = function(cmd: string) {
@@ -223,3 +224,83 @@ ipcMain.handle('open-dialog', async (event, options: any) => {
 	return await dialog.showOpenDialog(options);
 });
 
+ipcMain.handle('npm:install', async (event, packages: InstallItem[], options: InstallOptions) => {
+	return await npmInstall(packages, options);
+});
+
+const readDirectory = (dir: string, cb: (...args: any) => any, oriDir?: string) => {
+	if ( !oriDir ) {
+		oriDir = dir;
+		dir = '';
+	}
+
+	const target = path.resolve(oriDir, dir);
+	const items = fs.readdirSync(target);
+	items.forEach((item: string) => {
+		const t = path.resolve(target, item);
+		const st = path.join(dir, item).replace(/\\/g, '/');
+		const stat = fs.statSync(t);
+		cb(st, stat.isDirectory());
+		if ( stat.isDirectory() ) {
+			readDirectory(st, cb, oriDir);
+		}
+	});
+};
+
+ipcMain.on('package:create', (evt: IpcMainEvent, src: string, dst: string) => {
+	console.log('package:create', src, dst);
+	try {
+		const pkg = JSON.parse(fs.readFileSync(path.join(src, 'package.json'), 'utf8'));
+		let ignore: string[] = [];
+		if ( pkg.sopia ) {
+			ignore = pkg.sopia['ignore:upload'].map((i: string) => path.join(src, i));
+		}
+
+		const archive = new ZipArchive(dst);
+		readDirectory(src, (p: string, isDir: boolean) => {
+			if ( !isDir ) {
+				const fullPath = path.join(src, p);
+				if ( ignore.includes(fullPath) ) {
+					return;
+				}
+				const entry = archive.CreateEntry(p);
+				const data = fs.readFileSync(fullPath);
+				entry.Write(data);
+			}
+		});
+
+		fs.writeFileSync(dst, archive.Stream);
+		return true;
+	} catch (err) {
+		console.error(err);
+		return false;
+	}
+});
+
+ipcMain.on('package:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
+	console.log('package:uncompress-buffer', dst);
+
+	if ( !fs.existsSync(dst) ) {
+		fs.mkdirSync(dst);
+	}
+
+	const archive = new ZipArchive(dst, Buffer.from(b64str, 'base64'));
+	const pkgEntry = archive.GetEntry('package.json');
+	if ( !pkgEntry ) {
+		return false;
+	}
+
+	const pkg = JSON.parse(pkgEntry.Read().toString('utf8'));
+
+	const ignore = (pkg?.sopia?.['ignore:fetch'] || []).map((i: string) => path.join(dst, i));
+
+	archive.Entries.forEach((entry) => {
+		const target = path.join(dst, entry.FullName);
+		if ( ignore.includes(target) ) {
+			return;
+		}
+		entry.ExtractEntry(dst);
+	});
+
+	evt.returnValue = true;
+});

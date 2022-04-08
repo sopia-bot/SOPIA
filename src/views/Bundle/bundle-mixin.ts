@@ -2,6 +2,7 @@ import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { BundlePackage } from '@/interface/bundle';
 import { SweetAlertOptions } from 'sweetalert2';
+import { npmInstall } from '@/plugins/ipc-renderer';
 
 const { ipcRenderer } = window.require('electron');
 const fs = window.require('fs');
@@ -34,7 +35,7 @@ export default class BundleMixin extends Mixins(GlobalMixins) {
 	public async checkPackageProperty(pkg: BundlePackage, key: keyof BundlePackage) {
 		if ( !pkg[key] ) {
 			this.$logger.err('bundle', 'Did not have name property in package.json', pkg);
-			const close = await this.$swal({
+			await this.$swal({
 				icon: 'error',
 				title: this.$t('error'),
 				html: this.$t('bundle.store.error.must-be', key),
@@ -56,7 +57,7 @@ export default class BundleMixin extends Mixins(GlobalMixins) {
 		}
 
 		const p = this.getBundlePath(pkg);
-		ipcRenderer.sendSync('zip:uncompress-buffer', res.data[0], p);
+		ipcRenderer.sendSync('package:uncompress-buffer', res.data[0], p);
 
 		if ( showNoti ) {
 			const option: SweetAlertOptions = {
