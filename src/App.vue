@@ -92,6 +92,7 @@ export default class App extends Mixins(GlobalMixins) {
 						const token = await this.$sopia.refreshToken(user.id, auth.spoon.token, auth.spoon.refresh_token);
 						if ( token ) {
 							auth.spoon.token = token;
+							this.$store.commit('user', user);
 							this.$evt.$emit('user', user);
 							this.$cfg.set('auth.spoon.token', token);
 							this.$cfg.save();

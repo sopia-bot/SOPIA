@@ -6,6 +6,7 @@
  */
 
 export default {
+	'alert': `✔ 현재 이 방송은 소피아($0)와 함께하고 있습니다.\\n\\n자세한 내용은 https://sopia.dev에서 찾아보실 수 있습니다.`,
 	'search-type': {
 		user: '사용자',
 		live: '방송 제목',

@@ -67,6 +67,7 @@ import SopiaProcesser from '@/sopia/processor';
 import PlayerBar from './PlayerBar.vue';
 import PlayerFooter from './PlayerFooter.vue';
 import { Player } from './player';
+import pkg from '../../../package.json';
 
 const IgnoreEvent = [
 	LiveEvent.LIVE_STATE,
@@ -105,6 +106,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public fullScreen: boolean = true;
 	public liveEvents: any = [];
 	public footMenuOpen: boolean = false;
+	public alertTimer!: NodeJS.Timer;
 
 	public player: Player = new Player();
 
@@ -114,6 +116,10 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 		}
 		return 'calc(100% - 158px)';
 	}
+	
+	public get isManager() {
+		return (this.live.socket.Live as Live).manager_ids.includes(this.$store.getters.user.id);
+	}
 
 	public async created() {
 		if ( this.live ) {
@@ -122,6 +128,11 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			});
 			await this.live.join();
 			this.player.connect(this.live);
+			this.alertTimer = setInterval(() => {
+				if ( this.isManager ) {
+					this.live.socket.message(this.$t('lives.alert', pkg.version));
+				}
+			}, 1000 * 60 * 10 /* 10min */);
 			this.live.socket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
 				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
 					// Joined logon account event ignore
@@ -129,7 +140,9 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				}
 
 				replaceSpecialInformation(evt);
-				SopiaProcesser(evt as any, this.live.socket);
+				if ( this.isManager ) {
+					SopiaProcesser(evt as any, this.live.socket);
+				}
 
 				if ( IgnoreEvent.includes(evt.event) ) {
 					return;
@@ -179,6 +192,9 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public beforeUnmount() {
 		if ( this.player ) {
 			this.player.destroy();
+		}
+		if ( this.alertTimer ) {
+			clearInterval(this.alertTimer);
 		}
 	}
 
