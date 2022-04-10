@@ -6,7 +6,7 @@
  */
 'use strict';
 
-import { app, session, protocol, BrowserWindow, dialog } from 'electron';
+import { app, session, protocol, BrowserWindow, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { autoUpdater } from 'electron-updater';
@@ -66,8 +66,18 @@ const createWindow = () => {
 			webSecurity: !isDevelopment,
 			backgroundThrottling: false,
 		},
+		frame: false,
+		titleBarStyle: 'hidden',
 		title: `SOPIA - ${pkg.version}`,
 		icon: path.join(__dirname, '../public/icon_.png'),
+	});
+
+	ipcMain.on('app:minimize', () => {
+		win?.minimize();
+	});
+
+	ipcMain.on('app:maximize', () => {
+		win?.maximize();
 	});
 
 	win.webContents.session.webRequest.onBeforeSendHeaders(

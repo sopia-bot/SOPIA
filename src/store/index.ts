@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { User } from '@/interface/sopia';
+import { User } from '@sopia-bot/core';
 
 Vue.use(Vuex);
 
@@ -15,7 +15,12 @@ interface State {
 
 export default new Vuex.Store({
 	state: {
-		user: undefined,
+		user: {
+			id: 0,
+			nickname: 'Not Login',
+			tag: 'Not Login',
+			profile_url: require('assets/default-profile.png'),
+		} as User,
 		sideopen: false,
 		loginDialog: false,
 		partners: [],

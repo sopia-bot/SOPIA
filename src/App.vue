@@ -4,17 +4,16 @@
  *
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
-<script src="main.ts"></script>
 <template>
 	<v-app style="">
+		<title-bar />
 		<update-dialog />
 		<login-dialog v-if="$store.state.loginDialog" v-model="$store.state.loginDialog"/>
 		<bundle-update-dialog v-model="bundleUpdateDialogShow" :items="bundleUpdateList" />
 		<side-menu />
-		<side-menu-remocon/>
 		<v-sheet id="router-view" tile :key="$route.fullPath">
 			<transition name="scroll-y-reverse-transition">
-				<router-view />
+				<router-view></router-view>
 			</transition>
 		</v-sheet>
 		<live-player v-if="currentLive.id" :live="currentLive" />
@@ -36,12 +35,12 @@ import CfgLite from '@/plugins/cfg-lite-ipc';
 import path from 'path';
 import { BundlePackage } from '@/interface/bundle';
 
-import SideMenu from '@/views/SideMenu/Index.vue';
 import LivePlayer from '@/views/Live/Player.vue';
 import LoginDialog from '@/views/Login/Index.vue';
 import BundleUpdateDialog from '@/views/Bundle/UpdateDialog.vue';
-import SideMenuRemocon from '@/views/SideMenu/Remocon.vue';
 import UpdateDialog from '@/views/Components/UpdateDialog.vue';
+import TitleBar from '@/views/Components/TitleBar.vue';
+import SideMenu from '@/views/Components/SideMenu.vue';
 
 const fs = window.require('fs');
 
@@ -62,14 +61,18 @@ declare global {
 		LivePlayer,
 		LoginDialog,
 		BundleUpdateDialog,
-		SideMenuRemocon,
 		UpdateDialog,
+		TitleBar,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {
 	public currentLive: Live = {} as Live;
 	public bundleUpdateDialogShow: boolean = false;
 	public bundleUpdateList: BundlePackage[] = [];
+
+	public enter(...args: any[]) {
+		console.log('enter transition', args);
+	}
 
 	public async mounted() {
 		const auth = this.$cfg.get('auth');

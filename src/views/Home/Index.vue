@@ -1,12 +1,5 @@
-<!--
- * Index.vue
- * Created on Sun Aug 02 2020
- *
- * Copyright (c) TreeSome. Licensed under the MIT License.
--->
 <template>
 	<v-main class="custom indigo lighten-5" style="height: 100vh;">
-		<search-header></search-header>
 		<vue-scroll @handle-scroll="scrollEvent" style="max-height: calc(100vh - 64px);">
 			<div style="max-height: calc(100vh - 58px);">
 				<v-row class="ma-0" align="center" v-if="livePartner.length">
@@ -111,7 +104,6 @@ import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { Live, User } from '@sopia-bot/core';
 import LiveItem from './LiveItem.vue';
-import SearchHeader from '../Search/Header.vue';
 
 const sleep = (msec: number) => {
 	return new Promise((resolve, reject) => {
@@ -123,7 +115,6 @@ const sleep = (msec: number) => {
 @Component({
 	components: {
 		LiveItem,
-		SearchHeader,
 	},
 })
 export default class Home extends Mixins(GlobalMixins) {

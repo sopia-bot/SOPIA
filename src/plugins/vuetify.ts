@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
 import { UserVuetifyPreset } from 'vuetify';
+import colors from 'vuetify/lib/util/colors';
 
 Vue.use(Vuetify);
 
@@ -10,5 +11,12 @@ export default new Vuetify({
 	lang: {
 			locales: { ko },
 			current: 'ko',
+	},
+	theme: {
+		themes: {
+			light: {
+				primary: colors.indigo,
+			},
+		},
 	},
 } as UserVuetifyPreset);

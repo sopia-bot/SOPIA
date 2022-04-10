@@ -304,3 +304,7 @@ ipcMain.on('package:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst:
 
 	evt.returnValue = true;
 });
+
+ipcMain.on('app:quit', (evt: IpcMainEvent) => {
+	app.quit();
+});
