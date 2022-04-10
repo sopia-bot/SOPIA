@@ -1,6 +1,6 @@
 {
 	"name": "sopia-v3",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "A Spooncast manager A.I Program",
 	"private": true,
 	"scripts": {
