@@ -1,6 +1,12 @@
 {
 	"name": "spoorchat",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Donation text to speech bundle",
-	"page": "page.vue"
+	"description:ko": "청취자의 채팅을 음성합성시스템으로 읽어줍니다.",
+	"page": "page.vue",
+	"sopia": {
+		"ignore:fetch": [
+			"config.cfg"
+		]
+	}
 }
