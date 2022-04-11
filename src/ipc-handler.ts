@@ -296,8 +296,10 @@ ipcMain.on('package:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst:
 
 	archive.Entries.forEach((entry) => {
 		const target = path.join(dst, entry.FullName);
-		if ( ignore.includes(target) ) {
-			return;
+		if ( fs.existsSync(target) ) {
+			if ( ignore.includes(target) ) {
+				return;
+			}
 		}
 		entry.ExtractEntry(dst);
 	});
