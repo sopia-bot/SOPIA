@@ -253,7 +253,7 @@ ipcMain.on('package:create', (evt: IpcMainEvent, src: string, dst: string) => {
 		const pkg = JSON.parse(fs.readFileSync(path.join(src, 'package.json'), 'utf8'));
 		let ignore: string[] = [];
 		if ( pkg.sopia ) {
-			ignore = pkg.sopia['ignore:upload'].map((i: string) => path.join(src, i));
+			ignore = (pkg?.sopia?.['ignore:upload'] || []).map((i: string) => path.join(src, i));
 		}
 
 		const archive = new ZipArchive(dst);
