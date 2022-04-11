@@ -270,10 +270,10 @@ ipcMain.on('package:create', (evt: IpcMainEvent, src: string, dst: string) => {
 		});
 
 		fs.writeFileSync(dst, archive.Stream);
-		return true;
+		evt.returnValue = true;
 	} catch (err) {
 		console.error(err);
-		return false;
+		evt.returnValue = false;
 	}
 });
 
