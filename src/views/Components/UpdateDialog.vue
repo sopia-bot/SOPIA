@@ -69,14 +69,20 @@ export default class UpdateDialog extends Mixins(GlobalMixins) {
 			// ignore
 		}
 
-		await this.$swal({
+		const select = await this.$swal({
 			icon: 'info',
 			title: this.$t('app.release.alert-update', pkg.version),
 			html: `
 				<div class="pa-4" id="release-note">${marked(releaseNote)}</div>
 			`,
-			confirmButtonText: this.$t('confirm'),
+			confirmButtonText: this.$t('show-release-note'),
+			showCancelButton: true,
+			cancelButtonText: this.$t('close'),
 		});
+
+		if ( select.isConfirmed ) {
+			window.open('https://github.com/sopia-bot/SOPIA/releases');
+		}
 
 		this.$cfg.set(`viewed-release-note.${pkg.version}`, true);
 		this.$cfg.save();
