@@ -57,6 +57,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 const path = window.require('path');
 const fs = window.require('fs');
+const os = window.require('os');
 
 @Component
 export default class TreeView extends Mixins(GlobalMixins) {
@@ -83,6 +84,11 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		'Network Persistent State',
 		'Preferences',
 		'TransportSecurity',
+		'Network',
+		'Local Extension Settings',
+		'.updaterId',
+		'Local State',
+		'ko-3-0.bdic',
 	];
 	/* E:For Tree */
 
@@ -387,9 +393,16 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				this.$path('userData', '').replaceAll('.', '\\.'),
 				ignore.replaceAll('/', '\\/'),
 			);
-			const regx = new RegExp(regxStr);
-			if ( regx.test(p) ) {
-				return true;
+			if ( os.platform() === 'win32' ) {
+				const regx = new RegExp(regxStr.replaceAll('\\', '\\\\'));
+				if ( regx.test(p) ) {
+					return true;
+				}
+			} else {
+				const regx = new RegExp(regxStr);
+				if (regx.test(p)) {
+					return true;
+				}
 			}
 		}
 		return false;
