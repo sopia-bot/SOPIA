@@ -66,6 +66,24 @@ export default class TreeView extends Mixins(GlobalMixins) {
 	public folderTree: any = [];
 	public oriFolderTree: any = [];
 	public selectPath: string = '';
+	public ignorePath: string[] = [
+		'extensions',
+		'blob_storage',
+		'Session Storage',
+		'Local Storage',
+		'GPUCache',
+		'Dictionaries',
+		'Crashpad',
+		'Crash Reports',
+		'Code Cache',
+		'Cache',
+		'\.org\.chromium\.Chromium\..*',
+		'Cookies',
+		'Cookies-journal',
+		'Network Persistent State',
+		'Preferences',
+		'TransportSecurity',
+	];
 	/* E:For Tree */
 
 	public namebox: boolean = false;
@@ -138,7 +156,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 				} else {
 					fs.unlinkSync(node.data.value);
 				}
-				this.$evt.$emit('code:tree-rerender', node.data.value, !node.hasChildren());
+				this.$evt.$emit('code:tree-rerender', node.data.value, !node.data.isFolder);
 			} else {
 				this.$logger.err('code', 'No selected file.');
 				this.$swal({
@@ -363,6 +381,20 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		}
 	}
 
+	public isIgnorePath(p: string) {
+		for ( const ignore of this.ignorePath ) {
+			const regxStr = path.join(
+				this.$path('userData', '').replaceAll('.', '\\.'),
+				ignore.replaceAll('/', '\\/')
+			);
+			const regx = new RegExp(regxStr);
+			if ( regx.test(p) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public readdir(PATH: string, DIR: string = '', ORI: any, sf?: any[]) {
 		DIR = DIR || '';
 		const target = path.join(DIR, PATH);
@@ -385,6 +417,11 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 				fl.forEach((f) => {
 					const fullPath = path.join(target, f);
+							
+					if ( this.isIgnorePath(fullPath) ) {
+						return;
+					}
+
 					const stats = fs.statSync(fullPath);
 					const obj: any = { data: {} };
 					const oriObjIdx = Array.isArray(ORI) ? ORI.findIndex((oo) => {
