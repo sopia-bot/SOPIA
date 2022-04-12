@@ -38,11 +38,13 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			isActive: this.isActive.bind(this),
 		},
 		{
-			href: '/cmd/join',
+			href: '/cmd/join/',
 			label: this.$t('page.Command'),
-			icon: 'mdi-robot-happy',
-			activeIcon: 'mdi-robot-happy-outline',
-			isActive: this.isActive.bind(this),
+			icon: 'mdi-robot-happy-outline',
+			activeIcon: 'mdi-robot-happy',
+			isActive: () => {
+				return this.$route.path.startsWith('/cmd/');
+			},
 		},
 		{
 			href: '/code/',
@@ -52,7 +54,7 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			isActive: this.isActive.bind(this),
 		},
 		{
-			href: '/bundle/store',
+			href: '/bundle/store/',
 			label: this.$t('page.store'),
 			icon: 'mdi-bookshelf',
 			activeIcon: 'mdi-book-open-variant',

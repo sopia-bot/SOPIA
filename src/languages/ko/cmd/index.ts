@@ -6,6 +6,7 @@
  */
 
 export default {
+	'title': '간편 봇 반응 설정',
 	'join-desc': '청취자가 입장했을 때 반응할 문장을 설정합니다.<br>공란일 경우, 반응하지 않습니다.<br>',
 	'join-ex': '예약어 목록<br>닉네임: <span class="indigo--text text--darken-3">[[name]]</span><br>태그: <span class="indigo--text text--darken-3">[[tag]]</span><br><br> Ex)<span class="indigo--text text--darken-3"> [[name]]([[tag]])님 안녕하세요.</span>',
 	'like-desc': '청취자가 방송에 좋아요를 눌렀을 때 반응할 문장을 설정합니다.<br>공란일 경우, 반응하지 않습니다.<br>',
