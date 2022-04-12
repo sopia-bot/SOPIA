@@ -4,30 +4,10 @@
  *
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
-<script src="../../../node_modules/@sopia-bot/core/dist/api/client/index.js"></script>
 <template>
-	<v-main class="custom indigo lighten-5" style="min-height: 100vh;">
-		<search-header></search-header>
+	<v-main class="custom grey lighten-4" style="min-height: 100vh;">
 		<vue-scroll @handle-scroll="scrollEvent" style="max-height: calc(100vh - 68px);">
 		<v-container style="max-height: calc(100vh - 58px);">
-			<v-btn-toggle
-				v-model="searchType"
-				tile
-				color="indigo accent-3"
-				group
-				>
-
-				<v-btn
-					v-for="search of searchTypes"
-					:key="search.value"
-					:value="search.value"
-					@click="searchContent(search.value)">
-					{{ search.text }}
-				</v-btn>
-			</v-btn-toggle>
-
-			<v-divider class="my-6 mx-2"></v-divider>
-
 			<v-row class="ma-0">
 				<v-col
 					cols="12"
@@ -144,7 +124,8 @@ export default class Search extends Mixins(GlobalMixins) {
 		console.log('manager', this.searchManager);
 		if ( this.searchManager ) {
 			if ( this.searchManager.res.next ) {
-				this.searchManager = await this.searchManager.next();
+				const req = await this.searchManager.next();
+				console.log(req);
 				this.searchList = this.searchList.concat(this.searchManager.res.results);
 			}
 		} else {
@@ -154,7 +135,6 @@ export default class Search extends Mixins(GlobalMixins) {
 						keyword: this.searchQuery,
 					},
 				});
-				console.log('???', this.searchManager);
 			} else {
 				this.searchManager = await this.$sopia.api.search.content({
 					params: {

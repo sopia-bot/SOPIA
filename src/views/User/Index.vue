@@ -5,8 +5,7 @@
  * Copyright (c) Tree Some. Licensed under the MIT License.
 -->
 <template>
-	<v-main class="custom" v-if="user">
-		<search-header></search-header>
+	<v-main class="custom grey lighten-4" v-if="user">
 		<!-- S:Image Dialog -->
 		<v-dialog
 			v-model="image.show"
