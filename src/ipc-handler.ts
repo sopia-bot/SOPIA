@@ -301,7 +301,11 @@ ipcMain.on('package:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst:
 				return;
 			}
 		}
-		entry.ExtractEntry(dst);
+		const dirname = path.dirname(target);
+		if ( !fs.existsSync(dirname) ) {
+			fs.mkdirSync(dirname, { recursive: true });
+		}
+		entry.ExtractEntry(dirname);
 	});
 
 	evt.returnValue = true;
