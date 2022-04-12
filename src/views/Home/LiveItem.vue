@@ -10,13 +10,12 @@
 			<v-card
 				max-width="320"
 				height="400"
-				flat
-				tile
+				outlined
 				@click.stop="$evt.$emit('live-join', live)"
 				color="grey lighten-4"
 				class="mx-auto"
 				style="cursor: pointer"
-				:elevation="hover ? 24 : 6"
+				:elevation="hover ? 3 : 0"
 				>
 				<v-img
 					width="100%"

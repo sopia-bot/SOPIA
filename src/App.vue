@@ -16,7 +16,9 @@
 				<router-view></router-view>
 			</transition>
 		</v-sheet>
-		<live-player v-if="currentLive.id" :live="currentLive" />
+		<transition name="scroll-y-reverse-transition">
+			<live-player v-if="currentLive.id" :live="currentLive" />
+		</transition>
 	</v-app>
 </template>
 <style>

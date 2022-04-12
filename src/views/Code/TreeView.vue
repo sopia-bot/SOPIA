@@ -385,7 +385,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		for ( const ignore of this.ignorePath ) {
 			const regxStr = path.join(
 				this.$path('userData', '').replaceAll('.', '\\.'),
-				ignore.replaceAll('/', '\\/')
+				ignore.replaceAll('/', '\\/'),
 			);
 			const regx = new RegExp(regxStr);
 			if ( regx.test(p) ) {
@@ -417,7 +417,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 
 				fl.forEach((f) => {
 					const fullPath = path.join(target, f);
-							
+
 					if ( this.isIgnorePath(fullPath) ) {
 						return;
 					}
