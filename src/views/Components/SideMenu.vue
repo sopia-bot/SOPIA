@@ -5,16 +5,15 @@
 		mini-variant
 		mini-variant-width="80"
 		class="grey lighten-4"
-		style="margin-top: 48px;">
+		style="margin-top: 48px; height: calc(100vh - 48px);">
 		<side-menu-item
-			v-for="(menu, idx) of menuItems"
+			v-for="(menu) of menuItems"
 			:key="menu.href"
 			:label="menu.label"
 			:active="menu.isActive(menu.href)"
 			:icon="menu.icon"
 			:active-icon="menu.activeIcon"
 			:href="menu.href"></side-menu-item>
-		<side-menu-item style="margin-top: auto; bottom: 0;"></side-menu-item>
 	</v-navigation-drawer>
 </template>
 <script lang="ts">
@@ -46,11 +45,20 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			isActive: this.isActive.bind(this),
 		},
 		{
+			href: '/code/',
+			label: this.$t('page.Code'),
+			icon: 'mdi-code-tags',
+			activeIcon: 'mdi-code-tags-check',
+			isActive: this.isActive.bind(this),
+		},
+		{
 			href: '/bundle/store',
 			label: this.$t('page.store'),
-			icon: 'mdi-store-outline',
-			activeIcon: 'mdi-store',
-			isActive: this.isActive.bind(this),
+			icon: 'mdi-bookshelf',
+			activeIcon: 'mdi-book-open-variant',
+			isActive: () => {
+				return this.$route.path.startsWith('/bundle/');
+			},
 		},
 	];
 

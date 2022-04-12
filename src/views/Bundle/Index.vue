@@ -5,7 +5,7 @@
  * Copyright (c) Raravel. Licensed under the MIT License.
 -->
 <template>
-	<v-main class="custom indigo lighten-5" style="height: 100vh; overflow-y: auto;">
+	<v-main class="custom" style="height: 100vh; overflow-y: auto;">
 		<router-view></router-view>
 	</v-main>
 </template>

@@ -1,8 +1,11 @@
 <template>
 	<div>
-		<v-btn icon @click="uploadBundle">
-			<v-icon>mdi-folder-upload</v-icon>
-		</v-btn>
+		<v-btn
+			color="grey darken-3"
+			dark
+			@click="uploadBundle">
+			{{ $t('bundle.store.upload') }}
+		</v-btn>	
 	</div>
 </template>
 <script lang="ts">

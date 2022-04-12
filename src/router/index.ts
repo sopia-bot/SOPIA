@@ -83,6 +83,10 @@ export const routes: RouteConfig[] = [
 				path: '/code/sopia/',
 				icon: 'mdi-robot',
 			},
+			{
+				name: '',
+				path: '/code//',
+			},
 		],
 	},
 	bundle,

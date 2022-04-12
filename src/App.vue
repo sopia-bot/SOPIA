@@ -11,7 +11,7 @@
 		<login-dialog v-if="$store.state.loginDialog" v-model="$store.state.loginDialog"/>
 		<bundle-update-dialog v-model="bundleUpdateDialogShow" :items="bundleUpdateList" />
 		<side-menu />
-		<v-sheet id="router-view" tile :key="$route.fullPath">
+		<v-sheet id="router-view" tile :key="$route.fullPath" color="white">
 			<transition name="scroll-y-reverse-transition">
 				<router-view></router-view>
 			</transition>
