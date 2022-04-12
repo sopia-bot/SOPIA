@@ -5,7 +5,7 @@
  * Copyright (c) Raravel. Licensed under the MIT License.
 -->
 <template>
-	<v-main class="custom" style="height: 100vh; overflow-y: auto;">
+	<v-main class="custom" style="height: calc(100vh - 48px); max-height: calc(100vh - 48px); overflow-y: auto;">
 		<router-view></router-view>
 	</v-main>
 </template>
