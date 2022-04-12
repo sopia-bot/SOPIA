@@ -4,6 +4,7 @@
  *
  * Copyright (c) raravel. Licensed under the MIT License.
  */
+import { checkPresent, getEffectPath } from './utils.js';
 import VoiceWorker from './voice.js';
 const CfgLite = window.appCfg.__proto__.constructor;
 const path = window.require('path');
@@ -85,6 +86,7 @@ class SpoorChat {
 			.text(item.message)
 			.signature(this.options.signature)
 			.engine(voice.engine, voice.option)
+			.effect(getEffectPath(item))
 			.effectVolume(this.options.effectVolume)
 			.voiceVolume(this.options.voiceVolume);
 
@@ -120,9 +122,7 @@ class SpoorChat {
 	}
 
 	presentEvent({ data }, sock) {
-		const spoon = (data.amount * data.combo);
-
-		if ( spoon >= this.options.min ) {
+		if ( checkPresent(cfg, data) ) {
 			const item = {
 				id: data.author.id,
 				tick: 0,

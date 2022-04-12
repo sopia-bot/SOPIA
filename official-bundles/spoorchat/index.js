@@ -6,6 +6,8 @@
  *
  * Copyright (c) raravel. Licensed under the MIT License.
  */
+const path$2 = window.require('path');
+const fs$1 = window.require('fs');
 
 const charWrapper =
 	(str) => str.toString()
@@ -14,6 +16,33 @@ const charWrapper =
 		.replace(/\+/g, '+')
 		.replace(/\n/g, ' ')
 		.replace(/\ /, '');
+
+function checkPresent(cfg, data) {
+	if ( cfg.get('options.type') === 'select' ) {
+		const present = cfg.get('options.present');
+		return present.name === data.sticker;
+	}
+
+	const num = data.amount * data.combo;
+	return num >= cfg.get('options.min');
+}
+
+function getEffectPath(item) {
+	let p = path$2.join(__dirname, 'sounds', item.sticker.replace(/_\w{2,}_/, '_') + '.mp3');
+	console.log('is p', p);
+	if ( item.combo >= 10 ) {
+		let tmpP = path$2.join(__dirname, 'sounds', item.sticker.replace(/_\w{2,}_/, '_') + '_long.mp3');
+		if ( fs$1.existsSync(tmpP) ) {
+			p = tmpP;
+		}
+	}
+
+	if ( !fs$1.existsSync(p) ) {
+		p = path$2.join(__dirname, 'sounds', 'default.mp3');
+	}
+	console.log('return p', p);
+	return p;
+}
 
 /*
  * voice.js
@@ -308,6 +337,7 @@ class SpoorChat {
 			.text(item.message)
 			.signature(this.options.signature)
 			.engine(voice.engine, voice.option)
+			.effect(getEffectPath(item))
 			.effectVolume(this.options.effectVolume)
 			.voiceVolume(this.options.voiceVolume);
 
@@ -343,9 +373,7 @@ class SpoorChat {
 	}
 
 	presentEvent({ data }, sock) {
-		const spoon = (data.amount * data.combo);
-
-		if ( spoon >= this.options.min ) {
+		if ( checkPresent(cfg, data) ) {
 			const item = {
 				id: data.author.id,
 				tick: 0,
