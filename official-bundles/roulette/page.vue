@@ -170,6 +170,28 @@
 						</v-switch>
 					</v-col>
 				</v-row>
+				<!-- S: Add item button -->
+				<v-row align="center" class="mt-2">
+					<v-col cols="6" class="px-3">
+						<v-btn
+							block tile
+							dark depressed
+							color="green darken-1"
+							@click="exportConfigFile">
+							설정 파일 내보내기
+						</v-btn>
+					</v-col>
+					<v-col cols="6" class="px-3">
+						<v-btn
+							block tile
+							dark depressed
+							color="indigo"
+							@click="importConfigFile">
+							설정 파일 가져오기
+						</v-btn>
+					</v-col>
+				</v-row>
+				<!-- E: Add item button -->
 				<!-- E: options.auto -->
 				<!-- S: options.useEffect -->
 				<!--
@@ -262,16 +284,23 @@
 <script>
 const path = window.require('path');
 const CfgLite = window.appCfg.__proto__.constructor;
-const cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
+let cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
 const fs = window.require('fs');
+const { ipcRenderer } = window.require('electron');
 
 const copy = (obj) => JSON.parse(JSON.stringify(obj));
 
 export default {
 	data: () => ({
-		enable: cfg.get('enable'),
-		options: cfg.get('options'),
-		list: cfg.get('list'),
+		enable: cfg.get('enable') ?? false,
+		options: cfg.get('options') || {   
+			'min': '1',
+			'useEffect': false,
+			'effectVolume': 50,
+			'type': 'min',
+			'auto': true,
+        },
+		list: cfg.get('list') || [],
 		listCopy: [],
 		leftCol: 7,
 		rightCol: 5,
@@ -380,6 +409,67 @@ export default {
 				timer: 3000,
 			});
 			this.reload();
+		},
+		copy(src, dst) {
+			fs.writeFileSync(dst, fs.readFileSync(src));
+		},
+		async exportConfigFile() {
+			const res = await ipcRenderer.invoke('open-dialog', {
+				title: '저장할 경로',
+				defaultPath: __dirname,
+				properties: [
+					'openDirectory',
+				],
+			});
+			if ( !res.canceled ) {
+				const [ folder ] = res.filePaths;
+				if ( !fs.existsSync(folder) ) {
+					this.$swal({
+						icon: 'error',
+						html: '폴더 경로가 존재하지 않습니다.',
+						toast: true,
+						position: 'top-end',
+						timer: 3000,
+					});
+					return;
+				}
+				this.copy(path.join(__dirname, 'config.cfg'), path.join(folder, 'config.cfg'));
+			}
+		},
+		async importConfigFile() {
+			const res = await ipcRenderer.invoke('open-dialog', {
+				title: '설정 파일 선택',
+				defaultPath: __dirname,
+				properties: [
+					'openFile',
+				],
+			});
+			if ( !res.canceled ) {
+				const [ file ] = res.filePaths;
+				if ( !fs.existsSync(file) ) {
+					this.$swal({
+						icon: 'error',
+						html: '파일이 존재하지 않습니다.',
+						toast: true,
+						position: 'top-end',
+						timer: 3000,
+					});
+					return;
+				}
+				this.copy(file, path.join(__dirname, 'config.cfg'));
+				cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
+				this.list = cfg.get('list') || [];
+				this.listCopy = copy(this.list);
+				this.options = cfg.get('options') || {   
+					'min': '1',
+					'useEffect': false,
+					'effectVolume': 50,
+					'type': 'min',
+					'auto': true,
+				};
+				this.enable = cfg.get('enable') ?? false;
+				this.save();
+			}
 		},
 	},
 }
