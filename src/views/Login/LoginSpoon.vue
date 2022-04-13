@@ -34,7 +34,7 @@
 				type="password"
 				></v-text-field>
 
-			<p class="red--text ma-0">{{ errorMsg }}</p>
+			<p class="red--text ma-0 mb-3">{{ errorMsg }}</p>
 
 			<v-btn
 				block dark
@@ -101,7 +101,7 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 
 	public tabItem: SnsType[] = [ SnsType.PHONE, SnsType.EMAIL ];
 	public tab: number = 0;
-	public auth = { id: '', pw: '' };
+	public auth: any = { id: '', pw: '' };
 	public errorMsg: string = '';
 
 	public get snsType() {
@@ -110,7 +110,10 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 
 	public async loginSpoon() {
 		try {
-			const user = await this.$sopia.login(+this.auth.id, this.auth.pw, this.snsType);
+			if ( this.snsType === SnsType.PHONE ) {
+				this.auth.id = +this.auth.id || '';
+			}
+			const user = await this.$sopia.login(this.auth.id, this.auth.pw, this.snsType);
 			this.$emit('logon', user);
 		} catch ( err ) {
 			this.errorMsg = this.$t('app.login.login-fail');

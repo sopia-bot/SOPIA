@@ -12,6 +12,7 @@ import users from './users/';
 import cmd from './cmd/';
 import bundle from './bundle/';
 import page from './page';
+import tutorial from './tutorial';
 
 export default {
 	app,
@@ -22,6 +23,7 @@ export default {
 	cmd,
 	bundle,
 	page,
+	tutorial,
 	// common
 	'msg': {
 		alert: '알림',

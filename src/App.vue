@@ -19,6 +19,7 @@
 		<transition name="scroll-y-reverse-transition">
 			<live-player v-if="currentLive.id" :live="currentLive" />
 		</transition>
+		<!--<tutorials/>-->
 	</v-app>
 </template>
 <style>
@@ -43,6 +44,7 @@ import BundleUpdateDialog from '@/views/Bundle/UpdateDialog.vue';
 import UpdateDialog from '@/views/Components/UpdateDialog.vue';
 import TitleBar from '@/views/Components/TitleBar.vue';
 import SideMenu from '@/views/Components/SideMenu.vue';
+import Tutorials from '@/views/Tutorials/Index.vue';
 
 const fs = window.require('fs');
 
@@ -65,6 +67,7 @@ declare global {
 		BundleUpdateDialog,
 		UpdateDialog,
 		TitleBar,
+		Tutorials,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {
