@@ -21,6 +21,10 @@ export default {
 		'chatban-disable': '님이 채팅금지 되었습니다.',
 		'chatban-enable': '님의 채팅금지가 해제되었습니다.',
 	},
+	'error': {
+		30021: '다른 기기에서 접속중인 방송엔 입장할 수 없습니다.',
+		unknown: '알 수 없는 오류로 방송에 입장할 수 없습니다. (코드: $0)',
+	},
 	'block': '강제퇴장',
 	'block-user': '님을 강퇴하시겠습니까?',
 	'errors': {

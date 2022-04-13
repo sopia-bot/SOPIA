@@ -61,7 +61,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Live, LiveInfo, LiveEvent, LiveType, User } from '@sopia-bot/core';
+import { Live, LiveInfo, LiveEvent, LiveType, User, HttpRequest } from '@sopia-bot/core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
 import SopiaProcesser from '@/sopia/processor';
 import PlayerBar from './PlayerBar.vue';
@@ -126,7 +126,35 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			this.$sopia.liveMap.forEach((live: LiveInfo, liveId: number) => {
 				//socket.destroy(); TODO:
 			});
-			await this.live.join();
+
+			try {
+				await this.live.join();
+			} catch (err: any) {
+				if ( err.res ) {
+					switch ( err.res.error.code ) {
+						case 30021:
+							this.$swal({
+								html: this.$t(`lives.error.30021`),
+								toast: true,
+								timer: 3000,
+								position: 'top-end',
+								icon: 'error',
+							});
+							break;
+						default:
+							this.$swal({
+								html: this.$t(`lives.error.unknown`, err.res.error.code),
+								toast: true,
+								timer: 3000,
+								position: 'top-end',
+								icon: 'error',
+							});
+							break;
+					}
+					this.liveLeave();
+					return;
+				}
+			}
 
 			this.player.connect(this.live);
 			if ( this.$cfg.get('player.isMute') ) {
@@ -205,9 +233,14 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	}
 
 	public liveLeave() {
-		this.player.destroy();
-		if ( this.live?.socket ) {
-			this.live.socket.destroy();
+		try {
+			this.player.destroy();
+			if ( this.live?.socket ) {
+				console.log(this.live.socket);
+				this.live.socket.destroy();
+			}
+		} catch (err) {
+			console.error(err);
 		}
 		this.$evt.$emit('live-leave');
 	}
