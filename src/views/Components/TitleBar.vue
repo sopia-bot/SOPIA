@@ -8,7 +8,7 @@
 		<v-btn icon plain class="mr-2 no-drag" v-if="$route.name !== 'Home'" @click="$assign('/')">
 			<v-icon>mdi-arrow-left-thin</v-icon>
 		</v-btn>
-		<img src="../../assets/sopia-sd.png" width="32px" class="mr-4">
+		<img src="../../assets/sopia-sd.png" width="32px" class="mr-4 no-drag" @click="upEGG">
 		<span class="text-caption">SOPIA - {{ version }}</span>
 		<v-spacer></v-spacer>
 		<v-text-field
@@ -77,6 +77,7 @@ const { ipcRenderer } = window.require('electron');
 export default class TitleBar extends Mixins(GlobalMixins) {
 	public avatarMenu: boolean = false;
 	public searchText: string = '';
+	public countEGG: number = 0;
 
 	public get version() {
 		console.log(this.$route);
@@ -89,6 +90,14 @@ export default class TitleBar extends Mixins(GlobalMixins) {
 
 	public avatarClick() {
 		console.log('click');
+	}
+
+	public upEGG() {
+		this.countEGG += 1;
+		if ( this.countEGG > 5 ) {
+			this.countEGG = 0;
+			ipcRenderer.send('open-dev-tools');
+		}
 	}
 
 	public spoonLogout() {

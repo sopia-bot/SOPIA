@@ -80,6 +80,10 @@ const createWindow = () => {
 		win?.maximize();
 	});
 
+	ipcMain.on('open-dev-tools', () => {
+		win?.webContents.openDevTools();
+	});
+
 	win.webContents.session.webRequest.onBeforeSendHeaders(
 		(details, callback) => {
 			const { url, resourceType, requestHeaders } = details;
