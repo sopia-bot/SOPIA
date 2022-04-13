@@ -206,7 +206,9 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 
 	public liveLeave() {
 		this.player.destroy();
-		this.live.socket.destroy();
+		if ( this.live?.socket ) {
+			this.live.socket.destroy();
+		}
 		this.$evt.$emit('live-leave');
 	}
 
