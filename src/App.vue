@@ -19,7 +19,7 @@
 		<transition name="scroll-y-reverse-transition">
 			<live-player v-if="currentLive.id" :live="currentLive" />
 		</transition>
-		<!--<tutorials/>-->
+		<tutorials/>
 	</v-app>
 </template>
 <style>

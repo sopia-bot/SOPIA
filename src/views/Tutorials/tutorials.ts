@@ -1,5 +1,7 @@
-export default async function(this: any) {
-	const stepHello: any[] = [
+/* tslint:disable */
+
+export function stepHello (this: any) {
+	return [
 		{
 			type: 'speech',
 			author: '???',
@@ -10,9 +12,27 @@ export default async function(this: any) {
 			items: [
 				{
 					text: this.$t('tutorial.step-hello.whoru'),
-					callback: () => { /* empty */ },
+					callback: () => {
+						this.step.splice(this.idx, 0, ...[
+							{
+								type: 'speech',
+								author: '???',
+								text: this.$t('tutorial.step-hello.sub1.0'),
+							},
+							{
+								type: 'speech',
+								author: '???',
+								text: this.$t('tutorial.step-hello.sub1.1'),
+							},
+						]);
+					},
 				},
-				this.$t('tutorial.step-hello.nice2meetu'),
+				{
+					text: this.$t('tutorial.step-hello.nice2meetu'),
+					callback: () => {
+
+					},
+				},
 			],
 		},
 		{
