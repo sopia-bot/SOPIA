@@ -41,7 +41,8 @@ import { stepHello } from './tutorials';
 
 @Component
 export default class Tutorials extends Mixins(GlobalMixins) {
-	public step: any = stepHello.apply(this);
+	//public step: any = stepHello.apply(this);
+	public stepCaller: any = stepHello.bind(this);
 	public current: any;
 	public idx: number = -1;
 	public selectItem: any[] = [];
@@ -50,6 +51,10 @@ export default class Tutorials extends Mixins(GlobalMixins) {
 	public triggerTextDone: number = 0;
 	public author: string = '';
 	public printSpeed: number = 100;
+
+	public get step() {
+		return stepHello();
+	}
 
 	public created() {
 		if ( this.$cfg.get('tutorial') ) {
@@ -64,7 +69,7 @@ export default class Tutorials extends Mixins(GlobalMixins) {
 		this.play();
 	}
 
-	public play() {
+	public async play() {
 		switch ( this.current.type ) {
 			case 'speech':
 				this.clearText();
@@ -73,6 +78,9 @@ export default class Tutorials extends Mixins(GlobalMixins) {
 				break;
 			case 'select':
 				this.selectItem = this.current.items;
+				break;
+			case 'run':
+				await this.current.callback.apply(this);
 				break;
 		}
 	}
@@ -140,6 +148,7 @@ export default class Tutorials extends Mixins(GlobalMixins) {
 	z-index: 30;
 }
 .tutorial-container {
+	user-select: none;
 	position: fixed;
 	width: 100vw;
 	height: 100vh;
@@ -165,7 +174,7 @@ export default class Tutorials extends Mixins(GlobalMixins) {
 	bottom: 0;
 	width: 100vw;
 	height: 230px;
-	background: linear-gradient(0deg, rgba(95, 14, 0, 0.635) 0%, rgba(255,255,255,0) 100%);
+	background: linear-gradient(0deg, rgba(0, 6, 94, 0.635) 0%, rgba(255,255,255,0) 100%);
 }
 .tutorial-textarea {
 	padding: 3rem 2rem;
@@ -186,22 +195,15 @@ export default class Tutorials extends Mixins(GlobalMixins) {
 	position: relative;
 	vertical-align: middle;
 	margin: 0;
-	user-select: none;
 	cursor: pointer;
 	margin-bottom: 2rem;
-	background: linear-gradient(90deg, rgba(89, 10, 0, 0.302) 0%, rgba(124, 25, 0, 0.8) 50%, rgba(89,10, 0,0.30155812324929976) 100%);
-	/*
 	background: linear-gradient(90deg, rgba(0,12,89,0.30155812324929976) 0%, rgba(2,0,78,0.80015756302521) 50%, rgba(0,12,89,0.30155812324929976) 100%);
-	*/
 	animation-name: select-item-animation;
 	animation-duration: 1s;
 	transition: background ease 1s;
 }
 .tutorial-select:hover {
-	background: linear-gradient(90deg, rgba(109, 25, 3, 0.3) 0%, rgba(207, 125, 125, 0.5) 50%, rgba(109, 25, 3,0.3) 100%);
-	/*
 	background: linear-gradient(90deg, rgba(0,12,89,0.3) 0%, rgba(125,127,207,0.5) 50%, rgba(0,12,89,0.3) 100%);
-	*/
 	transition: background ease 1s;
 }
 .tutorial-select-item {

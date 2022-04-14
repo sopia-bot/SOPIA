@@ -30,7 +30,13 @@ export function stepHello (this: any) {
 				{
 					text: this.$t('tutorial.step-hello.nice2meetu'),
 					callback: () => {
-
+						this.step.splice(this.idx+1, 0, 
+							{
+								type: 'speech',
+								author: '???',
+								text: this.$t('tutorial.step-hello.sub2.0'),
+							},
+						);
 					},
 				},
 			],
@@ -39,6 +45,21 @@ export function stepHello (this: any) {
 			type: 'speech',
 			author: this.$t('tutorial.author'),
 			text: this.$t('tutorial.step-hello.1'),
+		},
+		{
+			type: 'speech',
+			author: this.$t('tutorial.author'),
+			text: this.$t('tutorial.step-hello.2'),
+		},
+		{
+			type: 'speech',
+			author: this.$t('tutorial.author'),
+			text: this.$t('tutorial.step-hello.3'),
+		},
+		{
+			type: 'speech',
+			author: this.$t('tutorial.author'),
+			text: this.$t('tutorial.step-hello.4'),
 		},
 	];
 }
