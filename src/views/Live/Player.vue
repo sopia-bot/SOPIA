@@ -11,6 +11,15 @@
 				tile
 				class="full-screen">
 				<player-bar :live="live" @screen:close="fullScreen = false" @close="liveLeave"/>
+				<v-app-bar
+					dark absolute dense flat
+					style="margin-top: 58px;"
+					v-if="!isManager"
+					color="red darken-3">
+					<v-app-bar-title class="text-caption">
+						{{ $t('lives.error.not-manager') }}
+					</v-app-bar-title>
+				</v-app-bar>
 				<v-img :src="live.img_url" height="100%">
 					<v-card
 						tile
@@ -61,7 +70,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Live, LiveInfo, LiveEvent, LiveType, User } from '@sopia-bot/core';
+import { Live, LiveInfo, LiveEvent, LiveType, User, HttpRequest } from '@sopia-bot/core';
 import ChatMessage from '@/views/Live/ChatMessage.vue';
 import SopiaProcesser from '@/sopia/processor';
 import PlayerBar from './PlayerBar.vue';
@@ -107,6 +116,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public liveEvents: any = [];
 	public footMenuOpen: boolean = false;
 	public alertTimer!: NodeJS.Timer;
+	public managerIds: number[] = [];
 
 	public player: Player = new Player();
 
@@ -117,8 +127,8 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 		return 'calc(100% - 158px)';
 	}
 
-	public isManager() {
-		return (this.live.socket.Live as Live).manager_ids.includes(this.$store.getters.user.id);
+	public get isManager() {
+		return this.managerIds.includes(this.$store.getters.user.id);
 	}
 
 	public async created() {
@@ -126,7 +136,35 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 			this.$sopia.liveMap.forEach((live: LiveInfo, liveId: number) => {
 				//socket.destroy(); TODO:
 			});
-			await this.live.join();
+
+			try {
+				await this.live.join();
+			} catch (err: any) {
+				if ( err.res ) {
+					switch ( err.res.error.code ) {
+						case 30021:
+							this.$swal({
+								html: this.$t(`lives.error.30021`),
+								toast: true,
+								timer: 3000,
+								position: 'top-end',
+								icon: 'error',
+							});
+							break;
+						default:
+							this.$swal({
+								html: this.$t(`lives.error.unknown`, err.res.error.code),
+								toast: true,
+								timer: 3000,
+								position: 'top-end',
+								icon: 'error',
+							});
+							break;
+					}
+					this.liveLeave();
+					return;
+				}
+			}
 
 			this.player.connect(this.live);
 			if ( this.$cfg.get('player.isMute') ) {
@@ -135,18 +173,21 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				this.player.volume = (this.$cfg.get('player.volume') ?? 50) * 0.01;
 			}
 			this.alertTimer = setInterval(() => {
-				if ( this.isManager() ) {
+				if ( this.isManager ) {
 					this.live.socket.message(this.$t('lives.alert', pkg.version));
 				}
 			}, 1000 * 60 * 10 /* 10min */);
 			this.live.socket.on(LiveEvent.LIVE_EVENT_ALL, (evt: any) => {
+				if ( evt?.data?.live?.manager_ids ) {
+					this.managerIds = evt.data.live.manager_ids;
+				}
 				if ( evt.event === LiveEvent.LIVE_JOIN && evt.data.author.id === this.$sopia.logonUser.id ) {
 					// Joined logon account event ignore
 					return;
 				}
 
 				replaceSpecialInformation(evt);
-				if ( this.isManager() ) {
+				if ( this.isManager ) {
 					SopiaProcesser(evt as any, this.live.socket);
 				}
 
@@ -205,8 +246,15 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	}
 
 	public liveLeave() {
-		this.player.destroy();
-		this.live.socket.destroy();
+		try {
+			this.player.destroy();
+			if ( this.live?.socket ) {
+				console.log(this.live.socket);
+				this.live.socket.destroy();
+			}
+		} catch (err) {
+			console.error(err);
+		}
 		this.$evt.$emit('live-leave');
 	}
 

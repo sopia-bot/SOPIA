@@ -104,6 +104,10 @@ const ckCmdEvent = (evt: any, sock: LiveSocket) => {
 const processor = async (evt: any, sock: LiveSocket) => {
 	logger.debug('sopia', `receive event [${evt.event}]`, evt);
 
+	setImmediate(() => {
+		Script.run(evt, sock);
+	});
+
 	/* S: Cmd */
 	if ( ckCmdEvent(evt, sock) ) {
 		if ( window.appCfg.get('cmd.use') === true && fs.existsSync(CMD_PATH) ) {
@@ -160,8 +164,6 @@ const processor = async (evt: any, sock: LiveSocket) => {
 		}
 	}
 	/* E: Cmd */
-
-	Script.run(evt, sock);
 };
 
 export default processor;

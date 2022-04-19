@@ -50,15 +50,21 @@ export class Script {
 		const box = this.boxs[idx];
 		if ( box ) {
 			(window as any)['bctx'].destroy(name);
+			logger.info('sopia', 'module cache clear', box.file);
 			delete window.require.cache[box.file];
 			this.boxs.splice(idx, 1);
 		}
 	}
 
 	public clear() {
+		let idx = 0;
 		if ( Array.isArray(this.boxs) ) {
-			for ( const module of this.boxs ) {
+			while ( this.boxs.length ) {
+				const module = this.boxs[0];
 				this.abort.call(this, module.name);
+				if ( idx++ > 10000 ) {
+					break;
+				}
 			}
 		}
 		this.boxs = [];

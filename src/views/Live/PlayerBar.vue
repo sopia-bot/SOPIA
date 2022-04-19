@@ -3,7 +3,6 @@
 		dark absolute
 		color="indigo accent-5"
 		style="cursor: pointer;"
-		@click="prominent = !prominent"
 		:extension-height="prominent ? '100px' : '0px'"
 		flat>
 		<v-icon left>

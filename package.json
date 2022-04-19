@@ -1,6 +1,6 @@
 {
 	"name": "sopia-v3",
-	"version": "0.4.1",
+	"version": "0.4.3",
 	"description": "A Spooncast manager A.I Program",
 	"private": true,
 	"scripts": {
@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@arkiv/zip": "^1.1.10",
 		"@sopia-bot/api-dto": "^1.0.1",
-		"@sopia-bot/core": "^2.2.1",
+		"@sopia-bot/core": "^2.2.3",
 		"@types/hls.js": "^1.0.0",
 		"axios": "^0.19.2",
 		"cfg-lite": "^1.1.3",

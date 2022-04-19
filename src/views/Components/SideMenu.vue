@@ -12,6 +12,7 @@
 			:label="menu.label"
 			:active="menu.isActive(menu.href)"
 			:icon="menu.icon"
+			:openNew="menu.openNew"
 			:active-icon="menu.activeIcon"
 			:href="menu.href"></side-menu-item>
 	</v-navigation-drawer>
@@ -61,6 +62,14 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			isActive: () => {
 				return this.$route.path.startsWith('/bundle/');
 			},
+		},
+		{
+			href: 'https://github.com/sopia-bot/SOPIA',
+			label: this.$t('page.github'),
+			icon: 'mdi-github',
+			activeIcon: 'mdi-github',
+			openNew: true,
+			isActive: () => false,
 		},
 	];
 

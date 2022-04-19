@@ -11,4 +11,5 @@ export default {
 	Sopia: '개인 코드 폴더',
 	Bundle: '번들',
 	store: '스토어',
+	github: '깃허브',
 };

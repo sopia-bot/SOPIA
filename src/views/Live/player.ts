@@ -31,7 +31,9 @@ export class Player {
 	public destroy() {
 		this.audio.pause();
 		this.audio = new Audio();
-		this.player.destroy();
+		if ( this.player ) {
+			this.player.destroy();
+		}
 	}
 
 	public connect(live: Live) {
