@@ -30,6 +30,9 @@ export default new Vuex.Store({
 		user(state: State) {
 			return state.user;
 		},
+		streamingPartners(state: State): User[] {
+			return state.partners.filter((partner) => !!partner.current_live?.id) || [];
+		},
 	},
 	mutations: {
 		user(state: State, user: User) {

@@ -53,7 +53,7 @@ export default class Tutorials extends Mixins(GlobalMixins) {
 	public printSpeed: number = 100;
 
 	public get step() {
-		return stepHello();
+		return this.stepCaller();
 	}
 
 	public created() {
@@ -65,7 +65,7 @@ export default class Tutorials extends Mixins(GlobalMixins) {
 
 	public next() {
 		this.idx += 1;
-		this.current = this.step[this.idx];
+		this.current = this.stepCaller()[this.idx];
 		this.play();
 	}
 
