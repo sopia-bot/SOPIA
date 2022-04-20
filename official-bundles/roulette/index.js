@@ -139,7 +139,7 @@ function randomOnPickByPer(list = []) {
 		sumList[l.percentage].push(l);
 	});
 	sum = sumArray(Object.keys(sumList).map((p) => +p)) / 100;
-	percentage *= sum;
+	//percentage *= sum;
 
 	list = list.sort((a, b) => a.percentage - b.percentage);
 	if ( !list.find((l) => l.value === '꽝') ) {

@@ -120,11 +120,11 @@
 							depressed
 							@click="present = true">
 							<img
-								v-if="options.present.image_thumbnail"
-								:src="options.present.image_thumbnail"
+								v-if="options.present?.image_thumbnail"
+								:src="options.present?.image_thumbnail"
 								width="50px"
-								:alt="options.present.title"/>
-							{{ substr(options.present.title) }}
+								:alt="options.present?.title"/>
+							{{ substr(options.present?.title) || '스푼을 선택해 주세요.' }}
 						</v-btn>
 					</v-col>
 				</v-row>
@@ -391,6 +391,15 @@ export default {
 				this.$swal({
 					icon: 'error',
 					html: `아이템들의 총 확률은 100을 넘길 수 없습니다.<br>현재: ${sum}%`,
+					title: '에러',
+				});
+				return;
+			}
+
+			if ( this.options.type === 'select' && !this.options.present ) {
+				this.$swal({
+					icon: 'error',
+					html: '지정 스푼 옵션을 사용할 경우, 스푼을 선택해 주세요.',
 					title: '에러',
 				});
 				return;
