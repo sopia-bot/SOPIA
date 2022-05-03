@@ -56,6 +56,7 @@ declare global {
 let cfg: CfgLite = new CfgLite(CMD_PATH);
 window.reloadCmdCfg = () => {
 	cfg = new CfgLite(CMD_PATH);
+	(window as any).cmdCfg = cfg;
 };
 
 const isAdmin = (live: Live, user: User|number) => {
@@ -87,14 +88,16 @@ const ckCmdEvent = (evt: any, sock: LiveSocket) => {
 	if ( evt.event !== LiveEvent.LIVE_JOIN &&
 		 evt.event !== LiveEvent.LIVE_LIKE &&
 		 evt.event !== LiveEvent.LIVE_PRESENT &&
+		 evt.event !== LiveEvent.LIVE_PRESENT_LIKE &&
 		 evt.event !== LiveEvent.LIVE_MESSAGE ) {
-		logger.debug('sopia', 'Event is not [JOIN, LIKE, PRESENT, MESSAGE]', evt.event);
+		logger.debug('sopia', 'Event is not [JOIN, LIKE, PRESENT, MESSAGE, PRESENT_LIKE]', evt.event);
 		return false;
 	}
 
 	if ( evt.event === LiveEvent.LIVE_JOIN ||
 		 evt.event === LiveEvent.LIVE_LIKE ||
-		 evt.event === LiveEvent.LIVE_PRESENT ) {
+		 evt.event === LiveEvent.LIVE_PRESENT ||
+		 evt.event === LiveEvent.LIVE_PRESENT_LIKE ) {
 		return isAdmin(sock.Live as Live, window.$sopia.logonUser);
 	}
 
@@ -111,11 +114,15 @@ const processor = async (evt: any, sock: LiveSocket) => {
 	/* S: Cmd */
 	if ( ckCmdEvent(evt, sock) ) {
 		if ( window.appCfg.get('cmd.use') === true && fs.existsSync(CMD_PATH) ) {
-			const comment = cfg.get(evt.event);
+			let comment = cfg.get(evt.event);
 			const e = evt.data;
 
 			if ( !comment ) {
-				return;
+				if ( evt.event === LiveEvent.LIVE_PRESENT_LIKE ) {
+					comment = cfg.get(LiveEvent.LIVE_PRESENT);
+				} else {
+					return;
+				}
 			}
 
 			let res = '';
@@ -131,6 +138,13 @@ const processor = async (evt: any, sock: LiveSocket) => {
 						p = comment[0];
 					}
 					res = p.message;
+					break;
+				case LiveEvent.LIVE_PRESENT_LIKE:
+					let pl = comment.find((c: any) => c.sticker === evt.update_component.like.sticker);
+					if ( !pl ) {
+						pl = comment[0];
+					}
+					res = pl.message;
 					break;
 				case LiveEvent.LIVE_MESSAGE:
 					const m = comment.find((c: any) => ckCmd(c, evt.update_component.message.value));
