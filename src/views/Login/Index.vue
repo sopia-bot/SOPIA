@@ -118,6 +118,7 @@ export default class Login extends Mixins(GlobalMixins) {
 	public loginSpoon(user: LogonUser) {
 		this.$emit('input', false);
 		this.$evt.$emit('user', user);
+		this.$store.commit('user', user);
 		this.sopiaShow = false;
 		this.spoonShow = false;
 
