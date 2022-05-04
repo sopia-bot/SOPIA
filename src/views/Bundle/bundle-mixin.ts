@@ -59,6 +59,15 @@ export default class BundleMixin extends Mixins(GlobalMixins) {
 		const p = this.getBundlePath(pkg);
 		ipcRenderer.sendSync('package:uncompress-buffer', res.data[0], p);
 
+		if ( pkg.dependencies ) {
+			await npmInstall(Object.entries(pkg.dependencies).map(([name, version]) => ({
+				name,
+				version,
+			})), {
+				rootDir: p,
+			});
+		}
+
 		if ( showNoti ) {
 			const option: SweetAlertOptions = {
 				icon: 'success',
