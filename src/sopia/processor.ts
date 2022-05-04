@@ -113,7 +113,7 @@ const processor = async (evt: any, sock: LiveSocket) => {
 
 	/* S: Cmd */
 	if ( ckCmdEvent(evt, sock) ) {
-		if ( window.appCfg.get('cmd.use') === true && fs.existsSync(CMD_PATH) ) {
+		if ( window.appCfg.get(`cmd.${evt.event}.use`) === true && fs.existsSync(CMD_PATH) ) {
 			let comment = cfg.get(evt.event);
 			const e = evt.data;
 
@@ -121,9 +121,12 @@ const processor = async (evt: any, sock: LiveSocket) => {
 				if ( evt.event === LiveEvent.LIVE_PRESENT_LIKE ) {
 					comment = cfg.get(LiveEvent.LIVE_PRESENT);
 				} else {
+					logger.err('sopia', 'Can not find comment', evt.event);
 					return;
 				}
 			}
+
+			logger.debug('sopia', 'Easy command', evt, comment);
 
 			let res = '';
 

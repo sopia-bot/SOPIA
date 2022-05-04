@@ -84,44 +84,35 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import CfgLite from '@/plugins/cfg-lite-ipc';
+import { LiveEvent } from '@sopia-bot/core';
 
 
-
-@Component({
-	components: {
-	},
-	watch: {
-		$route(to, from) {
-			const t = this as any;
-			t.setType = this.$route.params['type'];
-		},
-	},
-})
+@Component
 export default class Cmd extends Mixins(GlobalMixins) {
-	public setType: string = 'join';
-	public use: boolean = this.$cfg.get('cmd.use');
+	public setType: string = 'live_join';
+	public use: boolean = this.$cfg.get(`cmd.${this.setType}.use`) ?? false;
 	public cfgPath: string = this.$path('userData', 'cmd.cfg');
 	public cfg: CfgLite = new CfgLite(this.cfgPath);
 	public loading: boolean = false;
 
 	public typeList: any[] = [
 		{
-			href: '/cmd/join/',
+			href: '/cmd/live_join/',
 			text: this.$t('page.Join'),
 			isActive: this.isActive.bind(this),
 		},
 		{
-			href: '/cmd/like/',
+			href: '/cmd/live_like/',
 			text: this.$t('page.Like'),
 			isActive: this.isActive.bind(this),
 		},
 		{
-			href: '/cmd/present/',
+			href: '/cmd/live_present/',
 			text: this.$t('page.Present'),
 			isActive: this.isActive.bind(this),
 		},
 		{
-			href: '/cmd/message/',
+			href: '/cmd/live_message/',
 			text: this.$t('page.Message'),
 			isActive: this.isActive.bind(this),
 		},
@@ -141,6 +132,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 		const m = this.$route.path.match(/\/cmd\/(.*)?\//);
 		if ( m ) {
 			this.setType = m[1] as string;
+			this.use = this.$cfg.get(`cmd.${this.setType}.use`) ?? false;
 		}
 	}
 
@@ -158,7 +150,10 @@ export default class Cmd extends Mixins(GlobalMixins) {
 			timer: 5000,
 		});
 
-		this.$cfg.set('cmd.use', this.use);
+		this.$cfg.set(`cmd.${this.setType}.use`, this.use);
+		if ( this.setType === LiveEvent.LIVE_PRESENT ) {
+			this.$cfg.set(`cmd.${LiveEvent.LIVE_PRESENT_LIKE}.use`, this.use);
+		}
 		this.$cfg.save();
 		this.$logger.success('cmd', `Save success config file. [${this.cfgPath}]`, this.cfg.get());
 		this.loading = false;

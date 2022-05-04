@@ -39,7 +39,7 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 			isActive: this.isActive.bind(this),
 		},
 		{
-			href: '/cmd/join/',
+			href: '/cmd/live_join/',
 			label: this.$t('page.Command'),
 			icon: 'mdi-robot-happy-outline',
 			activeIcon: 'mdi-robot-happy',

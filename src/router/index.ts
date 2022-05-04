@@ -42,25 +42,25 @@ export const routes: RouteConfig[] = [
 		children: [
 			{
 				name: 'Join',
-				path: '/cmd/join/',
+				path: '/cmd/live_join/',
 				component: () => import('@/views/Cmd/Join.vue'),
 				icon: 'mdi-door',
 			},
 			{
 				name: 'Like',
-				path: '/cmd/like/',
+				path: '/cmd/live_like/',
 				component: () => import('@/views/Cmd/Like.vue'),
 				icon: 'mdi-heart',
 			},
 			{
 				name: 'Present',
-				path: '/cmd/present/',
+				path: '/cmd/live_present/',
 				component: () => import('@/views/Cmd/Present.vue'),
 				icon: 'mdi-gift',
 			},
 			{
 				name: 'Message',
-				path: '/cmd/message/',
+				path: '/cmd/live_message/',
 				component: () => import('@/views/Cmd/Message.vue'),
 				icon: 'mdi-message-alert',
 			},
