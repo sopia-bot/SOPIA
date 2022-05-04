@@ -89,6 +89,7 @@ export default class TreeView extends Mixins(GlobalMixins) {
 		'.updaterId',
 		'Local State',
 		'ko-3-0.bdic',
+		'.*node_modules.*',
 	];
 	/* E:For Tree */
 
