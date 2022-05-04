@@ -5,38 +5,46 @@
         <v-btn block tile dark color="indigo" @click="addMessageEvent">{{ $t('add') }}</v-btn>
       </v-col>
     </v-row>
-    <v-row class="ma-0" align="center" v-for="(message, idx) in liveMessage" :key="'message_' + message.cmd + idx">
-      <v-col cols="3" class="pa-0">
-        <v-text-field
-            :placeholder="$t('cmd.command')"
-            color="indigo darken-3"
-            v-model="message.command"/>
-      </v-col>
-      <v-col cols="6" class="py-0">
-        <v-textarea
-            :placeholder="$t('cmd.reply')"
-            color="indigo darken-3"
-            rows="1"
-            v-model="message.message"/>
-      </v-col>
-      <v-col cols="2" class="pa-0">
-        <v-select
-          :items="permitList"
-          color="indigo darken-3"
-          v-model="message.permit"
-          item-text="text"
-          item-value="value">
-          <template v-slot:selection="{ item }">
-            {{ $t('cmd.permit.' + item.value) }}
-          </template>
-        </v-select>
-      </v-col>
-      <v-col cols="1" class="pa-0 text-right">
-        <v-btn icon depressed>
-          <v-icon color="red darken-3" @click="delMessageEvent(idx);">mdi-close-circle</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
+    <v-virtual-scroll
+      :items="liveMessage"
+      class="mt-4"
+      height="500"
+      item-height="70">
+      <template v-slot:default="{ item, index }">
+        <v-row class="ma-0" align="center">
+          <v-col cols="3" class="pa-0">
+            <v-text-field
+                :placeholder="$t('cmd.command')"
+                color="indigo darken-3"
+                v-model="item.command"/>
+          </v-col>
+          <v-col cols="6" class="py-0">
+            <v-textarea
+                :placeholder="$t('cmd.reply')"
+                color="indigo darken-3"
+                rows="1"
+                v-model="item.message"/>
+          </v-col>
+          <v-col cols="2" class="pa-0">
+            <v-select
+              :items="permitList"
+              color="indigo darken-3"
+              v-model="item.permit"
+              item-text="text"
+              item-value="value">
+              <template v-slot:selection="{ item }">
+                {{ $t('cmd.permit.' + item.value) }}
+              </template>
+            </v-select>
+          </v-col>
+          <v-col cols="1" class="pa-0 text-right">
+            <v-btn icon depressed>
+              <v-icon color="red darken-3" @click="delMessageEvent(index);">mdi-close-circle</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </template>
+    </v-virtual-scroll>
   </v-container>
 </template>
 

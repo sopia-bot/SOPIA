@@ -11,10 +11,10 @@
 				class="pt-0"
 				offset="1"
 				offset-sm="2"
-				offset-md="3"
+				offset-lg="3"
 				cols="10"
 				sm="8"
-				md="6"
+				lg="6"
 				align="center">
 				<v-row align="center" class="ma-0">
 					<v-col cols="8" align="left" class="pt-0">
@@ -57,7 +57,13 @@
 						<span class="text-caption" style="font-size: 11pt !important;" v-html="$t('cmd.'+setType+'-ex')"></span>
 					</v-col>
 					<v-col cols="4" align="right">
-						<v-btn tile dark color="green darken-2" @click="save">
+						<v-btn
+							tile
+							:dark="!loading"
+							color="green darken-2"
+							:loading="loading"
+							:disabled="loading"
+							@click="save">
 							{{ $t('apply') }}
 						</v-btn>
 					</v-col>
@@ -96,6 +102,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 	public use: boolean = this.$cfg.get('cmd.use');
 	public cfgPath: string = this.$path('userData', 'cmd.cfg');
 	public cfg: CfgLite = new CfgLite(this.cfgPath);
+	public loading: boolean = false;
 
 	public typeList: any[] = [
 		{
@@ -138,6 +145,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 	}
 
 	public save() {
+		this.loading = true;
 		this.$evt.$emit('cmd:save');
 		this.$evt.$emit('cmd:reload');
 		this.$swal({
@@ -153,6 +161,7 @@ export default class Cmd extends Mixins(GlobalMixins) {
 		this.$cfg.set('cmd.use', this.use);
 		this.$cfg.save();
 		this.$logger.success('cmd', `Save success config file. [${this.cfgPath}]`, this.cfg.get());
+		this.loading = false;
 		window.reloadCmdCfg();
 	}
 
