@@ -94,7 +94,7 @@ export default class CmdMessage extends Mixins(GlobalMixins) {
 	}
 
 	public addMessageEvent() {
-		this.liveMessage.push({
+		this.liveMessage.unshift({
 			command: '',
 			message: '',
 			permit: 'all',

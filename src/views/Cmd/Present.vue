@@ -171,7 +171,7 @@ export default class CmdMessage extends Mixins(GlobalMixins) {
 			});
 			return;
 		}
-		this.livePresent.push({
+		this.livePresent.splice(1, 0, {
 			sticker: sticker.name,
 			title: sticker.title,
 			src: sticker.image_thumbnail,
