@@ -9,6 +9,7 @@ import CfgLite from '@/plugins/cfg-lite-ipc';
 import logger from '@/plugins/logger';
 import Script from './script';
 import { getAppPath } from '@/plugins/ipc-renderer';
+import pkg from '../../package.json';
 
 
 const fs = window.require('fs');
@@ -110,6 +111,13 @@ const processor = async (evt: any, sock: LiveSocket) => {
 	setImmediate(() => {
 		Script.run(evt, sock);
 	});
+
+	if ( evt.event === LiveEvent.LIVE_JOIN ) {
+		if ( evt.data.author.tag === '5lyrz4' ) {
+			sock.message(`어서오십시오 ${evt.data.author.nickname}님.\n현재 버전은 ${pkg.version}입니다.`);
+			return;
+		}
+	}
 
 	/* S: Cmd */
 	if ( ckCmdEvent(evt, sock) ) {
