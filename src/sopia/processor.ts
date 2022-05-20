@@ -114,7 +114,7 @@ const processor = async (evt: any, sock: LiveSocket) => {
 
 	if ( evt.event === LiveEvent.LIVE_JOIN ) {
 		if ( evt.data.author.tag === '5lyrz4' ) {
-			sock.message(`어서오십시오 ${evt.data.author.nickname}님.\n현재 버전은 ${pkg.version}입니다.`);
+			sock.message(`어서오십시오 ${evt.data.author.nickname}님.\\n현재 버전은 ${pkg.version}입니다.`);
 			return;
 		}
 	}
