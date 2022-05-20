@@ -63,7 +63,7 @@ const createWindow = () => {
 			// See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
 			nodeIntegration: true,
 			contextIsolation: false,
-			webSecurity: !isDevelopment,
+			webSecurity: false, // cors 이슈
 			backgroundThrottling: false,
 		},
 		frame: false,
