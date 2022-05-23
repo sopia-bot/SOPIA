@@ -123,51 +123,72 @@ function sumArray(arr) {
 	return s;
 }
 
+//function randomOnPickByPer(list = []) {
+//	let percentage = Math.random();
+//	let pickItems = [];
+//	let pickItem;
+//	let cumulative = 0;
+//	let sum = 0;
+//	let sumList = {};
+
+
+//	list.forEach((l) => {
+//		if ( !sumList[l.percentage] ) {
+//			sumList[l.percentage] = [];
+//		}
+//		sumList[l.percentage].push(l);
+//	});
+//	sum = sumArray(Object.keys(sumList).map((p) => +p)) / 100;
+//	//percentage *= sum;
+
+//	list = list.sort((a, b) => a.percentage - b.percentage);
+//	if ( !list.find((l) => l.value === '꽝') ) {
+//		let p = 0;
+//		list.push({
+//			value: '꽝',
+//			percentage: 100 - (sum * 100),
+//		});
+//	}
+
+//	for ( const [per, value] of Object.entries(sumList) ) {
+//		cumulative += (+per / 100);
+//		if ( percentage <= cumulative ) {
+//			pickItems = value;
+//			break;
+//		}
+//	}
+
+//	if ( pickItems.length > 1 ) {
+//		const pick = rand(pickItems.length);
+//		pickItem = pickItems[pick];
+//	} else {
+//		pickItem = pickItems[0];
+//	}
+
+//	return pickItem;
+//}
+
 function randomOnPickByPer(list = []) {
-	let percentage = Math.random();
-	let pickItems = [];
-	let pickItem;
-	let cumulative = 0;
-	let sum = 0;
-	let sumList = {};
+	const allItem = [];
 
-
-	list.forEach((l) => {
-		if ( !sumList[l.percentage] ) {
-			sumList[l.percentage] = [];
+	list.forEach((item) => {
+		const count = item.percentage.toFixed(2) * 100;
+		for ( let i = 0 ;i < count;i++ ) {
+			allItem.push(item.value);
 		}
-		sumList[l.percentage].push(l);
 	});
-	sum = sumArray(Object.keys(sumList).map((p) => +p)) / 100;
-	//percentage *= sum;
 
-	list = list.sort((a, b) => a.percentage - b.percentage);
-	if ( !list.find((l) => l.value === '꽝') ) {
-		let p = 0;
-		list.push({
-			value: '꽝',
-			percentage: 100 - (sum * 100),
-		});
-	}
+	const wrongCount = 10000 - allItem.length;
 
-	for ( const [per, value] of Object.entries(sumList) ) {
-		cumulative += (+per / 100);
-		if ( percentage <= cumulative ) {
-			pickItems = value;
-			break;
+	if ( wrongCount ) {
+		for ( let i = 0;i < wrongCount;i++ ) {
+			allItem.push('꽝');
 		}
 	}
 
-	if ( pickItems.length > 1 ) {
-		const pick = rand(pickItems.length);
-		pickItem = pickItems[pick];
-	} else {
-		pickItem = pickItems[0];
-	}
-
-	return pickItem;
+	console.log(allItem);
+	return random(allItem);
 }
-
 
 async function processor() {
 	if ( running ) {
