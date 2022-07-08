@@ -15,4 +15,5 @@ export default {
 	'remove-bundle-success': '$0 번들이 삭제되었습니다.',
 	'install-scucess': '$0 번들이 설치되었습니다.',
 	'move-bundle-page': '번들 설정',
+	'local-bundle': '로컬 번들 목록',
 };

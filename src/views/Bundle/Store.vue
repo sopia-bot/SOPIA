@@ -25,7 +25,16 @@
 			:key="bundle.name"
 			:pkg="bundle">
 		</bundle-item>
-		<div style="height: 50px;"></div>
+		<v-row class="ma-0 my-4" align="center">
+			<v-col cols="9">
+				<h3>{{ $t('bundle.store.local-bundle') }}</h3>
+			</v-col>
+		</v-row>
+		<bundle-item
+			v-for="bundle in localBundleList"
+			:key="bundle.name"
+			:pkg="bundle">
+		</bundle-item>
 	</v-main>
 </template>
 <script lang="ts">
@@ -34,6 +43,8 @@ import BundleMixins from './bundle-mixin';
 import BundleUploadButton from './BundleUploadBtn.vue';
 import BundleItem from './BundleItem/Index.vue';
 import { BundlePackage } from '@/interface/bundle';
+import path from 'path';
+const fs = window.require('fs');
 
 @Component({
 	components: {
@@ -44,9 +55,11 @@ import { BundlePackage } from '@/interface/bundle';
 export default class BundleStore extends Mixins(BundleMixins) {
 
 	public bundleList: BundlePackage[] = [];
+	public localBundleList: BundlePackage[] = [];
 
-	public created() {
-		this.refreshBundleList();
+	public async created() {
+		await this.refreshBundleList();
+		this.refreshLocalBundleList();
 		this.$evt.$off('store:reload');
 		this.$evt.$on('store:reload', this.refreshBundleList.bind(this));
 	}
@@ -54,6 +67,15 @@ export default class BundleStore extends Mixins(BundleMixins) {
 	public async refreshBundleList() {
 		const res = await this.$api.req('GET', '/bundle/');
 		this.bundleList = res.data;
+	}
+
+	public async refreshLocalBundleList() {
+		const bundleList = fs.readdirSync(this.bundleRootPath)
+							.filter((bundle: string) => !this.bundleList.find(({name}) => name === bundle))
+							.map((name: string) => path.join(this.bundleRootPath, name, 'package.json'))
+							.filter((p: string) => fs.existsSync(p))
+							.map((p: string) => JSON.parse(fs.readFileSync(p, 'utf8')));
+		this.localBundleList = bundleList || [];
 	}
 
 }
