@@ -87,10 +87,10 @@ const createWindow = () => {
 	win.webContents.session.webRequest.onBeforeSendHeaders(
 		(details, callback) => {
 			const { url, resourceType, requestHeaders } = details;
-			if ( resourceType === 'webSocket' ) {
-				if ( !!url.match(/^wss:\/\/.{2}-ssm.spooncast.net\//) ) {
-					requestHeaders['Origin'] = 'https://www.spooncast.net';
-				}
+			if ( !!url.match(/^wss:\/\/.{2}-ssm.spooncast.net\//) ) {
+				requestHeaders['Origin'] = 'https://www.spooncast.net';
+			} else if ( !!url.match(/googlevideo\.com\/videoplayback/) ) {
+				requestHeaders['Origin'] = 'https://www.youtube.com';
 			}
 			UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', ['*']);
 			callback({
@@ -100,13 +100,23 @@ const createWindow = () => {
 	);
 
 	win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-		const { responseHeaders } = details;
+		const { url, responseHeaders } = details;
 		UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*']);
 		UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Headers', ['*']);
+		if ( !!url.match(/googlevideo\.com\/videoplayback/) ) {
+			UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['https://www.youtube.com']);
+		}
 		callback({
 			responseHeaders,
 		});
 	});
+
+	session.defaultSession.cookies.set({
+		url: 'https://youtube.com',
+		name: 'VISITOR_INFO1_LIVE',
+		value: 'jVdvrRqAjLg',
+	});
+
 
 	if (process.env.WEBPACK_DEV_SERVER_URL) {
 		// Load the url of the dev server if in development mode
