@@ -21,7 +21,6 @@ module.exports = {
 			alias: {
 				"assets": path.join(__dirname, "src/assets"),
 				"@": path.join(__dirname, "src"),
-				"@sopia-bot/core": path.join(__dirname, "core/src"),
 			},
 		},
 		module: {

@@ -26,9 +26,7 @@
 		],
 		"paths": {
 			"assets/*": [ "src/assets/*" ],
-			"@/*": [ "src/*" ],
-			"@sopia-bot/core": [ "core/src/" ],
-			"@sopia-bot/core/*": [ "core/src/*" ],
+			"@/*": [ "src/*" ]
 		}
 	},
 	"include": [
