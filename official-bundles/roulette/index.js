@@ -174,7 +174,7 @@ function randomOnPickByPer(list = []) {
 	list.forEach((item) => {
 		const count = item.percentage.toFixed(2) * 100;
 		for ( let i = 0 ;i < count;i++ ) {
-			allItem.push(item.value);
+			allItem.push(item);
 		}
 	});
 
