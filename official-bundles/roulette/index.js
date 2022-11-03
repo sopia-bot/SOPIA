@@ -182,7 +182,7 @@ function randomOnPickByPer(list = []) {
 
 	if ( wrongCount ) {
 		for ( let i = 0;i < wrongCount;i++ ) {
-			allItem.push('꽝');
+			allItem.push({ value: '꽝' });
 		}
 	}
 
