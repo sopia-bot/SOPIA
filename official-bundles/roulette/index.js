@@ -1,15 +1,22 @@
 const CfgLite = window.appCfg.__proto__.constructor;
 const path = window.require('path');
+const { v4:uuid } = window.require('uuid');
 const cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
 
+console.log(path.join(__dirname, 'config.cfg'));
 const Q = [];
 const tmpQ = [];
+const ctx = window.bctx.get('roulette');
 let running = false;
+
+let hisStr = '';
+const history = (str) => ctx.ipc.emit('history:set', hisStr += str + '\n');
+const copy = (obj) => JSON.parse(JSON.stringify(obj));
 
 const startSpeech = [
 	(e) => '돌려 돌려 룰렛!',
 	(e) => '과연 어떤 게 뽑힐까~?',
-	(e) => '이게 좋아보여요. ˳⚆ɞ⚆˳',
+	(e) => '이게 좋아보여요. ˳⚆ɞ⚆˳',
 	(e) => '나는 뭔지 알고 있지만 안 알려줄거에요. 😝',
 	(e) => `${e.data.author.nickname}님은 뭘 갖고 싶어요?`,
 	(e) => '헐. 이게 걸리네? 〣(ºΔº)〣',
@@ -29,7 +36,7 @@ const whackSpeech = [
 		await sleep(2000);
 		sock.message(`이번에 당첨되신 항목은 무려...!`);
 		await sleep(2000);
-		sock.message('꽝이에요. 뭐지? 버근가?  ¯＼_(ツ)_/¯ ');
+		sock.message('꽝이에요. 뭐지? 버근가?  ¯＼_(ツ)_/¯ ');
 		await sleep(2000);
 		sock.message('당첨될 때 까지 ㄱㄱ!');
 	},
@@ -38,7 +45,7 @@ const whackSpeech = [
 		await sleep(2000);
 		sock.message(`${e.data.author.nickname}님은 [${random(meanlessItems)}]에 당첨되셨습니다!!!`);
 		await sleep(2000);
-		sock.message('꽝이란 소리에요. 뭐라도 당첨된 것 처럼 보이는게 좋잖아요. ꉂ (๑¯ਊ¯)σ ');
+		sock.message('꽝이란 소리에요. 뭐라도 당첨된 것 처럼 보이는게 좋잖아요. ꉂ (๑¯ਊ¯)σ ');
 	},
 	async (e, sock) => {
 		sock.message('ㅋㅋㅋ');
@@ -56,7 +63,7 @@ const whackSpeech = [
 		await sleep(2000);
 		sock.message(`${cfg.get('options.min')}스푼밖에 안 해요~.`);
 		await sleep(2000);
-		sock.message(`할 수 있다. ${e.data.author.nickname}님 파이팅!  ꒰◍ॢ•ᴗ•◍ॢ꒱ `);
+		sock.message(`할 수 있다. ${e.data.author.nickname}님 파이팅!  ꒰◍ॢ•ᴗ•◍ॢ꒱ `);
 	},
 	async (e, sock) => {
 		const reversList = [];
@@ -76,7 +83,7 @@ const whackSpeech = [
 		await sleep(2000);
 		sock.message(`[${pick.value}] 당첨!`);
 		await sleep(2000);
-		sock.message('이라는 내용의 소설 추천받아요! 사실 꽝입니당~  ༽΄◞ิ౪◟ิ‵༼ ');
+		sock.message('이라는 내용의 소설 추천받아요! 사실 꽝입니당~  ༽΄◞ิ౪◟ิ‵༼ ');
 	},
 ];
 
@@ -186,7 +193,6 @@ function randomOnPickByPer(list = []) {
 		}
 	}
 
-	console.log(allItem);
 	return random(allItem);
 }
 
@@ -204,12 +210,20 @@ async function processor() {
 	}
 
 	const item = randomOnPickByPer(cfg.get('list'));
+	window.logger.debug('roulette', `룰렛에서 당첨된 아이템`, item);
 	if ( item && item.value !== '꽝' ) {
 		e.item = item;
-		await random(winSpeech)(e, sock);
+		cfg.get('options.simple')
+		? sock.message(`${e.data.author.nickname}님은 룰렛 [${e.item.value}]에 당첨되셨습니다.`)
+		: await random(winSpeech)(e, sock);
+		history(`${e.data.author.nickname}(${e.data.author.tag}): 룰렛 결과 ${item.value} 당첨 - ${e.uuid}`);
 	} else {
-		await random(whackSpeech)(e, sock);
+		cfg.get('options.simple')
+		? sock.message(`${e.data.author.nickname}님은 아쉽게도 룰렛 꽝입니다.`)
+		: await random(whackSpeech)(e, sock);
+		history(`${e.data.author.nickname}(${e.data.author.tag}): 룰렛 결과 꽝 - ${e.uuid}`);
 	}
+
 
 	running = false;
 	if ( cfg.get('options.auto') && tmpQ.length ) {
@@ -237,8 +251,38 @@ exports.live_present = (evt, sock) => {
 	}
 
 	if ( checkPresent(evt.data) ) {
-		evt.sock = sock;
-		tmpQ.push(evt);
+		let chance = 1;
+		let uuids = [];
+		switch (cfg.get('options.rule')) {
+			case 'combo':
+				chance = evt.data.combo;
+				for ( let i=0;i<chance;i++ ) {
+					const e = copy(evt);
+					e.sock = sock;
+					e.uuid = uuid();
+					uuids.push(e.uuid);
+					tmpQ.push(e);
+				}
+				break;
+			case 'division':
+				const num = evt.data.amount * evt.data.combo;
+				const min = cfg.get('options.min');
+				chance = Math.floor(num / min);
+				for ( let i=0;i<chance;i++) {
+					const e = copy(evt);
+					e.sock = sock;
+					e.uuid = uuid();
+					uuids.push(e.uuid);
+					tmpQ.push(e);
+				}
+				break;
+			default:
+				evt.uuid = uuid();
+				evt.sock = sock;
+				uuids.push(evt.uuid);
+				tmpQ.push(evt);
+		}
+		history(`${evt.data.author.nickname}(${evt.data.author.tag}): 스푼 ${evt.data.amount*evt.data.combo}개로 ${chance}번의 기회 획득. - ${uuids.join(',')}`);
 		if ( running === false && cfg.get('options.auto') ) {
 			Q.push(tmpQ.shift());
 			processor();

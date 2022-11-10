@@ -47,16 +47,11 @@
 		</v-card>
 		</v-dialog>
 		<!-- E: Present List Dialog -->
-		<v-row align="center" class="ma-0" style="height: 100vh;">
+		<v-row class="ma-0">
 			<v-col
-					offset="1"
-					offset-sm="2"
-					offset-md="3"
-					cols="10"
-					sm="8"
-					md="6"
-					align="center">
-				<v-row align="center">
+				cols="6"
+				align="center">
+				<v-row align="center" class="ma-0">
 					<v-col cols="8" align="left">
 						<v-row class="ma-0" align="center">
 							<span
@@ -79,7 +74,7 @@
 				</v-row>
 				<v-divider></v-divider>
 				<!-- S: options.type -->
-				<v-row class="ma-0 mt-4" align="center">
+				<v-row class="ma-0 mt-4 pl-3" align="center">
 					<v-col :cols="leftCol" align="left" class="pa-0">
 						작동 방식
 					</v-col>
@@ -93,7 +88,7 @@
 				</v-row>
 				<!-- E: options.type -->
 				<!-- S: options.min -->
-				<v-row v-if="options.type === 'min'" class="ma-0" align="center">
+				<v-row v-if="options.type === 'min'" class="ma-0 pl-3" align="center">
 					<v-col :cols="leftCol" align="left" class="pa-0">
 						최소 스푼 개수
 					</v-col>
@@ -108,7 +103,7 @@
 				</v-row>
 				<!-- E: options.min -->
 				<!-- S: options.select -->
-				<v-row v-if="options.type === 'select'" class="ma-0" align="center">
+				<v-row v-if="options.type === 'select'" class="ma-0 pl-3" align="center">
 					<v-col :cols="leftCol" align="left" class="pa-0">
 						스푼 선택
 					</v-col>
@@ -131,7 +126,7 @@
 				<!-- E: options.select -->
 				<!-- S: options.auto -->
 				<v-row class="ma-0" align="center">
-					<v-col :cols="leftCol" align="left" class="pa-0">
+					<v-col :cols="leftCol" align="left" class="pa-0 pl-3">
 						자동 룰렛 시작
 						<v-menu
 							v-model="menu"
@@ -166,12 +161,104 @@
 							color="indigo"
 							inset
 							class="ml-3"
-							label="사용">
+							:label="options.auto ? '사용 중' : '사용 안 함'">
 						</v-switch>
 					</v-col>
 				</v-row>
+				<!-- E: options.auto -->
+				<!-- S: options.simple -->
+				<v-row class="ma-0" align="center">
+					<v-col :cols="leftCol" align="left" class="pa-0 pl-3">
+						룰렛 안내 제거
+						<v-menu
+							v-model="simpleMenu"
+							:close-on-content-click="false"
+							:nudge-width="200"
+							offset-x >
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn
+									color="indigo"
+									dark icon
+									v-bind="attrs"
+									v-on="on">
+									<v-icon>mdi-help-circle</v-icon>
+								</v-btn>
+							</template>
+
+							<v-card>
+								<v-container>
+									<v-row class="ma-0">
+										<v-col>
+											<p class="ma-0">룰렛이 돌아가는 효과 안내를 출력하지 않고 결과만 출력합니다.</p>
+										</v-col>
+									</v-row>
+								</v-container>
+							</v-card>
+						</v-menu>
+					</v-col>
+					<v-col :cols="rightCol" align="right" class="pa-0">
+						<v-spacer></v-spacer>
+						<v-switch
+							v-model="options.simple"
+							color="indigo"
+							inset
+							class="ml-3"
+							:label="options.simple ? '사용 중' : '사용 안 함'">
+						</v-switch>
+					</v-col>
+				</v-row>
+				<!-- E: options.simple -->
+				<!-- S: Rule -->
+				<v-row class="ma-0" align="center">
+					<v-col :cols="leftCol" align="left" class="pa-0 pl-3">
+						룰렛 규칙 설정
+						<v-menu
+							v-model="ruleMenu"
+							:close-on-content-click="false"
+							:nudge-width="400"
+							offset-x >
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn
+									color="indigo"
+									dark icon
+									v-bind="attrs"
+									v-on="on">
+									<v-icon>mdi-help-circle</v-icon>
+								</v-btn>
+							</template>
+
+							<v-card>
+								<v-container>
+									<v-row class="ma-0">
+										<v-col>
+											<p class="ma-0">
+												사용자가 돌리는 룰렛 횟수 계산 방식을 지정합니다.
+											</p>
+											<p class="ma-0 mt-3">
+												<b>기본</b>: 어떠한 경우에도 설정 가격 이상의 스푼에만 1회 동작합니다.
+											</p>
+											<p class="ma-0">
+												<b>콤보</b>: 설정 가격 이상의 스푼에서 <code>n회 이상의 콤보</code>(연속 스푼)가 터졌을 시 콤보 수 만큼 동작합니다.
+											</p>
+											<p class="ma-0">
+												<b>배분</b>: 설정 가격 이상의 스푼에서 <code>총 스푼 갯수 / 설정 스푼</code>의 몫만큼 동작합니다.
+											</p>
+										</v-col>
+									</v-row>
+								</v-container>
+							</v-card>
+						</v-menu>
+					</v-col>
+					<v-col :cols="rightCol" align="right" class="pa-0">
+						<v-select
+							v-model="options.rule"
+							color="indigo darken-1"
+							:items="rules">
+						</v-select>
+					</v-col>
+				</v-row>
 				<!-- S: Add item button -->
-				<v-row align="center" class="mt-2">
+				<v-row align="center" class="ma-0 mt-2">
 					<v-col cols="6" class="px-3">
 						<v-btn
 							block tile
@@ -186,6 +273,7 @@
 							block tile
 							dark depressed
 							color="indigo"
+							accept=".cfg"
 							@click="importConfigFile">
 							설정 파일 가져오기
 						</v-btn>
@@ -228,16 +316,33 @@
 					</v-col>
 				</v-row>
 				<!-- E: options.effectVolume -->
-				<v-row align="center">
-					<v-col cols="12" align="left">
+				<!-- S: history box -->
+				<v-row class="ma-0 mt-2">
+					<v-col cols="12" class="pa-0" align="left">
+						<span class="indigo--text text--darken-1">룰렛 동작 이력</span>
+					</v-col>
+					<v-col cols="12" class="pa-0" align="left">
+						<pre
+							class="grey lighten-3 pa-2 mt-1"
+							style="overflow:auto; min-height: 100px; max-height:350px;">{{ history }}</pre>
+					</v-col>
+				</v-row>
+				<!-- E: history box -->
+			</v-col>
+			<v-col cols="6" style="overflow-y: auto; max-height: calc(100vh - 48px);">
+				<v-row align="center" class="ma-0" style="height: 90px;">
+					<v-col cols="8" align="left">
 						<span
 							class="text-capitalize text-overline indigo--text text--darken-4"
-							style="font-size: 1.5rem !important;">아이템</span>
+							style="font-size: 2rem !important;">아이템</span>
+					</v-col>
+					<v-col cols="4" align="right">
+						당첨 확률: {{ totalItemPercentage }} %
 					</v-col>
 				</v-row>
 				<v-divider></v-divider>
 				<!-- S: Add item button -->
-				<v-row align="center" class="mt-2">
+				<v-row align="center" class="ma-0 mt-2">
 					<v-col cols="12" class="px-3">
 						<v-btn
 							block tile
@@ -249,7 +354,7 @@
 					</v-col>
 				</v-row>
 				<!-- E: Add item button -->
-				<v-row align="center" v-for="(item, idx) of list" :key="idx + '-' + item.value">
+				<v-row align="center" class="ma-0" v-for="(item, idx) of list" :key="idx + '-' + item.value">
 					<v-col cols="8" class="py-0">
 						<v-text-field
 							:value="item.value"
@@ -282,11 +387,23 @@
 	</v-main>
 </template>
 <script>
+const fs = window.require('fs');
 const path = window.require('path');
 const CfgLite = window.appCfg.__proto__.constructor;
-let cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
-const fs = window.require('fs');
+const cfgPath = path.join(__dirname, 'config.cfg');
+let cfgRemoved = false;
+let cfg;
+try {
+	cfg = new CfgLite(cfgPath);
+} catch {
+	if ( fs.existsSync(cfgPath) ) {
+		fs.rmSync(cfgPath);
+		cfgRemoved = true;
+	}
+	cfg = new CfgLite(cfgPath);
+}
 const { ipcRenderer } = window.require('electron');
+const ctx = window.bctx.get('roulette');
 
 const copy = (obj) => JSON.parse(JSON.stringify(obj));
 
@@ -299,11 +416,21 @@ export default {
 			'effectVolume': 50,
 			'type': 'min',
 			'auto': true,
+			'rule': 'default',
+			'simple': false,
         },
-		list: cfg.get('list') || [],
+		rules: [
+			{ text: '기본', value: 'default' },
+			{ text: '콤보', value: 'combo' },
+			{ text: '배분', value: 'division' },
+		],
+		ruleMenu: false,
+		simpleMenu: false,
+		list: [],
 		listCopy: [],
 		leftCol: 7,
 		rightCol: 5,
+		history: '',
 		type: [
 			{
 				text: '지정 스푼',
@@ -320,26 +447,42 @@ export default {
 		menu: false,
 	}),
 	async mounted() {
-		this.listCopy = copy(this.list);
-		const p = path.join(__dirname, 'gift_coin.png');
-		this.gift_coin = 'data:image/png;base64,' + fs.readFileSync(p, 'base64');
-
-		if ( !this.$sopia.sticker.stickers ) {
-			await this.asleep(2000);
-		}
-		this.$sopia.sticker.stickers.categories.forEach((category) => {
-			if ( !category.is_used ) {
-				return;
-			}
-
-			category.stickers.forEach((sticker) => {
-				if ( sticker.is_used ) {
-					this.validStickers.push(sticker);
-				}
+		if ( cfgRemoved ) {
+			await this.$swal({
+				icon: 'error',
+				html: '설정파일을 불러올 수 없습니다.<br>새로운 설정파일을 초기화합니다.',
+				title: '에러',
 			});
-		});
+		}
+		await this.init();
+		this.listRefresh();
 	},
 	methods: {
+		async init() {
+			this.list = cfg.get('list') || [];
+			this.listCopy = copy(this.list);
+			const p = path.join(__dirname, 'gift_coin.png');
+			this.gift_coin = 'data:image/png;base64,' + fs.readFileSync(p, 'base64');
+
+			ctx.ipc.register('history:set', (str) => {
+				this.history = str;
+			});
+
+			if ( !this.$sopia.sticker.stickers ) {
+				await this.asleep(2000);
+			}
+			this.$sopia.sticker.stickers.categories.forEach((category) => {
+				if ( !category.is_used ) {
+					return;
+				}
+
+				category.stickers.forEach((sticker) => {
+					if ( sticker.is_used ) {
+						this.validStickers.push(sticker);
+					}
+				});
+			});
+		},
 		asleep(ms) {
 			return new Promise((resolve) => {
 				setTimeout(resolve, ms);
@@ -465,6 +608,20 @@ export default {
 					});
 					return;
 				}
+				try {
+					// check valid config file
+					new CfgLite(file);
+				} catch {
+					console.log('Cannot load config file', file);
+					this.$nextTick(() =>{
+						this.$swal({
+							icon: 'error',
+							html: '잘못된 설정파일입니다.',
+							title: '에러',
+						});
+					});
+					return;
+				}
 				this.copy(file, path.join(__dirname, 'config.cfg'));
 				cfg = new CfgLite(path.join(__dirname, 'config.cfg'));
 				this.list = cfg.get('list') || [];
@@ -479,6 +636,11 @@ export default {
 				this.enable = cfg.get('enable') ?? false;
 				this.save();
 			}
+		},
+	},
+	computed: {
+		totalItemPercentage() {
+			return (this.list || []).reduce((p=0, c) => p + +c.percentage, 0);
 		},
 	},
 }
