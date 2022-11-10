@@ -3,7 +3,7 @@
 		color="grey lighten-4"
 		dense
 		:elevation="0"
-		style="max-height: 48px;"
+		style="max-height: 48px; z-index: 10;"
 		class="sopia-title-bar">
 		<v-btn icon plain class="mr-2 no-drag" v-if="$route.name !== 'Home'" @click="$assign('/')">
 			<v-icon>mdi-arrow-left-thin</v-icon>
@@ -11,16 +11,7 @@
 		<img src="../../assets/sopia-sd.png" width="32px" class="mr-4 no-drag" @click="upEGG">
 		<span class="text-caption">SOPIA - {{ version }}</span>
 		<v-spacer></v-spacer>
-		<v-text-field
-			v-model="searchText"
-			dense solo
-			class="no-drag"
-			color="primary darken-3"
-			:label="$t('app.title.search')"
-			append-icon="mdi-magnify"
-			hide-details
-			@keydown="searchKeyDown"
-			@click:append="searchContent"></v-text-field>
+		<search-box></search-box>
 		<v-spacer></v-spacer>
 		<v-menu
 			v-model="avatarMenu"
@@ -71,12 +62,16 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import pkg from '../../../package.json';
+import SearchBox from '../Search/SearchBox.vue';
 const { ipcRenderer } = window.require('electron');
 
-@Component
+@Component({
+	components: {
+		SearchBox,
+	},
+})
 export default class TitleBar extends Mixins(GlobalMixins) {
 	public avatarMenu: boolean = false;
-	public searchText: string = '';
 	public countEGG: number = 0;
 
 	public get version() {
@@ -116,19 +111,6 @@ export default class TitleBar extends Mixins(GlobalMixins) {
 
 	public quit() {
 		ipcRenderer.send('app:quit');
-	}
-
-	public async searchContent() {
-		const text = encodeURI(this.searchText);
-
-		this.$assign(`/search/user/${text}`);
-	}
-
-	public async searchKeyDown(evt: KeyboardEvent) {
-		if ( evt.key === 'Enter' ) {
-			// enter
-			this.searchContent();
-		}
 	}
 
 }
