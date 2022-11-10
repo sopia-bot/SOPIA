@@ -53,8 +53,15 @@ declare global {
 	}
 }
 
-
-let cfg: CfgLite = new CfgLite(CMD_PATH);
+let cfg: CfgLite;
+try {
+	cfg = new CfgLite(CMD_PATH);
+} catch {
+	if ( fs.existsSync(CMD_PATH) ) {
+		fs.rmSync(CMD_PATH);
+	}
+	cfg = new CfgLite(CMD_PATH);
+}
 window.reloadCmdCfg = () => {
 	cfg = new CfgLite(CMD_PATH);
 	(window as any).cmdCfg = cfg;

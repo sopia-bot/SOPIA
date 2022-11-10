@@ -12,7 +12,10 @@ export default class CfgLite {
 	private readonly evtName: string = 'cfg-lite';
 
 	constructor(private cfgFile: string, private privKey: string = '') {
-		ipcRenderer.sendSync(this.evtName, 'new', this.cfgFile, this.privKey);
+		const ret = ipcRenderer.sendSync(this.evtName, 'new', this.cfgFile, this.privKey);
+		if ( !ret ) {
+			throw new Error(`Cannot open config file ${this.cfgFile},${this.privKey}`);
+		}
 	}
 
 

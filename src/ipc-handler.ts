@@ -29,17 +29,24 @@ const launcher = function(cmd: string) {
 ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: any) => {
 	const key = file;
 	let rtn: any = null;
-	if ( prop === 'new' ) {
-		CfgList[key] = new CfgLite(file, args[0]);
-	} else {
-		if ( typeof CfgList[key][prop] === 'function' ) {
-			rtn = CfgList[key][prop](...args);
+	console.log(`cfg-lite: prop=${prop},file=${file},argc=${args.length}`);
+	try {
+		if ( prop === 'new' ) {
+			const tmp = new CfgLite(file, args[0]);
+			CfgList[key] = tmp;
+			rtn = true;
 		} else {
-			rtn = CfgList[key][prop];
+			if ( typeof CfgList[key][prop] === 'function' ) {
+				rtn = CfgList[key][prop](...args);
+			} else {
+				rtn = CfgList[key][prop];
+			}
 		}
+		evt.returnValue = rtn;
+	} catch {
+		console.log('cfg-lite: Cannot open cfg file.', file);
+		evt.returnValue = false;
 	}
-
-	evt.returnValue = rtn;
 });
 
 ipcMain.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
@@ -293,6 +300,7 @@ ipcMain.on('package:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst:
 	const pkg = JSON.parse(pkgEntry.Read().toString('utf8'));
 
 	const ignore = (pkg?.sopia?.['ignore:fetch'] || []).map((i: string) => path.join(dst, i));
+	console.log(`package:uncompress-buffer: ignoring list ${ignore.join(',')}`);
 
 	archive.Entries.forEach((entry) => {
 		const target = path.join(dst, entry.FullName);
