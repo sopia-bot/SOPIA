@@ -5,7 +5,7 @@
  * Copyright (c) Raravel. Licensed under the MIT License.
 -->
 <template>
-	<v-main class="pa-6 grey lighten-4" style="min-height: 100vh;">
+	<v-main class="pa-6 grey lighten-4" style="min-height: 100vh; margin-left: 80px;">
 		<v-row class="ma-0">
 			<v-col cols="4">
 				<h1>{{ $t('bundle.store.title') }}</h1>
