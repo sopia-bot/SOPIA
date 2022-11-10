@@ -90,7 +90,7 @@ declare global {
 		appCfg: CfgLite;
 		isDevelopment: boolean;
 		axios: AxiosInstance;
-		logout: any;
+		logout: () => void;
 	}
 }
 window.logger = Logger;
