@@ -55,9 +55,27 @@ class Timeout {
 	}
 }
 
+type IpcCallbackFn = (...args: any[]) => void;
+type IpcItem = Record<string, IpcCallbackFn>;
+
+class Ipc {
+	private list: IpcItem = {};
+
+	public register(key: string, fn: IpcCallbackFn) {
+		this.list[key] = fn;
+	}
+
+	public emit(key: string, ...args: any[]) {
+		if ( typeof this.list[key] === 'function' ) {
+			this.list[key](...args);
+		}
+	}
+}
+
 class Context {
 	public itv = new Interval();
 	public timeout = new Timeout();
+	public ipc = new Ipc();
 
 	constructor(public name: string) {
 
@@ -73,7 +91,7 @@ const contexts: Record<string, Context> = {};
 
 (window as any)['bctx'] = {
 	get(name: string) {
-		return contexts[name];
+		return contexts[name] || this.new('roulette');
 	},
 	new(name: string) {
 		if ( !contexts[name] ) {
