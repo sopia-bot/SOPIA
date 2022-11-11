@@ -12,9 +12,17 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import path from 'path';
+import fs from 'fs';
 
 import pkg from '../package.json';
 console.log(pkg);
+
+const adp = app.getPath('userData');
+if ( !fs.existsSync(path.join(adp, 'restore-flag'))) {
+	fs.rmSync(path.join(adp, 'app.cfg'));
+	fs.writeFileSync(path.join(adp, 'restore-flag'), '1');
+	console.log('restore');
+}
 
 import './init';
 import { USER_AGENT } from './ipc-handler';
