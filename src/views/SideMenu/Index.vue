@@ -165,9 +165,12 @@ export default class SideMenu extends Mixins(GlobalMixins) {
 	}
 
 	public spoonLogout() {
+		window.logout();
+		/*
 		this.$cfg.delete('auth.spoon');
 		this.$cfg.save();
 		this.$store.state.loginDialog = true;
+		*/
 	}
 
 }

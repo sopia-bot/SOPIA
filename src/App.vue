@@ -85,7 +85,9 @@ export default class App extends Mixins(GlobalMixins) {
 		window.logout = () => {
 			this.$cfg.delete('auth');
 			this.$cfg.save();
-			window.location.reload();
+			setTimeout(() => {
+				window.location.reload();
+			}, 100);
 		};
 
 		if ( auth && auth.sopia && auth.spoon ) {

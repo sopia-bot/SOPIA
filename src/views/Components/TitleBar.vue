@@ -96,9 +96,12 @@ export default class TitleBar extends Mixins(GlobalMixins) {
 	}
 
 	public spoonLogout() {
+		window.logout();
+		/*
 		this.$cfg.delete('auth.spoon');
 		this.$cfg.save();
 		this.$store.state.loginDialog = true;
+		*/
 	}
 
 	public maximize() {

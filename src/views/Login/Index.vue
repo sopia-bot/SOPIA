@@ -93,7 +93,18 @@ export default class Login extends Mixins(GlobalMixins) {
 		this.sopiaUser.spoon_id = user.id.toString();
 		this.sopiaUser.name = user.tag;
 		this.sopiaUser.gender = user.gender;
-		await this.$api.setUserInfo(this.sopiaUser);
+
+		try {
+			await this.$api.setUserInfo(this.sopiaUser);
+		} catch {
+			await this.$swal({
+				icon: 'error',
+				title: this.$t('error'),
+				html: this.$t('app.login.unauthorized-logout'),
+			});
+			window.logout();
+			return;
+		}
 
 		if ( +this.sopiaUser.spoon_id !== user.id ) {
 			await this.$swal({
