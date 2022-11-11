@@ -104,6 +104,7 @@ const snsLoginOpenByPuppeteer = (url: string) => new Promise(async (resolve, rej
 	let executablePath = '';
 	if ( process.platform === 'win32' ) {
 		executablePath = pickProgram([
+			path.join(getPath('userData'), 'firefox', 'firefox.exe'),
 			`C:\\Program Files\\Mozilla Firefox\\firefox.exe`,
 			`C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe`,
 			`C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe`,

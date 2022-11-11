@@ -38,4 +38,7 @@ export default {
 	'finded-spoon-id': '[$0] 님의 소피아 아이디는 [$1] 입니다.',
 	'cannot-find-id': '사용자 정보를 찾을 수 없습니다.',
 	'unauthorized-logout': '로그인 정보가 잘못되었습니다. 다시 로그인 해주세요.',
+	'dose-not-work-sns-login': 'SNS 로그인이 안 되시나요?',
+	'install-firefox': 'SNS 로그인 문제는 최신 브라우저가 보안 문제로 차단하기 때문에, 구버전 브라우저를 설치하여서 해결합니다.<br>아래 확인 버튼을 누르면 로그인 전용 브라우저를 설치합니다.',
+	'already-firefox': '이미 브라우저가 설치되어 있습니다.',
 };

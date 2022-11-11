@@ -6,6 +6,30 @@
 -->
 <template>
 	<div>
+		<v-dialog v-model="dialog" max-width="600px">
+			<v-card>
+				<v-container>
+					<v-row class="ma-0">
+						<v-col cols="12">
+							<p class="ma-0" v-html="$t('app.login.install-firefox')"></p>
+						</v-col>
+					</v-row>
+					<v-row class="ma-0">
+						<v-col cols="12" align="center">
+							<v-btn
+								depressed
+								x-large
+								color="indigo"
+								dark
+								class="mr-4"
+								@click="installBrowser"
+								:loading="loading">{{ $t('confirm') }}</v-btn>
+							<v-btn depressed x-large @click="dialog = false">{{ $t('close') }}</v-btn>
+						</v-col>
+					</v-row>
+				</v-container>
+			</v-card>
+		</v-dialog>
 		<v-tabs
 			v-model="tab"
 	 		color="red"
@@ -87,6 +111,8 @@
 				{{ $t('app.login.apple') }}
 				<v-spacer></v-spacer>
 			</v-btn>
+
+			<p class="ma-0 mt-6 text-title link" @click="dialog = true;">{{ $t('app.login.dose-not-work-sns-login') }}</p>
 		</v-card-text>
 	</div>
 </template>
@@ -95,6 +121,8 @@ import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { SnsType, LogonUser } from '@sopia-bot/core';
 import { snsLoginOpen } from '@/plugins/ipc-renderer';
+const { ipcRenderer } = window.require('electron');
+const fs = window.require('fs');
 
 @Component
 export default class LoginSpoon extends Mixins(GlobalMixins) {
@@ -103,6 +131,8 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 	public tab: number = 0;
 	public auth: any = { id: '', pw: '' };
 	public errorMsg: string = '';
+	public dialog = false;
+	public loading = false;
 
 	public get snsType() {
 		return this.tabItem[this.tab] || this.tabItem[0];
@@ -130,5 +160,48 @@ export default class LoginSpoon extends Mixins(GlobalMixins) {
 		}
 	}
 
+	public async installBrowser() {
+
+		if ( fs.existsSync(this.$path('userData', 'firefox')) ) {
+			this.$swal({
+				icon: 'error',
+				title: this.$t('msg.alert'),
+				html: this.$t('app.login.already-firefox'),
+			});
+			return;
+		}
+
+		this.loading = true;
+
+		await fetch(`https://sopia-v3.s3.ap-northeast-2.amazonaws.com/Mozilla+Firefox.zip`)
+			.then((r) => r.arrayBuffer())
+			.then((r) => Buffer.from(r))
+			.then((buf) => {
+				ipcRenderer.sendSync(
+					'zip:uncompress-buffer',
+					buf.toString('base64'),
+					this.$path('userData', 'firefox'),
+				);
+			})
+			.catch(() => {
+				this.$swal({
+					icon: 'error',
+					title: this.$t('error'),
+				});
+			});
+
+		this.loading = false;
+	}
+
 }
 </script>
+<style>
+.link {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.link:hover {
+	color: #E53935;
+}
+</style>
