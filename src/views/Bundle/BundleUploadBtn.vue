@@ -104,7 +104,7 @@ export default class BundleUploadButton extends Mixins(BundleMixins) {
 				data: fs.readFileSync(zipFile, 'base64'),
 			});
 			fs.unlinkSync(zipFile);
-		} catch(err: any) {
+		} catch (err: any) {
 			if ( err.isAxiosError ) {
 				this.$logger.err('bundle', 'Package upload error', err);
 				await this.$swal({
