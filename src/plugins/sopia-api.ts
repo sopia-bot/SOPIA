@@ -59,7 +59,7 @@ export class SopiaAPI {
 					}
 				}
 			}
-			console.error(err);
+			throw err;
 		}
 	}
 
@@ -75,7 +75,7 @@ export class SopiaAPI {
 			switch ( res.data.msg ) {
 				case 'expired':
 					window.logout();
-					break;
+					return;
 			}
 		}
 		this.user.token = res.data.data[0].token;

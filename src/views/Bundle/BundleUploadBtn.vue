@@ -12,6 +12,7 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import BundleMixins from './bundle-mixin';
 import path from 'path';
+import { AxiosError } from 'axios';
 const { ipcRenderer } = window.require('electron');
 const fs = window.require('fs');
 
@@ -96,22 +97,26 @@ export default class BundleUploadButton extends Mixins(BundleMixins) {
 
 		this.$logger.success('bundle', 'Create zip file success.', zipFile);
 
-		const res = await this.$api.req('PUT', '/bundle/', {
-			name: pkg.name,
-			version: pkg.version,
-			data: fs.readFileSync(zipFile, 'base64'),
-		});
-		fs.unlinkSync(zipFile);
-
-		if ( res.error ) {
-			this.$logger.err('bundle', 'Package upload error', res);
-			await this.$swal({
-				icon: 'error',
-				title: this.$t('error'),
-				html: this.$t('bundle.store.error.' + res.msg),
+		try {
+			const res = await this.$api.req('PUT', '/bundle/', {
+				name: pkg.name,
+				version: pkg.version,
+				data: fs.readFileSync(zipFile, 'base64'),
 			});
+			fs.unlinkSync(zipFile);
+		} catch(err: any) {
+			if ( err.isAxiosError ) {
+				this.$logger.err('bundle', 'Package upload error', err);
+				await this.$swal({
+					icon: 'error',
+					title: this.$t('error'),
+					html: this.$t('bundle.store.error.' + err.response.data.msg),
+				});
+			}
+			fs.unlinkSync(zipFile);
 			return;
 		}
+
 
 		this.$logger.success('bundle', 'Bundle upload done.');
 
