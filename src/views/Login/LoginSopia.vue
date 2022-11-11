@@ -15,6 +15,35 @@
 			</v-card>
 		</v-dialog>
 
+		<v-dialog v-model="findIdDiag" max-width="600px">
+			<v-card>
+				<v-container>
+					<v-row class="ma-0">
+						<v-col cols="12" align="left">
+							<v-text-field
+								v-model="searchText"
+								@keydown="searchKeyDown"
+								:placeholder="$t('app.login.input-spoon-id')"></v-text-field>
+						</v-col>
+					</v-row>
+					<v-list>
+						<v-list-item v-for="user in users" :key="user.tag"  @click="findId(user.id)">
+							<v-list-item-avatar class="grey lighten-2">
+								<v-img :src="user.profile_url"></v-img>
+							</v-list-item-avatar>
+
+							<v-list-item-content>
+								<v-list-item-title>
+									<p class="blue-grey--text link ma-0">{{ user.nickname }}</p>
+								</v-list-item-title>
+								<v-list-item-subtitle>@{{ user.tag }}</v-list-item-subtitle>
+							</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-container>
+			</v-card>
+		</v-dialog>
+
 		<v-card-title class="text-center d-block">
 			{{ signinMode ? $t('app.login.sign-title') : $t('app.login.title') }}
 		</v-card-title>
@@ -92,6 +121,9 @@
 						style="cursor: pointer;"
 						@click="signinMode = true; errorMsg = ''">{{ $t('app.login.sign-in') }}</span>
 				</p>
+				<p class="text-caption mt-4 link" @click="findIdDiag = true; findedId = '';">
+					{{ $t('app.login.find-id') }}
+				</p>
 			</div>
 		</v-card-text>
 	</div>
@@ -100,6 +132,7 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import * as marked from 'marked/lib/marked.umd.js';
+import { User } from '@sopia-bot/core';
 
 @Component
 export default class LoginSopia extends Mixins(GlobalMixins) {
@@ -110,6 +143,12 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 	public policy = false;
 	public dialog = false;
 	public markdown = '';
+	public findIdDiag = false;
+	public searchText = '';
+	public increment = 0;
+	public users: User[] = [];
+	public findedTag = '';
+	public findedId = '';
 
 	public async loginSopia() {
 		if ( !this.auth.id.trim() ) {
@@ -135,6 +174,50 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 			this.$logger.err('login', err);
 			this.errorMsg = this.$t('app.login.error.' + err.msg);
 		}
+	}
+
+	public async search() {
+		const req = await this.$sopia.api.search.user({
+			params: {
+				keyword: this.searchText,
+			},
+		});
+		this.users = req.res.results.splice(0, 7);
+	}
+
+	public async searchKeyDown() {
+		if ( this.searchText.trim().length > 0 ) {
+			this.increment += 1;
+			setTimeout(() => {
+				this.increment -= 1;
+				if ( this.increment <= 0 ) {
+					this.search();
+					this.increment = 0;
+				}
+			}, 500);
+		}
+	}
+
+	public async findId(id: number) {
+		try {
+			const res = await this.$api.req('GET', `/user/spoon/${id}`);
+			if ( res.status === 200 ) {
+				this.$swal({
+					icon: 'success',
+					title: this.$t('success'),
+					html: this.$t('app.login.finded-spoon-id', res.data[0].name, res.data[0].id),
+				});
+			}
+		} catch {
+			this.$swal({
+				icon: 'error',
+				title: this.$t('error'),
+				html: this.$t('app.login.cannot-find-id'),
+			});
+		}
+		this.findIdDiag = false;
+		this.findedId = '';
+		this.findedTag = '';
 	}
 
 	public async signinSopia() {
@@ -198,3 +281,13 @@ export default class LoginSopia extends Mixins(GlobalMixins) {
 
 }
 </script>
+<style>
+.link {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.link:hover {
+	color: #E53935;
+}
+</style>
