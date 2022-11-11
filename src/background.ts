@@ -19,7 +19,9 @@ console.log(pkg);
 
 const adp = app.getPath('userData');
 if ( !fs.existsSync(path.join(adp, 'restore-flag'))) {
-	fs.rmSync(path.join(adp, 'app.cfg'));
+	if ( fs.existsSync(path.join(adp, 'app.cfg')) )  {
+		fs.rmSync(path.join(adp, 'app.cfg'));
+	}
 	fs.writeFileSync(path.join(adp, 'restore-flag'), '1');
 	console.log('restore');
 }
