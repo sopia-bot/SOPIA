@@ -79,7 +79,19 @@ export default class BundleStore extends Mixins(BundleMixins) {
 
 	public async refreshBundleList() {
 		const res = await this.$api.req('GET', '/bundle/');
-		this.originalBundleList = this.bundleList = res.data;
+		this.originalBundleList
+			= this.bundleList
+			= res.data.sort((a: BundlePackage, b: BundlePackage) => {
+				const $T = fs.existsSync(this.getBundlePath(a));
+				const _T = fs.existsSync(this.getBundlePath(b));
+				if ( $T === _T ) {
+					if ( $T && _T ) {
+						return (!!b.page && !a.page) ? 1 : -1;
+					}
+					return 0;
+				}
+				return $T > _T ? -1 : 1;
+			});
 	}
 
 	public async refreshLocalBundleList() {
