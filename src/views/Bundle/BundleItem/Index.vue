@@ -81,7 +81,6 @@ export default class BundleItem extends Mixins(BundleMixins) {
 	public detail: boolean = false;
 
 	public created() {
-		console.log(this.pkg);
 		this.updatePackageUsing();
 	}
 

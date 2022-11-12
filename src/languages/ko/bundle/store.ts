@@ -17,4 +17,5 @@ export default {
 	'move-bundle-page': '번들 설정',
 	'local-bundle': '로컬 번들 목록',
 	'search': '번들 검색',
+	'show-release-note': '릴리즈 노트 보기',
 };

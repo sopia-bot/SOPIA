@@ -3,6 +3,24 @@
 		<v-col cols="10" offset="1">
 			<p class="text-overline mb-0 indigo--text text--darken-3" style="font-size: 1.1rem !important;">{{ pkg.name }}</p>
 			<p class="text-caption">{{ message }}</p>
+			<v-list-group
+				v-if="!!releaseNote"
+				dense
+				class="pa-0">
+				<template v-slot:activator>
+					<v-list-item-icon>
+						<v-icon>mdi-arrow-right-bottom</v-icon>
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ $t('bundle.store.show-release-note') }}
+					</v-list-item-content>
+				</template>
+				<v-list-item class="pa-0">
+					<v-list-item-content v-html="releaseNote" class="grey lighten-3 pa-4">
+					</v-list-item-content>
+				</v-list-item>
+			</v-list-group>
+			
 		</v-col>
 	</v-row>
 </template>
@@ -29,6 +47,10 @@ export default class UpdateListItem extends Mixins(BundleMixin) {
 					this.$emit('install:done');
 				});
 		});
+	}
+
+	get releaseNote() {
+		return this.pkg['release-note']?.[this.pkg.version];
 	}
 
 }
