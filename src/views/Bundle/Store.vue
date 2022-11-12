@@ -6,9 +6,18 @@
 -->
 <template>
 	<v-main class="pa-6 grey lighten-4" style="min-height: 100vh; margin-left: 80px;">
-		<v-row class="ma-0">
+		<v-row class="ma-0" align="center">
 			<v-col cols="4">
 				<h1>{{ $t('bundle.store.title') }}</h1>
+			</v-col>
+			<v-col offset="4" cols="4" align="right">
+				<v-text-field
+					v-model="searchText"
+					solo
+					single-line
+					:placeholder="$t('bundle.store.search')"
+					@keydown="searchKeyDown"
+					hide-details></v-text-field>
 			</v-col>
 		</v-row>
 		<v-row class="ma-0 my-4" align="center">
@@ -56,6 +65,10 @@ export default class BundleStore extends Mixins(BundleMixins) {
 
 	public bundleList: BundlePackage[] = [];
 	public localBundleList: BundlePackage[] = [];
+	public originalBundleList: BundlePackage[] = [];
+	public originalLocalBundleList: BundlePackage[] = [];
+	public searchText = '';
+	public increment = 0;
 
 	public async created() {
 		await this.refreshBundleList();
@@ -66,7 +79,7 @@ export default class BundleStore extends Mixins(BundleMixins) {
 
 	public async refreshBundleList() {
 		const res = await this.$api.req('GET', '/bundle/');
-		this.bundleList = res.data;
+		this.originalBundleList = this.bundleList = res.data;
 	}
 
 	public async refreshLocalBundleList() {
@@ -75,7 +88,32 @@ export default class BundleStore extends Mixins(BundleMixins) {
 							.map((name: string) => path.join(this.bundleRootPath, name, 'package.json'))
 							.filter((p: string) => fs.existsSync(p))
 							.map((p: string) => JSON.parse(fs.readFileSync(p, 'utf8')));
-		this.localBundleList = bundleList || [];
+		this.originalLocalBundleList = this.localBundleList = bundleList || [];
+	}
+
+	public searchCondition(bundle: BundlePackage) {
+		return bundle['name']?.includes(this.searchText) ||
+			bundle['name:ko']?.includes(this.searchText) ||
+			bundle['description']?.includes(this.searchText) ||
+			bundle['description:ko']?.includes(this.searchText);
+	}
+
+	public search() {
+		this.increment -= 1;
+		if ( this.increment <= 0 ) {
+			this.bundleList = this.originalBundleList
+				.filter(this.searchCondition.bind(this)) || [];
+			this.localBundleList = this.originalLocalBundleList
+				.filter(this.searchCondition.bind(this)) || [];
+			this.increment = 0;
+		}
+	}
+
+	public searchKeyDown() {
+		if ( this.searchText.trim().length > 0 ) {
+			this.increment += 1;
+			setTimeout(() => this.search(), 500);
+		}
 	}
 
 }

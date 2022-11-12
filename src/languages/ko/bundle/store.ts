@@ -16,4 +16,5 @@ export default {
 	'install-scucess': '$0 번들이 설치되었습니다.',
 	'move-bundle-page': '번들 설정',
 	'local-bundle': '로컬 번들 목록',
+	'search': '번들 검색',
 };
