@@ -5,7 +5,7 @@
  * Copyright (c) TreeSome. Licensed under the MIT License.
 -->
 <template>
-	<div>
+	<div class="chat-message">
 		<v-list color="transparent" v-if="evt.event === LiveEvent.LIVE_MESSAGE || evt.event === LiveEvent.LIVE_PRESENT">
 			<v-list-item>
 				<v-list-item-avatar
@@ -40,7 +40,7 @@
 					width="100%"
 					style="background: rgba(0, 0, 0, 0.5);">
 					<v-list-item-content v-if="evt.event === LiveEvent.LIVE_MESSAGE" class="mx-4">
-						<pre style="white-space: pre-wrap;" v-text="evt.update_component.message.value"></pre>
+						<pre style="white-space: pre-wrap;" class="chat-message" v-text="evt.update_component.message.value"></pre>
 					</v-list-item-content>
 					<v-list-item-content v-else-if="evt.event === LiveEvent.LIVE_PRESENT" class="mx-4">
 						<img style="width: 100%;" :src="stickerImg"></img>
@@ -112,3 +112,8 @@ export default class ChatMessage extends Mixins(GlobalMixins) {
 	}
 }
 </script>
+<style>
+.chat-message {
+	font-family: JoyPixels, GangwonEdu_OTFBoldA, sans-serif !important;
+}
+</style>
