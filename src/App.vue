@@ -11,14 +11,14 @@
 		<login-dialog v-if="$store.state.loginDialog" v-model="$store.state.loginDialog"/>
 		<bundle-update-dialog v-model="bundleUpdateDialogShow" :items="bundleUpdateList" />
 		<side-menu />
-		<v-sheet id="router-view" tile :key="$route.fullPath" color="white">
-			<transition name="scroll-y-reverse-transition">
-				<router-view></router-view>
-			</transition>
-		</v-sheet>
-		<transition name="scroll-y-reverse-transition">
+		<div class="ma-0 d-flex">
+			<v-sheet id="router-view" tile :key="$route.fullPath" color="white" style="flex-basis: 80%; flex-grow: 1; flex-shrink: 1;">
+				<transition name="scroll-y-reverse-transition">
+					<router-view></router-view>
+				</transition>
+			</v-sheet>
 			<live-player v-if="currentLive.id" :live="currentLive" />
-		</transition>
+		</div>
 		<!--<tutorials/>-->
 	</v-app>
 </template>

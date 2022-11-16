@@ -1,5 +1,5 @@
 <template>
-	<div style="height: 358px;">
+	<div :style="{ flexBasis: value ? '358px' : '138px', }">
 		<!-- S:SendChat -->
 		<v-row class="ma-0" align="center">
 			<v-col cols="1" class="pl-2">
@@ -11,9 +11,10 @@
 				<v-textarea
 					:label="$t('lives.input-chat')"
 					class="ml-2"
+					style="font-family: JoyPixels, GangwonEdu_OTFBoldA"
 					@keydown="keyEvent"
 					color="indigo lighten-4"
-					no-resize dark hide-details solo
+					no-resize dark hide-details solo dense
 					rows="1"
 					v-model="chat"></v-textarea>
 			</v-col>
@@ -29,16 +30,17 @@
 			</v-col>
 		</v-row>
 		<!-- E:SendChat -->
-		<v-row
-			v-if="value"
-			class="ma-0"
-			align="center"
-			style="position: relative; overflow-y: auto;"
-			:style="{ height: menuHeight, maxHeight: menuHeight }">
-			<v-col cols="3" v-for="(menu, idx) of menuList" :key="'menu'+idx" align="center">
-				<component :is="menu" :live="live" :player="player"></component>
-			</v-col> 
-		</v-row>
+		<div>
+			<v-row
+				v-if="value"
+				class="ma-0"
+				style="position: relative; overflow-y: auto;"
+				:style="{ height: menuHeight, maxHeight: menuHeight }">
+				<v-col cols="3" v-for="(menu, idx) of menuList" :key="'menu'+idx" align="center">
+					<component :is="menu" :live="live" :player="player"></component>
+				</v-col> 
+			</v-row>
+		</div>
 	</div>
 </template>
 <script lang="ts">

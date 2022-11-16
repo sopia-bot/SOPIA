@@ -21,17 +21,16 @@
 					</v-app-bar-title>
 				</v-app-bar>
 				<v-img :src="live.img_url" height="100%">
-					<v-card
-						tile
-						height="100%"
-						style="background: rgba(0, 0, 0, 0.7) !important;">
+					<div
+						class="d-flex"
+						style="background: rgba(0, 0, 0, 0.7) !important; flex-direction: column; height: 100%;">
 						<vue-scroll
 							ref="scroll"
 							:style="{
 								marginTop: $vuetify.breakpoint.mobile ? '56px' : '64px',
-								maxHeight: scrollHeight,
-								height: scrollHeight,
-							}">
+								flexBasis: scrollHeight,
+							}"
+							style="flex-glow: 1; flex-shrink: 1;">
 							<v-row class="ma-0">
 								<v-col cols="12">
 									<div
@@ -47,7 +46,7 @@
 							menu-height="230px"
 							:live="live"
 							:player="player" />
-					</v-card>
+					</div>
 				</v-img>
 			</v-card>
 		</div>
@@ -124,7 +123,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 		if ( this.footMenuOpen ) {
 			return 'calc(100% - 358px)';
 		}
-		return 'calc(100% - 158px)';
+		return 'calc(100% - 138px)';
 	}
 
 	public get isManager() {
@@ -265,8 +264,6 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 </script>
 <style scope>
 .full-screen {
-	position: fixed;
-	max-height: 750px;
 	height: 100vh;
 	max-width: 450px;
 	width: 100%;
