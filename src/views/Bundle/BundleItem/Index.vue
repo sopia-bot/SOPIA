@@ -41,6 +41,16 @@
 									{{ $t('bundle.store.move-bundle-page') }}
 								</v-btn>
 								<v-btn
+									v-if="canUpdate"
+									:loading="loading"
+									:disabled="loading"
+									depressed outlined
+									color="green"
+									class="mr-3"
+									@click.stop="install">
+									{{ $t('update') }}
+								</v-btn>
+								<v-btn
 									v-if=!isPackageUsing
 									:loading="loading"
 									:disabled="loading"
@@ -88,15 +98,18 @@ export default class BundleItem extends Mixins(BundleMixins) {
 	public isPackageUsing = false;
 	public loading = false;
 	public detail: boolean = false;
+	public canUpdate = false;
 
 	public created() {
 		this.updatePackageUsing();
+		this.updateCanUpdate();
 	}
 
 	public async install() {
 		this.loading = true;
 		await this.bundleInstall(this.pkg);
 		this.updatePackageUsing();
+		this.updateCanUpdate();
 		window.reloadScript();
 		this.$evt.$emit('sidemenu:bundle-reload');
 		this.loading = false;
@@ -113,6 +126,18 @@ export default class BundleItem extends Mixins(BundleMixins) {
 
 	private updatePackageUsing() {
 		this.isPackageUsing = fs.existsSync(this.getBundlePath(this.pkg));
+	}
+
+	private updateCanUpdate() {
+		if ( this.isPackageUsing ) {
+			const localPackage = JSON.parse(
+				fs.readFileSync(
+					path.join(this.getBundlePath(this.pkg), 'package.json'),
+					'utf8'
+				)
+			);
+			this.canUpdate = localPackage.version !== this.pkg.version;
+		}
 	}
 
 }

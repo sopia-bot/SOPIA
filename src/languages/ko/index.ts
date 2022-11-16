@@ -49,4 +49,5 @@ export default {
 	'no': '아니오',
 	'spoon-logout': '스푼 로그아웃',
 	'show-release-note': '릴리즈 노트 전부 보기',
+	'update': '업데이트',
 };
