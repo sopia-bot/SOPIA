@@ -7,6 +7,7 @@ export interface BundlePackage {
 	idx: number;
 	owner: number;
 	owner_name: string;
+	is_official: boolean;
 	dependencies: Record<string, string>;
 }
 

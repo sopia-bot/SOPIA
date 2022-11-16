@@ -24,6 +24,16 @@
 			<v-col cols="9">
 				<h3>{{ $t('bundle.store.subtitle') }}</h3>
 				<p class="ma-0">{{ $t('bundle.store.description') }}</p>
+				<p class="ma-0 mt-1 d-flex">
+					<v-chip
+						color="blue lighten-2"
+						small
+						outlined
+						class="text-caption py-0 mr-2">
+						Official
+					</v-chip>
+					{{ $t('bundle.store.description-2') }}
+				</p>
 			</v-col>
 			<v-col cols="3" align="right">
 				<bundle-upload-button />

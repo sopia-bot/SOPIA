@@ -10,12 +10,21 @@
 					class="pa-0">
 					<v-card-text class="py-0">
 						<v-row align="center" class="ma-0" style="height: 120px;">
-							<v-col cols="5">
+							<v-col cols="5" align="">
 								<h3>
+									<v-chip
+										v-if="pkg.is_official"
+										color="blue lighten-2"
+										small
+										outlined
+										class="text-caption py-0 mr-1">
+										Official
+									</v-chip>
+								
 									{{ name }}
 									<span class="text-caption mb-1 ml-auto text--secondary">^{{ pkg.version }}</span>
 								</h3>
-								<p class="ma-0">{{ description }}</p>
+								<p class="ma-0 mt-2">{{ description }}</p>
 							</v-col>
 							<v-col cols="2">
 								{{ pkg.owner_name }}

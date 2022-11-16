@@ -112,11 +112,12 @@ const snsLoginOpenByPuppeteer = (url: string) => new Promise(async (resolve, rej
 		]);
 	} else if ( process.platform === 'linux' ) {
 		executablePath = pickProgram([
-			launcher('which firefox'),
+			'/home/youn/Utils/firefox/firefox', // for develop
+			launcher('which brave-browser'),
 			launcher('which google-chrome'),
+			launcher('which firefox'),
 			launcher('which chrome'),
 			launcher('which chromium'),
-			launcher('which brave-browser'),
 		]);
 	}
 

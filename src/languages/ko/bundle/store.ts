@@ -2,6 +2,7 @@ export default {
 	'title': '라이브러리',
 	'subtitle': '더 많은 컨텐츠 찾아보기',
 	'description': '소피아에 여러가지 기능들을 추가하여 재미있는 컨텐츠를 방송에 추가해 보세요.',
+	'description-2': '태그가 달려있는 번들만 소피아에서 유지보수합니다.',
 	'upload': '번들 등록하기',
 	'error': {
 		'create-error': '번들을 압축하는 데 실패하였습니다.',
