@@ -9,7 +9,7 @@
 			<v-card-title>
 				<p class="ma-0" style="text-align: center; width:100%;">{{ $t('bundle.update.need') }}</p>
 			</v-card-title>
-			<v-container>
+			<v-container class="mb-4">
 				<update-list-item
 					v-for="pkg of items"
 					:key="pkg.name"
@@ -28,16 +28,28 @@
 				</v-btn>
 			</v-card-actions>
 			<v-card-actions v-else>
-				<v-spacer></v-spacer>
 				<v-btn
-					depressed tile dark
+					depressed dark
+					outlined
+					:dark="!installing"
 					:disabled="installing"
 					color="red darken-1"
 					@click="$emit('input', false)">
-					{{ $t('bundle.update.skip') }}
+					{{ $t('close') }}
+				</v-btn>
+				<v-spacer></v-spacer>
+				<v-btn
+					depressed rounded
+					:dark="!installing"
+					:disabled="installing"
+					:loading="installing"
+					color="green darken-1"
+					@click="installSelect">
+					{{ $t('bundle.update.select') }}
 				</v-btn>
 				<v-btn
-					depressed tile dark
+					depressed rounded
+					:dark="!installing"
 					:disabled="installing"
 					:loading="installing"
 					color="indigo darken-1"
@@ -70,19 +82,29 @@ export default class BundleUpdateDialog extends Mixins(BundleMixin) {
 	public resolve: (value: unknown) => void = () => { /* empty */ };
 
 	public async installAll() {
+		this.installing = true;
+		for (const item of this.items) {
+			await this.install(item, true);
+		}
+		this.installDone = true;
+		this.installing = false;
+	}
+
+	public async installSelect() {
+		this.installing = true;
 		for (const item of this.items) {
 			await this.install(item);
 		}
 		this.installDone = true;
+		this.installing = false;
 	}
 
-	private install(pkg: BundlePackage) {
+	private install(pkg: BundlePackage, force = false) {
 		return new Promise((resolve) => {
 			const [ref] = this.$refs[pkg.name] as UpdateListItem[];
 			if ( ref ) {
-				console.log(ref);
 				this.resolve = resolve;
-				ref.$emit('install:start');
+				ref.$emit('install:start', force);
 			}
 		});
 	}

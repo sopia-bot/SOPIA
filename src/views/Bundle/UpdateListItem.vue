@@ -1,8 +1,13 @@
 <template>
 	<v-row class="ma-0">
 		<v-col cols="10" offset="1">
-			<p class="text-overline mb-0 indigo--text text--darken-3" style="font-size: 1.1rem !important;">{{ pkg.name }}</p>
-			<p class="text-caption">{{ message }}</p>
+			<v-checkbox
+				:label="pkg.name"
+				class="ma-0"
+				hide-details
+				v-model="updateFlag">
+			</v-checkbox>
+			<p class="ma-0 mt-1 text-caption">{{ message }}</p>
 			<v-list-group
 				v-if="!!releaseNote"
 				dense
@@ -37,15 +42,21 @@ export default class UpdateListItem extends Mixins(BundleMixin) {
 	@Prop(Object) public pkg!: BundlePackage;
 	public message: string = this.$t('bundle.update.ready', this.pkg.version);
 
+	public updateFlag = false;
+
 	public mounted() {
 		this.$off('install');
-		this.$on('install:start', () => {
+		this.$on('install:start', async (force = false) => {
+			console.log('start', this.pkg.name, force, this.updateFlag);
+			if ( force === false && this.updateFlag === false ) {
+				await this.$sleep(100);
+				this.$emit('install:done');
+				return;
+			}
 			this.message = this.$t('bundle.update.download');
-			this.bundleInstall(this.pkg, false)
-				.then(() => {
-					this.message = this.$t('bundle.update.done');
-					this.$emit('install:done');
-				});
+			await this.bundleInstall(this.pkg, false);
+			this.message = this.$t('bundle.update.done');
+			this.$emit('install:done');
 		});
 	}
 

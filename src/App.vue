@@ -135,7 +135,7 @@ export default class App extends Mixins(GlobalMixins) {
 			this.currentLive = {} as Live;
 		});
 
-
+		console.log('login dialog', this.$store.state.loginDialog);
 		if ( !this.$store.state.loginDialog ) {
 			this.checkBundleUpldate();
 		}
@@ -145,14 +145,21 @@ export default class App extends Mixins(GlobalMixins) {
 		const bundleDirectory = this.$path('userData', 'bundles');
 		const updateRequest = fs.readdirSync(bundleDirectory)
 			.filter((item: string) => fs.lstatSync(path.join(bundleDirectory, item)).isDirectory())
-			.map((item: string) => this.$api.req('GET', `/bundle/${item}`));
+			.map(async (item: string) => {
+				try {
+					return await this.$api.req('GET', `/bundle/${item}`)
+				} catch {
+					return;
+				}
+			});
 
 		const bundleInfoList = (await Promise.all(updateRequest) as any[])
-			.filter((res) => !res.error)
+			.filter((res) => res && !res.error)
 			.map((res) => res.data[0])
 			.filter((bundle) => {
 				const pkgPath = path.join(bundleDirectory, bundle.name, 'package.json');
 				const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+				console.log(pkg.name, pkg.version, bundle.version);
 				return pkg.version !== bundle.version;
 			});
 
