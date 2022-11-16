@@ -13,7 +13,7 @@
 				<player-bar :live="live" @screen:close="fullScreen = false" @close="liveLeave"/>
 				<v-app-bar
 					dark absolute dense flat
-					style="margin-top: 58px;"
+					style="margin-top: 56px;"
 					v-if="!isManager"
 					color="red darken-3">
 					<v-app-bar-title class="text-caption">
@@ -21,6 +21,19 @@
 					</v-app-bar-title>
 				</v-app-bar>
 				<v-img :src="live.img_url" height="100%">
+					<lottie
+						v-if="playingLottie"
+						ref="lottie"
+						:loop="false"
+						:autoPlay="false"
+						:speed="1"
+						:animationData="lottieData"
+						@complete="lottieComplete"
+						:style="{
+							marginTop: $vuetify.breakpoint.mobile ? '56px' : '64px',
+							height: `calc(100% - ${$vuetify.breakpoint.mobile ? '56px' : '64px'}`,
+						}"
+						class="lottie-wrapper"></lottie>
 					<div
 						class="d-flex"
 						style="background: rgba(0, 0, 0, 0.7) !important; flex-direction: column; height: 100%;">
@@ -76,6 +89,8 @@ import PlayerBar from './PlayerBar.vue';
 import PlayerFooter from './PlayerFooter.vue';
 import { Player } from './player';
 import pkg from '../../../package.json';
+import Lottie from 'lottie-web-vue';
+import axios from 'axios';
 
 const IgnoreEvent = [
 	LiveEvent.LIVE_STATE,
@@ -100,6 +115,7 @@ function replaceSpecialInformation(evt: any) {
 		ChatMessage,
 		PlayerBar,
 		PlayerFooter,
+		Lottie,
 	},
 	data: () => {
 		return {
@@ -116,6 +132,10 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public footMenuOpen: boolean = false;
 	public alertTimer!: NodeJS.Timer;
 	public managerIds: number[] = [];
+	public lottieData: any = false;
+	public playingLottie: boolean = false;
+	public lottieMutex = false;
+	public lottieQueue: any[] = [];
 
 	public player: Player = new Player();
 
@@ -190,6 +210,16 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 					SopiaProcesser(evt as any, this.live.socket);
 				}
 
+				if ( evt.event === LiveEvent.LIVE_PRESENT ) {
+					const sticker = this.$sopia.sticker.findSticker(evt.data.sticker);
+					if ( sticker && sticker.lottie_url ) {
+						axios.get(sticker.lottie_url)
+							.then((res) => {
+								this.lottiePlay(res.data);
+							});
+					}
+				}
+
 				if ( IgnoreEvent.includes(evt.event) ) {
 					return;
 				}
@@ -260,6 +290,31 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public userType(user: User) {
 		// empty
 	}
+
+	public lottiePlay(data: any = false) {
+		if ( data ) this.lottieQueue.push(data);
+		if ( this.lottieMutex ) return;
+		if ( this.lottieQueue.length <= 0 ) {
+			console.log('empty lottie queue');
+			return;
+		}
+		this.lottieMutex = true;
+		this.lottieData = this.lottieQueue.shift();
+		this.playingLottie = true;
+		this.$nextTick(() => {
+			(this.$refs.lottie as any)?.play();
+		});
+	}
+
+	public lottieComplete() {
+		this.playingLottie = false;
+		this.lottieData = false;
+		(this.$refs.lottie as any).stop();
+		this.lottieMutex = false;
+		this.$nextTick(() => {
+			this.lottiePlay();
+		});
+	}
 }
 </script>
 <style scope>
@@ -278,5 +333,11 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	bottom: 0px;
 	right:0px;
 	z-index: 1;
+}
+
+.lottie-wrapper {
+	position: absolute;
+	width: 100%;
+	z-index: 5;
 }
 </style>
