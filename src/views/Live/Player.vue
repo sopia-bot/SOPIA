@@ -328,8 +328,8 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	}
 
 	public replaceSpecialInformation(evt: any) {
-		const user = this.specialUser.find(([tag]) => tag == evt.data?.user?.tag);
-		const author = this.specialUser.find(([tag]) => tag == evt.data?.author?.tag);
+		const user = this.specialUser.find(([id]) => id == evt.data?.user?.id);
+		const author = this.specialUser.find(([id]) => id == evt.data?.author?.id);
 		
 		if ( user ) evt.data.user.nickname = user[1] + evt.data.user.nickname;
 		if ( author ) evt.data.author.nickname = author[1] + evt.data.author.nickname;
