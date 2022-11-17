@@ -79,6 +79,11 @@ export default class App extends Mixins(GlobalMixins) {
 		console.log('enter transition', args);
 	}
 
+	public async created() {
+		const req = await this.$sopia.api.users.followings(4324890);
+		this.$store.commit('partners', req.res.results);
+	}
+
 	public async mounted() {
 		const auth = this.$cfg.get('auth');
 

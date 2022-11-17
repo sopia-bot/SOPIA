@@ -168,20 +168,23 @@ export default class Home extends Mixins(GlobalMixins) {
 	}
 
 	public async created() {
-		const req = await this.$sopia.api.users.followings(4324890);
-		if ( Array.isArray(req.res.results) ) {
+		let partners = this.$store.state.partners || [];
+		if ( partners.length === 0 ) {
+			const req = await this.$sopia.api.users.followings(4324890);
 			this.$store.commit('partners', req.res.results);
-			this.livePartner = (await Promise.all(
-					req.res.results.filter((user) => user.current_live?.id)
-				.map((user) => this.$sopia.api.lives.info(user.current_live.id)),
-			)).map((r) => r.res.results[0])
-			.map((live) => {
-				const u = req.res.results.find((user) => live.author.id === user.id);
-				live.author = u as User;
-				return live;
-			});
-			this.currentBanner = this.livePartner[0];
+			partners = req.res.results;
 		}
+
+		this.livePartner = (await Promise.all(
+			partners.filter((user) => user.current_live?.id)
+			.map((user) => this.$sopia.api.lives.info(user.current_live.id)),
+		)).map((r) => r.res.results[0])
+		.map((live) => {
+			const u = partners.find((user) => live.author.id === user.id);
+			live.author = u as User;
+			return live;
+		});
+		this.currentBanner = this.livePartner[0];
 	}
 
 	public async mounted() {

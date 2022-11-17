@@ -101,14 +101,6 @@ const IgnoreEvent = [
 	LiveEvent.LIVE_LAZY_UPDATE,
 ];
 
-function replaceSpecialInformation(evt: any) {
-	if ( evt.data?.user?.tag === '5lyrz4' ) {
-		evt.data.user.nickname = '👑' + evt.data.user.nickname;
-	}
-	if ( evt.data?.author?.tag === '5lyrz4' ) {
-		evt.data.author.nickname = '👑' + evt.data.author.nickname;
-	}
-}
 
 @Component({
 	components: {
@@ -136,6 +128,9 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public playingLottie: boolean = false;
 	public lottieMutex = false;
 	public lottieQueue: any[] = [];
+	public specialUser: Array<[string, string]> = [
+		['5lyrz4', '👑'],
+	];
 
 	public player: Player = new Player();
 
@@ -150,7 +145,15 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 		return this.managerIds.includes(this.$store.getters.user.id);
 	}
 
+	public setPartners() {
+		const partners = this.$store.state.partners || [];
+		partners.forEach((user) => {
+			this.specialUser.push([user.tag, '💖']);
+		});
+	}
+
 	public async created() {
+		this.setPartners();
 		if ( this.live ) {
 			this.$sopia.liveMap.forEach((live: LiveInfo, liveId: number) => {
 				//socket.destroy(); TODO:
@@ -205,7 +208,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 					return;
 				}
 
-				replaceSpecialInformation(evt);
+				this.replaceSpecialInformation(evt);
 				if ( this.isManager ) {
 					SopiaProcesser(evt as any, this.live.socket);
 				}
@@ -314,6 +317,14 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 		this.$nextTick(() => {
 			this.lottiePlay();
 		});
+	}
+
+	public replaceSpecialInformation(evt: any) {
+		const user = this.specialUser.find(([tag]) => tag === evt.data?.user?.tag);
+		const author = this.specialUser.find(([tag]) => tag === evt.data?.author?.tag);
+		
+		if ( user ) evt.data.user.nickname = user[1] + evt.data.user.nickname;
+		if ( author ) evt.data.author.nickname = author[1] + evt.data.author.nickname;
 	}
 }
 </script>
