@@ -47,6 +47,12 @@
 						{{ $t('show-release-note') }}
 					</v-list-item>
 				</v-list-item>
+				<v-list-item class="px-2 white" link @click="$evt.$emit('donation:open')">
+					<v-list-item>
+						<v-icon class="mr-2" color="pink lighten-3">mdi-hand-coin</v-icon>
+						{{ $t('donation') }}
+					</v-list-item>
+				</v-list-item>
 			</v-card>
 		</v-menu>
 

@@ -11,7 +11,7 @@
 				<v-card-text>
 					<h1>{{ note.name }} <v-chip small outlined v-if="i == 0" class="ml-2" color="indigo">Latest</v-chip></h1>
 				</v-card-text>
-				<v-card-text class="release-note">
+				<v-card-text id="#release-note">
 					<div v-html="mark(note.body)"></div>
 				</v-card-text>
 			</v-card>
@@ -47,8 +47,44 @@ export default class ReleaseNote extends Mixins(GlobalMixins) {
 }
 </script>
 <style>
-.release-note h2 {
-	margin-top: 10px;
-	margin-bottom: 10px;
+#release-note {
+	background-color: #ebebeb;
+	text-align: left;
+	padding: 1rem;
+	max-height: 280px;
+	overflow: auto;
+}
+#release-note h1 {
+	font-size: 1.5rem;
+	margin-bottom: 1rem;
+}
+#release-note h2 {
+	font-size: 1.3rem;
+	margin-bottom: 1rem;
+}
+#release-note h3 {
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+}
+#release-note p {
+	font-size: 0.9rem;
+	margin-bottom: 1rem;
+}
+#release-note ul {
+	margin-left: 20px;
+	margin-bottom: 1rem;
+}
+#release-note li {
+	font-size: 0.9rem;
+}
+#release-note a {
+	text-decoration-line: none;
+	color: #303F9F;
+	font-weight: 500;
+}
+#release-note blockquote {
+	padding: 0 1em;
+	color: #768390;
+	border-left: 0.25em solid #444c56;
 }
 </style>

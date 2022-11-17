@@ -8,6 +8,7 @@
 	<v-app style="">
 		<title-bar />
 		<update-dialog />
+		<donation />
 		<login-dialog v-if="$store.state.loginDialog" v-model="$store.state.loginDialog"/>
 		<bundle-update-dialog v-model="bundleUpdateDialogShow" :items="bundleUpdateList" />
 		<side-menu />
@@ -45,6 +46,7 @@ import UpdateDialog from '@/views/Components/UpdateDialog.vue';
 import TitleBar from '@/views/Components/TitleBar.vue';
 import SideMenu from '@/views/Components/SideMenu.vue';
 import Tutorials from '@/views/Tutorials/Index.vue';
+import Donation from '@/views/Components/Donation.vue';
 
 const fs = window.require('fs');
 
@@ -68,6 +70,7 @@ declare global {
 		UpdateDialog,
 		TitleBar,
 		Tutorials,
+		Donation,
 	},
 })
 export default class App extends Mixins(GlobalMixins) {

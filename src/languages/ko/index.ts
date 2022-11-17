@@ -50,4 +50,5 @@ export default {
 	'spoon-logout': '스푼 로그아웃',
 	'show-release-note': '릴리즈 노트 전부 보기',
 	'update': '업데이트',
+	'donation': '후원하기',
 };

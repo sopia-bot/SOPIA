@@ -129,7 +129,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public lottieMutex = false;
 	public lottieQueue: any[] = [];
 	public specialUser: Array<[string, string]> = [
-		['5lyrz4', '👑'],
+		['7423666', '👑'],
 	];
 
 	public player: Player = new Player();
@@ -148,12 +148,20 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public setPartners() {
 		const partners = this.$store.state.partners || [];
 		partners.forEach((user) => {
-			this.specialUser.push([user.tag, '💖']);
+			this.specialUser.push([user.id, '💖']);
+		});
+	}
+
+	public setSponsors() {
+		const sponsors = this.$store.state.sponsors || [];
+		sponsors.forEach((user) => {
+			this.specialUser.push([user.spoon_id, '💎']);
 		});
 	}
 
 	public async created() {
 		this.setPartners();
+		this.setSponsors();
 		if ( this.live ) {
 			this.$sopia.liveMap.forEach((live: LiveInfo, liveId: number) => {
 				//socket.destroy(); TODO:
@@ -195,7 +203,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 				this.player.volume = (this.$cfg.get('player.volume') ?? 50) * 0.01;
 			}
 			this.alertTimer = setInterval(() => {
-				if ( this.isManager ) {
+				if ( this.isManager && !this.$store.getters.isSponsor ) {
 					this.live.socket.message(this.$t('lives.alert', pkg.version));
 				}
 			}, 1000 * 60 * 10 /* 10min */);
@@ -320,8 +328,8 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	}
 
 	public replaceSpecialInformation(evt: any) {
-		const user = this.specialUser.find(([tag]) => tag === evt.data?.user?.tag);
-		const author = this.specialUser.find(([tag]) => tag === evt.data?.author?.tag);
+		const user = this.specialUser.find(([tag]) => tag == evt.data?.user?.tag);
+		const author = this.specialUser.find(([tag]) => tag == evt.data?.author?.tag);
 		
 		if ( user ) evt.data.user.nickname = user[1] + evt.data.user.nickname;
 		if ( author ) evt.data.author.nickname = author[1] + evt.data.author.nickname;

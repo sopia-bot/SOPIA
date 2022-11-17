@@ -10,6 +10,7 @@ interface State {
 	sideopen: boolean;
 	loginDialog: boolean;
 	partners: User[];
+	sponsors: any[];
 	liked: boolean;
 }
 
@@ -24,6 +25,7 @@ export default new Vuex.Store({
 		sideopen: false,
 		loginDialog: false,
 		partners: [],
+		sponsors: [],
 		liked: false,
 	},
 	getters: {
@@ -32,6 +34,9 @@ export default new Vuex.Store({
 		},
 		streamingPartners(state: State): User[] {
 			return state.partners.filter((partner) => !!partner.current_live?.id) || [];
+		},
+		isSponsor(state: State): boolean {
+			return !!state.sponsors.find((s) => s.spoon_id == window.$sopia.logonUser.id);
 		},
 	},
 	mutations: {
