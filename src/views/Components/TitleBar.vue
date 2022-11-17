@@ -42,6 +42,11 @@
 						</v-list-item-action-text>
 					</v-list-item-content>
 				</v-list-item>
+				<v-list-item class="px-2 white" link @click="$assign('/release-note')">
+					<v-list-item>
+						{{ $t('show-release-note') }}
+					</v-list-item>
+				</v-list-item>
 			</v-card>
 		</v-menu>
 

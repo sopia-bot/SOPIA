@@ -34,6 +34,11 @@ export const routes: RouteConfig[] = [
 		component: () => import('@/views/User/Index.vue'),
 	},
 	{
+		name: 'User',
+		path: '/release-note/',
+		component: () => import('@/views/ReleaseNote/Index.vue'),
+	},
+	{
 		name: 'Command',
 		path: '/cmd/:types/',
 		component: () => import('@/views/Cmd/Index.vue'),
