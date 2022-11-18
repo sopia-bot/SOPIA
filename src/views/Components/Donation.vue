@@ -98,6 +98,7 @@ export default class Donation extends Mixins(GlobalMixins) {
 	}
 
 	public closeDialog() {
+		this.open = false;
 		this.itv = setTimeout(async () => {
 			await this.refreshSponsor();
 			this.$nextTick(() => {
