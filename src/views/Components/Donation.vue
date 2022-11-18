@@ -25,7 +25,7 @@
 							<p class="text-center mb-4">국민 620601-01-521114 윤여준</p>
 							<p class="mb-4">항상 응원해주시는 분들께 감사드리며, 후원금액 5,000원 이상부터 후원일 기준 1개월동안 아래 기능을 준비했습니다.</p>
 							<ul class="mb-4">
-								<li>후원 알림창 제거: 15분마다 반복해서 뜨는 이 창을 띄우지 않습니다. <br>오른쪽 상단 프로필 사진을 눌러 해당 창을 다시 띄울 수 있습니다.</li>
+								<li>후원 알림창 제거: 30분마다 반복해서 뜨는 이 창을 띄우지 않습니다. <br>오른쪽 상단 프로필 사진을 눌러 해당 창을 다시 띄울 수 있습니다.</li>
 								<li>소피아 알림 제거: 방송에서 10분마다 반복해서 뜨는 알림창을 띄우지 않습니다.</li>
 								<li>
 									닉네임 특별 문자 부여: 소피아가 모든 방송에서 후원자의 닉네임을 언급할 때마다 앞에 <span>💎</span>를 붙여드립니다.
@@ -38,7 +38,7 @@
 							<v-textarea :disabled="loading" solo v-model="message" hide-details rows="5"></v-textarea>
 							<v-btn :disabled="loading" block depressed class="mt-2" color="green" @click="sendSponsor">전송</v-btn>
 							<v-col cols="12" align="center">
-								<v-btn class="mt-2 mx-auto" color="red" @click="open = false">닫기</v-btn>
+								<v-btn class="mt-2 mx-auto" color="red" @click="closeDialog">닫기</v-btn>
 							</v-col>
 						</v-col>
 					</v-row>
@@ -55,18 +55,12 @@ import GlobalMixins from '@/plugins/mixins';
 export default class Donation extends Mixins(GlobalMixins) {
 
 	public open = false;
-	public itv: NodeJS.Timer;
+	public itv!: NodeJS.Timer;
 	public loading = false;
 	public message = '혜택 대상 아이디 2개(검색 가능 단어, DJ/소피아 ID):\n입금자 확인:\n기타 문의:\n\n후원해 주셔서 감사합니다.';
 
 	public async created(this: any) {
-		const res = await this.$api.req('GET', '/user/sponsor');
-		this.$store.state.sponsors = res.data || [];
-		this.itv = setInterval(() => {
-			if ( !this.$store.getters.isSponsor ) {
-				this.open = true;
-			}
-		}, 1000 * 60 * 15 /* 15min */);
+		await this.refreshSponsor();
 		this.$nextTick(async () => {
 			while ( !this.$sopia.logonUser ) await this.$sleep(1000);
 			if ( !this.$store.getters.isSponsor ) {
@@ -75,12 +69,18 @@ export default class Donation extends Mixins(GlobalMixins) {
 		});
 		this.$evt.$off('donation:open');
 		this.$evt.$on('donation:open', () => {
+			this.message = '혜택 대상 아이디 2개(검색 가능 단어, DJ/소피아 ID):\n입금자 확인:\n기타 문의:\n\n후원해 주셔서 감사합니다.';
 			this.open = true;
 		});
 	}
 
+	public async refreshSponsor() {
+		const res = await this.$api.req('GET', '/user/sponsor');
+		this.$store.state.sponsors = res.data || [];
+	}
+
 	public beforeUnmount() {
-		clearInterval(this.itv);
+		clearTimeout(this.itv);
 	}
 
 	public async sendSponsor() {
@@ -95,6 +95,17 @@ export default class Donation extends Mixins(GlobalMixins) {
 		}
 		await this.$sleep(2000);
 		this.loading = false;
+	}
+
+	public closeDialog() {
+		this.itv = setTimeout(async () => {
+			await this.refreshSponsor();
+			this.$nextTick(() => {
+				if ( !this.$store.getters.isSponsor ) {
+					this.open = true;
+				}
+			});
+		}, 1000 * 60 * 30 /* 30min */);
 	}
 
 }

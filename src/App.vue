@@ -143,7 +143,6 @@ export default class App extends Mixins(GlobalMixins) {
 			this.currentLive = {} as Live;
 		});
 
-		console.log('login dialog', this.$store.state.loginDialog);
 		if ( !this.$store.state.loginDialog ) {
 			this.checkBundleUpldate();
 		}
