@@ -91,7 +91,6 @@ import { Player } from './player';
 import pkg from '../../../package.json';
 import Lottie from 'lottie-web-vue';
 import axios from 'axios';
-import { threadId } from 'worker_threads';
 
 const IgnoreEvent = [
 	LiveEvent.LIVE_STATE,

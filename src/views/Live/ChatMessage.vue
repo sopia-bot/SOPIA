@@ -38,7 +38,7 @@
 				<v-card
 					tile dark
 					width="100%"
-					style="background: rgba(0, 0, 0, 0.5);">
+					style="background: rgba(0, 0, 0, 0.5); border: thin solid rgb(255 255 255 / 30%)">
 					<v-list-item-content v-if="evt.event === LiveEvent.LIVE_MESSAGE" class="mx-4">
 						<pre style="white-space: pre-wrap;" class="chat-message" v-text="evt.update_component.message.value"></pre>
 					</v-list-item-content>
