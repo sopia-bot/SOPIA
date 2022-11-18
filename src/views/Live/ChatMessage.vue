@@ -42,13 +42,17 @@
 					<v-list-item-content v-if="evt.event === LiveEvent.LIVE_MESSAGE" class="mx-4">
 						<pre style="white-space: pre-wrap;" class="chat-message" v-text="evt.update_component.message.value"></pre>
 					</v-list-item-content>
-					<v-list-item-content v-else-if="evt.event === LiveEvent.LIVE_PRESENT" class="mx-4">
-						<img style="width: 100%;" :src="stickerImg"></img>
-						<h4 class="text-center mb-3">
-							{{ evt.data.amount }}{{ $t('spoon') }}
-							<span v-if="evt.data.combo > 1" class="font-weight-bold indigo--text text--accent-1">X {{ evt.data.combo }}</span>
-						</h4>
-					</v-list-item-content>
+					<v-list-item v-else-if="evt.event === LiveEvent.LIVE_PRESENT" class="mx-4">
+						<v-list-item-avatar>
+							<v-img style="width: 100%;" :src="stickerImg" />
+						</v-list-item-avatar>
+						<v-list-item-title>
+							<h4>
+								{{ evt.data.amount }}{{ $t('spoon') }}
+								<span v-if="evt.data.combo > 1" class="font-weight-bold indigo--text text--accent-1">X {{ evt.data.combo }}</span>
+							</h4>
+						</v-list-item-title>
+					</v-list-item>
 				</v-card>
 			</v-list-item>
 		</v-list>
@@ -81,17 +85,12 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { LiveEvent, User } from '@sopia-bot/core';
+import { LiveEvent as EventList, User } from '@sopia-bot/core';
 
-@Component({
-	data: () => {
-		return {
-			LiveEvent,
-		};
-	},
-})
+@Component
 export default class ChatMessage extends Mixins(GlobalMixins) {
 	@Prop(Object) public evt: any;
+	public LiveEvent = EventList;
 
 	public defaultProfileUrl = require('assets/default-profile.png');
 
