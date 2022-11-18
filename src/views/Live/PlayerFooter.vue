@@ -79,6 +79,11 @@ export default class LivePlayerFooter extends Mixins(GlobalMixins) {
 			this.live.socket.message(chat);
 			this.$nextTick(() => {
 				this.chat = '';
+				const scrollParent = this.$parent?.$parent?.$parent;
+				if ( scrollParent ) {
+					const scroll: any = scrollParent.$refs['scroll'];
+					scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
+				}
 			});
 		}
 	}

@@ -91,6 +91,7 @@ import { Player } from './player';
 import pkg from '../../../package.json';
 import Lottie from 'lottie-web-vue';
 import axios from 'axios';
+import { threadId } from 'worker_threads';
 
 const IgnoreEvent = [
 	LiveEvent.LIVE_STATE,
@@ -242,12 +243,14 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 
 				if ( this.fullScreen ) {
 					this.$nextTick(() => {
-							const scroll: any = this.$refs['scroll'];
-							const { v, h } = scroll.getScrollProcess();
-							const size =  scroll?._data?.bar?.vBar?.state?.size || 0;
-							if ( (size === 0 || size >= 0.5) || v >= 0.9 ) {
-								scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
-							}
+						const scroll: any = this.$refs['scroll'];
+						const { v, h } = scroll.getScrollProcess();
+						const size =  scroll?._data?.bar?.vBar?.state?.size || 0;
+						const threshold = 1 - (size * 0.5);
+						//console.log('scroll', threshold, size, v, h, scroll);
+						if ( (size === 0 || size >= 0.75) || (v >= threshold) ) {
+							scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
+						}
 					});
 				}
 			});
