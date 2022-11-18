@@ -245,7 +245,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 							const scroll: any = this.$refs['scroll'];
 							const { v, h } = scroll.getScrollProcess();
 							const size =  scroll?._data?.bar?.vBar?.state?.size || 0;
-							if ( (size === 0 || size >= 0.5) || v >= 0.8 ) {
+							if ( (size === 0 || size >= 0.5) || v >= 0.9 ) {
 								scroll.scrollBy({ dy: '100%' }, 100, 'easeInQuad');
 							}
 					});
@@ -358,5 +358,13 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	position: absolute;
 	width: 100%;
 	z-index: 5;
+}
+
+
+@media only screen and (max-width: 890px) {
+	.full-screen {
+		position: fixed !important;
+		top: 48px;
+	}
 }
 </style>
