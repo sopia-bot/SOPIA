@@ -178,7 +178,7 @@ export default class Home extends Mixins(GlobalMixins) {
 		this.livePartner = (await Promise.all(
 			partners.filter((user) => user.current_live?.id)
 			.map((user) => this.$sopia.api.lives.info(user.current_live.id)),
-		)).map((r) => r.res.results[0])
+		)).map((r: any) => r.res.results[0])
 		.map((live) => {
 			const u = partners.find((user) => live.author.id === user.id);
 			live.author = u as User;
