@@ -1,0 +1,54 @@
+{
+	"name": "@sopia-bot/core",
+	"version": "2.2.6",
+	"description": "Spoon radio core API",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"test:all": "./node_modules/.bin/mocha -r ts-node/register ./tests/*.test.ts  --trace-warnings",
+		"test:api": "mocha -r ts-node/register ./tests/api.test.ts --trace-warnings",
+		"test:common": "./node_modules/.bin/mocha -r ts-node/register ./tests/common.test.ts  --trace-warnings",
+		"test:upload": "./node_modules/.bin/mocha -r ts-node/register ./tests/upload.test.ts  --trace-warnings",
+		"lint": "tslint -p ."
+	},
+	"keywords": [
+		"spooncast",
+		"spoonradio",
+		"bot",
+		"api",
+		"endpoint",
+		"sopia",
+		"spoon",
+		"client",
+		"스푼",
+		"스푼라디오",
+		"소피아"
+	],
+	"author": {
+		"name": "raravel",
+		"email": "youn@tree-some.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sopia-bot/sopia-core.git"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.2.3",
+		"@types/mocha": "^5.2.7",
+		"@types/node": "^12.7.11",
+		"@types/node-forge": "^0.8.6",
+		"@types/ws": "^7.2.6",
+		"chai": "^4.2.0",
+		"mocha": "^6.2.1",
+		"ts-node": "^8.4.1",
+		"tslib": "^2.3.0",
+		"tslint": "^6.1.3",
+		"typescript": "^3.6.3"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"axios": "^0.21.1",
+		"typescript-json-serializer": "^3.4.5",
+		"ws": "^7.3.0"
+	}
+}

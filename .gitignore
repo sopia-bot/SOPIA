@@ -1,6 +1,6 @@
 .DS_Store
 node_modules
-/dist
+dist
 
 # local env files
 .env.local
@@ -22,7 +22,7 @@ pnpm-debug.log*
 *.sw?
 
 #Electron-builder output
-/dist_electron
+dist_electron
 
 # lock
 yarn.lock

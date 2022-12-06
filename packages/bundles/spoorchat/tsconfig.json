@@ -1,0 +1,19 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"module": "commonjs",
+		"noImplicitAny": false,
+		"removeComments": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"esModuleInterop": true,
+		"pretty": true,
+		"strict": true,
+		"outDir": "dist",
+		"declaration": true,
+		"sourceMap": true,
+		"target": "es2017"
+	},
+	"include": [ "." ],
+	"exclude": ["node_modules", "dist"]
+}

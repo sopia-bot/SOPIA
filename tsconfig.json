@@ -14,26 +14,17 @@
 		"noImplicitAny": false,
 		"sourceMap": true,
 		"baseUrl": ".",
-		"types": [
-			"webpack-env",
-		  "vuetify",
-		  "vue-sweetalert2"
-		],
-		"lib": [
-			"esnext",
-			"dom",
-			"dom.iterable",
-			"scripthost"
-		],
 		"paths": {
-			"assets/*": [ "src/assets/*" ],
-			"@/*": [ "src/*" ]
+			"@sopia-bot/app":    ["./packages/app"],
+			"@sopia-bot/app/*":  ["./packages/app/*"],
+			"@sopia-bot/core":   ["./packages/core"],
+			"@sopia-bot/core/*": ["./packages/core/*"]
 		}
 	},
 	"include": [
-		"src/**/*.ts",
-		"src/**/*.tsx",
-		"src/**/*.vue",
+		"packages/**/*.ts",
+		"packages/**/*.tsx",
+		"packages/**/*.vue",
 		"tests/**/*.ts",
 		"tests/**/*.tsx"
 	],

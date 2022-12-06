@@ -1,0 +1,9 @@
+{
+	"name": "loop",
+	"version": "1.0.0",
+	"description": "Send text repeat.",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "tsc -b -v ."
+	}
+}
