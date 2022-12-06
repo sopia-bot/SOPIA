@@ -1,0 +1,23 @@
+{
+  "productName": "sopia-v3",
+  "appId": "sopia.app",
+  "asar": false,
+  "directories": {
+    "output": "dist_electron"
+  },
+  "files": [
+    "build/**/*",
+    "node_modules/**/*",
+    "../../node_modules/**/*",
+    "package.json"
+  ],
+  "linux": {
+    "executableName": "sopia-v3",
+    "artifactName": "${productName}-${version}.${ext}",
+    "target": "deb"
+  },
+  "win": {
+    "target": "nsis"
+  },
+  "extends": null
+}

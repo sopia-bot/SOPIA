@@ -7,11 +7,12 @@
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
 		"lint": "vue-cli-service lint",
-		"app:build": "npm run electron:build -workspace=@sopia-bot/app",
+		"app:build": "npm run build -workspace=@sopia-bot/app",
 		"app:serve": "npm run electron:serve -workspace=@sopia-bot/app",
 		"bundle:build": "npm run build -workspace=@sopia-bot/bundles",
 		"core:build": "tsc -b -v packages/core",
 		"core:publish": "npm run core:build && npm publish -workspace=@sopia-bot/core",
+		"view:build": "npm run build -workspace=@sopia-bot/view",
 		"postinstall": "electron-builder install-app-deps",
 		"postuninstall": "electron-builder install-app-deps"
 	},
@@ -83,6 +84,7 @@
 	"workspaces": [
 		"packages/app",
 		"packages/bundles",
-		"packages/core"
+		"packages/core",
+		"packages/view"
 	]
 }
