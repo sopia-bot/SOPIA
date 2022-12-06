@@ -3,6 +3,9 @@ const MonacoEditorPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
   configureWebpack: {
+    devServer: {
+      port: 9912,
+    },
     resolve: {
       alias: {
         "assets": path.join(__dirname, "src/assets"),

@@ -1,7 +1,7 @@
 {
   "productName": "sopia-v3",
   "appId": "sopia.app",
-  "asar": false,
+  "asar": true,
   "directories": {
     "output": "dist_electron"
   },

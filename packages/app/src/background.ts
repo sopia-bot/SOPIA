@@ -7,15 +7,11 @@
 'use strict';
 
 import { app, session, protocol, BrowserWindow, ipcMain } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import path from 'path';
 import fs from 'fs';
-
-import pkg from '../package.json';
-console.log(pkg);
 
 const adp = app.getPath('userData');
 if ( !fs.existsSync(path.join(adp, 'restore-flag'))) {
@@ -78,7 +74,6 @@ const createWindow = () => {
 		},
 		frame: false,
 		titleBarStyle: 'hidden',
-		title: `SOPIA - ${pkg.version}`,
 		icon: path.join(__dirname, '../public/icon_.png'),
 	});
 
@@ -128,14 +123,16 @@ const createWindow = () => {
 	});
 
 
-	if (process.env.WEBPACK_DEV_SERVER_URL) {
+	if (isDevelopment) {
 		// Load the url of the dev server if in development mode
-		win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
+		win.loadURL('http://localhost:9912');
 		if (!process.env.IS_TEST) { win.webContents.openDevTools(); }
 	} else {
+		/*
 		createProtocol('app');
 		// Load the index.html when not in development
 		win.loadURL('app://./index.html');
+		*/
 	}
 
 	win.on('closed', () => {

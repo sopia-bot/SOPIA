@@ -13,7 +13,6 @@
 		"resolveJsonModule": true,
 		"noImplicitAny": false,
 		"sourceMap": true,
-		"baseUrl": ".",
 		"paths": {
 			"@sopia-bot/app":    ["./packages/app"],
 			"@sopia-bot/app/*":  ["./packages/app/*"],
@@ -21,13 +20,6 @@
 			"@sopia-bot/core/*": ["./packages/core/*"]
 		}
 	},
-	"include": [
-		"packages/**/*.ts",
-		"packages/**/*.tsx",
-		"packages/**/*.vue",
-		"tests/**/*.ts",
-		"tests/**/*.tsx"
-	],
 	"exclude": [
 		"node_modules"
 	]
