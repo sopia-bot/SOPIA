@@ -10,7 +10,8 @@
 		"core:build": "tsc -b -v packages/core",
 		"core:publish": "npm run core:build && npm publish -workspace=@sopia-bot/core",
 		"view:build": "npm run build -workspace=@sopia-bot/view",
-		"view:serve": "npm run serve -workspace=@sopia-bot/view"
+		"view:serve": "npm run serve -workspace=@sopia-bot/view",
+		"view:publish": "npm run s3:publish -workspace=@sopia-bot/view"
 	},
 	"main": "background.js",
 	"dependencies": {
