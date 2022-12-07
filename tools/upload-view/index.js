@@ -1,5 +1,5 @@
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config({ path: path.join(__dirname, '.env.local') });
 const { ZipFile } = require('@arkiv/zip');
 const { CognitoIdentityClient } = require("@aws-sdk/client-cognito-identity");
 const { fromCognitoIdentityPool } = require('@aws-sdk/credential-provider-cognito-identity');
@@ -54,6 +54,7 @@ const isDir = (s) => lstatSync(s).isDirectory();
     Bucket: process.env.S3BUCKET,
     Key: `views/sopia-view-${package.version}.zip`,
     Body: buffer.Stream,
+    ACL: 'public-read',
   }));
 
   console.log(`Start patch latest version`);
@@ -64,6 +65,7 @@ const isDir = (s) => lstatSync(s).isDirectory();
     Body: JSON.stringify({
       version: package.version,
     }),
+    ACL: 'public-read',
   }));
 
   console.log(`Upload complete.`);
