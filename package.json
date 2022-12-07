@@ -80,6 +80,7 @@
 		"packages/app",
 		"packages/bundles",
 		"packages/core",
-		"packages/view"
+		"packages/view",
+		"tools/upload-view"
 	]
 }
