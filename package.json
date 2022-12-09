@@ -7,6 +7,7 @@
 		"app:build": "npm run build -workspace=@sopia-bot/app",
 		"app:dev": "npm run dev -workspace=@sopia-bot/app",
 		"bundle:build": "npm run build -workspace=@sopia-bot/bundles",
+		"archive:build": "npm run build -workspace=@sopia-bot/archive",
 		"core:build": "tsc -b -v packages/core",
 		"core:publish": "npm run core:build && npm publish -workspace=@sopia-bot/core",
 		"view:build": "npm run build -workspace=@sopia-bot/view",
@@ -14,8 +15,7 @@
 		"view:publish": "npm run s3:publish -workspace=@sopia-bot/view"
 	},
 	"main": "background.js",
-	"dependencies": {
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"@types/node": "^17.0.21",
 		"copy": "^0.3.2",
@@ -32,6 +32,7 @@
 		"packages/bundles",
 		"packages/core",
 		"packages/view",
-		"tools/upload-view"
+		"tools/upload-view",
+		"packages/archive"
 	]
 }

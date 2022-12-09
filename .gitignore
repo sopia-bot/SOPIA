@@ -29,3 +29,15 @@ yarn.lock
 package-lock.json
 
 build
+
+
+
+# Rust
+*.node
+Cargo.lock
+
+
+# Rust-archive
+**/archive/target
+**/archive/index.js
+**/archive/index.d.ts
