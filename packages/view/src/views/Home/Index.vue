@@ -117,7 +117,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
-import { Live, User } from '@sopia-bot/core';
+import { ApiLivesInfo, HttpRequest, Live, User } from '@sopia-bot/core';
 import LiveItem from './LiveItem.vue';
 
 const sleep = (msec: number) => {
@@ -178,7 +178,8 @@ export default class Home extends Mixins(GlobalMixins) {
 		this.livePartner = (await Promise.all(
 			partners.filter((user) => user.current_live?.id)
 			.map((user) => this.$sopia.api.lives.info(user.current_live.id)),
-		)).map((r) => r.res.results[0])
+		) as HttpRequest<ApiLivesInfo.Request, ApiLivesInfo.Response>[])
+		.map((r) => r.res.results[0])
 		.map((live) => {
 			const u = partners.find((user) => live.author.id === user.id);
 			live.author = u as User;
