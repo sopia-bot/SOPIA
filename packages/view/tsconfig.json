@@ -1,0 +1,24 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": ".",
+		"rootDir": ".",
+		"baseUrl": ".",
+		"paths": {
+			"assets/*": [ "src/assets/*" ],
+			"@/*": [ "src/*" ]
+		},
+		"types": [
+			"webpack-env",
+			"vuetify",
+			"vue-sweetalert2"
+		],
+		"lib": [
+			"esnext",
+			"dom",
+			"dom.iterable",
+			"scripthost"
+		]
+	},
+	"exclude": ["node_modules", "dist"]
+}

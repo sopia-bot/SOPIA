@@ -1,0 +1,12 @@
+{
+	"name": "now-song",
+	"version": "1.0.1",
+	"description": "Get now playing song information from melon player.",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "npm run rimraf && npm run source:build && npm run copy",
+		"source:build": "tsc -b -v .",
+		"rimraf": "rimraf dist",
+		"copy": "copyfiles -f public/song dist"
+	}
+}

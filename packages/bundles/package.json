@@ -1,0 +1,16 @@
+{
+	"name": "@sopia-bot/bundles",
+	"scripts": {
+		"build": "npm run loop:build && npm run now-song:build && npm run roulette:build && npm run spoorchat:build",
+		"loop:build": "npm run build -w=loop",
+		"now-song:build": "npm run build -w=now-song",
+		"roulette:build": "npm run build -w=roulette",
+		"spoorchat:build": "npm run build -w=spoorchat"
+	},
+	"workspaces": [
+		"loop",
+		"now-song",
+		"roulette",
+		"spoorchat"
+	]
+}

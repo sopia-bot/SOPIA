@@ -1,0 +1,27 @@
+{
+  "name": "@sopia-tools/upload-view",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sopia-bot/SOPIA.git"
+  },
+  "author": "raravel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sopia-bot/SOPIA/issues"
+  },
+  "homepage": "https://github.com/sopia-bot/SOPIA#readme",
+  "dependencies": {
+    "@arkiv/zip": "^1.2.0",
+    "@aws-sdk/client-cognito-identity": "^3.224.0",
+    "@aws-sdk/client-s3": "^3.224.0",
+    "@aws-sdk/credential-provider-cognito-identity": "^3.224.0",
+    "axios": "^1.2.1",
+    "dotenv": "^16.0.3"
+  }
+}
