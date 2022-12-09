@@ -1,5 +1,5 @@
 import { app, protocol } from 'electron';
-import { ZipArchive } from '@arkiv/zip';
+import { uncompress } from '@sopia-bot/archive';
 import axios, { AxiosRequestConfig } from 'axios';
 import path from 'path';
 import { existsSync } from 'fs';
@@ -48,13 +48,12 @@ export async function registerProtocol() {
 	}
 
 	const buffer = await readFile(viewTarget);
-	return protocol.registerBufferProtocol('sopia', (request, callback) => {
+	return protocol.registerBufferProtocol('sopia', async (request, callback) => {
 		const url = path.join(qs.unescape(request.url).replace(/^sopia:\/\//, '').replace(/[#?].*$/, ''));
-		const archive = new ZipArchive(viewTarget, buffer);
-		const entry = archive.Entries.find((entry) => entry.FullName === url);
+		const entry = await uncompress(buffer, url);
 		if ( entry ) {
-			const mimeType = mime.lookup(path.extname(entry.Name)) || 'text/plain';
-			const data = entry.Read();
+			const mimeType = mime.lookup(path.extname(url)) || 'text/plain';
+			const data = entry;
 			callback({
 				mimeType,
 				data,

@@ -1,0 +1,41 @@
+{
+  "name": "@sopia-bot/archive",
+  "version": "1.0.0",
+  "description": "Napi module for buffer protocol manager",
+  "main": "index.js",
+  "devDependencies": {
+    "@napi-rs/cli": "^2.13.0"
+  },
+  "napi": {
+    "name": "archive",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "x86_64-unknown-linux-musl",
+        "aarch64-unknown-linux-gnu",
+        "i686-pc-windows-msvc",
+        "armv7-unknown-linux-gnueabihf",
+        "aarch64-apple-darwin",
+        "aarch64-linux-android",
+        "x86_64-unknown-freebsd",
+        "aarch64-unknown-linux-musl",
+        "aarch64-pc-windows-msvc",
+        "armv7-linux-androideabi"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "napi build --platform --release",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sopia-bot/SOPIA.git"
+  },
+  "author": "raravel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sopia-bot/SOPIA/issues"
+  },
+  "homepage": "https://github.com/sopia-bot/SOPIA#readme"
+}

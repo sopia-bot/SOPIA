@@ -1,10 +1,10 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env.local') });
-const { ZipFile } = require('@arkiv/zip');
 const { CognitoIdentityClient } = require("@aws-sdk/client-cognito-identity");
 const { fromCognitoIdentityPool } = require('@aws-sdk/credential-provider-cognito-identity');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { existsSync, readFileSync, lstatSync } = require('fs');
+const zipdir = require('zip-dir');
 
 const isDir = (s) => lstatSync(s).isDirectory();
 
@@ -44,7 +44,7 @@ const isDir = (s) => lstatSync(s).isDirectory();
 
   console.log('Create s3 client');
 
-  const buffer = ZipFile.CreateBufferFromDirectory(dist);
+  const buffer = await zipdir(dist);
 
   console.log('Create archive from destination');
 
@@ -53,7 +53,7 @@ const isDir = (s) => lstatSync(s).isDirectory();
   await s3.send(new PutObjectCommand({
     Bucket: process.env.S3BUCKET,
     Key: `views/sopia-view-${package.version}.zip`,
-    Body: buffer.Stream,
+    Body: buffer,
     ACL: 'public-read',
   }));
 
