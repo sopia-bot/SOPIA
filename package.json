@@ -33,6 +33,7 @@
 		"packages/core",
 		"packages/view",
 		"tools/upload-view",
-		"packages/archive"
+		"packages/archive",
+		"build"
 	]
 }
