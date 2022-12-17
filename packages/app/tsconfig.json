@@ -9,7 +9,7 @@
 		"esModuleInterop": true,
 		"pretty": true,
 		"strict": true,
-		"outDir": "build",
+		"outDir": ".build",
 		"baseUrl": ".",
 		"rootDir": "src",
 		"declaration": true,

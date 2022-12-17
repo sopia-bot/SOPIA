@@ -6,7 +6,7 @@
     "output": "dist_electron"
   },
   "files": [
-    "build/**/*",
+    ".build/**/*",
     "node_modules/**/*",
     "../../node_modules/**/*",
     "package.json"
