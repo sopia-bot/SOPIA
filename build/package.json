@@ -1,0 +1,24 @@
+{
+  "name": "sopia-build",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "devDependencies": {
+    "fancy-log": "^2.0.0",
+    "gulp": "^4.0.2",
+    "gulp-typescript": "^6.0.0-alpha.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sopia-bot/SOPIA.git"
+  },
+  "author": "raravel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sopia-bot/SOPIA/issues"
+  },
+  "homepage": "https://github.com/sopia-bot/SOPIA#readme"
+}

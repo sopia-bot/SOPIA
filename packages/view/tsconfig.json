@@ -9,6 +9,7 @@
 			"@/*": [ "src/*" ]
 		},
 		"types": [
+      "node",
 			"webpack-env",
 			"vuetify",
 			"vue-sweetalert2"

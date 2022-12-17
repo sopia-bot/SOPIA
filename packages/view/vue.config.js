@@ -9,6 +9,7 @@ module.exports = {
     resolve: {
       alias: {
         "assets": path.join(__dirname, "src/assets"),
+        "@sopia-bot": path.join(__dirname, ".."),
         "@": path.join(__dirname, "src"),
       },
     },

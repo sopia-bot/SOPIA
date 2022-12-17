@@ -28,7 +28,7 @@ dist_electron
 yarn.lock
 package-lock.json
 
-build
+**/build
 
 
 

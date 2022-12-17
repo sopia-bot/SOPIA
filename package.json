@@ -4,22 +4,26 @@
 	"description": "A Spooncast manager A.I Program",
 	"private": true,
 	"scripts": {
-		"app:build": "npm run build -workspace=@sopia-bot/app",
+		"app:build": "npm run gulp app",
 		"app:dev": "npm run dev -workspace=@sopia-bot/app",
 		"bundle:build": "npm run build -workspace=@sopia-bot/bundles",
-		"archive:build": "npm run build -workspace=@sopia-bot/archive",
-		"core:build": "tsc -b -v packages/core",
+		"archive:build": "npm run gulp archive",
+		"core:build": "npm run gulp core",
 		"core:publish": "npm run core:build && npm publish -workspace=@sopia-bot/core",
-		"view:build": "npm run build -workspace=@sopia-bot/view",
+		"view:build": "npm run gulp view",
 		"view:serve": "npm run serve -workspace=@sopia-bot/view",
-		"view:publish": "npm run s3:publish -workspace=@sopia-bot/view"
+		"view:publish": "npm run s3:publish -workspace=@sopia-bot/view",
+		"gulp": "node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js"
 	},
 	"main": "background.js",
-	"dependencies": {},
 	"devDependencies": {
-		"@types/node": "^17.0.21",
+		"@napi-rs/cli": "^2.13.3",
+		"@types/node": "^17.0.45",
 		"copy": "^0.3.2",
 		"copyfiles": "^2.4.1",
+		"fancy-log": "^2.0.0",
+		"gulp": "^4.0.2",
+		"gulp-typescript": "^6.0.0-alpha.1",
 		"mocha": "^6.2.1",
 		"rimraf": "^3.0.2",
 		"ts-node": "^8.4.1",
@@ -33,6 +37,7 @@
 		"packages/core",
 		"packages/view",
 		"tools/upload-view",
-		"packages/archive"
+		"packages/archive",
+		"build"
 	]
 }
