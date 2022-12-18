@@ -21,11 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       
-      #- name: Build electron app
-      #  run: npm run app:build
-      
-      - name: Build view
-        run: npm run view:build
+      - name: Build packages
+        run: npm run gulp
       
       - name: Publish view
         run: npm run view:publish
