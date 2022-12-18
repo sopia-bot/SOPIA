@@ -1,0 +1,35 @@
+name: Publish app s3
+
+on:
+  push:
+    tags:
+      - '*'
+
+
+jobs:
+  publish-s3:
+    runs-on: windows-2022
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+      
+      - name: Set Node.js Version
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      
+      - name: Install dependencies
+        run: npm install
+      
+      #- name: Build electron app
+      #  run: npm run app:build
+      
+      - name: Build view
+        run: npm run view:build
+      
+      - name: Publish view
+        run: npm run view:publish
+        env:
+          IDENTITY_POOL_ID: ${{ secrets.S3_IDENTITY_POOL_ID }}
+          S3REGION: ap-northeast-2
+          S3BUCKET: sopia-v3
