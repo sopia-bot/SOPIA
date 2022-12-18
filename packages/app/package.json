@@ -5,7 +5,8 @@
 	"scripts": {
 		"icon-build": "electron-icon-builder --input=public/icon.png --output=.build --flatten",
 		"tsc": "tsc --project .",
-		"dev": "cross-env NODE_ENV=development nodemon --watch src --watch public --watch package.json --watch tsconfig --verbose --ext 'ts,json' --delay 1 --exec \"npm run tsc && electron .build/background.js\""
+		"dev": "cross-env NODE_ENV=development nodemon --watch src --watch public --watch package.json --watch tsconfig --verbose --ext 'ts,json' --delay 1 --exec \"npm run tsc && electron .build/background.js\"",
+    "publish": "node ../../tools/upload-app/index.js ."
 	},
 	"electronVersion": "17.4.11",
 	"main": ".build/background.js",

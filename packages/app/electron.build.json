@@ -17,7 +17,8 @@
     "target": "deb"
   },
   "win": {
-    "target": "nsis"
+    "target": "nsis",
+    "artifactName": "${productName}-${version}.${ext}"
   },
   "extends": null
 }

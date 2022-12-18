@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm install
       
+      - name: Version patch
+        run: npm version patch
+      
       - name: Build packages
         run: npm run gulp
       
@@ -30,3 +33,20 @@ jobs:
           IDENTITY_POOL_ID: ${{ secrets.S3_IDENTITY_POOL_ID }}
           S3REGION: ap-northeast-2
           S3BUCKET: sopia-v3
+
+      - name: Publish app
+        run: npm run app:publish
+        env:
+          IDENTITY_POOL_ID: ${{ secrets.S3_IDENTITY_POOL_ID }}
+          S3REGION: ap-northeast-2
+          S3BUCKET: sopia-v3
+
+      - name: Commit version patch
+        run: |
+          git commit -a -m ":bookmark: Publish ${{ github.ref_name }}"
+      
+      - name: Push to repository
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: ${{ github.ref }}

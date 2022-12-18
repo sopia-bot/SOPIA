@@ -1,0 +1,22 @@
+{
+  "name": "@sopia-tools/version-patch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sopia-bot/SOPIA.git"
+  },
+  "author": "raravel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sopia-bot/SOPIA/issues"
+  },
+  "homepage": "https://github.com/sopia-bot/SOPIA#readme",
+  "dependencies": {
+    "axios": "^1.2.1"
+  }
+}

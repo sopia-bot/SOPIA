@@ -6,6 +6,7 @@
 	"scripts": {
 		"app:build": "npm run gulp app",
 		"app:dev": "npm run dev -workspace=@sopia-bot/app",
+    "app:publish": "npm run publish -workspace=@sopia-bot/app",
 		"bundle:build": "npm run build -workspace=@sopia-bot/bundles",
 		"archive:build": "npm run gulp archive",
 		"core:build": "npm run gulp core",
@@ -37,7 +38,9 @@
 		"packages/core",
 		"packages/view",
 		"tools/upload-view",
+		"tools/version-patch",
 		"packages/archive",
-		"build"
+		"build",
+		"tools\\upload-app"
 	]
 }
