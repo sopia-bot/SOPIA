@@ -1,19 +1,19 @@
-import path from 'path';
+import path from 'node:path';
 import { app, BrowserWindow , ipcMain, IpcMainEvent, dialog } from 'electron';
 import puppeteer from 'puppeteer-core';
 import { URL } from 'url';
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 import { install as npmInstall, InstallItem, InstallOptions } from 'npkgi';
 
 import CfgLite from 'cfg-lite';
 import { ZipFile, ZipArchive } from '@arkiv/zip';
-import fs from 'fs';
+import fs from 'node:fs';
 
 export const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-type PathType = 'home' | 'appData' | 'userData' | 'cache' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps';
+type PathType = 'home' | 'appData' | 'userData' | 'sessionData' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps';
 const CfgList: Record<string, any> = {};
 const getPath = (type: PathType, ...args: string[]) => path.resolve(app.getPath(type), ...args);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

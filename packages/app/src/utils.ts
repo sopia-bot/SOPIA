@@ -1,7 +1,7 @@
 import Axios from "axios";
 import { app } from "electron";
-import { createWriteStream } from "fs";
-import path from "path";
+import { createWriteStream } from "node:fs";
+import path from "node:path";
 
 export const setBundleDir = () => app.setPath('userData', path.join(app.getPath('appData'), 'sopia-v3'));;
 
