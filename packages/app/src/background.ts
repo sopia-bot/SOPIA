@@ -65,14 +65,6 @@ const createWindow = () => {
   win = new BrowserWindow({
     width: 800,
     height: 600,
-    webPreferences: {
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false, // cors 이슈
-      backgroundThrottling: false,
-    },
     frame: false,
     titleBarStyle: 'hidden',
     icon: path.join(__dirname, '../public/icon_.png'),
