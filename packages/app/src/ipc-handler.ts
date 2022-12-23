@@ -13,7 +13,7 @@ export const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-type PathType = 'home' | 'appData' | 'userData' | 'cache' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps';
+type PathType = Parameters<typeof app.getPath>[0];
 const CfgList: Record<string, any> = {};
 const getPath = (type: PathType, ...args: string[]) => path.resolve(app.getPath(type), ...args);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
