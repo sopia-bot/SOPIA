@@ -17,6 +17,8 @@ export class LiveInfo extends ContentsInfo {
 
 	public socket!: LiveSocket;
 
+	@JsonProperty() public access_key!: string;
+
 	@JsonProperty() public categories!: string[];
 
 	@JsonProperty() public engine_name!: string;
@@ -38,6 +40,8 @@ export class LiveInfo extends ContentsInfo {
 	@JsonProperty() public os_type!: any; //unknown type
 
 	@JsonProperty() public room_token!: string;
+
+	@JsonProperty() public jwt!: string;
 
 	@JsonProperty() public tier!: Tier;
 
