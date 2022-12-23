@@ -4,9 +4,18 @@ import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
 import { Button } from "primereact/button";
 
+import React, { useState } from 'react';
+import { InputText } from 'primereact/inputtext';
+
+    
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const [value1, setValue1] = useState('');
+const [value2, setValue2] = useState('');
+const [value3, setValue3] = useState('');
+const [value4, setValue4] = useState('');
+const [value5, setValue5] = useState('');
   return (
     <>
       <Head>
@@ -15,111 +24,56 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <Button color="success" label="button content" />
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
+
+        <div>
+            <div className="card">
+                <h5>Basic</h5>
+                <InputText value={value1} onChange={(e) => setValue1(e.target.value)} />
+                <span className="ml-2">{value1}</span>
+
+                <h5>Floating Label</h5>
+                <span className="p-float-label">
+                    <InputText id="username" value={value2} onChange={(e) => setValue2(e.target.value)} />
+                    <label htmlFor="username">Username</label>
+                </span>
+
+                <h5>Left Icon</h5>
+                <span className="p-input-icon-left">
+                    <i className="pi pi-search" />
+                    <InputText value={value3} onChange={(e) => setValue3(e.target.value)} placeholder="Search" />
+                </span>
+
+                <h5>Right Icon</h5>
+                <span className="p-input-icon-right">
+                    <i className="pi pi-spin pi-spinner" />
+                    <InputText value={value4} onChange={(e) => setValue4(e.target.value)} />
+                </span>
+
+                <h5>Help Text</h5>
+                <div className="field">
+                    <label htmlFor="username1" className="block">Username</label>
+                    <InputText id="username1" aria-describedby="username1-help" className="block"/>
+                    <small id="username1-help" className="block">Enter your username to reset your password.</small>
+                </div>
+
+                <h5>Invalid</h5>
+                <div className="field">
+                    <label htmlFor="username2" className="block">Username</label>
+                    <InputText id="username2" aria-describedby="username2-help" className="p-invalid block" />
+                    <small id="username2-help" className="p-error block">Username is not available.</small>
+                </div>
+
+                <h5>Disabled</h5>
+                <InputText value={value5} disabled />
+
+                <h5>Sizes</h5>
+                <div className="sizes">
+                    <InputText type="text" className="p-inputtext-sm block mb-2" placeholder="Small" />
+                    <InputText type="text" className="block mb-2" placeholder="Normal" />
+                    <InputText type="text" className="p-inputtext-lg block"  placeholder="Large" />
+                </div>
+            </div>
         </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
     </>
   )
 }

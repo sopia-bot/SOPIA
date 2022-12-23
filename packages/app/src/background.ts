@@ -6,7 +6,7 @@
 */
 'use strict';
 
-import { app, session, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, session, protocol, BrowserWindow, ipcMain, nativeTheme } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -67,8 +67,13 @@ const createWindow = () => {
     height: 600,
     frame: false,
     titleBarStyle: 'hidden',
+    webPreferences: {
+      preload: path.join(__dirname, './preload.js'),
+    },
     icon: path.join(__dirname, '../public/icon_.png'),
   });
+
+  nativeTheme.themeSource = 'dark';
   
   ipcMain.on('app:minimize', () => {
     win?.minimize();
