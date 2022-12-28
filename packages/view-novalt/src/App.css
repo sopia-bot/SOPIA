@@ -1,0 +1,15 @@
+
+.main-wrapper {
+  overflow: hidden;
+  max-height: 100vh;
+}
+.main-space-wrapper {
+  background: #333333;
+  max-height: 100vh;
+  overflow: hidden;
+}
+.main-space {
+  background: white;
+  max-height: calc(100vh - 33px);
+  overflow: auto;
+}
