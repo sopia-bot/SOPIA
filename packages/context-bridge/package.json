@@ -1,0 +1,22 @@
+{
+  "name": "@sopia-bot/bridge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/renderer.js",
+  "types": "dist/renderer/index.d.ts",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "keywords": [],
+  "author": "raravel",
+  "license": "MIT",
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@types/crypto-js": "^4.1.1",
+    "crypto-js": "^4.1.1",
+    "electron": "^22.0.0",
+    "rollup": "^3.8.1",
+    "rollup-plugin-typescript2": "^0.34.1"
+  }
+}

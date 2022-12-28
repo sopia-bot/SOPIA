@@ -14,6 +14,7 @@
 		"view:build": "npm run gulp view",
 		"view:serve": "npm run serve -workspace=@sopia-bot/view",
 		"view:publish": "npm run s3:publish -workspace=@sopia-bot/view",
+		"bridge:build": "npm run gulp bridge",
 		"gulp": "node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js"
 	},
 	"main": "background.js",
@@ -40,6 +41,7 @@
 		"tools/upload-view",
 		"tools/version-patch",
 		"packages/archive",
+		"packages/context-bridge",
 		"build",
 		"tools\\upload-app"
 	]

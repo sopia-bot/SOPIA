@@ -2,6 +2,6 @@ const gulp = require('gulp');
 
 require('./gulpfile.app');
 require('./gulpfile.core');
-require('./gulpfile.view');
+//require('./gulpfile.view');
 
-gulp.task('default', gulp.series(['core', 'app', 'view']));
+gulp.task('default', gulp.series(['core', 'app']));
