@@ -37,7 +37,6 @@
 		"packages/app",
 		"packages/bundles",
 		"packages/core",
-    "packages/view-next",
 		"tools/upload-view",
 		"tools/version-patch",
 		"packages/archive",
