@@ -8,6 +8,7 @@ import { install as npmInstall, InstallItem, InstallOptions } from 'npkgi';
 import CfgLite from 'cfg-lite';
 import { ZipFile, ZipArchive } from '@arkiv/zip';
 import fs from 'node:fs';
+import { ipcHanger } from './utils/ipcHanger';
 
 export const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36';
 
@@ -25,33 +26,6 @@ const launcher = function(cmd: string) {
 		return '';
 	}
 };
-
-class IpcHangerWrapper {
-
-	constructor() {
-		this.callback = this.callback.bind(this);
-	}
-
-	private logger(channel: string, ...args: any[]) {
-		console.log('Receive ipc event', channel, ...args);
-	}
-
-	private callback(channel: string, onEvent: (...args: any[]) => any) {
-		return (event: IpcMainEvent|IpcMainInvokeEvent, ...args: any[]) => {
-			this.logger(channel, ...args);
-			onEvent(event, ...args);
-		}
-	}
-
-	on(channel: string, onEvent: (event: IpcMainEvent, ...args: any[]) => void) {
-		ipcMain.on(channel, this.callback(channel, onEvent));
-	}
-
-	handle(channel: string, onEvent: (event: IpcMainInvokeEvent, ...args: any[]) => any) {
-		ipcMain.handle(channel, this.callback(channel, onEvent));
-	}
-}
-export const ipcHanger = new IpcHangerWrapper();
 
 ipcHanger.on('app:version', (evt: IpcMainEvent) => {
 	evt.returnValue = app.getVersion();

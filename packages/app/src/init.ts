@@ -1,7 +1,8 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { app } from 'electron';
-import { setBundleDir } from './utils';
+import { setBundleDir } from './utils/common';
+import { AppDataInitialize } from './db';
 
 setBundleDir();
 
@@ -19,3 +20,4 @@ if ( !fs.existsSync(sopiaDir) ) {
 console.log('bundle dir', bundleDir);
 
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+AppDataInitialize();

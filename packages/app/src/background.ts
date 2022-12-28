@@ -6,7 +6,7 @@
 */
 'use strict';
 
-import { app, session, protocol, BrowserWindow, ipcMain, nativeTheme } from 'electron';
+import { app, session, protocol, BrowserWindow, nativeTheme } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -24,7 +24,8 @@ if ( !fs.existsSync(path.join(adp, 'restore-flag'))) {
   console.log('restore');
 }
 
-import { USER_AGENT, ipcHanger } from './ipc-handler';
+import { USER_AGENT } from './ipc-handler';
+import { ipcHanger } from './utils/ipcHanger';
 
 autoUpdater.logger = log;
 
@@ -71,11 +72,12 @@ const createWindow = () => {
       preload: path.join(__dirname, './preload.js'),
       nodeIntegration: true,
       //contextIsolation: false,
+      webviewTag: true,
     },
     icon: path.join(__dirname, '../public/icon_.png'),
   });
 
-  nativeTheme.themeSource = 'dark';
+  //nativeTheme.themeSource = 'dark';
   
   ipcHanger.on('app:minimize', () => {
     win?.minimize();
@@ -190,7 +192,7 @@ app.on('ready', async () => {
     // Install Vue Devtools
     try {
       await installExtension(VUEJS_DEVTOOLS);
-    } catch (e) {
+    } catch (e: any) {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }

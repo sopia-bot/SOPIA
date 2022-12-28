@@ -14,6 +14,7 @@
 		"@arkiv/zip": "^1.2.0",
 		"@sopia-bot/archive": "file:../archive",
 		"axios": "^0.19.2",
+		"better-sqlite3": "^8.0.1",
 		"cfg-lite": "^1.1.3",
 		"electron-devtools-installer": "^3.1.0",
 		"electron-log": "^4.4.6",
@@ -21,8 +22,10 @@
 		"mime-types": "^2.1.35",
 		"npkgi": "^1.0.7",
 		"puppeteer-core": "^13.4.0",
+		"reflect-metadata": "^0.1.13",
 		"rimraf": "^3.0.2",
 		"tslib": "^2.3.0",
+		"typeorm": "^0.3.11",
 		"uuid": "^8.3.0"
 	},
 	"devDependencies": {
@@ -35,6 +38,7 @@
 		"electron": "^22.0.0",
 		"electron-builder": "^23.6.0",
 		"electron-icon-builder": "^2.0.1",
+		"electron-rebuild": "^3.2.9",
 		"nodemon": "^2.0.20",
 		"typescript": "~4.3.2"
 	}

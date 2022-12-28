@@ -3,7 +3,7 @@ import { uncompress } from '@sopia-bot/archive';
 import axios, { AxiosRequestConfig } from 'axios';
 import path from 'node:path';
 import { existsSync } from 'node:fs';
-import { versionCompare, setBundleDir, downloadFile } from './utils';
+import { versionCompare, setBundleDir, downloadFile } from './utils/common';
 import CfgLite from 'cfg-lite';
 import mime from 'mime-types';
 import { readFile } from 'node:fs/promises';
