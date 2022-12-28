@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { app } from "electron";
+import { app, ipcMain } from "electron";
 import { createWriteStream } from "node:fs";
 import path from "node:path";
 

@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { app, BrowserWindow , ipcMain, IpcMainEvent, dialog } from 'electron';
+import { app, BrowserWindow , ipcMain, IpcMainEvent, dialog, IpcMainInvokeEvent } from 'electron';
 import puppeteer from 'puppeteer-core';
 import { URL } from 'url';
 import { execSync } from 'node:child_process';
@@ -26,7 +26,38 @@ const launcher = function(cmd: string) {
 	}
 };
 
-ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: any) => {
+class IpcHangerWrapper {
+
+	constructor() {
+		this.callback = this.callback.bind(this);
+	}
+
+	private logger(channel: string, ...args: any[]) {
+		console.log('Receive ipc event', channel, ...args);
+	}
+
+	private callback(channel: string, onEvent: (...args: any[]) => any) {
+		return (event: IpcMainEvent|IpcMainInvokeEvent, ...args: any[]) => {
+			this.logger(channel, ...args);
+			onEvent(event, ...args);
+		}
+	}
+
+	on(channel: string, onEvent: (event: IpcMainEvent, ...args: any[]) => void) {
+		ipcMain.on(channel, this.callback(channel, onEvent));
+	}
+
+	handle(channel: string, onEvent: (event: IpcMainInvokeEvent, ...args: any[]) => any) {
+		ipcMain.handle(channel, this.callback(channel, onEvent));
+	}
+}
+export const ipcHanger = new IpcHangerWrapper();
+
+ipcHanger.on('app:version', (evt: IpcMainEvent) => {
+	evt.returnValue = app.getVersion();
+});
+
+ipcHanger.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: any) => {
 	const key = file;
 	let rtn: any = null;
 	console.log(`cfg-lite: prop=${prop},file=${file},argc=${args.length}`);
@@ -49,7 +80,7 @@ ipcMain.on('cfg-lite', (evt: IpcMainEvent, prop: string, file: string, ...args: 
 	}
 });
 
-ipcMain.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
+ipcHanger.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
 	console.log('zip:create', src, dst);
 	try {
 		ZipFile.CreateFromDirectory(src, dst);
@@ -60,18 +91,18 @@ ipcMain.on('zip:create', (evt: IpcMainEvent, src: string, dst: string) => {
 	}
 });
 
-ipcMain.on('zip:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
+ipcHanger.on('zip:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
 	console.log('zip:uncompress-buffer', dst);
 	const archive = new ZipArchive('', Buffer.from(b64str, 'base64'));
 	archive.ExtractAll(dst);
 	evt.returnValue = true;
 });
 
-ipcMain.on('isdev', (evt: IpcMainEvent) => {
+ipcHanger.on('isdev', (evt: IpcMainEvent) => {
 	evt.returnValue = isDevelopment;
 });
 
-ipcMain.on('app:get-path', (evt: IpcMainEvent, type: string) => {
+ipcHanger.on('app:get-path', (evt: IpcMainEvent, type: string) => {
 	evt.returnValue = app.getPath(type as any);
 });
 
@@ -87,7 +118,7 @@ const buildTime = (time: Date): string => {
 	return `${yyyy}${mm}${dd}-${hh}${MM}${ss}`;
 };
 const startTime = buildTime(new Date());
-ipcMain.on('start-time', (evt: IpcMainEvent, type: string) => {
+ipcHanger.on('start-time', (evt: IpcMainEvent, type: string) => {
 	evt.returnValue = startTime;
 });
 
@@ -220,7 +251,7 @@ const snsLoginOpen = (url: string) => new Promise((resolve, reject) => {
 	reject();
 });
 
-ipcMain.handle('sns-login-open', async (evt, url: string) => {
+ipcHanger.handle('sns-login-open', async (evt, url: string) => {
 	try {
 		const user =  await snsLoginOpen(url);
 		return user;
@@ -229,11 +260,11 @@ ipcMain.handle('sns-login-open', async (evt, url: string) => {
 	}
 });
 
-ipcMain.handle('open-dialog', async (event, options: any) => {
+ipcHanger.handle('open-dialog', async (event, options: any) => {
 	return await dialog.showOpenDialog(options);
 });
 
-ipcMain.handle('npm:install', async (event, packages: InstallItem[], options: InstallOptions) => {
+ipcHanger.handle('npm:install', async (event, packages: InstallItem[], options: InstallOptions) => {
 	return await npmInstall(packages, options);
 });
 
@@ -256,7 +287,7 @@ const readDirectory = (dir: string, cb: (...args: any) => any, oriDir?: string) 
 	});
 };
 
-ipcMain.on('package:create', (evt: IpcMainEvent, src: string, dst: string) => {
+ipcHanger.on('package:create', (evt: IpcMainEvent, src: string, dst: string) => {
 	console.log('package:create', src, dst);
 	try {
 		const pkg = JSON.parse(fs.readFileSync(path.join(src, 'package.json'), 'utf8'));
@@ -286,7 +317,7 @@ ipcMain.on('package:create', (evt: IpcMainEvent, src: string, dst: string) => {
 	}
 });
 
-ipcMain.on('package:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
+ipcHanger.on('package:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst: string) => {
 	console.log('package:uncompress-buffer', dst);
 
 	if ( !fs.existsSync(dst) ) {
@@ -321,6 +352,6 @@ ipcMain.on('package:uncompress-buffer', (evt: IpcMainEvent, b64str: string, dst:
 	evt.returnValue = true;
 });
 
-ipcMain.on('app:quit', (evt: IpcMainEvent) => {
+ipcHanger.on('app:quit', (evt: IpcMainEvent) => {
 	app.quit();
 });

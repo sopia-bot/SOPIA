@@ -24,7 +24,7 @@ if ( !fs.existsSync(path.join(adp, 'restore-flag'))) {
   console.log('restore');
 }
 
-import { USER_AGENT } from './ipc-handler';
+import { USER_AGENT, ipcHanger } from './ipc-handler';
 
 autoUpdater.logger = log;
 
@@ -69,21 +69,31 @@ const createWindow = () => {
     titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.join(__dirname, './preload.js'),
+      nodeIntegration: true,
+      //contextIsolation: false,
     },
     icon: path.join(__dirname, '../public/icon_.png'),
   });
 
   nativeTheme.themeSource = 'dark';
   
-  ipcMain.on('app:minimize', () => {
+  ipcHanger.on('app:minimize', () => {
     win?.minimize();
   });
   
-  ipcMain.on('app:maximize', () => {
+  ipcHanger.on('app:maximize', () => {
     win?.maximize();
   });
+
+  ipcHanger.on('app:toggleMaximize', () => {
+    if ( win?.isMaximized() ) {
+      win?.unmaximize();
+    } else {
+      win?.maximize();
+    }
+  });
   
-  ipcMain.on('open-dev-tools', () => {
+  ipcHanger.on('open-dev-tools', () => {
     win?.webContents.openDevTools();
   });
   
