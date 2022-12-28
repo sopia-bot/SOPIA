@@ -1,8 +1,8 @@
 .p-button-xxs {
-	font-size: 0;
-	padding: 0;
-	width: .75rem;
-	height: .75rem;
+	font-size: 0 !important;
+	padding: 0 !important;
+	width: .75rem !important;
+	height: .75rem !important;
 }
 .system-bar {
 	border-radius: 0;
