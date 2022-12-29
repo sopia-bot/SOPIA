@@ -2,7 +2,12 @@ import { RouteObject } from "react-router-dom";
 import Home from "../pages/Home";
 import SopiaLogin from "../pages/Login/Sopia";
 
-const routes: RouteObject[] = [
+export interface SopiaRouteObject extends Omit<RouteObject, 'children'> {
+	children?: SopiaRouteObject[];
+	nonauth?: boolean;
+}
+
+const routes: SopiaRouteObject[] = [
 	{
 		path: '/home',
 		element: <Home/>,
@@ -15,6 +20,7 @@ const routes: RouteObject[] = [
 			{
 				path: 'sopia',
 				id: 'login.sopia',
+				nonauth: true,
 				element: <SopiaLogin />
 			},
 		],
