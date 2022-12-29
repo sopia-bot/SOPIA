@@ -30,7 +30,7 @@
   transition: transform 1000ms ease-in-out, opacity 500ms ease-in-out;
 }
 
-.wrap {
+.router-wrap {
 	width: 100vw;
 	height: 100vh;
 }
