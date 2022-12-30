@@ -12,6 +12,10 @@ import 'primereact/resources/themes/saga-blue/theme.css'
 import 'primereact/resources/primereact.min.css'
 import 'primeflex/primeflex.min.css'
 
+import PrimeReact from 'primereact/api';
+
+PrimeReact.ripple = true;
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <RecoilRoot>
     <App />

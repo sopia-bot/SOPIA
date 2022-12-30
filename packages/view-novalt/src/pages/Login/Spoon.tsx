@@ -9,29 +9,25 @@ import { Dialog } from 'primereact/dialog';
 import { useSopiaAPI } from '../../api';
 import { toastStates } from '../../store';
 import { useRecoilState } from 'recoil';
-import { useNavigate } from 'react-router-dom';
+import { TabMenu } from 'primereact/tabmenu';
 
 const Wrapper = styled.div`
 	min-width: 100vw;
 `
 
 
-export default function SopiaLogin() {
+export default function SpoonLogin() {
 	const { t } = useTranslation();
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
 	const [findIdDialogVisible, setFindIdDialogVisible] = useState(false);
 	const [spoonId, setSpoonId] = useState('');
 	const api = useSopiaAPI();
-	const [taost, setToast] = useRecoilState(toastStates);
-	const navigate = useNavigate();
+	const [toast, setToast] = useRecoilState(toastStates);
+	const [tabIndex, setTabIndex] = useState(0);
 
-	if ( api.user ) {
-		navigate('/login/spoon');
-		return <></>;
-	}
 
-	const loginSopia = async () => {
+	const loginSpoon = async () => {
 		let errorMessage = '';
 		if ( !id.trim() ) {
 			errorMessage = t('login.error.input_id');
@@ -47,7 +43,7 @@ export default function SopiaLogin() {
 				throw new Error(t('app.login.error.login_fail') || '');
 			}
 
-			navigate('/login/spoon');
+			
 		} catch ( err: any ) {
 			setToast({
 				severity: 'error',
@@ -75,16 +71,36 @@ export default function SopiaLogin() {
 				</div>
 			</Dialog>
 			<div className='flex flex-column'>
-				<h1 className='text-center my-2 text-primary-900'>{ t('login.sopia.title') }</h1>
+				<h1 className='text-center my-2 text-primary-900'>{ t('login.spoon.title') }</h1>
 				<p className='text-sm line-height-2 text-center'>
 					<Trans
-						i18nKey='login.sopia.description'
+						i18nKey='login.spoon.description'
 						components={{ Link: <Link className='text-primary' to='/signin/sopia' />, }}
 					/>
 				</p>
-				<InputText value={id} onChange={(e) => setId(e.target.value)} placeholder={t('id') || 'id'} />
-				<Password toggleMask feedback={false} className='mt-2' value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t('password') || 'password'} />
-				<Button className='mt-2' label={t('login.button')||'Login'} onClick={loginSopia} />
+				<TabMenu model={[
+					{ label: t('login.spoon.phone') || 'Phone', icon: 'pi pi-phone' },
+					{ label: t('login.spoon.email') || 'Email', icon: 'pi pi-envelope' },
+				]}
+				className='flextab mb-3'
+				style={{width: '100%'}}
+				activeIndex={tabIndex}
+				onTabChange={({ index }) => setTabIndex(index)} />
+				<InputText value={id} onChange={(e) => setId(e.target.value)} placeholder={t('login.spoon.spoon_id') || 'id'} />
+				<Password toggleMask inputStyle={{ width: '100%' }} feedback={false} className='mt-2' value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t('login.spoon.spoon_pw') || 'password'} />
+				<Button
+					className='mt-2'
+					style={{
+						backgroundColor: 'var(--red-500)',
+						borderColor: 'var(--red-500)',
+					}}
+					label={t('login.button')||'Login'}
+					onClick={loginSpoon}
+				/>
+
+				<Button className='mt-2 text-900 p-button-text p-button-raised' style={{ backgroundColor: 'var(--surface-0)' }} icon='pi pi-google' label={t('login.spoon.google')||'Google Login'} onClick={loginSpoon} />
+				<Button className='mt-2 p-button-raised' icon='pi pi-facebook' label={t('login.spoon.facebook')||'Facebook Login'} onClick={loginSpoon} />
+				<Button className='mt-2 p-button-raised p-button-secondary' style={{ backgroundColor: 'var(--surface-900)' }} icon='pi pi-apple' label={t('login.spoon.apple')||'Apple Login'} onClick={loginSpoon} />
 
 				{/*
 				<Button

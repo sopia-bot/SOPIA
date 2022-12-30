@@ -27,3 +27,23 @@ body {
   height: calc(100vh - 45px);
   min-height: calc(100vh - 45px);
 }
+
+.p-tabmenu.flextab .p-tabmenuitem {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  outline: none;
+  align-items: center;
+}
+.p-tabmenu.flextab .p-tabmenuitem .p-menuitem-link {
+  color: var(--red-200) !important;
+  border-color: var(--red-200) !important;
+}
+.p-tabmenu.flextab .p-tabmenuitem .p-menuitem-link:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.p-tabmenu.flextab .p-tabmenuitem.p-highlight .p-menuitem-link {
+  color: var(--red-500) !important;
+  border-color: var(--red-500) !important;
+}

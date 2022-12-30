@@ -16,7 +16,14 @@
 		},
 		"spoon": {
 			"title": "스푼 로그인",
-			"description": "이것은 스푼에서 사용하는 계정 로그인입니다!"
+			"phone": "전화번호",
+			"email": "이메일",
+			"description": "이것은 스푼에서 사용하는 계정 로그인입니다!",
+			"spoon_id": "스푼 아이디",
+			"spoon_pw": "스푼 비밀번호",
+			"google": "구글로 로그인",
+			"facebook": "페이스북으로 로그인",
+			"apple": "애플로 로그인"
 		},
 		"error": {
 			"input_id": "아이디를 입력해 주세요",
