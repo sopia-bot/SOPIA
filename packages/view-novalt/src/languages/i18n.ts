@@ -8,7 +8,7 @@ i18next.use(LanguageDetector)
 	.use(initReactI18next)
 	.init({
 		resources: {
-			ko: { transition: ko },
+			ko: { translation: ko },
 		},
 		fallbackLng: 'ko',
 		debug: true,
