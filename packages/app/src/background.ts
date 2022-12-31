@@ -74,7 +74,7 @@ const createWindow = () => {
       //contextIsolation: false,
       webviewTag: true,
     },
-    icon: path.join(__dirname, '../public/icon_.png'),
+    icon: path.join(__dirname, '../public/icon.png'),
   });
 
   //nativeTheme.themeSource = 'dark';
