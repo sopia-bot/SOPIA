@@ -31,7 +31,9 @@ module.exports = [
 		},
 		external: ['electron', 'crypto-js'],
 		plugins: [
-			typescript(),
+			typescript({
+        exclude: 'node_modules/**'
+      }),
 			resolve(),
 		],
 	},

@@ -13,6 +13,7 @@
   "dependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@sopia-bot/core": "file:../core",
     "@types/crypto-js": "^4.1.1",
     "crypto-js": "^4.1.1",
     "electron": "^22.0.0",

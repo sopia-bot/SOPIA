@@ -7,4 +7,7 @@ export default defineConfig({
   server: {
     port: 9912
   },
+  optimizeDeps: {
+    include: ['@sopia-bot/core', 'crypto-js']
+  }
 })

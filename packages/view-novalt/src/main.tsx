@@ -5,7 +5,7 @@ import App from './App'
 import { RecoilRoot } from 'recoil';
 import './store/index';
 import './index.css'
-import 'normalize.css/normalize.css'
+//import 'normalize.css/normalize.css'
 import 'primeicons/primeicons.css'
 //import 'primereact/resources/themes/nova-alt/theme.css'
 import 'primereact/resources/themes/saga-blue/theme.css'
@@ -13,6 +13,10 @@ import 'primereact/resources/primereact.min.css'
 import 'primeflex/primeflex.min.css'
 
 import PrimeReact from 'primereact/api';
+import { useSpoon } from './plugins/spoon';
+
+const spoon = useSpoon();
+spoon.init();
 
 PrimeReact.ripple = true;
 

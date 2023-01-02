@@ -2,7 +2,6 @@
   "name": "view-novalt",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -16,6 +15,7 @@
     "i18next": "^22.4.6",
     "i18next-browser-languagedetector": "^7.0.1",
     "marked": "^4.2.5",
+    "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",
     "primereact": "^8.7.3",
     "react": "^18.2.0",

@@ -23,16 +23,19 @@ export default function SopiaLogin() {
 	const [findIdDialogVisible, setFindIdDialogVisible] = useState(false);
 	const [spoonId, setSpoonId] = useState('');
 	const api = useSopiaAPI();
-	const [taost, setToast] = useRecoilState(toastStates);
+	const [toast, setToast] = useRecoilState(toastStates);
+  const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 
-	if ( api.user ) {
+	if ( api.logonUser ) {
+    console.log('user?', api.logonUser);
 		navigate('/login/spoon');
-		return <></>;
+		return <>redirect</>;
 	}
 
 	const loginSopia = async () => {
 		let errorMessage = '';
+    setLoading(true);
 		if ( !id.trim() ) {
 			errorMessage = t('login.error.input_id');
 		} else if ( !password.trim() ) {
@@ -44,7 +47,7 @@ export default function SopiaLogin() {
 
 			const user = await api.auth.login(id, password);
 			if ( !user ) {
-				throw new Error(t('app.login.error.login_fail') || '');
+				throw new Error(t('login.error.login_fail') || '');
 			}
 
 			navigate('/login/spoon');
@@ -56,6 +59,7 @@ export default function SopiaLogin() {
 				life: 3000,
 			});
 		}
+    setLoading(false);
 	}
 
 	return (
@@ -83,8 +87,8 @@ export default function SopiaLogin() {
 					/>
 				</p>
 				<InputText value={id} onChange={(e) => setId(e.target.value)} placeholder={t('id') || 'id'} />
-				<Password toggleMask feedback={false} className='mt-2' value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t('password') || 'password'} />
-				<Button className='mt-2' label={t('login.button')||'Login'} onClick={loginSopia} />
+				<Password inputStyle={{width: '100%'}} toggleMask feedback={false} className='mt-2' value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t('password') || 'password'} />
+				<Button loading={loading} className='mt-2' label={t('login.button')||'Login'} onClick={loginSopia} />
 
 				{/*
 				<Button

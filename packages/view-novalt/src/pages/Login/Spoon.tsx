@@ -6,10 +6,14 @@ import { Button } from 'primereact/button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Dialog } from 'primereact/dialog';
-import { useSopiaAPI } from '../../api';
 import { toastStates } from '../../store';
 import { useRecoilState } from 'recoil';
 import { TabMenu } from 'primereact/tabmenu';
+import { useSpoon } from '../../plugins/spoon';
+import { SnsType, LogonUser } from '@sopia-bot/core';
+import { snsLoginOpen } from '@sopia-bot/bridge';
+
+window.t = snsLoginOpen;
 
 const Wrapper = styled.div`
 	min-width: 100vw;
@@ -22,10 +26,9 @@ export default function SpoonLogin() {
 	const [password, setPassword] = useState('');
 	const [findIdDialogVisible, setFindIdDialogVisible] = useState(false);
 	const [spoonId, setSpoonId] = useState('');
-	const api = useSopiaAPI();
 	const [toast, setToast] = useRecoilState(toastStates);
 	const [tabIndex, setTabIndex] = useState(0);
-
+  const spoon = useSpoon();
 
 	const loginSpoon = async () => {
 		let errorMessage = '';
@@ -37,13 +40,10 @@ export default function SpoonLogin() {
 
 		try {
 			if ( errorMessage ) throw new Error(errorMessage);
-
-			const user = await api.auth.login(id, password);
+      const user = await spoon.login(id, password, tabIndex === 0 ? SnsType.PHONE : SnsType.EMAIL);
 			if ( !user ) {
-				throw new Error(t('app.login.error.login_fail') || '');
+				throw new Error(t('login.error.login_fail') || '');
 			}
-
-			
 		} catch ( err: any ) {
 			setToast({
 				severity: 'error',
@@ -53,6 +53,22 @@ export default function SpoonLogin() {
 			});
 		}
 	}
+
+  const snsLoginSpoon = async (snsType: SnsType) => {
+    try {
+			let user: LogonUser = await snsLoginOpen(spoon.snsLoginURL(snsType));
+      console.log('test', user);
+			user = await spoon.loginToken(user.id, user.token.replace('Bearer ', ''), user.refresh_token);
+		} catch(err) {
+      console.error(err);
+      setToast({
+				severity: 'error',
+				summary: t('error'),
+				detail: t('login.error.login-fail'),
+				life: 3000,
+			});
+		}
+  }
 
 	return (
 		<Wrapper className='flex window-full-h flex-wrap align-content-center justify-content-center'>
@@ -98,9 +114,9 @@ export default function SpoonLogin() {
 					onClick={loginSpoon}
 				/>
 
-				<Button className='mt-2 text-900 p-button-text p-button-raised' style={{ backgroundColor: 'var(--surface-0)' }} icon='pi pi-google' label={t('login.spoon.google')||'Google Login'} onClick={loginSpoon} />
-				<Button className='mt-2 p-button-raised' icon='pi pi-facebook' label={t('login.spoon.facebook')||'Facebook Login'} onClick={loginSpoon} />
-				<Button className='mt-2 p-button-raised p-button-secondary' style={{ backgroundColor: 'var(--surface-900)' }} icon='pi pi-apple' label={t('login.spoon.apple')||'Apple Login'} onClick={loginSpoon} />
+				<Button className='mt-2 text-900 p-button-text p-button-raised' style={{ backgroundColor: 'var(--surface-0)' }} icon='pi pi-google' label={t('login.spoon.google')||'Google Login'} onClick={() => snsLoginSpoon('google')} />
+				<Button className='mt-2 p-button-raised' icon='pi pi-facebook' label={t('login.spoon.facebook')||'Facebook Login'} onClick={() => snsLoginSpoon('facebook')} />
+				<Button className='mt-2 p-button-raised p-button-secondary' style={{ backgroundColor: 'var(--surface-900)' }} icon='pi pi-apple' label={t('login.spoon.apple')||'Apple Login'} onClick={() => snsLoginSpoon('apple')} />
 
 				{/*
 				<Button

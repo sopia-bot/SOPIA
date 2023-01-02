@@ -10,7 +10,10 @@ const SOPIA: SOPIAFunction = {
 		maximize: () => ipcRenderer.send('app:maximize'),
 		toggleMaximize: () => ipcRenderer.send('app:toggleMaximize'),
 		quit: () => ipcRenderer.send('app:quit'),
-	}
+	},
+  spoon: {
+    snsLogin: async (url: string) => await ipcRenderer.invoke('sns-login-open', url),
+  },
 };
 
 contextBridge.exposeInMainWorld(`_sopia-${createSOPIAKey(version)}`, SOPIA);

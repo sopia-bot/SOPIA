@@ -143,24 +143,28 @@ const snsLoginOpenByPuppeteer = (url: string) => new Promise(async (resolve, rej
 	const [page] = await browser.pages();
 	await page.goto(url);
 	page.on('framenavigated', async (frame) => {
-		const furl = frame.url();
-		const parsedUrl = new URL(furl);
-		if ( parsedUrl.host === 'www.spooncast.net' ) {
-			let res = await page.evaluate(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`);
+    try {
+      const furl = frame.url();
+      const parsedUrl = new URL(furl);
+      if ( parsedUrl.host === 'www.spooncast.net' ) {
+        let res = await page.evaluate(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`);
 
-			for ( let i = 0; i < 5 && !res; i++ ) {
-				await sleep(1000);
-				res = await page.evaluate(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`);
-			}
+        for ( let i = 0; i < 5 && !res; i++ ) {
+          await sleep(1000);
+          res = await page.evaluate(`localStorage.getItem('SPOONCAST_requestBySnsLogin')`);
+        }
 
-			browser.close();
+        browser.close();
 
-			try {
-				resolve(JSON.parse(res).result);
-			} catch {
-				reject();
-			}
-		}
+        try {
+          resolve(JSON.parse(res).result);
+        } catch {
+          reject();
+        }
+      }
+    } catch {
+      
+    }
 	});
 });
 
@@ -210,14 +214,14 @@ const snsLoginOpenByElectron = function(url: string) {
 	});
 };
 
-const snsLoginOpen = (url: string) => new Promise((resolve, reject) => {
-	let res = snsLoginOpenByPuppeteer(url);
+const snsLoginOpen = (url: string) => new Promise(async (resolve, reject) => {
+	let res = await snsLoginOpenByPuppeteer(url);
 	if ( res ) {
 		resolve(res);
 		return;
 	}
 
-	res = snsLoginOpenByElectron(url);
+	res = await snsLoginOpenByElectron(url);
 	if ( res ) {
 		resolve(res);
 		return;
