@@ -10,6 +10,7 @@
   "dependencies": {
     "@sopia-bot/bridge": "file:../context-bridge",
     "@sopia-bot/core": "file:../core",
+    "@tanstack/react-query": "^4.20.4",
     "axios": "^1.2.2",
     "crypto-js": "^4.1.1",
     "i18next": "^22.4.6",

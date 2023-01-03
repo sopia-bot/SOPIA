@@ -1,5 +1,5 @@
 import { RouteObject } from "react-router-dom";
-import Home from "../pages/Home";
+import Home from "../pages/Home/Index";
 import SopiaLogin from "../pages/Login/Sopia";
 import SopiaSignin from '../pages/Signin/Sopia';
 import SpoonLogin from "../pages/Login/Spoon";

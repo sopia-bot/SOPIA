@@ -14,14 +14,24 @@ import 'primeflex/primeflex.min.css'
 
 import PrimeReact from 'primereact/api';
 import { useSpoon } from './plugins/spoon';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 const spoon = useSpoon();
 spoon.init();
 
 PrimeReact.ripple = true;
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <RecoilRoot>
-    <App />
-  </RecoilRoot>
+  <QueryClientProvider client={queryClient}>
+    <RecoilRoot>
+      <App />
+    </RecoilRoot>
+  </QueryClientProvider>
 )

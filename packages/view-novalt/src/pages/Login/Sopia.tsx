@@ -28,7 +28,6 @@ export default function SopiaLogin() {
 	const navigate = useNavigate();
 
 	if ( api.logonUser ) {
-    console.log('user?', api.logonUser);
 		navigate('/login/spoon');
 		return <>redirect</>;
 	}

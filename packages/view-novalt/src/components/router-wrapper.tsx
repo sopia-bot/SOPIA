@@ -37,6 +37,13 @@ function createRouterTree(routes: SopiaRouteObject[] = []): ReactNode {
 
 export default function RouterWrapper() {
 	const locaion = useLocation();
+	// TODO:
+	// There is a problem with re-rendering the component multiple times due to events fired in CSSTransition.
+	return (
+		<Routes>
+			{ createRouterTree(routes) }
+		</Routes>
+	);
 	return (
 		<TransitionGroup className="transition-group">
 			<CSSTransition key={location.hash} classNames="pagination" timeout={1000}>

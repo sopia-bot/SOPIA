@@ -51,5 +51,11 @@
 			"exists_user_id": "이미 있는 아이디입니다.",
 			"policy": "$t(signin.term) 및 $t(signin.privacy)에 동의하셔야 가입 가능합니다."
 		}
+	},
+	"home": {
+		"partner": {
+			"title": "소피아 파트너 디제이가 방송중이에요!",
+			"join": "방송에 참여하기"
+		}
 	}
 }
