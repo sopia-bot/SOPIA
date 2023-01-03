@@ -4,16 +4,14 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password'
 import { Button } from 'primereact/button';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Dialog } from 'primereact/dialog';
-import { toastStates } from '../../store';
+import { toastStates, authorizedStates } from '../../store';
 import { useRecoilState } from 'recoil';
 import { TabMenu } from 'primereact/tabmenu';
 import { useSpoon } from '../../plugins/spoon';
 import { SnsType, LogonUser } from '@sopia-bot/core';
 import { snsLoginOpen } from '@sopia-bot/bridge';
-
-window.t = snsLoginOpen;
 
 const Wrapper = styled.div`
 	min-width: 100vw;
@@ -29,6 +27,21 @@ export default function SpoonLogin() {
 	const [toast, setToast] = useRecoilState(toastStates);
 	const [tabIndex, setTabIndex] = useState(0);
   const spoon = useSpoon();
+	const navigate = useNavigate();
+	const [authorized, setAuthorized] = useRecoilState(authorizedStates);
+
+	const loginHandle = (user: LogonUser) => {
+		if ( !user ) {
+			throw new Error(t('login.error.login_fail') || '');
+		}
+
+		if ( !user.grants.live ) {
+			throw new Error(t('login.error.live_zero') || '');
+		}
+
+		setAuthorized(true);
+		navigate('/home');
+	}
 
 	const loginSpoon = async () => {
 		let errorMessage = '';
@@ -40,10 +53,8 @@ export default function SpoonLogin() {
 
 		try {
 			if ( errorMessage ) throw new Error(errorMessage);
-      const user = await spoon.login(id, password, tabIndex === 0 ? SnsType.PHONE : SnsType.EMAIL);
-			if ( !user ) {
-				throw new Error(t('login.error.login_fail') || '');
-			}
+      const user = await spoon.login(+id || id, password, tabIndex === 0 ? SnsType.PHONE : SnsType.EMAIL);
+			loginHandle(user);
 		} catch ( err: any ) {
 			setToast({
 				severity: 'error',
@@ -57,10 +68,9 @@ export default function SpoonLogin() {
   const snsLoginSpoon = async (snsType: SnsType) => {
     try {
 			let user: LogonUser = await snsLoginOpen(spoon.snsLoginURL(snsType));
-      console.log('test', user);
 			user = await spoon.loginToken(user.id, user.token.replace('Bearer ', ''), user.refresh_token);
+			loginHandle(user);
 		} catch(err) {
-      console.error(err);
       setToast({
 				severity: 'error',
 				summary: t('error'),
