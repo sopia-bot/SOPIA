@@ -124,9 +124,9 @@ export default function SpoonLogin() {
 					onClick={loginSpoon}
 				/>
 
-				<Button className='mt-2 text-900 p-button-text p-button-raised' style={{ backgroundColor: 'var(--surface-0)' }} icon='pi pi-google' label={t('login.spoon.google')||'Google Login'} onClick={() => snsLoginSpoon('google')} />
-				<Button className='mt-2 p-button-raised' icon='pi pi-facebook' label={t('login.spoon.facebook')||'Facebook Login'} onClick={() => snsLoginSpoon('facebook')} />
-				<Button className='mt-2 p-button-raised p-button-secondary' style={{ backgroundColor: 'var(--surface-900)' }} icon='pi pi-apple' label={t('login.spoon.apple')||'Apple Login'} onClick={() => snsLoginSpoon('apple')} />
+				<Button className='mt-2 text-900 p-button-text p-button-raised' style={{ backgroundColor: 'var(--surface-0)' }} icon='pi pi-google' label={t('login.spoon.google')||'Google Login'} onClick={() => snsLoginSpoon(SnsType.GOOGLE)} />
+				<Button className='mt-2 p-button-raised' icon='pi pi-facebook' label={t('login.spoon.facebook')||'Facebook Login'} onClick={() => snsLoginSpoon(SnsType.FACEBOOK)} />
+				<Button className='mt-2 p-button-raised p-button-secondary' style={{ backgroundColor: 'var(--surface-900)' }} icon='pi pi-apple' label={t('login.spoon.apple')||'Apple Login'} onClick={() => snsLoginSpoon(SnsType.APPLE)} />
 
 				{/*
 				<Button
