@@ -7,12 +7,17 @@
 		"tsc": "tsc --project . && cp ../context-bridge/dist/preload.js .build/",
 		"dev": "cross-env NODE_ENV=development nodemon --watch src --watch public --watch package.json --watch tsconfig --verbose --ext 'ts,json' --delay 1 --exec \"npm run tsc && electron .build/background.js\"",
 		"publish": "node ../../tools/upload-app/index.js .",
-    "sqlite3-rebuild": "electron-rebuild -f -w better-sqlite3"
+		"sqlite3-rebuild": "electron-rebuild -f -w better-sqlite3"
 	},
 	"electronVersion": "17.4.11",
 	"main": ".build/background.js",
 	"dependencies": {
 		"@arkiv/zip": "^1.2.0",
+		"@nestjs/common": "^9.2.1",
+		"@nestjs/core": "^9.2.1",
+		"@nestjs/mapped-types": "^1.2.0",
+		"@nestjs/microservices": "^9.2.1",
+		"@nestjs/typeorm": "^9.0.1",
 		"@sopia-bot/archive": "file:../archive",
 		"axios": "^0.19.2",
 		"better-sqlite3": "^8.0.1",
@@ -22,6 +27,7 @@
 		"electron-updater": "^4.6.5",
 		"mime-types": "^2.1.35",
 		"npkgi": "^1.0.7",
+		"path-to-regexp": "^6.2.1",
 		"puppeteer-core": "^13.4.0",
 		"reflect-metadata": "^0.1.13",
 		"rimraf": "^3.0.2",

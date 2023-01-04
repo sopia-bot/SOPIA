@@ -1,10 +1,17 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { app } from 'electron';
+import { app, protocol } from 'electron';
 import { setBundleDir } from './utils/common';
 import { AppDataInitialize } from './db';
 
 setBundleDir();
+
+// Scheme must be registered before the app is ready
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'app', privileges: { secure: true, standard: true } },
+]);
+
+console.log('Development:', process.env.NODE_ENV);
 
 /* INIT DIR */
 const bundleDir = path.join(app.getPath('userData'), 'bundles');
