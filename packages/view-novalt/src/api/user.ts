@@ -3,14 +3,14 @@ import { SopiaApiClient } from "./client";
 export interface UserDto {
 	user_id: number;
 	name?: string;
-	gender?: -1|0|1;
+	gender?: number;
 	spoon_id?: string;
 }
 
 export interface User {
   user_id: number;
   name: string;
-  gender: -1|0|1;
+  gender: number;
   id: string;
   password: string;
   spoon_id: string;
