@@ -60,9 +60,9 @@ const createWindow = async () => {
     frame: false,
     titleBarStyle: 'hidden',
     webPreferences: {
-      //preload: path.join(__dirname, './preload.js'),
+      preload: path.join(__dirname, './preload.js'),
       nodeIntegration: true,
-      contextIsolation: false,
+      //contextIsolation: false,
       webviewTag: true,
     },
     icon: path.join(__dirname, '../public/icon.png'),

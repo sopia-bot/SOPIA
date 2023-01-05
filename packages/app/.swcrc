@@ -1,0 +1,19 @@
+{
+	"jsc": {
+		"parser": {
+			"syntax": "typescript",
+			"tsx": false,
+			"decorators": true,
+			"dynamicImport": false
+		},
+		"target": "es5",
+		"transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true
+    }
+	},
+	"module": {
+		"type": "commonjs"
+	},
+	"minify": false
+}
