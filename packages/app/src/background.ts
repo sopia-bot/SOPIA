@@ -6,19 +6,17 @@
 */
 'use strict';
 
-import { app, session, BrowserWindow, nativeTheme } from 'electron';
+import { app, session, BrowserWindow } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'node:path';
 import { registerProtocol } from './view-protocol';
 import './init';
 
-import { USER_AGENT } from './ipc-handler';
-import { ipcHanger } from './utils/ipcHanger';
-
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { IpcTransporter } from './utils/ipc-transporter';
 import { AppModule } from './app.module';
+import { createBrowserWindow } from './utils/window.provider';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -43,18 +41,8 @@ function UpsertKeyValue(obj: Record<string, string|string[]>|undefined, keyToCha
 }
 
 const createWindow = async () => {
-
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      strategy: new IpcTransporter(),
-    },
-  );
-  await app.listen();
-
-
   // Create the browser window.
-  win = new BrowserWindow({
+  win = createBrowserWindow({
     width: 800,
     height: 600,
     frame: false,
@@ -67,28 +55,14 @@ const createWindow = async () => {
     },
     icon: path.join(__dirname, '../public/icon.png'),
   });
-
-  //nativeTheme.themeSource = 'dark';
   
-  ipcHanger.on('app:minimize', () => {
-    win?.minimize();
-  });
-  
-  ipcHanger.on('app:maximize', () => {
-    win?.maximize();
-  });
-
-  ipcHanger.on('app:toggleMaximize', () => {
-    if ( win?.isMaximized() ) {
-      win?.unmaximize();
-    } else {
-      win?.maximize();
-    }
-  });
-  
-  ipcHanger.on('open-dev-tools', () => {
-    win?.webContents.openDevTools();
-  });
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      strategy: new IpcTransporter(),
+    },
+  );
+  await app.listen();
   
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {
@@ -166,7 +140,7 @@ app.on('activate', async () => {
   }
 });
 
-app.userAgentFallback = USER_AGENT;
+//app.userAgentFallback = USER_AGENT;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -176,7 +150,7 @@ app.on('ready', async () => {
     details.requestHeaders['Accept-Encoding'] = 'gzip, deflate, br';
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
-  session.defaultSession.setUserAgent(USER_AGENT);
+  //session.defaultSession.setUserAgent(USER_AGENT);
   
   if (process.env.NODE_ENV === 'development' && !process.env.IS_TEST) {
     // Install Vue Devtools

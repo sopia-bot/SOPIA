@@ -7,6 +7,9 @@ export class IpcTransporter extends Server implements CustomTransportStrategy {
 	private readonly log = new Logger(IpcTransporter.name);
 
 	listen(callback: () => void) {
+		for ( const [url, handler] of this.messageHandlers ) {
+			this.log.log(`Mapping event {${url}}`);
+		}
 		ipcMain.handle('ipc-transporter', async (event: IpcMainInvokeEvent, message: string, data: any) => {
 			const entries = this.messageHandlers.entries();
 			let item = entries.next();
