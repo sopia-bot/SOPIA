@@ -5,6 +5,6 @@ import { AppModule as ApplicationModule } from './app/app.module';
 import { SpoonModule } from './spoon/spoon.module';
 
 @Module({
-	imports: [ TestModule, GlobalModule, ApplicationModule, SpoonModule ],
+	imports: [ GlobalModule, ApplicationModule, SpoonModule ],
 })
 export class AppModule {}
