@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ConfigService } from './config.service';
-import { SetUserDto } from './dto/user.dto';
+import { SetUserDto } from '@sopia-bot/bridge/dist/dto';
 
 @Controller()
 export class ConfigController {

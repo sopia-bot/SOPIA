@@ -12,7 +12,7 @@ export class AuthApi {
 		});
 
 		const user = res.data[0];
-		this.api.user = user;
+		this.api.logonUser = user;
 
 		return user;
 	}

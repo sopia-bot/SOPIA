@@ -10,11 +10,11 @@ export interface UserDto {
 export interface User {
   user_id: number;
   name: string;
-  gender: number;
+  gender?: number;
   id: string;
-  password: string;
+  password?: string;
   spoon_id: string;
-  saved_time: string;
+  saved_time?: string;
 	token: string;
 	refresh_token: string;
 }

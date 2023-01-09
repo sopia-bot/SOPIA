@@ -11,7 +11,7 @@ import { useRecoilState } from 'recoil';
 import { TabMenu } from 'primereact/tabmenu';
 import { useSpoon } from '../../plugins/spoon';
 import { SnsType, LogonUser } from '@sopia-bot/core';
-import { snsLoginOpen } from '@sopia-bot/bridge';
+import { snsLoginOpen, setUserInfo } from '@sopia-bot/bridge';
 import { useSopiaAPI } from '../../api';
 
 const Wrapper = styled.div`
@@ -41,12 +41,20 @@ export default function SpoonLogin() {
 			throw new Error(t('login.error.live_zero') || '');
 		}
 
-		await api.user.setInfo({
+    const userData = {
 			...api.logonUser,
 			spoon_id: user.id.toString(),
 			name: user.tag,
 			gender: user.gender,
-		});
+		};
+
+    console.log(api);
+		
+    await Promise.all([
+      api.user.setInfo(userData),
+      setUserInfo(userData),
+    ]);
+
 		setAuthorized(true);
 		navigate('/home');
 	}

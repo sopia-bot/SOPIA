@@ -1,8 +1,9 @@
+import { User } from "./user";
 
 export interface SopiaApiClient {
 	protocol: string;
 	host: string;
-	user: any;
+	logonUser: User;
 
 	ApiURL: string;
 

@@ -1,4 +1,6 @@
 import { LogonUser } from "@sopia-bot/core";
+import { SetUserDto } from "./dto/user.dto";
+import { UserEntity } from "./entities/user.entity";
 
 export interface SOPIAFunction {
 	request: (url: string, ...args: any[]) => Promise<any>,
@@ -10,5 +12,9 @@ export interface SOPIAFunction {
 	},
   spoon: {
     snsLogin: (url: string) => Promise<LogonUser>;
+  },
+  config: {
+    setUser: (user: SetUserDto) => Promise<UserEntity>;
+    getUser: () => Promise<UserEntity>;
   }
 }

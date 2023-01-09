@@ -37,4 +37,32 @@ module.exports = [
 			resolve(),
 		],
 	},
+  {
+		input: './src/entities/index.ts',
+		output: {
+			file: './dist/entities.js',
+			format: 'cjs',
+		},
+		external: ['electron'],
+		plugins: [
+			typescript({
+        exclude: 'node_modules/**'
+      }),
+			resolve(),
+		],
+	},
+  {
+		input: './src/dto/index.ts',
+		output: {
+			file: './dist/dto.js',
+			format: 'cjs',
+		},
+		external: ['electron'],
+		plugins: [
+			typescript({
+        exclude: 'node_modules/**'
+      }),
+			resolve(),
+		],
+	},
 ]

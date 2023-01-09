@@ -10,6 +10,8 @@ import { useSopiaAPI } from '../../api';
 import { toastStates } from '../../store';
 import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '@sopia-bot/bridge';
 
 const Wrapper = styled.div`
 	min-width: 100vw;
@@ -26,6 +28,18 @@ export default function SopiaLogin() {
 	const [toast, setToast] = useRecoilState(toastStates);
   const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+
+  
+  const { isLoading, data, } = useQuery({
+    queryKey: ['getLogonUser'],
+    queryFn: getUserInfo,
+  });
+
+  if ( isLoading ) return <>Loading</>
+
+  if ( data ) {
+    api.logonUser = data;
+  }
 
 	if ( api.logonUser ) {
 		navigate('/login/spoon');

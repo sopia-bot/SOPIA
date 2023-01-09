@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { app } from 'electron';
 import { Logger as TypeOrmLogger, QueryRunner } from 'typeorm';
-import { UserEntity } from './db/entities/user.entity';
+import { UserEntity } from '@sopia-bot/bridge/dist/entities';
 
 const basedir = app.getPath('userData');
 

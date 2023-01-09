@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { 
 	Route,
 	Routes,
 	useLocation,
 	Navigate,
+  useNavigate,
 } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './router-wrapper.css';
 import routes, { SopiaRouteObject } from '../router';
 import { useRecoilValue } from 'recoil';
 import { authorizedStates } from '../store';
-
 
 function CheckAuth({ children }: { children?: JSX.Element }) {
 	const authorized = useRecoilValue(authorizedStates);
