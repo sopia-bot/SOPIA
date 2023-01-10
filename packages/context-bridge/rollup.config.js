@@ -19,6 +19,7 @@ module.exports = [
 			}),
 			typescript({
 				exclude: 'node_modules/**',
+				declaration: false,
 			}),
 			resolve(),
 		],
@@ -32,7 +33,8 @@ module.exports = [
 		external: ['electron', 'crypto-js'],
 		plugins: [
 			typescript({
-        exclude: 'node_modules/**'
+        exclude: 'node_modules/**',
+				declaration: false,
       }),
 			resolve(),
 		],
@@ -46,7 +48,8 @@ module.exports = [
 		external: ['electron'],
 		plugins: [
 			typescript({
-        exclude: 'node_modules/**'
+        exclude: 'node_modules/**',
+				declaration: false,
       }),
 			resolve(),
 		],
@@ -60,7 +63,8 @@ module.exports = [
 		external: ['electron'],
 		plugins: [
 			typescript({
-        exclude: 'node_modules/**'
+        exclude: 'node_modules/**',
+				declaration: false,
       }),
 			resolve(),
 		],

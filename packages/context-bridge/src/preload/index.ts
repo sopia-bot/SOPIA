@@ -2,6 +2,7 @@ import { ipcRenderer, contextBridge } from "electron";
 import { createSOPIAKey } from '../utils';
 import { SOPIAFunction } from '../type';
 import { SetUserDto } from "../dto/user.dto";
+import { SetSpoonUserDto } from "../dto/spoon/user.dto";
 
 (async () => {	
 	const request = (url: string, ...args: any[]) => {
@@ -21,6 +22,8 @@ import { SetUserDto } from "../dto/user.dto";
 		spoon: {
 			//snsLogin: async (url: string) => await ipcRenderer.invoke('sns-login-open', url),
 			snsLogin: (url: string) => request('/spoon/sns-login-open', url),
+			setUser: (user: SetSpoonUserDto) => request('/spoon/user/set', user),
+      getUser: () => request('/config/user/get'),
 		},
     config: {
       setUser: (user: SetUserDto) => request('/config/user/set', user),

@@ -32,7 +32,7 @@ export default function SopiaLogin() {
   
   const { isLoading, data, } = useQuery({
     queryKey: ['getLogonUser'],
-    queryFn: getUserInfo,
+    queryFn: async () => (await getUserInfo()) || null,
   });
 
   if ( isLoading ) return <>Loading</>

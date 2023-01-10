@@ -10,7 +10,6 @@
 		"pretty": true,
 		"strict": true,
 		"outDir": "dist",
-		"declaration": true,
 		"sourceMap": true,
 		"target": "es2017",
 	},

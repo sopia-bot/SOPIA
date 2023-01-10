@@ -3,6 +3,8 @@ import crypto from 'crypto-js';
 import { LogonUser } from '@sopia-bot/core';
 import { UserEntity } from '../entities/user.entity';
 import { SetUserDto } from '../dto/user.dto';
+import { SetSpoonUserDto } from '../dto/spoon/user.dto';
+import { SpoonUserEntity } from '../entities/spoon/user.entity';
 
 export function createSOPIAKey(key: string) {
 	return crypto.SHA1(key).toString(crypto.enc.Hex);
@@ -25,6 +27,8 @@ export const toggleMaximize = createBridger<void>((s) => s.app.toggleMaximize);
 export const quit = createBridger<void>((s) => s.app.quit);
 
 export const snsLoginOpen = createBridger<Promise<LogonUser>, [string]>((s) => s.spoon.snsLogin);
+export const setSpoonUserInfo = createBridger<Promise<SpoonUserEntity>, [SetSpoonUserDto]>((s) => s.spoon.setUser);
+export const getSpoonUserInfo = createBridger<Promise<SpoonUserEntity>>((s) => s.spoon.getUser);
 
 export const setUserInfo = createBridger<Promise<UserEntity>, [SetUserDto]>((s) => s.config.setUser);
 export const getUserInfo = createBridger<Promise<UserEntity>>((s) => s.config.getUser);

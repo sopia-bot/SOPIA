@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { app } from 'electron';
 import { Logger as TypeOrmLogger, QueryRunner } from 'typeorm';
-import { UserEntity } from '@sopia-bot/bridge/dist/entities';
+import { UserEntity, SpoonUserEntity } from '@sopia-bot/bridge/dist/entities';
 
 const basedir = app.getPath('userData');
 
@@ -50,7 +50,7 @@ class NestOrmLogger implements TypeOrmLogger {
 		TypeOrmModule.forRoot({
 			type: 'better-sqlite3',
 			database: join(basedir, 'app.db'),
-			entities: [UserEntity],
+			entities: [UserEntity, SpoonUserEntity],
 			logging: true,
 			synchronize: true,
 			logger: new NestOrmLogger(),
