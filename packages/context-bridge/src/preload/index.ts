@@ -7,7 +7,11 @@ import { SetSpoonUserDto } from "../dto/spoon/user.dto";
 (async () => {	
 	const request = (url: string, ...args: any[]) => {
     console.log('ipc-transporter', '[REND -> MAIN]', url, ...args);
-    return ipcRenderer.invoke('ipc-transporter', url, ...args);
+    return ipcRenderer.invoke('ipc-transporter', url, ...args)
+			.then((args) => {
+				console.log('ipc-transporter', '[MAIN -> REND]', url, args);
+				return args;
+			});
   }
 	const version = await request('/app/version');
 
