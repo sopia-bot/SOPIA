@@ -23,7 +23,7 @@ import { SetSpoonUserDto } from "../dto/spoon/user.dto";
 			//snsLogin: async (url: string) => await ipcRenderer.invoke('sns-login-open', url),
 			snsLogin: (url: string) => request('/spoon/sns-login-open', url),
 			setUser: (user: SetSpoonUserDto) => request('/spoon/user/set', user),
-      getUser: () => request('/config/user/get'),
+      getUser: () => request('/spoon/user/get'),
 		},
     config: {
       setUser: (user: SetUserDto) => request('/config/user/set', user),
