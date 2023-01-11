@@ -25,16 +25,19 @@ const queryClient = new QueryClient({
   },
 });
 const spoon = useSpoon();
-spoon.init();
+spoon.init()
+  .then(() => {
+    ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+      <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          <App />
+        </RecoilRoot>
+      </QueryClientProvider>
+    )
+  })
 
 window.Buffer = Buffer;
 
 PrimeReact.ripple = true;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <QueryClientProvider client={queryClient}>
-    <RecoilRoot>
-      <App />
-    </RecoilRoot>
-  </QueryClientProvider>
-)
+

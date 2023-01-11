@@ -9,6 +9,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   user-select: none;
+  --wrapper-height: calc(100vh - 110px);
 }
 
 body {

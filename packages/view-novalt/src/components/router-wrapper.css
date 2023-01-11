@@ -1,7 +1,7 @@
 .transition-group {
 	position: relative;
   overflow: hidden;
-  min-height: calc(100vh - 45px);
+  min-height: var(--wrapper-height);
   width: 100vw;
 	display: block;
 }
@@ -33,5 +33,5 @@
 
 .router-wrap {
 	width: 100vw;
-	min-height: calc(100vh - 45px);
+	min-height: var(--wrapper-height);
 }

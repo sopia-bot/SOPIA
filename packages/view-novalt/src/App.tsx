@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import SystemBar from './components/system-bar'
+import BottomBar from './components/bottom-bar'
 import RouterWrapper from './components/router-wrapper'
 import './App.css'
 import { HashRouter } from 'react-router-dom'
@@ -35,6 +36,7 @@ function App() {
           </HashRouter>
         </div>
       </div>
+      <BottomBar></BottomBar>
     </div>
   )
 }
