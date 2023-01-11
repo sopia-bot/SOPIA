@@ -6,6 +6,7 @@ const project = createProject('packages/app/tsconfig.json');
 const builder = require('electron-builder');
 
 require('./gulpfile.archive');
+require('./gulpfile.bridge');
 
 gulp.task('app:typescript', function() {
   return project.src()
@@ -28,6 +29,7 @@ gulp.task('app:electron', function (done) {
 
 gulp.task('app', gulp.series([
   'archive',
+  'bridge',
   'app:typescript',
   'app:icon-build',
   'app:copy',

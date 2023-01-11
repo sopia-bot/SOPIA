@@ -1,0 +1,49 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.p-toast {
+  top: 65px !important;
+}
+
+.window-full-h {
+  height: calc(100vh - 45px);
+  min-height: calc(100vh - 45px);
+}
+
+.p-tabmenu.flextab .p-tabmenuitem {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  outline: none;
+  align-items: center;
+}
+.p-tabmenu.flextab .p-tabmenuitem .p-menuitem-link {
+  color: var(--red-200) !important;
+  border-color: var(--red-200) !important;
+}
+.p-tabmenu.flextab .p-tabmenuitem .p-menuitem-link:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.p-tabmenu.flextab .p-tabmenuitem.p-highlight .p-menuitem-link {
+  color: var(--red-500) !important;
+  border-color: var(--red-500) !important;
+}

@@ -6,41 +6,21 @@
 */
 'use strict';
 
-import { app, session, protocol, BrowserWindow, ipcMain } from 'electron';
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
-import path from 'path';
-import fs from 'fs';
+import { app, session, BrowserWindow } from 'electron';
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+import path from 'node:path';
 import { registerProtocol } from './view-protocol';
 import './init';
 
-const adp = app.getPath('userData');
-if ( !fs.existsSync(path.join(adp, 'restore-flag'))) {
-  if ( fs.existsSync(path.join(adp, 'app.cfg')) )  {
-    fs.rmSync(path.join(adp, 'app.cfg'));
-  }
-  fs.writeFileSync(path.join(adp, 'restore-flag'), '1');
-  console.log('restore');
-}
-
-import { USER_AGENT } from './ipc-handler';
-
-autoUpdater.logger = log;
-
-const isDevelopment = process.env.NODE_ENV === 'development';
+import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { IpcTransporter } from './utils/ipc-transporter';
+import { AppModule } from './app.module';
+import { createBrowserWindow } from './utils/window.provider';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow | null;
-
-// Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } },
-]);
-
-console.log('Development:', isDevelopment);
-
 
 // https://pratikpc.medium.com/bypassing-cors-with-electron-ab7eaf331605
 function UpsertKeyValue(obj: Record<string, string|string[]>|undefined, keyToChange: string, value: string[]) {
@@ -60,35 +40,29 @@ function UpsertKeyValue(obj: Record<string, string|string[]>|undefined, keyToCha
   obj[keyToChange] = value;
 }
 
-const createWindow = () => {
+const createWindow = async () => {
   // Create the browser window.
-  win = new BrowserWindow({
+  win = createBrowserWindow({
     width: 800,
     height: 600,
-    webPreferences: {
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false, // cors 이슈
-      backgroundThrottling: false,
-    },
     frame: false,
     titleBarStyle: 'hidden',
-    icon: path.join(__dirname, '../public/icon_.png'),
+    webPreferences: {
+      preload: path.join(__dirname, './preload.js'),
+      nodeIntegration: true,
+      //contextIsolation: false,
+      webviewTag: true,
+    },
+    icon: path.join(__dirname, '../public/icon.png'),
   });
   
-  ipcMain.on('app:minimize', () => {
-    win?.minimize();
-  });
-  
-  ipcMain.on('app:maximize', () => {
-    win?.maximize();
-  });
-  
-  ipcMain.on('open-dev-tools', () => {
-    win?.webContents.openDevTools();
-  });
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      strategy: new IpcTransporter(),
+    },
+  );
+  await app.listen();
   
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {
@@ -124,7 +98,7 @@ const createWindow = () => {
   });
   
   
-  if (isDevelopment) {
+  if (process.env.NODE_ENV === 'development') {
     // Load the url of the dev server if in development mode
     win.loadURL('http://localhost:9912');
     win.webContents.openDevTools();	
@@ -141,12 +115,11 @@ const createWindow = () => {
     win = null;
   });
   
-  if ( isDevelopment ) {
+  if ( process.env.NODE_ENV === 'deveopment' ) {
     win.once('ready-to-show', () => {
       win?.show();
     });
   } else {
-    autoUpdater.checkForUpdates();
   }
 };
 
@@ -159,7 +132,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('activate', () => {
+app.on('activate', async () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
@@ -167,7 +140,7 @@ app.on('activate', () => {
   }
 });
 
-app.userAgentFallback = USER_AGENT;
+//app.userAgentFallback = USER_AGENT;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -177,13 +150,13 @@ app.on('ready', async () => {
     details.requestHeaders['Accept-Encoding'] = 'gzip, deflate, br';
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
-  session.defaultSession.setUserAgent(USER_AGENT);
+  //session.defaultSession.setUserAgent(USER_AGENT);
   
-  if (isDevelopment && !process.env.IS_TEST) {
+  if (process.env.NODE_ENV === 'development' && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
-      await installExtension(VUEJS_DEVTOOLS);
-    } catch (e) {
+      await installExtension(REACT_DEVELOPER_TOOLS);
+    } catch (e: any) {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
@@ -192,7 +165,7 @@ app.on('ready', async () => {
 
 
 // Exit cleanly on request from parent process in development mode.
-if (isDevelopment) {
+if (process.env.NODE_ENV === 'development') {
   if (process.platform === 'win32') {
     process.on('message', (data) => {
       if (data === 'graceful-exit') {
@@ -205,30 +178,3 @@ if (isDevelopment) {
     });
   }
 }
-
-// 업데이트 오류시
-autoUpdater.on('error', function(error) {
-  console.error('error', error);
-});
-
-// 업데이트 체크
-autoUpdater.on('checking-for-update', async () => {
-  console.log('Checking-for-update');
-});
-
-// 업데이트할 내용이 있을 때
-autoUpdater.on('update-available', async () => {
-  console.log('A new update is available');
-});
-
-// 업데이트할 내용이 없을 때
-autoUpdater.on('update-not-available', async () => {
-  console.log('update-not-available');
-});
-
-
-//다운로드 완료되면 업데이트
-autoUpdater.on('update-downloaded', async (event, releaseNotes, releaseName) => {
-  console.log('update-downloaded');
-  autoUpdater.quitAndInstall();
-});

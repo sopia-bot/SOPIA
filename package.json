@@ -14,12 +14,13 @@
 		"view:build": "npm run gulp view",
 		"view:serve": "npm run serve -workspace=@sopia-bot/view",
 		"view:publish": "npm run s3:publish -workspace=@sopia-bot/view",
+		"bridge:build": "npm run gulp bridge",
 		"gulp": "node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js"
 	},
 	"main": "background.js",
 	"devDependencies": {
 		"@napi-rs/cli": "^2.13.3",
-		"@types/node": "^17.0.45",
+		"@types/node": "^18.11.17",
 		"copy": "^0.3.2",
 		"copyfiles": "^2.4.1",
 		"fancy-log": "^2.0.0",
@@ -36,10 +37,11 @@
 		"packages/app",
 		"packages/bundles",
 		"packages/core",
-		"packages/view",
+    "packages/view-novalt",
 		"tools/upload-view",
 		"tools/version-patch",
 		"packages/archive",
+		"packages/context-bridge",
 		"build",
 		"tools\\upload-app"
 	]

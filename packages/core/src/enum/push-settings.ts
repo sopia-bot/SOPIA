@@ -19,4 +19,8 @@ export interface PushSettings {
 
 	'event_or_marketing': boolean;
 
+	'follow': boolean;
+
+	'subcription_dj': boolean;
+
 }

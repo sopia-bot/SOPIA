@@ -49,6 +49,8 @@ export class LiveInfo extends ContentsInfo {
 
 	@JsonProperty() public url_hls!: string;
 
+	@JsonProperty() public host_address!: string;
+
 	private _req(obj: any = {}): ApiLivesRequestConfig {
 		if ( !obj.headers ) {
 			obj.headers = {};

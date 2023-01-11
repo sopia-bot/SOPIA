@@ -11,6 +11,8 @@ export interface Grants {
 
 	'cast': number;
 
+	'live': number;
+
 	'talk': number;
 
 	'adult': number;

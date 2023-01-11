@@ -1,0 +1,15 @@
+.p-button-xxs {
+	font-size: 0 !important;
+	padding: 0 !important;
+	width: .75rem !important;
+	height: .75rem !important;
+}
+.system-bar {
+	border-radius: 0;
+	padding: 0.6rem;
+	-webkit-app-region: drag;
+	-webkit-user-select: none;
+}
+.system-bar .no-drag {
+	-webkit-app-region: no-drag;
+}

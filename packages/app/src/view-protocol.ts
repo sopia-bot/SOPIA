@@ -1,12 +1,12 @@
 import { app, protocol } from 'electron';
 import { uncompress } from '@sopia-bot/archive';
 import axios, { AxiosRequestConfig } from 'axios';
-import path from 'path';
-import { existsSync } from 'fs';
-import { versionCompare, setBundleDir, downloadFile } from './utils';
+import path from 'node:path';
+import { existsSync } from 'node:fs';
+import { versionCompare, setBundleDir, downloadFile } from './utils/common';
 import CfgLite from 'cfg-lite';
 import mime from 'mime-types';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import qs from 'querystring';
 setBundleDir();
 

@@ -1,0 +1,17 @@
+
+.main-wrapper {
+  overflow: hidden;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+}
+.main-space-wrapper {
+  display: flex;
+  max-height: calc(100vh - 45px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.main-space {
+  /*overflow: auto;*/
+}

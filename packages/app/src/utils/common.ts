@@ -1,9 +1,9 @@
 import Axios from "axios";
-import { app } from "electron";
-import { createWriteStream } from "fs";
-import path from "path";
+import { app, ipcMain } from "electron";
+import { createWriteStream } from "node:fs";
+import path from "node:path";
 
-export const setBundleDir = () => app.setPath('userData', path.join(app.getPath('appData'), 'sopia-v3'));;
+export const setBundleDir = () => app.setPath('userData', path.join(app.getPath('appData'), 'sopia-v3'));
 
 export function parseVersion(ver: string) {
   if ( typeof ver !== "string" ) return false;
@@ -75,33 +75,4 @@ export async function downloadFile(fileUrl: string, outputLocationPath: string) 
       });
     });
   });
-}
-
-export interface QItem {
-  callback: (...args: any[]) => void|Promise<void>;
-  data: any[];
-}
-
-export class Q {
-  private works: QItem[] = [];
-  private running = false;
-
-  push(work: any, ...args: any[]): void {
-    this.works.push({
-      callback: work,
-      data: args,
-    });
-    this.run();
-  }
-
-  async run() {
-    if ( this.running ) return;
-    const work = this.works.shift();
-    if ( work ) {
-      await work.callback(...work.data);
-    }
-    if ( this.works.length ) {
-      this.run();
-    }
-  }
 }
