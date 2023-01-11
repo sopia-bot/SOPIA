@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './languages/i18n';
 import App from './App'
 import { RecoilRoot } from 'recoil';
+import { Buffer } from 'buffer';
 import './store/index';
 import './index.css'
 //import 'normalize.css/normalize.css'
@@ -25,6 +26,8 @@ const queryClient = new QueryClient({
 });
 const spoon = useSpoon();
 spoon.init();
+
+window.Buffer = Buffer;
 
 PrimeReact.ripple = true;
 

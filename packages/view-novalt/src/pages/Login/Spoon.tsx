@@ -11,8 +11,9 @@ import { useRecoilState } from 'recoil';
 import { TabMenu } from 'primereact/tabmenu';
 import { useSpoon } from '../../plugins/spoon';
 import { SnsType, LogonUser } from '@sopia-bot/core';
-import { snsLoginOpen, setUserInfo } from '@sopia-bot/bridge';
+import { snsLoginOpen, setSpoonUserInfo, getSpoonUserInfo } from '@sopia-bot/bridge';
 import { useSopiaAPI } from '../../api';
+import { useQuery } from '@tanstack/react-query';
 
 const Wrapper = styled.div`
 	min-width: 100vw;
@@ -32,6 +33,29 @@ export default function SpoonLogin() {
 	const navigate = useNavigate();
 	const [authorized, setAuthorized] = useRecoilState(authorizedStates);
 
+	const { isLoading, data, } = useQuery({
+		queryKey: ['getSopiaLogonUser'],
+		queryFn: async () => (await getSpoonUserInfo()) || null,
+	});
+
+	if ( isLoading ) return <>Loading</>;
+
+	if ( data ) {		
+		spoon.loginToken(data.id, data.token, data.refresh_token)
+			.then(async (user) => {
+				const token = await spoon.refreshToken(user.id, data.token, data.refresh_token);
+				data.token = token;
+				setSpoonUserInfo(data);
+				setAuthorized(true);
+				navigate('/home');
+			})
+			.catch((err) => {
+				console.log('error', err);
+				// login fail;
+			})
+		//return <>Loading</>;
+	}
+
 	const loginHandle = async (user: LogonUser) => {
 		if ( !user ) {
 			throw new Error(t('login.error.login_fail') || '');
@@ -48,11 +72,16 @@ export default function SpoonLogin() {
 			gender: user.gender,
 		};
 
-    console.log(api);
-		
     await Promise.all([
       api.user.setInfo(userData),
-      setUserInfo(userData),
+      setSpoonUserInfo({
+				id: user.id,
+				token: user.token,
+				refresh_token: user.refresh_token,
+				tag: user.tag,
+				grants: user.grants,
+				nickname: user.nickname,
+			}),
     ]);
 
 		setAuthorized(true);
