@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/renderer.js",
-  "types": "dist/renderer/index.d.ts",
+  "types": "types/renderer/index.d.ts",
   "scripts": {
     "build": "rollup -c"
   },

@@ -19,7 +19,6 @@ module.exports = [
 			}),
 			typescript({
 				exclude: 'node_modules/**',
-				declaration: false,
 			}),
 			resolve(),
 		],
@@ -34,7 +33,8 @@ module.exports = [
 		plugins: [
 			typescript({
         exclude: 'node_modules/**',
-				declaration: false,
+				tsconfig: 'tsconfig.renderer.json',
+				useTsconfigDeclarationDir: true,
       }),
 			resolve(),
 		],
@@ -49,7 +49,6 @@ module.exports = [
 		plugins: [
 			typescript({
         exclude: 'node_modules/**',
-				declaration: false,
       }),
 			resolve(),
 		],
@@ -64,7 +63,6 @@ module.exports = [
 		plugins: [
 			typescript({
         exclude: 'node_modules/**',
-				declaration: false,
       }),
 			resolve(),
 		],
