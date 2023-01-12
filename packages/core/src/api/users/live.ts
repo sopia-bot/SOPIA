@@ -27,3 +27,29 @@ export namespace ApiUsersLive {
 	}
 
 }
+
+export namespace ApiUsersManager {
+
+	export const url = '/users/manager/';
+	export const method = 'POST';
+
+	export interface Request extends RequestConfig {
+
+		'data': {
+
+			'manager_id': number;
+
+		}
+		
+	}
+
+	@Serializable()
+	export class Response {
+
+		'is_live': boolean;
+
+		'current_live_id': number;
+
+	}
+
+}

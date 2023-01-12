@@ -65,7 +65,7 @@ export namespace ApiLivesCreate {
 
             'device_unique_id': string,
 
-            'spoon_aim': any[]; // unknown value
+            'spoon_aim': { title: string, count: number }[];
 
         };
 

@@ -48,6 +48,12 @@ export namespace ApiUsersFollowings {
 
 	export interface Request extends RequestConfig {
 
+		'params'?: {
+
+			nickname: string;
+
+		}
+
 	}
 
 	@Serializable()
@@ -68,6 +74,12 @@ export namespace ApiUsersFollowers {
 
 	@Serializable()
 	export class Response extends User {
+
+		'params'?: {
+
+			nickname: string;
+
+		}
 
 	}
 
