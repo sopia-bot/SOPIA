@@ -57,5 +57,31 @@
 			"title": "소피아 파트너 디제이가 방송중이에요!",
 			"join": "방송에 참여하기"
 		}
+	},
+	"live": {
+		"category": "방송 주제",
+		"title": "제목",
+		"notice": "방송 공지",
+		"hashtag": "해시태그",
+		"hashtag_description": "엔터를 눌러 태그를 구분합니다. #을 포함하지 않습니다.",
+		"select_category": "방송 주제를 선택해 주세요",
+		"fixed_manager": "고정 매니저 등록",
+		"fixed_manager_placeholder": "매니저를 등록할 팬을 검색하세요.",
+		"release": "해제",
+		"assign": "등록",
+		"categories": {
+			"live_keyword_asmr": "ASMR",
+			"live_keyword_chat": "수다/챗",
+			"live_keyword_dailylife": "일상",
+			"live_keyword_healing": "힐링",
+			"live_keyword_humor": "유머",
+			"live_keyword_interest": "취미",
+			"live_keyword_love": "연애",
+			"live_keyword_music": "음악",
+			"live_keyword_voice_acting": "성우",
+			"live_keyword_worries": "고민",
+			"live_keyword_tiki_taka": "티키타카",
+			"live_keyword_book": "책"
+		}
 	}
 }
