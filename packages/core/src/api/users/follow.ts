@@ -70,16 +70,16 @@ export namespace ApiUsersFollowers {
 
 	export interface Request extends RequestConfig {
 
-	}
-
-	@Serializable()
-	export class Response extends User {
-
 		'params'?: {
 
 			nickname: string;
 
 		}
+		
+	}
+
+	@Serializable()
+	export class Response extends User {
 
 	}
 

@@ -26,6 +26,8 @@ import {
 	ApiUsersWriteFanmessages,
 	ApiUsersLive,
 	ApiUsersManager,
+	ApiGetUsersManager,
+	ApiDeleteUsersManager,
 } from '../';
 
 type UserId = number|UserSearchProfile;
@@ -107,8 +109,24 @@ export class UsersApiWrapper {
 		return await this.request<ApiUsersLive.Request, ApiUsersLive.Response>(ApiUsersLive, this._userId(user));
 	}
 
-	async manager(user: UserId): HttpRequestWrapper<ApiUsersManager.Request, ApiUsersManager.Response> {
-		return await this.request<ApiUsersManager.Request, ApiUsersManager.Response>(ApiUsersManager, this._userId(user));
+	async setManager(user: UserId): HttpRequestWrapper<ApiUsersManager.Request, ApiUsersManager.Response> {
+		return await this.request<ApiUsersManager.Request, ApiUsersManager.Response>(ApiUsersManager, {
+			data: {
+				manager_id: this._userId(user),
+			},
+		});
+	}
+
+	async manager(): HttpRequestWrapper<ApiGetUsersManager.Request, ApiGetUsersManager.Response> {
+		return await this.request<ApiGetUsersManager.Request, ApiGetUsersManager.Response>(ApiGetUsersManager);
+	}
+
+	async deleteManager(user: UserId): HttpRequestWrapper<ApiDeleteUsersManager.Request, ApiDeleteUsersManager.Response> {
+		return await this.request<ApiDeleteUsersManager.Request, ApiDeleteUsersManager.Response>(ApiDeleteUsersManager, {
+			params: {
+				manager_id: this._userId(user),
+			},
+		});
 	}
 
 }
