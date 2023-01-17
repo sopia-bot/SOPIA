@@ -16,13 +16,26 @@ type Manager = User & {
 	isManager: boolean;
 }
 
-export default function LiveSettingContent() {
+export type LiveSettingContentProps = {
+  value: {
+    title: string;
+    welcome_message: string;
+    tags: string[];
+    categories: string[];
+    spoon_aim: { title: string, count: number }[];
+    image?: Uint8Array;
+  },
+  onChange: (value: LiveSettingContentProps['value']) => void;
+};
+
+export default function LiveSettingContent(props: LiveSettingContentProps) {
   const [title, setTitle] = useState('');
   const [notice, setNotice] = useState('');
   const [selectedCategories, setCategories] = useState([]);
   const [tags, setTags] = useState<string[]>([]);
   const [fixedManagerSearch, setFixedManagerSearch] = useState('');
   const [followers, setFollowers] = useState<Manager[]>([]);
+  const [image, setImage] = useState<Uint8Array>(new Uint8Array());
   const searchResultPanel = useRef<OverlayPanel>(null);
   const searchInput = useRef(null);
   const imageUploadRef = useRef(null);
@@ -90,6 +103,12 @@ export default function LiveSettingContent() {
     e.preventDefault();
   }
 
+  const onSelectImage = async (e: any) => {
+    const buffer = await e.files[0].arrayBuffer();
+    const ubuf = new Uint8Array(buffer);
+    setImage(ubuf);
+  }
+
   useEffect(() => {
     if ( fixedManagerSearch ) {
       searchResultPanel.current?.hide();
@@ -100,6 +119,17 @@ export default function LiveSettingContent() {
       setTout(setTimeout((() => searchFollowers()), 1000));
     }
   }, [fixedManagerSearch]);
+
+  useEffect(() => {
+    props.onChange({
+      title,
+      welcome_message: notice,
+      categories: selectedCategories,
+      tags,
+      spoon_aim: [],
+      image: image.length ? image : undefined,
+    });
+  }, [title, notice, selectedCategories, tags, image]);
   
   return (
     <div style={{
@@ -203,28 +233,32 @@ export default function LiveSettingContent() {
             <label htmlFor='upload-image' className='block text-sm'>{t('live.upload_image')}</label>
             <FileUpload
               ref={imageUploadRef}
-              name="demo[]"
               accept="image/*"
               maxFileSize={1024 * 1024 * 5}
+              contentStyle={{ display: 'none', }}
+              onSelect={onSelectImage}
               chooseOptions={{icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined'}}
               cancelOptions={{icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined'}}
               headerTemplate={({ chooseButton, cancelButton, className }) =>
               <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
                 {chooseButton}
                 {cancelButton}
-              </div>}
-              itemTemplate={(file) =>
-              <div className="flex align-items-center flex-wrap">
-                <div style={{
-                  width: '100%',
-                  height: '200px',
-                  backgroundImage: `url(${(file as any).objectURL})`,
-                  backgroundSize: 'contain',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center',
-                }}>
-                </div>
               </div>}/>
+              <div style={{
+                border: '1px solid #dee2e6',
+              }}>
+                <div className="flex align-items-center flex-wrap">
+                  <div style={{
+                    width: '100%',
+                    height: '200px',
+                    backgroundImage: `url()`,
+                    backgroundSize: 'contain',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                  }}>
+                  </div>
+                </div>
+              </div>
           </span>
         </div>
       </div>

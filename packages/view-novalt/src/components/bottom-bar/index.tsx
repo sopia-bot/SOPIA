@@ -1,21 +1,28 @@
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import './index.css';
-import LiveSettingContent from './live-setting-content';
+import LiveSettingContent, { LiveSettingContentProps } from './live-setting-content';
 
 
 
 export default function BottomBar() {
   const toast = useRef<Toast>(null);
+  const [setting, setSetting] = useState<LiveSettingContentProps['value']>({
+    title: '',
+    welcome_message: '',
+    spoon_aim: [],
+    tags: [],
+    categories: [],
+  });
 
   const showLiveSettingToast = () => {
     toast.current?.show({
       severity: 'info',
       sticky: true,
-      content: <LiveSettingContent />,
+      content: <LiveSettingContent value={setting} onChange={(v) => setSetting(v)} />,
       closable: false,
-    })
+    });
   }
 
   return (
