@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useSpoon } from "../../plugins/spoon";
 import { ToggleButton, ToggleButtonChangeParams } from 'primereact/togglebutton'
 import { useQuery } from "@tanstack/react-query";
+import { FileUpload } from 'primereact/fileupload';
 
 type Manager = User & {
 	isManager: boolean;
@@ -24,6 +25,7 @@ export default function LiveSettingContent() {
   const [followers, setFollowers] = useState<Manager[]>([]);
   const searchResultPanel = useRef<OverlayPanel>(null);
   const searchInput = useRef(null);
+  const imageUploadRef = useRef(null);
   const { t } = useTranslation();
   const spoon = useSpoon();
   const { data: managerList, isSuccess } = useQuery({
@@ -154,9 +156,10 @@ export default function LiveSettingContent() {
       </div>
       <div className='flex-1 flex-column ml-2'>
         <div className='flex'>
-          <span className='field' style={{ width: '100%' }}
-              ref={searchInput}
-          >
+          <span
+            className='field'
+            style={{ width: '100%' }}
+            ref={searchInput}>
             <label htmlFor='fixed-manager' className='block text-sm'>{t('live.fixed_manager')}</label>
             <InputText
               value={fixedManagerSearch}
@@ -190,6 +193,38 @@ export default function LiveSettingContent() {
                   </div>
                 }/>
             </OverlayPanel>
+          </span>
+        </div>
+        <div className='flex'>
+          <span
+            className='field'
+            style={{ width: '100%' }}
+            ref={searchInput}>
+            <label htmlFor='upload-image' className='block text-sm'>{t('live.upload_image')}</label>
+            <FileUpload
+              ref={imageUploadRef}
+              name="demo[]"
+              accept="image/*"
+              maxFileSize={1024 * 1024 * 5}
+              chooseOptions={{icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined'}}
+              cancelOptions={{icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined'}}
+              headerTemplate={({ chooseButton, cancelButton, className }) =>
+              <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
+                {chooseButton}
+                {cancelButton}
+              </div>}
+              itemTemplate={(file) =>
+              <div className="flex align-items-center flex-wrap">
+                <div style={{
+                  width: '100%',
+                  height: '200px',
+                  backgroundImage: `url(${(file as any).objectURL})`,
+                  backgroundSize: 'contain',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center',
+                }}>
+                </div>
+              </div>}/>
           </span>
         </div>
       </div>
