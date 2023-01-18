@@ -49,3 +49,12 @@ export class ProfileUrlInfo extends SpoonSession {
 	@JsonProperty() public image!: UrlInfo;
 
 }
+
+@Serializable()
+export class CastUrlInfo extends SpoonSession {
+
+	@JsonProperty() public voice!: UrlInfo;
+
+	@JsonProperty() public image!: UrlInfo;
+
+}

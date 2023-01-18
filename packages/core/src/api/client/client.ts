@@ -6,8 +6,6 @@
  */
 
 import { SpoonClient } from '../../spoon/';
-import { ProfileUrlInfo } from '../../struct/';
-import { ApiGetProfileImgUrl, ApiResult } from '../';
 import { HttpRequest } from './request';
 import {
 	LivesApiWrapper,
@@ -17,6 +15,7 @@ import {
 	PlayApiWrapper,
 	SearchApiWrapper,
 	TastesApiWrapper,
+	CommonApiWrapper,
 } from '../wrapper/';
 
 
@@ -31,6 +30,7 @@ export class ApiClient {
 	public play: PlayApiWrapper;
 	public search: SearchApiWrapper;
 	public tastes: TastesApiWrapper;
+	public commons: CommonApiWrapper;
 
 	constructor(private _client: SpoonClient) {
 		this.lives = new LivesApiWrapper(this._client);
@@ -40,6 +40,7 @@ export class ApiClient {
 		this.play = new PlayApiWrapper(this._client);
 		this.search = new SearchApiWrapper(this._client);
 		this.tastes = new TastesApiWrapper(this._client);
+		this.commons = new CommonApiWrapper(this._client);
 		this.request = this.request.bind(this);
 	}
 
@@ -70,7 +71,23 @@ export class ApiClient {
 	}
 
 	async profileImgUpload(data: Buffer): Promise<string> {
-		const req = await this.request<ApiGetProfileImgUrl.Request, ApiGetProfileImgUrl.Response>(ApiGetProfileImgUrl);
+		const req = await this.commons.profileUrl();
+		const [{ image }] = req.res.results;
+
+		const res = await HttpRequest.Run(this._client, {
+			url: image.url,
+			method: 'PUT',
+			headers: {
+				'Content-Type': image.content_type,
+			},
+			data,
+		});
+
+		return image.key;
+	}
+
+	async castImgUpload(data: Buffer): Promise<string> {
+		const req = await this.commons.castUrl();
 		const [{ image }] = req.res.results;
 
 		const res = await HttpRequest.Run(this._client, {
