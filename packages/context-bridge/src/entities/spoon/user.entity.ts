@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm";
 import { Grants, LogonUser } from "@sopia-bot/core";
+import { jsonTransformer } from "../../utils";
 
 @Entity()
 export class SpoonUserEntity
@@ -22,10 +23,7 @@ export class SpoonUserEntity
 	@Column({
 		type: 'varchar',
 		length: 255,
-		transformer: {
-			from: (value: string) => JSON.parse(value),
-			to: (value: Grants) => JSON.stringify(value),
-		}
+		transformer: jsonTransformer,
 	})
 	grants!: Grants; // sopia user id
 }

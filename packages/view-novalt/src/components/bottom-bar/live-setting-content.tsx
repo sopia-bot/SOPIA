@@ -11,31 +11,27 @@ import { useSpoon } from "../../plugins/spoon";
 import { ToggleButton, ToggleButtonChangeParams } from 'primereact/togglebutton'
 import { useQuery } from "@tanstack/react-query";
 import { FileUpload } from 'primereact/fileupload';
+import { Button } from "primereact/button";
+import { LiveSettingDto } from '@sopia-bot/bridge/dist/dto';
 
 type Manager = User & {
 	isManager: boolean;
 }
 
 export type LiveSettingContentProps = {
-  value: {
-    title: string;
-    welcome_message: string;
-    tags: string[];
-    categories: string[];
-    spoon_aim: { title: string, count: number }[];
-    image?: Uint8Array;
-  },
+  value: LiveSettingDto,
   onChange: (value: LiveSettingContentProps['value']) => void;
 };
 
 export default function LiveSettingContent(props: LiveSettingContentProps) {
-  const [title, setTitle] = useState('');
-  const [notice, setNotice] = useState('');
-  const [selectedCategories, setCategories] = useState([]);
-  const [tags, setTags] = useState<string[]>([]);
+  const [title, setTitle] = useState(props.value.title);
+  const [notice, setNotice] = useState(props.value.welcome_message);
+  const [selectedCategories, setCategories] = useState(props.value.categories);
+  const [tags, setTags] = useState<string[]>(props.value.tags);
   const [fixedManagerSearch, setFixedManagerSearch] = useState('');
   const [followers, setFollowers] = useState<Manager[]>([]);
-  const [image, setImage] = useState<Uint8Array>(new Uint8Array());
+  const [image, setImage] = useState<Buffer>(props.value.image || Buffer.from([]));
+  const [imgUrl, setImgUrl] = useState('');
   const searchResultPanel = useRef<OverlayPanel>(null);
   const searchInput = useRef(null);
   const imageUploadRef = useRef(null);
@@ -105,8 +101,12 @@ export default function LiveSettingContent(props: LiveSettingContentProps) {
 
   const onSelectImage = async (e: any) => {
     const buffer = await e.files[0].arrayBuffer();
-    const ubuf = new Uint8Array(buffer);
-    setImage(ubuf);
+    setImage(Buffer.from(buffer));
+  }
+
+  const removeImg = () => {
+    setImage(Buffer.from([]));
+    setImgUrl('');
   }
 
   useEffect(() => {
@@ -129,6 +129,11 @@ export default function LiveSettingContent(props: LiveSettingContentProps) {
       spoon_aim: [],
       image: image.length ? image : undefined,
     });
+    if ( image.length ) {
+      const blob = new Blob([ image ]);
+      const url = URL.createObjectURL(blob);
+      setImgUrl(url);
+    }
   }, [title, notice, selectedCategories, tags, image]);
   
   return (
@@ -242,16 +247,21 @@ export default function LiveSettingContent(props: LiveSettingContentProps) {
               headerTemplate={({ chooseButton, cancelButton, className }) =>
               <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
                 {chooseButton}
-                {cancelButton}
+                <Button
+                  disabled={!imgUrl}
+                  onClick={removeImg}
+                  className="custom-choose-btn p-button-rounded p-button-outlined p-button-danger"
+                  icon="pi pi-fw pi-times" />
               </div>}/>
               <div style={{
                 border: '1px solid #dee2e6',
+                padding: '1rem',
               }}>
                 <div className="flex align-items-center flex-wrap">
                   <div style={{
                     width: '100%',
                     height: '200px',
-                    backgroundImage: `url()`,
+                    backgroundImage: `url(${imgUrl})`,
                     backgroundSize: 'contain',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',

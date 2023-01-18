@@ -3,6 +3,7 @@ import { createSOPIAKey } from '../utils';
 import { SOPIAFunction } from '../type';
 import { SetUserDto } from "../dto/user.dto";
 import { SetSpoonUserDto } from "../dto/spoon/user.dto";
+import { SetLiveSettingDto } from "../dto";
 
 (async () => {	
 	const request = (url: string, ...args: any[]) => {
@@ -32,6 +33,8 @@ import { SetSpoonUserDto } from "../dto/spoon/user.dto";
     config: {
       setUser: (user: SetUserDto) => request('/config/user/set', user),
       getUser: () => request('/config/user/get'),
+			setLiveSetting: (setting: SetLiveSettingDto) => request('/config/live/set', setting),
+			getLiveSetting: () => request('/config/live/get'),
     },
 	};
 
