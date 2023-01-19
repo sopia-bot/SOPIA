@@ -36,8 +36,8 @@ export class LiveSettingEntity {
 	@Column({
 		type: 'blob',
 		transformer: {
-			to: (value: string) => Buffer.from(value || '', 'utf-8'),
-			from: (value: Buffer) => value.toString(),
+			from: (value: string) => Buffer.from(value || '', 'utf-8'),
+			to: (value: Buffer) => value.toString(),
 		},
 	})
 	image!: Buffer;
