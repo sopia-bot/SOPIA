@@ -33,10 +33,11 @@ export default function BottomBar() {
 
   const toggleLiveSettingToast = () => {
     if ( isOpenSetting ) {
+      setOpenState(false);
       toast.current?.clear();
       setLiveSetting(setting);
-      setOpenState(false);
     } else {
+      setOpenState(true);
       toast.current?.show({
         severity: 'info',
         sticky: true,
@@ -44,14 +45,16 @@ export default function BottomBar() {
         closable: false,
         life: 0,
       });
-      setOpenState(true);
     }
   }
 
 
   return (
     <>
-      <Toast ref={toast} position='bottom-center' className='flex align-items-end justify-content-center live-setting-content'/>
+      <Toast
+        ref={toast}
+        position='bottom-center'
+        className={(isOpenSetting ? 'flex' : 'hidden') + ' align-items-end justify-content-center live-setting-content'}/>
       <div className="flex align-items-center" style={{
         height: '65px',
         maxWidth: '100vw',
