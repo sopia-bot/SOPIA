@@ -129,12 +129,15 @@ export default function LiveSettingContent(props: LiveSettingContentProps) {
       spoon_aim: [],
       image: image.length ? image : undefined,
     });
+  }, [title, notice, selectedCategories, tags, image]);
+
+  useEffect(() => {
     if ( image.length ) {
       const blob = new Blob([ image ]);
       const url = URL.createObjectURL(blob);
       setImgUrl(url);
     }
-  }, [title, notice, selectedCategories, tags, image]);
+  }, [image]);
   
   return (
     <div style={{
