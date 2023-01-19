@@ -41,9 +41,7 @@ export class ConfigService {
 		setting.tags = liveInfo.tags;
 		setting.categories = liveInfo.categories;
 		setting.spoon_aim = liveInfo.spoon_aim;
-		if ( liveInfo.image ) {
-			setting.image = liveInfo.image;
-		}
+		setting.image = Buffer.from(liveInfo.image || '');
 
 		return this.liveSettingRepository.save(setting);
 	}
