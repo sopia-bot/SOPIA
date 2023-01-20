@@ -7,6 +7,7 @@ import { SetSpoonUserDto } from '../dto/spoon/user.dto';
 import { SpoonUserEntity } from '../entities/spoon/user.entity';
 import { LiveSettingEntity } from '../entities/live-setting.entity';
 import { SetLiveSettingDto } from '../dto';
+import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogReturnValue, SaveDialogOptions } from 'electron';
 
 export function createSOPIAKey(key: string) {
 	return crypto.SHA1(key).toString(crypto.enc.Hex);
@@ -36,3 +37,9 @@ export const setUserInfo = createBridger<Promise<UserEntity>, [SetUserDto]>((s) 
 export const getUserInfo = createBridger<Promise<UserEntity>>((s) => s.config.getUser);
 export const setLiveSetting = createBridger<Promise<LiveSettingEntity>, [SetLiveSettingDto]>((s) => s.config.setLiveSetting);
 export const getLiveSetting = createBridger<Promise<LiveSettingEntity>>((s) => s.config.getLiveSetting);
+
+export const showOpenDialog = createBridger<Promise<OpenDialogReturnValue>, [OpenDialogOptions]>((s) => s.dialog.open);
+export const showSaveDialog = createBridger<Promise<SaveDialogReturnValue>, [SaveDialogOptions]>((s) => s.dialog.save);
+
+export const getFileSystem = createBridger<SOPIAFunction['node']['fs']>((s) => () => s.node.fs as any);
+export const getNodePath = createBridger<SOPIAFunction['node']['path']>((s) => () => s.node.path);

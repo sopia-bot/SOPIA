@@ -6,6 +6,7 @@
 	"id": "아이디",
 	"password": "비밀번호",
 	"password_confirm": "비밀번호 확인",
+	"select_file": "파일 선택",
 	"login": {
 		"sopia": {
 			"title": "소피아 로그인",
@@ -52,12 +53,6 @@
 			"policy": "$t(signin.term) 및 $t(signin.privacy)에 동의하셔야 가입 가능합니다."
 		}
 	},
-	"home": {
-		"partner": {
-			"title": "소피아 파트너 디제이가 방송중이에요!",
-			"join": "방송에 참여하기"
-		}
-	},
 	"live": {
 		"category": "방송 주제",
 		"title": "제목",
@@ -83,6 +78,15 @@
 			"live_keyword_worries": "고민",
 			"live_keyword_tiki_taka": "티키타카",
 			"live_keyword_book": "책"
+		}
+	},
+	"home": {
+		"help": {
+			"select_media": "재생될 오디오 파일을 선택합니다."
+		},
+		"partner": {
+			"title": "소피아 파트너 디제이가 방송중이에요!",
+			"join": "방송에 참여하기"
 		}
 	}
 }

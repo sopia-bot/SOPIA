@@ -1,9 +1,11 @@
-import { ipcRenderer, contextBridge } from "electron";
+import { ipcRenderer, contextBridge, OpenDialogOptions, SaveDialogOptions } from "electron";
 import { createSOPIAKey } from '../utils';
 import { SOPIAFunction } from '../type';
 import { SetUserDto } from "../dto/user.dto";
 import { SetSpoonUserDto } from "../dto/spoon/user.dto";
 import { SetLiveSettingDto } from "../dto";
+import { readFile, writeFile } from "fs/promises";
+import path from 'path';
 
 (async () => {	
 	const request = (url: string, ...args: any[]) => {
@@ -36,6 +38,17 @@ import { SetLiveSettingDto } from "../dto";
 			setLiveSetting: (setting: SetLiveSettingDto) => request('/config/live/set', setting),
 			getLiveSetting: () => request('/config/live/get'),
     },
+		dialog: {
+			open: (options: OpenDialogOptions) => request('/dialog/open', options),
+			save: (options: SaveDialogOptions) => request('/dialog/save', options),
+		},
+		node: {
+			fs: {
+				readFile,
+				writeFile,
+			},
+			path,
+		},
 	};
 
 	contextBridge.exposeInMainWorld(`_sopia-${createSOPIAKey(version)}`, SOPIA);

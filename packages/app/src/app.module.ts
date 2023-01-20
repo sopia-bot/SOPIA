@@ -8,6 +8,8 @@ import { join } from 'path';
 import { app } from 'electron';
 import { Logger as TypeOrmLogger, QueryRunner } from 'typeorm';
 import { UserEntity, SpoonUserEntity, LiveSettingEntity } from '@sopia-bot/bridge/dist/entities';
+import { UtilsModule } from './utils/utils.module';
+import { DialogModule } from './dialog/dialog.module';
 
 console.log('!!!!!!!!!!!!!!!!!!', LiveSettingEntity);
 
@@ -65,6 +67,8 @@ class NestOrmLogger implements TypeOrmLogger {
 		ApplicationModule,
 		SpoonModule,
 		ConfigModule,
+		UtilsModule,
+		DialogModule,
 	],
 })
 export class AppModule {}

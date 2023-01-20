@@ -5,11 +5,14 @@ import { useSpoon } from "../../plugins/spoon";
 import PartnerBanner from "./PartnerBanner";
 import { useQuery } from '@tanstack/react-query';
 import './home.css';
+import Track from "./track";
 
 export default function Home() {
-	return (
-		<>
-			Home
-		</>
-	);
+  const [trackList, setTrackList] = useState([]);
+
+  return (
+    <>
+      <Track/>
+    </>
+  );
 }
