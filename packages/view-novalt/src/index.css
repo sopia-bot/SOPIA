@@ -9,7 +9,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   user-select: none;
-  --wrapper-height: calc(100vh - 110px);
+  --wrapper-height: calc(100vh - 160px);
 }
 
 body {
@@ -47,4 +47,8 @@ body {
 .p-tabmenu.flextab .p-tabmenuitem.p-highlight .p-menuitem-link {
   color: var(--red-500) !important;
   border-color: var(--red-500) !important;
+}
+
+*:focus {
+  box-shadow: none !important;
 }

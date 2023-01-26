@@ -3,6 +3,7 @@ import Home from "../pages/Home/Index";
 import SopiaLogin from "../pages/Login/Sopia";
 import SopiaSignin from '../pages/Signin/Sopia';
 import SpoonLogin from "../pages/Login/Spoon";
+import Setting from "../pages/Setting";
 
 export interface SopiaRouteObject extends Omit<RouteObject, 'children'> {
 	children?: SopiaRouteObject[];
@@ -14,6 +15,11 @@ const routes: SopiaRouteObject[] = [
 		path: '/home',
 		element: <Home/>,
 		id: 'home',
+	},
+	{
+		path: '/setting',
+		element: <Setting/>,
+		id: 'setting',
 	},
 	{
 		path: '/login',
