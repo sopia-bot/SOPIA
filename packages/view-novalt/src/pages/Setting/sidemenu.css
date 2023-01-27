@@ -1,0 +1,15 @@
+.sidemenu-item {
+	height: 50px;
+	cursor: pointer;
+	padding-right: 20px;
+}
+
+.sidemenu-item:hover {
+	background-color: var(--gray-100);
+}
+
+.sidemenu-item.active {
+	background-color: var(--gray-50);
+	border-right: 2px solid var(--blue-500);
+	padding-right: 18px;
+}

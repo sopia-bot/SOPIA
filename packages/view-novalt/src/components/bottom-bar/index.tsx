@@ -58,6 +58,7 @@ export default function BottomBar() {
       <div className="flex align-items-center" style={{
         height: '65px',
         maxWidth: '100vw',
+        borderTop: '2px solid var(--surface-d)'
       }}>
         <div className="flex-auto flex"></div>
         <div className="flex-auto flex justify-content-center ">
