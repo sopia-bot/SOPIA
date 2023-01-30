@@ -7,11 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { app } from 'electron';
 import { Logger as TypeOrmLogger, QueryRunner } from 'typeorm';
-import { UserEntity, SpoonUserEntity, LiveSettingEntity } from '@sopia-bot/bridge/dist/entities';
+import { UserEntity, SpoonUserEntity, LiveSettingEntity, StreamSettingEntity } from '@sopia-bot/bridge/dist/entities';
 import { UtilsModule } from './utils/utils.module';
 import { DialogModule } from './dialog/dialog.module';
-
-console.log('!!!!!!!!!!!!!!!!!!', LiveSettingEntity);
 
 const basedir = app.getPath('userData');
 
@@ -58,6 +56,7 @@ class NestOrmLogger implements TypeOrmLogger {
 				UserEntity,
 				SpoonUserEntity,
 				LiveSettingEntity,
+				StreamSettingEntity,
 			],
 			logging: true,
 			synchronize: true,

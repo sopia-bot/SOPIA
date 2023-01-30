@@ -1,12 +1,10 @@
 import './track.css';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
 import { useTranslation } from 'react-i18next';
-import { showOpenDialog, getNodePath } from '@sopia-bot/bridge';
 import { useEffect, useState } from 'react';
-const path = getNodePath();
+import SelectFile from '../../components/select-file';
 
 type TrackProps = {
 }
@@ -15,22 +13,6 @@ export default function Track() {
 	const { t } = useTranslation();
 	const [filePath, setFilePath] = useState('');
 	const [trackName, setTrackName] = useState('');
-
-	const selectMediaFile = async () => {
-		const results = await showOpenDialog({
-			title: 'Select Media',
-			filters: [
-				{
-					name: 'Audio Files',
-					extensions: ['mp3', 'wav', 'aac', 'm4a', 'ogg'],
-				},
-			],
-		});
-		if ( results.canceled ) return;
-
-		const [filePath] = results.filePaths;
-		setFilePath(filePath);
-	}
 
 	useEffect(() => {
 
@@ -48,10 +30,15 @@ export default function Track() {
 				</div>
 			</div>
 			<div className='flex tooltip-element' style={{ height: '35px' }} data-pr-tooltip={t('home.help.select_media')}>
-				<div className='p-inputgroup' onClick={selectMediaFile}>
-					<InputText value={path.basename(filePath)} readOnly placeholder={t('select_file')||''} className='p-inputtext-sm' />
-					<Button className='p-button-sm' icon='pi pi-angle-right' />
-				</div>
+				<SelectFile value={filePath} onSelect={(r) => setFilePath(r.filePaths[0])} option={{
+					title: 'Select Media',
+					filters: [
+						{
+							name: 'Audio Files',
+							extensions: ['mp3', 'wav', 'aac', 'm4a', 'ogg'],
+						},
+					],
+				}} />
 			</div>
 		</div>
 		<div className="flex-initial flex">test</div>

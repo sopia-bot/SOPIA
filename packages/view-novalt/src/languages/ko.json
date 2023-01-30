@@ -7,6 +7,7 @@
 	"password": "비밀번호",
 	"password_confirm": "비밀번호 확인",
 	"select_file": "파일 선택",
+	"save": "저장",
 	"menu": {
 		"home": "방송하기",
 		"setting": "설정"
@@ -94,8 +95,14 @@
 		}
 	},
 	"setting": {
+		"success": "저장에 성공했습니다.",
 		"sidemenu": {
 			"live": "방송 설정"
+		},
+		"live": {
+			"warn": "해당 설정을 잘못 바꾸면 정상적인 방송이 불가할 수 있으니 주의바랍니다.",
+			"command": "방송 명령어",
+			"args": "명령 인수"
 		}
 	}
 }

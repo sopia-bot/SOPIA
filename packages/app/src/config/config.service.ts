@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity, LiveSettingEntity } from '@sopia-bot/bridge/dist/entities';
+import { UserEntity, LiveSettingEntity, StreamSettingEntity } from '@sopia-bot/bridge/dist/entities';
 import { Repository } from 'typeorm';
-import { SetUserDto, SetLiveSettingDto } from '@sopia-bot/bridge/dist/dto';
+import { SetUserDto, SetLiveSettingDto, SetStreamDto } from '@sopia-bot/bridge/dist/dto';
 
 @Injectable()
 export class ConfigService {
@@ -10,6 +10,7 @@ export class ConfigService {
 	constructor(
 		@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
 		@InjectRepository(LiveSettingEntity) private liveSettingRepository: Repository<LiveSettingEntity>,
+		@InjectRepository(StreamSettingEntity) private streamSettingRepository: Repository<StreamSettingEntity>,
 	) {}
 
 	async getUser() {
@@ -44,5 +45,18 @@ export class ConfigService {
 		setting.image = Buffer.from(liveInfo.image || '');
 
 		return this.liveSettingRepository.save(setting);
+	}
+
+	async getStreamSetting() {
+		return (await this.streamSettingRepository.find())[0];
+	}
+
+	async setStreamSetting(streamInfo: SetStreamDto) {
+		const setting = (await this.getStreamSetting()) || new StreamSettingEntity();
+
+		setting.args = streamInfo.args;
+		setting.command = streamInfo.command;
+
+		return this.streamSettingRepository.save(setting);
 	}
 }

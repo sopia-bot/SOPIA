@@ -22,7 +22,7 @@ export default function Setting() {
 			<div className="flex flex-initial shadow-2" style={{ width: '200px', height: 'var(--wrapper-height)' }}>
 				<SettingSideMenu model={items} activeIndex={activeIndex} onChange={onSidemenuChange} />
 			</div>
-			<div className="flex flex-1">
+			<div className="flex flex-1" style={{ maxHeight: 'var(--wrapper-height)', overflow: 'auto' }}>
 				<div style={{
 					width: '100%',
 				}}>{items[activeIndex].element}</div>
