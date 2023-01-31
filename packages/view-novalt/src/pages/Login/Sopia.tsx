@@ -11,7 +11,7 @@ import { toastStates } from '../../store';
 import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getUserInfo } from '@sopia-bot/bridge';
+import { getUserInfo, setUserInfo } from '@sopia-bot/bridge';
 
 const Wrapper = styled.div`
   min-width: 100vw;
@@ -66,6 +66,8 @@ export default function SopiaLogin() {
       if ( !user ) {
         throw new Error(t('login.error.login_fail') || '');
       }
+
+      await setUserInfo(user);
 
       setLoading(false);
       navigate('/login/spoon');
