@@ -37,7 +37,12 @@ export default function Track() {
 							name: 'Audio Files',
 							extensions: ['mp3', 'wav', 'aac', 'm4a', 'ogg'],
 						},
+            {
+              name: 'All Files',
+              extensions: [ '*' ],
+            }
 					],
+          properties: ['openFile'],
 				}} />
 			</div>
 		</div>
