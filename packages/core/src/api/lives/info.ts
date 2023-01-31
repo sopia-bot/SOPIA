@@ -67,6 +67,8 @@ export namespace ApiLivesCreate {
 
             'spoon_aim': { title: string, count: number }[];
 
+						'img_key'?: string;
+
         };
 
 	}
