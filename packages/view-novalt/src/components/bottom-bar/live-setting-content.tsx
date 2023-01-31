@@ -7,12 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from "primereact/button";
-import { LiveSettingDto } from '@sopia-bot/bridge/dist/dto';
+import { SetLiveSettingDto } from '@sopia-bot/bridge/dist/dto';
 import FixManagerInput from "./manager-input";
 
 
 export type LiveSettingContentProps = {
-  value: LiveSettingDto,
+  value: SetLiveSettingDto,
   onChange: (value: LiveSettingContentProps['value']) => void;
 };
 

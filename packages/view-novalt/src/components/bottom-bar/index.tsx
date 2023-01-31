@@ -5,6 +5,8 @@ import './index.css';
 import LiveSettingContent, { LiveSettingContentProps } from './live-setting-content';
 import { getLiveSetting, setLiveSetting } from '@sopia-bot/bridge';
 import { useQuery } from '@tanstack/react-query';
+import { useSpoon } from '../../plugins/spoon';
+import { ApiLivesCreate } from '@sopia-bot/core';
 
 
 export default function BottomBar() {
@@ -17,6 +19,8 @@ export default function BottomBar() {
     tags: [],
     categories: [],
   });
+  const spoon = useSpoon();
+  const [createLiveLoading, setCreateLiveLoading] = useState(false);
   const { status, isLoading, data } = useQuery({
     queryKey: ['getLiveSetting'],
     queryFn: async () => (await getLiveSetting()) || null,
@@ -48,6 +52,34 @@ export default function BottomBar() {
     }
   }
 
+  const createLive = async () => {
+    setCreateLiveLoading(true);
+    toast.current?.clear();
+    const requestProp: ApiLivesCreate.Request = {
+      'data': {
+        is_adult: false,
+        is_save: false,
+        donation: 0,
+        title: setting.title,
+        type: 0,
+        welcome_message: setting.welcome_message,
+        invite_member_ids: [],
+        tags: setting.tags,
+        categories: setting.categories,
+        engine: {name:'sori',host:''},
+        is_live_call: false,
+        device_unique_id: spoon.deviceUUID,
+        spoon_aim: setting.spoon_aim,
+      }
+    }
+    
+    if ( setting.image) {
+      requestProp.data.img_key = await spoon.api.castImgUpload(setting.image);
+    }
+    
+
+    setCreateLiveLoading(false);
+  }
 
   return (
     <>
@@ -63,7 +95,7 @@ export default function BottomBar() {
         <div className="flex-auto flex"></div>
         <div className="flex-auto flex justify-content-center ">
           <span className='p-buttonset'>
-            <Button label="Live" onClick={() => toast.current?.clear()} />
+            <Button loading={createLiveLoading} label="Live" onClick={createLive} />
             <Button
               className={(isOpenSetting ? 'p-button-success p-button-outlined' : 'p-button-primary')}
               icon={isOpenSetting ? "pi pi-arrow-down" : "pi pi-save"}
