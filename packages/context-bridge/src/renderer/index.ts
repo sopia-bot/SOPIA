@@ -1,6 +1,6 @@
 import { SOPIAFunction } from '../type';
 import crypto from 'crypto-js';
-import { LogonUser } from '@sopia-bot/core';
+import { ApiLivesCreate, LogonUser } from '@sopia-bot/core';
 import { UserEntity } from '../entities/user.entity';
 import { SetUserDto } from '../dto/user.dto';
 import { SetSpoonUserDto } from '../dto/spoon/user.dto';
@@ -33,6 +33,8 @@ export const quit = createBridger<void>((s) => s.app.quit);
 export const snsLoginOpen = createBridger<Promise<LogonUser>, [string]>((s) => s.spoon.snsLogin);
 export const setSpoonUserInfo = createBridger<Promise<SpoonUserEntity>, [SetSpoonUserDto]>((s) => s.spoon.setUser);
 export const getSpoonUserInfo = createBridger<Promise<SpoonUserEntity>>((s) => s.spoon.getUser);
+export const createLive = createBridger<Promise<ApiLivesCreate.Response>, [ApiLivesCreate.Request]>((s) => s.spoon.createLive);
+export const pushLiveChunk = createBridger<Promise<void>, [Buffer]>((s) => s.spoon.livePush);
 
 export const setUserInfo = createBridger<Promise<UserEntity>, [SetUserDto]>((s) => s.config.setUser);
 export const getUserInfo = createBridger<Promise<UserEntity>>((s) => s.config.getUser);

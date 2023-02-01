@@ -1,4 +1,4 @@
-import { LogonUser } from "@sopia-bot/core";
+import { ApiLivesCreate, LogonUser } from "@sopia-bot/core";
 import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from "electron";
 import { SetLiveSettingDto, SetStreamDto } from "./dto";
 import { SetSpoonUserDto } from "./dto/spoon/user.dto";
@@ -22,6 +22,8 @@ export interface SOPIAFunction {
     snsLogin: (url: string) => Promise<LogonUser>;
     setUser: (user: SetSpoonUserDto) => Promise<SpoonUserEntity>;
     getUser: () => Promise<SpoonUserEntity>;
+    createLive: (prop: ApiLivesCreate.Request) => Promise<ApiLivesCreate.Response>;
+    livePush: (chunk: Buffer) => Promise<void>;
   },
   config: {
     setUser: (user: SetUserDto) => Promise<UserEntity>;

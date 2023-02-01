@@ -138,10 +138,11 @@ export class SpoonClient {
 			this.deviceUUID = payload.did;
 		}
 
+		this.token = token;
+		this.logonUser.token = this.token;
 		if ( refToken ) {
 			try {
 				await this.refreshToken(this.logonUser.id, token, refToken);
-				this.logonUser.token = this.token;
 				this.logonUser.refresh_token = this.refToken;
 			} catch (err) {
 				if ( rigidity ) {

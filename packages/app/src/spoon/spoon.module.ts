@@ -3,7 +3,7 @@ import { SpoonService } from './spoon.service';
 import { SpoonController } from './spoon.controller';
 import { LoginService } from './login.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SpoonUserEntity } from '@sopia-bot/bridge/dist/entities';
+import { SpoonUserEntity, StreamSettingEntity } from '@sopia-bot/bridge/dist/entities';
 import { LiveService } from './live.service';
 
 @Module({
@@ -12,6 +12,7 @@ import { LiveService } from './live.service';
   imports: [
     TypeOrmModule.forFeature([
       SpoonUserEntity,
+      StreamSettingEntity,
     ])
   ]
 })

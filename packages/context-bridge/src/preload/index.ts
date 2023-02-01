@@ -6,6 +6,7 @@ import { SetSpoonUserDto } from "../dto/spoon/user.dto";
 import { SetLiveSettingDto, SetStreamDto } from "../dto";
 import { readFile, writeFile } from "fs/promises";
 import path from 'path';
+import { ApiLivesCreate } from "@sopia-bot/core/dist";
 
 (async () => {	
 	const request = (url: string, ...args: any[]) => {
@@ -27,10 +28,11 @@ import path from 'path';
 			quit: () => request('/app/quit'),
 		},
 		spoon: {
-			//snsLogin: async (url: string) => await ipcRenderer.invoke('sns-login-open', url),
 			snsLogin: (url: string) => request('/spoon/sns-login-open', url),
 			setUser: (user: SetSpoonUserDto) => request('/spoon/user/set', user),
       getUser: () => request('/spoon/user/get'),
+			createLive: (prop: ApiLivesCreate.Request) => request('/spoon/live/create', prop),
+			livePush: (chunk: Buffer) => request('/spoon/live/push', chunk),
 		},
     config: {
       setUser: (user: SetUserDto) => request('/config/user/set', user),

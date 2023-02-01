@@ -5,17 +5,24 @@ import { Tooltip } from 'primereact/tooltip';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import SelectFile from '../../components/select-file';
+import { TrackOption, useLiveContext } from '../../plugins/live-context';
 
 type TrackProps = {
+	type: 'file';
+	onChange: (option: TrackOption) => void;
 }
 
-export default function Track() {
+export default function Track(prop: TrackProps) {
 	const { t } = useTranslation();
 	const [filePath, setFilePath] = useState('');
 	const [trackName, setTrackName] = useState('');
 
 	useEffect(() => {
-
+		prop.onChange({
+			type: prop.type,
+			trackName,
+			filePath,
+		});
 	}, [filePath, trackName]);
 
 	return <Card className='track'>

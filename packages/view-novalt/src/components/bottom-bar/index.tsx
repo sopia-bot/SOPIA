@@ -3,10 +3,11 @@ import { Toast } from 'primereact/toast';
 import { useEffect, useRef, useState } from 'react';
 import './index.css';
 import LiveSettingContent, { LiveSettingContentProps } from './live-setting-content';
-import { getLiveSetting, setLiveSetting } from '@sopia-bot/bridge';
+import { getLiveSetting, setLiveSetting, createLive as createSpoonLive } from '@sopia-bot/bridge';
 import { useQuery } from '@tanstack/react-query';
 import { useSpoon } from '../../plugins/spoon';
 import { ApiLivesCreate } from '@sopia-bot/core';
+import { useLiveContext } from '../../plugins/live-context';
 
 
 export default function BottomBar() {
@@ -25,6 +26,7 @@ export default function BottomBar() {
     queryKey: ['getLiveSetting'],
     queryFn: async () => (await getLiveSetting()) || null,
   });
+  const liveContext = useLiveContext();
 
 
   useEffect(() => {
@@ -76,7 +78,10 @@ export default function BottomBar() {
     if ( setting.image) {
       requestProp.data.img_key = await spoon.api.castImgUpload(setting.image);
     }
-    
+
+    await createSpoonLive(requestProp);
+
+    liveContext.start();
 
     setCreateLiveLoading(false);
   }
