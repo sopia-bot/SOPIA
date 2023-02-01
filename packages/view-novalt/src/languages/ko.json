@@ -6,6 +6,12 @@
 	"id": "아이디",
 	"password": "비밀번호",
 	"password_confirm": "비밀번호 확인",
+	"select_file": "파일 선택",
+	"save": "저장",
+	"menu": {
+		"home": "방송하기",
+		"setting": "설정"
+	},
 	"login": {
 		"sopia": {
 			"title": "소피아 로그인",
@@ -52,10 +58,51 @@
 			"policy": "$t(signin.term) 및 $t(signin.privacy)에 동의하셔야 가입 가능합니다."
 		}
 	},
+	"live": {
+		"category": "방송 주제",
+		"title": "제목",
+		"notice": "방송 공지",
+		"hashtag": "해시태그",
+		"hashtag_description": "엔터를 눌러 태그를 구분합니다. #을 포함하지 않습니다.",
+		"select_category": "방송 주제를 선택해 주세요",
+		"fixed_manager": "고정 매니저 등록",
+		"fixed_manager_placeholder": "매니저를 등록할 팬을 검색하세요.",
+		"release": "해제",
+		"assign": "등록",
+		"upload_image": "배경 이미지 선택",
+		"categories": {
+			"live_keyword_asmr": "ASMR",
+			"live_keyword_chat": "수다/챗",
+			"live_keyword_dailylife": "일상",
+			"live_keyword_healing": "힐링",
+			"live_keyword_humor": "유머",
+			"live_keyword_interest": "취미",
+			"live_keyword_love": "연애",
+			"live_keyword_music": "음악",
+			"live_keyword_voice_acting": "성우",
+			"live_keyword_worries": "고민",
+			"live_keyword_tiki_taka": "티키타카",
+			"live_keyword_book": "책"
+		}
+	},
 	"home": {
+		"help": {
+			"select_media": "재생될 오디오 파일을 선택합니다."
+		},
 		"partner": {
 			"title": "소피아 파트너 디제이가 방송중이에요!",
 			"join": "방송에 참여하기"
+		}
+	},
+	"setting": {
+		"success": "저장에 성공했습니다.",
+		"sidemenu": {
+			"live": "방송 설정"
+		},
+		"live": {
+			"warn": "해당 설정을 잘못 바꾸면 정상적인 방송이 불가할 수 있으니 주의바랍니다.",
+			"command": "방송 명령어",
+			"args": "명령 인수"
 		}
 	}
 }

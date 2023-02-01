@@ -8,7 +8,7 @@
 }
 .main-space-wrapper {
   display: flex;
-  max-height: calc(100vh - 45px);
+  max-height: var(--wrapper-height);
   overflow-x: hidden;
   overflow-y: auto;
 }

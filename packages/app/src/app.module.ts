@@ -7,7 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { app } from 'electron';
 import { Logger as TypeOrmLogger, QueryRunner } from 'typeorm';
-import { UserEntity, SpoonUserEntity } from '@sopia-bot/bridge/dist/entities';
+import { UserEntity, SpoonUserEntity, LiveSettingEntity, StreamSettingEntity } from '@sopia-bot/bridge/dist/entities';
+import { UtilsModule } from './utils/utils.module';
+import { DialogModule } from './dialog/dialog.module';
 
 const basedir = app.getPath('userData');
 
@@ -50,7 +52,12 @@ class NestOrmLogger implements TypeOrmLogger {
 		TypeOrmModule.forRoot({
 			type: 'better-sqlite3',
 			database: join(basedir, 'app.db'),
-			entities: [UserEntity, SpoonUserEntity],
+			entities: [
+				UserEntity,
+				SpoonUserEntity,
+				LiveSettingEntity,
+				StreamSettingEntity,
+			],
 			logging: true,
 			synchronize: true,
 			logger: new NestOrmLogger(),
@@ -59,6 +66,8 @@ class NestOrmLogger implements TypeOrmLogger {
 		ApplicationModule,
 		SpoonModule,
 		ConfigModule,
+		UtilsModule,
+		DialogModule,
 	],
 })
 export class AppModule {}

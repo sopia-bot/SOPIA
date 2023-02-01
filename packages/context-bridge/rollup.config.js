@@ -37,9 +37,11 @@ module.exports = [
 			{
 				name: 'rm',
 				buildStart() {
-					fs.rmSync('./types', {
-						recursive: true,
-					});
+					if ( fs.existsSync('./types') ) {
+						fs.rmSync('./types', {
+							recursive: true,
+						});
+					}
 				},
 			},
 			typescript({

@@ -124,7 +124,7 @@ export class SpoonClient {
 		return this.logonUser;
 	}
 
-	async loginToken(user: (UserSearchProfile|number), token: string, refToken: string, rigidity: boolean = false): Promise<LogonUser> {
+	async loginToken(user: (UserSearchProfile|number), token: string, refToken: string = '', rigidity: boolean = false): Promise<LogonUser> {
 		const req = await this.api.users.info(user);
 		this.logonUser = req.res.results[0] as LogonUser;
 
@@ -138,13 +138,16 @@ export class SpoonClient {
 			this.deviceUUID = payload.did;
 		}
 
-		try {
-			await this.refreshToken(this.logonUser.id, token, refToken);
-			this.logonUser.token = this.token;
-			this.logonUser.refresh_token = this.refToken;
-		} catch (err) {
-			if ( rigidity ) {
-				throw err;
+		this.token = token;
+		this.logonUser.token = this.token;
+		if ( refToken ) {
+			try {
+				await this.refreshToken(this.logonUser.id, token, refToken);
+				this.logonUser.refresh_token = this.refToken;
+			} catch (err) {
+				if ( rigidity ) {
+					throw err;
+				}
 			}
 		}
 

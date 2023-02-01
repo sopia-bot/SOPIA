@@ -24,3 +24,19 @@ export namespace ApiGetProfileImgUrl {
 	}
 
 }
+
+export namespace ApiGetCastImgUrl {
+
+	export const url = '/commons/cast/url/';
+	export const method = 'GET';
+
+	export interface Request extends RequestConfig {
+
+	}
+
+	@Serializable()
+	export class Response extends ProfileUrlInfo {
+
+	}
+
+}

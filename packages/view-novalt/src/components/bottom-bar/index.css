@@ -1,0 +1,21 @@
+.live-setting-content.p-toast {
+	bottom: 55px !important;
+}
+
+.live-setting-content .p-toast-message {
+	border: 0 !important;
+	background: white !important;
+}
+
+#tags .p-inputtext {
+	width: 100%;
+}
+
+
+#search-panel .p-listbox {
+	border: 0;
+}
+
+#search-panel .p-listbox-list {
+	padding: 0;
+}

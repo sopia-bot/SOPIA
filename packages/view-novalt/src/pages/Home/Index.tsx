@@ -5,40 +5,35 @@ import { useSpoon } from "../../plugins/spoon";
 import PartnerBanner from "./PartnerBanner";
 import { useQuery } from '@tanstack/react-query';
 import './home.css';
+import Track from "./track";
+import { TrackOption, useLiveContext } from "../../plugins/live-context";
 
 export default function Home() {
-	const navigate = useNavigate();
-	const spoon = useSpoon();
+	const liveContext = useLiveContext();
+  const [liveContextState, setLiveContextState] = useState(liveContext);
 
-
-	const { isLoading, error, data, isFetching } = useQuery({
-    queryKey: ["partnerUserList"],
-    queryFn: async () => {
-			const partners = await spoon.api.users.followings(4324890)
-				.then((req) => req.res.results);
-			
-				return (
-					await Promise.all(
-						partners.filter((user) => user.current_live?.id)
-							.map((user) => spoon.api.lives.info(user.current_live.id)),
-					) as HttpRequest<ApiLivesInfo.Request, ApiLivesInfo.Response>[]
-				)
-				.map((r) => r.res.results[0])
-				.map((live) => {
-					const u = partners.find((user) => live.author.id === user.id);
-					live.author = u as User;
-					return live;
-				});
-		}
+  liveContext.addTrack({
+    type: 'file',
+    trackName: '',
+    filePath: '',
   });
 
-	if (isLoading) return "Loading...";
+  const onChangeTrackState = (id: string, option: TrackOption) => {
+    liveContextState.setTrack(id, option);
+    setLiveContextState(liveContextState);
+  }
 
-  if (error) return "An error has occurred: " + (error as any).message;
-
-	return (
-		<>
-			<PartnerBanner lives={data || []} />
-		</>
-	);
+  return (
+    <>
+    {
+      Array.from(liveContextState.entries()).map(
+        ([id, context]) => <Track
+          key={id}
+          type={context.type}
+          onChange={(option) => onChangeTrackState(id, option)}
+        />
+      )
+    }
+    </>
+  );
 }

@@ -1,14 +1,17 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SpoonService } from './spoon.service';
 import { LoginService } from './login.service';
-import { LogonUser } from '@sopia-bot/core';
+import { ApiLivesCreate, LogonUser, SpoonClient } from '@sopia-bot/core';
+import { LiveService } from './live.service';
 
 @Controller()
 export class SpoonController {
   constructor(
     private readonly spoonService: SpoonService,
-    private readonly loginService: LoginService
+    private readonly loginService: LoginService,
+    private readonly liveService: LiveService,
+    @Inject('SpoonClient') private spoon: SpoonClient,
   ) {}
 
   @MessagePattern('/spoon/sns-login-open')
@@ -18,6 +21,7 @@ export class SpoonController {
 
   @MessagePattern('/spoon/user/set')
   setUser(@Payload('data') user: LogonUser) {
+    this.spoon.loginToken(user.id, user.token);
     return this.spoonService.setUser(user);
   }
 
@@ -25,4 +29,15 @@ export class SpoonController {
   getUser() {
     return this.spoonService.getUser();
   }
+
+  @MessagePattern('/spoon/live/create')
+  createLive(@Payload('data') prop: ApiLivesCreate.Request) {
+    return this.liveService.create(prop);
+  }
+
+  @MessagePattern('/spoon/live/push')
+  pushLiveChunk(@Payload('data') chunk: Buffer) {
+    return this.liveService.push(chunk);
+  }
+
 }

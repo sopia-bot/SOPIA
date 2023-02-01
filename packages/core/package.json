@@ -1,6 +1,6 @@
 {
 	"name": "@sopia-bot/core",
-	"version": "2.2.6",
+	"version": "2.3.0",
 	"description": "Spoon radio core API",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

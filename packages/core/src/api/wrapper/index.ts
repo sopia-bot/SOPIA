@@ -12,3 +12,4 @@ export * from './auth';
 export * from './play';
 export * from './search';
 export * from './tastes';
+export * from './commons';

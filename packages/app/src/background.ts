@@ -64,10 +64,9 @@ const createWindow = async () => {
   );
   await app.listen();
   
-  win.webContents.session.webRequest.onBeforeSendHeaders(
-    (details, callback) => {
-      const { url, resourceType, requestHeaders } = details;
-      if ( !!url.match(/^wss:\/\/.{2}-ssm.spooncast.net\//) ) {
+  win.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+    const { url, resourceType, requestHeaders } = details;
+    if ( !!url.match(/.*spooncast.net.*?\//) || !!url.match(/prd\-apne2\-kr\-contents\-s3\.s3\.amazonaws\.com\//) ) {
       requestHeaders['Origin'] = 'https://www.spooncast.net';
     } else if ( !!url.match(/googlevideo\.com\/videoplayback/) ) {
       requestHeaders['Origin'] = 'https://www.youtube.com';
@@ -76,8 +75,7 @@ const createWindow = async () => {
     callback({
       requestHeaders,
     });
-  },
-  );
+  });
   
   win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     const { url, responseHeaders } = details;

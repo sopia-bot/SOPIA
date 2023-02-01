@@ -25,6 +25,9 @@ import {
 	ApiUsersFanmessages,
 	ApiUsersWriteFanmessages,
 	ApiUsersLive,
+	ApiUsersManager,
+	ApiGetUsersManager,
+	ApiDeleteUsersManager,
 } from '../';
 
 type UserId = number|UserSearchProfile;
@@ -58,12 +61,12 @@ export class UsersApiWrapper {
 		return await this.request<ApiUsersUnFollow.Request, ApiUsersUnFollow.Response>(ApiUsersUnFollow, this._userId(user));
 	}
 
-	async followings(user: UserId): HttpRequestWrapper<ApiUsersFollowings.Request, ApiUsersFollowings.Response> {
-		return await this.request<ApiUsersFollowings.Request, ApiUsersFollowings.Response>(ApiUsersFollowings, this._userId(user));
+	async followings(user: UserId, req: ApiUsersFollowings.Request = {}): HttpRequestWrapper<ApiUsersFollowings.Request, ApiUsersFollowings.Response> {
+		return await this.request<ApiUsersFollowings.Request, ApiUsersFollowings.Response>(ApiUsersFollowings, this._userId(user), req);
 	}
 
-	async followers(user: UserId): HttpRequestWrapper<ApiUsersFollowers.Request, ApiUsersFollowers.Response> {
-		return await this.request<ApiUsersFollowers.Request, ApiUsersFollowers.Response>(ApiUsersFollowers, this._userId(user));
+	async followers(user: UserId, req: ApiUsersFollowers.Request = {}): HttpRequestWrapper<ApiUsersFollowers.Request, ApiUsersFollowers.Response> {
+		return await this.request<ApiUsersFollowers.Request, ApiUsersFollowers.Response>(ApiUsersFollowers, this._userId(user), req);
 	}
 
 	async info(user: UserId): HttpRequestWrapper<ApiUsersInfo.Request, ApiUsersInfo.Response> {
@@ -104,6 +107,26 @@ export class UsersApiWrapper {
 
 	async live(user: UserId): HttpRequestWrapper<ApiUsersLive.Request, ApiUsersLive.Response> {
 		return await this.request<ApiUsersLive.Request, ApiUsersLive.Response>(ApiUsersLive, this._userId(user));
+	}
+
+	async setManager(user: UserId): HttpRequestWrapper<ApiUsersManager.Request, ApiUsersManager.Response> {
+		return await this.request<ApiUsersManager.Request, ApiUsersManager.Response>(ApiUsersManager, {
+			data: {
+				manager_id: this._userId(user),
+			},
+		});
+	}
+
+	async manager(): HttpRequestWrapper<ApiGetUsersManager.Request, ApiGetUsersManager.Response> {
+		return await this.request<ApiGetUsersManager.Request, ApiGetUsersManager.Response>(ApiGetUsersManager);
+	}
+
+	async deleteManager(user: UserId): HttpRequestWrapper<ApiDeleteUsersManager.Request, ApiDeleteUsersManager.Response> {
+		return await this.request<ApiDeleteUsersManager.Request, ApiDeleteUsersManager.Response>(ApiDeleteUsersManager, {
+			params: {
+				manager_id: this._userId(user),
+			},
+		});
 	}
 
 }
