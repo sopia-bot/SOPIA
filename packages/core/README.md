@@ -1,37 +1,44 @@
-# sopia-core
-Spoon radio core API https://www.spooncast.net/
+# @sopia-bot/core
+Spoon radio api wrapper https://www.spooncast.net/.
 
 # Install
 
 ```sh
-npm install sopia-core
+npm install @sopia-bot/core
 ```
 
 or
 
 ```sh
-yarn add sopia-core
+yarn add @sopia-bot/core
 ```
 
 # Usage
-```javascript
-import * as spoon from 'sopia-core';
+```typescript
+import {
+  SpoonClient,
+  Country,
+  SnsType,
+  LiveEvent,
+} from '@sopia-bot/core';
 
 (async () => {
-    const sopia = new spoon.Client('DeviceUUID');
-    await sopia.login('Your ID', 'Password', spoon.LoginType.PHONE);
+  const spoon = new SpoonClinet('DeviceUUID');
+  spoon.country = Country.KOREA;
     
+  await spoon.init();
+  await spoon.login('Your ID', 'Your Password', SnsType.PHONE);
     
-    const socket = await sopia.liveManager.liveJoin(#Live);
+  const socket = await spoon.api.lives.join(#Live);
     
-    socket.on(spoon.LiveEvent.LIVE_JOIN, (e) => {
-        // do something.
-        ...
-        socket.message('Message');
-    });
+  socket.on(LiveEvent.LIVE_JOIN, (e) => {
+    // do something.
+    ...
+    socket.message('Message');
+  });
     
-    socket.on(spoon.LiveEvent.LIVE_MESSAGE, (e) => {
-        // sender = e.author
-    });
+  socket.on(LiveEvent.LIVE_MESSAGE, (e) => {
+    // sender = e.author
+  });
 })();
 ```
