@@ -8,8 +8,11 @@
 		<v-btn icon plain class="mr-2 no-drag" v-if="$route.name !== 'Home'" @click="$assign('/')">
 			<v-icon>mdi-arrow-left-thin</v-icon>
 		</v-btn>
-		<img src="../../assets/sopia-sd.png" width="32px" class="mr-4 no-drag" @click="upEGG">
-		<span class="text-caption">SOPIA - {{ version }}</span>
+
+		<div v-if="!isMacOS" style="display:flex;align-items:center;">
+			<img src="../../assets/sopia-sd.png" width="32px" class="mr-4 no-drag" @click="upEGG">
+			<span class="text-caption">SOPIA - {{ version }}</span>
+		</div>
 		<v-spacer></v-spacer>
 		<search-box></search-box>
 		<v-spacer></v-spacer>
@@ -58,15 +61,21 @@
 
 		<v-spacer></v-spacer>
 
-		<v-btn class="no-drag mr-2" plain small icon @click.stop="minimize">
-			<v-icon style="font-size: 15px;">mdi-window-minimize</v-icon>
-		</v-btn>
-		<v-btn class="no-drag mr-2" plain small icon @click.stop="maximize">
-			<v-icon style="font-size: 15px;">mdi-window-maximize</v-icon>
-		</v-btn>
-		<v-btn color="red" class="no-drag" plain small icon @click.stop="quit">
-			<v-icon style="font-size: 15px;">mdi-close</v-icon>
-		</v-btn>
+		<div v-if="!isMacOS">
+			<v-btn class="no-drag mr-2" plain small icon @click.stop="minimize">
+				<v-icon style="font-size: 15px;">mdi-window-minimize</v-icon>
+			</v-btn>
+			<v-btn class="no-drag mr-2" plain small icon @click.stop="maximize">
+				<v-icon style="font-size: 15px;">mdi-window-maximize</v-icon>
+			</v-btn>
+			<v-btn color="red" class="no-drag" plain small icon @click.stop="quit">
+				<v-icon style="font-size: 15px;">mdi-close</v-icon>
+			</v-btn>
+		</div>
+		<div v-else style="display:flex;align-items:center;">
+			<img src="../../assets/sopia-sd.png" width="32px" class="mr-4 no-drag" @click="upEGG">
+			<span class="text-caption">SOPIA - {{ version }}</span>
+		</div>
 	</v-app-bar>
 </template>
 <script lang="ts">
@@ -75,6 +84,7 @@ import GlobalMixins from '@/plugins/mixins';
 import pkg from '../../../package.json';
 import SearchBox from '../Search/SearchBox.vue';
 const { ipcRenderer } = window.require('electron');
+const os = window.require('os');
 
 @Component({
 	components: {
@@ -88,6 +98,10 @@ export default class TitleBar extends Mixins(GlobalMixins) {
 	public get version() {
 		console.log(this.$route);
 		return pkg.version;
+	}
+
+	public get isMacOS() {
+		return os.platform() === 'darwin';
 	}
 
 	public get userLink() {
