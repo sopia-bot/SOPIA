@@ -4,6 +4,7 @@
 		"module": "esnext",
 		"noImplicitAny": true,
 		"removeComments": true,
+    "moduleResolution": "node",
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"esModuleInterop": true,

@@ -20,10 +20,10 @@ module.exports = [
 					'electron': ['app']
 				}
 			}),
+			resolve(),
 			typescript({
 				exclude: 'node_modules/**',
 			}),
-			resolve(),
 		],
 	},
 	{
