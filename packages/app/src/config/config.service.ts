@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity, LiveSettingEntity, StreamSettingEntity } from '@sopia-bot/bridge/dist/entities';
+import { UserEntity, LiveSettingEntity, StreamSettingEntity, TrackEntity } from '@sopia-bot/bridge/dist/entities';
 import { Repository } from 'typeorm';
-import { SetUserDto, SetLiveSettingDto, SetStreamDto } from '@sopia-bot/bridge/dist/dto';
+import { SetUserDto, SetLiveSettingDto, SetStreamDto, AddTrackDto, SetTrackDto, DeleteTrackDto } from '@sopia-bot/bridge/dist/dto';
 
 @Injectable()
 export class ConfigService {
@@ -11,6 +11,7 @@ export class ConfigService {
 		@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
 		@InjectRepository(LiveSettingEntity) private liveSettingRepository: Repository<LiveSettingEntity>,
 		@InjectRepository(StreamSettingEntity) private streamSettingRepository: Repository<StreamSettingEntity>,
+    @InjectRepository(TrackEntity) private trackRepository: Repository<TrackEntity>,
 	) {}
 
 	async getUser() {
@@ -59,4 +60,60 @@ export class ConfigService {
 
 		return this.streamSettingRepository.save(setting);
 	}
+
+  async getTrackList() {
+    return (await this.trackRepository.find()) || [];
+  }
+
+  async addTrack(track: AddTrackDto) {
+    const oldTrack = await this.trackRepository.findOne({ where: { uid: track.uid } });
+
+    if ( oldTrack ) {
+      throw new Error('Exists track');
+    }
+
+    console.log('Adding track', track);
+
+    const newTrack = new TrackEntity();
+    newTrack.uid = track.uid;
+    newTrack.type = track.type;
+    newTrack.trackName = track.trackName;
+    newTrack.mute = track.mute;
+    if ( track.type === 'file' ) {
+      newTrack.filePath = track.filePath;
+    } else if ( track.type === 'input' ) {
+      newTrack.deviceId = track.deviceId;
+    }
+
+    return this.trackRepository.save(newTrack);
+  }
+
+  async setTrack(track: SetTrackDto) {
+    const oldTrack = await this.trackRepository.findOne({
+      where: {
+        uid: track.uid,
+      },
+    });
+
+    if ( !oldTrack ) {
+      return this.addTrack(track);
+    }
+    
+    oldTrack.type = track.type;
+    oldTrack.trackName = track.trackName;
+    oldTrack.mute = track.mute;
+    if ( track.type === 'file' ) {
+      oldTrack.filePath = track.filePath;
+    } else if ( track.type === 'input' ) {
+      oldTrack.deviceId = track.deviceId;
+    }
+
+    return this.trackRepository.save(oldTrack);
+  }
+
+  async deleteTrack(track: DeleteTrackDto) {
+    await this.trackRepository.delete({
+      uid: track.uid,
+    });
+  }
 }

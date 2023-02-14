@@ -2,3 +2,15 @@
 .track .p-card-content {
 	padding: 0 !important;
 }
+
+.track .p-dropdown-label.p-inputtext {
+  padding: 0.25rem 0.5rem;
+}
+
+.track .track-tool-button.p-highlight {
+  background: transparent !important;
+}
+
+.track .track-tool-button.p-highlight .p-button-icon {
+  color: var(--red-500) !important;
+}

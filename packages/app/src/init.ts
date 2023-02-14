@@ -1,6 +1,6 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { app, protocol } from 'electron';
+import { app, protocol, desktopCapturer } from 'electron';
 import { setBundleDir } from './utils/common';
 
 setBundleDir();

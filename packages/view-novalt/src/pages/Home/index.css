@@ -1,0 +1,24 @@
+.add-new-track-button {
+  width: 100%;
+  cursor: pointer !important;
+  border-style: dashed !important;
+  height: 50px;
+  border-width: 1px !important;
+  border-style: solid;
+  border-color: var(--primary-500);
+  transition: ease-in-out background-color 0.2s;
+}
+
+.add-new-track-button:hover {
+  background-color: var(--gray-100);
+}
+
+.track-type-button {
+  opacity: 0.5;
+  cursor: pointer;
+  transition: ease-in-out opacity 0.2s;
+}
+
+.track-type-button:hover {
+  opacity: 1;
+}

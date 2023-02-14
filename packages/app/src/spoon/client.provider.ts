@@ -2,6 +2,7 @@ import { StreamSettingEntity } from "@sopia-bot/bridge/dist/entities/setting";
 import { ApiLivesCreate, Live, LiveSocket, SpoonClient as Client } from "@sopia-bot/core";
 import { randomUUID } from "crypto";
 import { ChildProcess, spawn } from "child_process";
+import { serialize } from 'typescript-json-serializer';
 
 export class SpoonWrapper extends Client {
 
@@ -27,7 +28,9 @@ export class SpoonWrapper extends Client {
 		);
 
 		console.log(`Running spawn [${streamSetting.command} ${streamSetting.args} ${this.url}]`);
-		return 'test';
+    const returnData = serialize(live);
+    delete returnData._client;
+		return serialize(returnData);
 	}
 
 	push(chunk: Buffer) {

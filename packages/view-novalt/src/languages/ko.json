@@ -87,8 +87,18 @@
 	},
 	"home": {
 		"help": {
-			"select_media": "재생될 오디오 파일을 선택합니다."
+      "name": "트랙의 이름을 지정합니다.",
+			"select_media": "재생될 오디오 파일을 선택합니다.",
+      "select_device": "재생될 녹음 장치를 선택합니다."
 		},
+    "add_new_track": "새 트랙 추가",
+    "delete_track": "트랙 삭제",
+    "select_track_type": "트랙 유형 선택",
+    "track_type": {
+      "file": "미디어 파일",
+      "input": "녹음 장치",
+      "output": "재생 장치"
+    },
 		"partner": {
 			"title": "소피아 파트너 디제이가 방송중이에요!",
 			"join": "방송에 참여하기"

@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ConfigService } from './config.service';
-import { SetLiveSettingDto, SetStreamDto, SetUserDto } from '@sopia-bot/bridge/dist/dto';
+import { AddTrackDto, DeleteTrackDto, SetLiveSettingDto, SetStreamDto, SetTrackDto, SetUserDto } from '@sopia-bot/bridge/dist/dto';
 
 @Controller()
 export class ConfigController {
@@ -35,6 +35,26 @@ export class ConfigController {
   @MessagePattern('/config/stream/set')
   setStreamSetting(@Payload('data') streamSetting: SetStreamDto) {
     return this.configService.setStreamSetting(streamSetting);
+  }
+
+  @MessagePattern('/config/track/get')
+  getTrackList() {
+    return this.configService.getTrackList();
+  }
+
+  @MessagePattern('/config/track/add')
+  addTrack(@Payload('data') track: AddTrackDto) {
+    return this.configService.addTrack(track);
+  }
+
+  @MessagePattern('/config/track/set')
+  setTrack(@Payload('data') track: SetTrackDto) {
+    return this.configService.setTrack(track);
+  }
+
+  @MessagePattern('/config/track/delete')
+  deleteTrack(@Payload('data') track: DeleteTrackDto) {
+    return this.configService.deleteTrack(track);
   }
 
 }

@@ -6,7 +6,7 @@
 	"scripts": {
 		"app:build": "npm run gulp app",
 		"app:dev": "npm run dev -workspace=@sopia-bot/app",
-    "app:publish": "npm run publish -workspace=@sopia-bot/app",
+		"app:publish": "npm run publish -workspace=@sopia-bot/app",
 		"bundle:build": "npm run build -workspace=@sopia-bot/bundles",
 		"archive:build": "npm run gulp archive",
 		"core:build": "npm run gulp core",
@@ -37,12 +37,15 @@
 		"packages/app",
 		"packages/bundles",
 		"packages/core",
-    "packages/view-novalt",
+		"packages/view-novalt",
 		"tools/upload-view",
 		"tools/version-patch",
 		"packages/archive",
 		"packages/context-bridge",
 		"build",
 		"tools\\upload-app"
-	]
+	],
+	"dependencies": {
+		"segfault-handler": "^1.3.0"
+	}
 }

@@ -90,6 +90,7 @@ export default function LiveSettingContent(props: LiveSettingContentProps) {
               value={selectedCategories}
               onChange={(e) => setCategories(e.value)}
               options={LiveCategoryList}
+              optionValue='val'
               placeholder={t('live.select_category') || ''}
               itemTemplate={categoryItemTemplate}
               selectedItemTemplate={selectedCategoryTemplate} />

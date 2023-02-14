@@ -1,14 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class TrackEntity {
-  @PrimaryGeneratedColumn()
-  primary!: number;
+  @PrimaryColumn()
+  uid!: string;
 
   @Column()
-  name!: string;
+  type!: 'file'|'input';
 
   @Column()
-  filePath!: string;
+  trackName!: string;
+
+  @Column({ nullable: true })
+  filePath?: string;
+
+  @Column({ nullable: true })
+  deviceId?: string;
+
+  @Column()
+  mute!: boolean;
 
 }

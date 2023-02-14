@@ -1,6 +1,6 @@
 import { ApiLivesCreate, LogonUser } from "@sopia-bot/core";
 import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from "electron";
-import { SetLiveSettingDto, SetStreamDto } from "./dto";
+import { AddTrackDto, DeleteTrackDto, SetLiveSettingDto, SetStreamDto, SetTrackDto } from "./dto";
 import { SetSpoonUserDto } from "./dto/spoon/user.dto";
 import { SetUserDto } from "./dto/user.dto";
 import { LiveSettingEntity } from "./entities/live-setting.entity";
@@ -8,7 +8,7 @@ import { SpoonUserEntity } from "./entities/spoon/user.entity";
 import { UserEntity } from "./entities/user.entity";
 import { readFile, writeFile } from "fs/promises";
 import path from 'path';
-import { StreamSettingEntity } from "./entities";
+import { StreamSettingEntity, TrackEntity } from "./entities";
 
 export interface SOPIAFunction {
   request: (url: string, ...args: any[]) => Promise<any>,
@@ -32,6 +32,10 @@ export interface SOPIAFunction {
     getLiveSetting: () => Promise<LiveSettingEntity>;
     setStreamSetting: (setting: SetStreamDto) => Promise<StreamSettingEntity>;
     getStreamSetting: () => Promise<StreamSettingEntity>;
+    getTrackList: () => Promise<TrackEntity[]>;
+    addTrack: (track: AddTrackDto) => Promise<TrackEntity>;
+    setTrack: (track: SetTrackDto) => Promise<TrackEntity>;
+    deleteTrack: (track: DeleteTrackDto) => Promise<void>;
   },
   dialog: {
     open: (options: OpenDialogOptions) => Promise<OpenDialogReturnValue>;

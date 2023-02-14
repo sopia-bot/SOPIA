@@ -6,9 +6,9 @@ import { SetUserDto } from '../dto/user.dto';
 import { SetSpoonUserDto } from '../dto/spoon/user.dto';
 import { SpoonUserEntity } from '../entities/spoon/user.entity';
 import { LiveSettingEntity } from '../entities/live-setting.entity';
-import { SetLiveSettingDto, SetStreamDto } from '../dto';
+import { AddTrackDto, DeleteTrackDto, SetLiveSettingDto, SetStreamDto, SetTrackDto } from '../dto';
 import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogReturnValue, SaveDialogOptions } from 'electron';
-import { StreamSettingEntity } from '../entities';
+import { StreamSettingEntity, TrackEntity } from '../entities';
 
 export function createSOPIAKey(key: string) {
 	return crypto.SHA1(key).toString(crypto.enc.Hex);
@@ -42,6 +42,10 @@ export const setLiveSetting = createBridger<Promise<LiveSettingEntity>, [SetLive
 export const getLiveSetting = createBridger<Promise<LiveSettingEntity>>((s) => s.config.getLiveSetting);
 export const setStreamSetting = createBridger<Promise<StreamSettingEntity>, [SetStreamDto]>((s) => s.config.setStreamSetting);
 export const getStreamSetting = createBridger<Promise<StreamSettingEntity>>((s) => s.config.getStreamSetting);
+export const getTrackList = createBridger<Promise<TrackEntity[]>>((s) => s.config.getTrackList);
+export const addTrack = createBridger<Promise<TrackEntity>, [AddTrackDto]>((s) => s.config.addTrack);
+export const setTrack = createBridger<Promise<TrackEntity>, [SetTrackDto]>((s) => s.config.setTrack);
+export const deleteTrack = createBridger<Promise<void>, [DeleteTrackDto]>((s) => s.config.deleteTrack);
 
 export const showOpenDialog = createBridger<Promise<OpenDialogReturnValue>, [OpenDialogOptions]>((s) => s.dialog.open);
 export const showSaveDialog = createBridger<Promise<SaveDialogReturnValue>, [SaveDialogOptions]>((s) => s.dialog.save);

@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSpoon } from '../../plugins/spoon';
 import { ApiLivesCreate } from '@sopia-bot/core';
 import { useLiveContext } from '../../plugins/live-context';
+import session from '../../plugins/session';
 
 
 export default function BottomBar() {
@@ -79,9 +80,11 @@ export default function BottomBar() {
       requestProp.data.img_key = await spoon.api.castImgUpload(setting.image);
     }
 
-    await createSpoonLive(requestProp);
+    const live = await createSpoonLive(requestProp);
 
     liveContext.start();
+
+    session.write('current_live', live);
 
     setCreateLiveLoading(false);
   }

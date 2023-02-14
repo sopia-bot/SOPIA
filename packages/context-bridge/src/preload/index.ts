@@ -3,7 +3,7 @@ import { createSOPIAKey } from '../utils';
 import { SOPIAFunction } from '../type';
 import { SetUserDto } from "../dto/user.dto";
 import { SetSpoonUserDto } from "../dto/spoon/user.dto";
-import { SetLiveSettingDto, SetStreamDto } from "../dto";
+import { AddTrackDto, DeleteTrackDto, SetLiveSettingDto, SetStreamDto, SetTrackDto } from "../dto";
 import { readFile, writeFile } from "fs/promises";
 import path from 'path';
 import { ApiLivesCreate } from "@sopia-bot/core/dist";
@@ -41,6 +41,10 @@ import { ApiLivesCreate } from "@sopia-bot/core/dist";
 			getLiveSetting: () => request('/config/live/get'),
 			setStreamSetting: (setting: SetStreamDto) => request('/config/stream/set', setting),
 			getStreamSetting: () => request('/config/stream/get'),
+      getTrackList: () => request('/config/track/get'),
+      addTrack: (track: AddTrackDto) => request('/config/track/add', track),
+      setTrack: (track: SetTrackDto) => request('/config/track/set', track),
+      deleteTrack: (track: DeleteTrackDto) => request('/config/track/delete', track),
     },
 		dialog: {
 			open: (options: OpenDialogOptions) => request('/dialog/open', options),
