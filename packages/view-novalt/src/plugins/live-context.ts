@@ -91,7 +91,6 @@ export class LiveContext extends Map<string, TrackItem> {
     const track = this.get(id);
     if ( !track ) return;
     
-    console.log('11111', id)
     if ( track.option.type === 'file' ) {
       track.audioBuffer?.stop();
       track.audioBuffer?.disconnect(this.destination);
@@ -103,7 +102,6 @@ export class LiveContext extends Map<string, TrackItem> {
       delete track.source;
       delete track.stream;
     }
-    console.log('22222', id)
     this.delete(id);    
   }
 

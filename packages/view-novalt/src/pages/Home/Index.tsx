@@ -116,9 +116,7 @@ export default function Home() {
 
   const deleteTrackItem = async (uid: string) => {
     await liveContext.deleteTrack(uid);
-    console.log('3333333', uid);
     await deleteTrack({ uid, });
-    console.log('444444', uid);
     setTrackList(() => liveContext.toArray());
   }
 
