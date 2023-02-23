@@ -2,11 +2,17 @@ import { SpoonClient } from "../../spoon";
 import { Live } from "./live";
 import { HttpRequest } from "../../api";
 
-type RtmpPublishType = {
+type PublishType = {
 	publish: {
 		name: string;
 		control: string;
-		transports: unknown;
+		transports: [
+      {
+        type: string;
+        address: string;
+        port: number;
+      }
+    ];
 		media: {
 			type: string;
 			protocol: 'rtmp'|'srt';
@@ -27,7 +33,7 @@ export class LiveEngine {
 	}
 
 	public async publish(protocol: 'rtmp'|'srt' = 'rtmp') {
-		const res = await HttpRequest.Run<RtmpPublishType>(this.client, {
+		const res = await HttpRequest.Run<PublishType>(this.client, {
 			url: `${this.baseURL}/publish/${this.live.stream_name}`,
 			method: 'post',
 			headers: {
@@ -56,6 +62,9 @@ export class LiveEngine {
 			},
 		});
 
+    if ( protocol === 'srt' ) {
+      return `srt://${res.publish.transports[0].address}:${res.publish.transports[0].port}`
+    }
 		return `${res.publish.rtmp.url}/${res.publish.rtmp.name}`;
 	}
 }
