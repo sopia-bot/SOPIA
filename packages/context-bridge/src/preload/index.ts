@@ -3,10 +3,11 @@ import { createSOPIAKey } from '../utils';
 import { SOPIAFunction } from '../type';
 import { SetUserDto } from "../dto/user.dto";
 import { SetSpoonUserDto } from "../dto/spoon/user.dto";
-import { AddTrackDto, DeleteTrackDto, SetLiveSettingDto, SetStreamDto, SetTrackDto } from "../dto";
+import { AddTrackDto, DeleteTrackDto, RecordStartDto, SetLiveSettingDto, SetRecordDto, SetStreamDto, SetTrackDto } from "../dto";
 import { readFile, writeFile } from "fs/promises";
 import path from 'path';
 import { ApiLivesCreate } from "@sopia-bot/core/dist";
+import { AudioOptions } from 'naudiodon';
 
 (async () => {	
 	const request = (url: string, ...args: any[]) => {
@@ -26,12 +27,21 @@ import { ApiLivesCreate } from "@sopia-bot/core/dist";
 			maximize: () => request('/app/maximize'),
 			toggleMaximize: () => request('/app/toggle-maximize'),
 			quit: () => request('/app/quit'),
+      getDevices: () => request('/app/record/devices'),
+      recording: {
+        start: (option: RecordStartDto) => request('/app/record/start', option),
+        getRecordChunk: (uid: string) => request('/app/record/get', uid),
+        status: (uid: string) => request('/app/record/status', uid),
+        stop: (uid: string) => request('/app/record/stop', uid),
+      },
 		},
 		spoon: {
 			snsLogin: (url: string) => request('/spoon/sns-login-open', url),
 			setUser: (user: SetSpoonUserDto) => request('/spoon/user/set', user),
       getUser: () => request('/spoon/user/get'),
 			createLive: (prop: ApiLivesCreate.Request) => request('/spoon/live/create', prop),
+      settingLive: (url: string) => request('/spoon/live/setting', url),
+      closeLive: () => request('/spoon/live/close'),
 			livePush: (chunk: Buffer) => request('/spoon/live/push', chunk),
 		},
     config: {
@@ -45,6 +55,8 @@ import { ApiLivesCreate } from "@sopia-bot/core/dist";
       addTrack: (track: AddTrackDto) => request('/config/track/add', track),
       setTrack: (track: SetTrackDto) => request('/config/track/set', track),
       deleteTrack: (track: DeleteTrackDto) => request('/config/track/delete', track),
+      setRecord: (setting: SetRecordDto) => request('/config/record/set', setting),
+      getRecord: () => request('/config/record/get'),
     },
 		dialog: {
 			open: (options: OpenDialogOptions) => request('/dialog/open', options),

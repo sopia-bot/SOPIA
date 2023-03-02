@@ -1,118 +1,128 @@
 {
-	"search": "검색",
-	"success": "성공",
-	"fail": "실패",
-	"error": "오류",
-	"id": "아이디",
-	"password": "비밀번호",
-	"password_confirm": "비밀번호 확인",
-	"select_file": "파일 선택",
-	"save": "저장",
-	"menu": {
-		"home": "방송하기",
-		"setting": "설정"
-	},
-	"login": {
-		"sopia": {
-			"title": "소피아 로그인",
-			"description": "이것은 스푼 로그인이 아닙니다!<br>소피아 계정이 없으면 <Link>회원가입</Link> 해주세요.",
-			"forgot_id": "아이디가 기억나지 않아요.",
-			"search_id": "아이디 찾기",
-			"input_spoon_id": "소피아를 사용하는 스푼 아이디를 입력해 주세요."
-		},
-		"spoon": {
-			"title": "스푼 로그인",
-			"phone": "전화번호",
-			"email": "이메일",
-			"description": "이것은 스푼에서 사용하는 계정 로그인입니다!",
-			"spoon_id": "스푼 아이디",
-			"spoon_pw": "스푼 비밀번호",
-			"google": "구글로 로그인",
-			"facebook": "페이스북으로 로그인",
-			"apple": "애플로 로그인"
-		},
-		"error": {
-			"input_id": "아이디를 입력해 주세요",
-			"input_pw": "비밀번호를 입력해 주세요",
+  "search": "검색",
+  "success": "성공",
+  "fail": "실패",
+  "error": "오류",
+  "id": "아이디",
+  "yes": "예",
+  "no": "아니오",
+  "confirm": "확인",
+  "password": "비밀번호",
+  "password_confirm": "비밀번호 확인",
+  "select_file": "파일 선택",
+  "save": "저장",
+  "menu": {
+    "home": "방송하기",
+    "setting": "설정"
+  },
+  "login": {
+    "sopia": {
+      "title": "소피아 로그인",
+      "description": "이것은 스푼 로그인이 아닙니다!<br>소피아 계정이 없으면 <Link>회원가입</Link> 해주세요.",
+      "forgot_id": "아이디가 기억나지 않아요.",
+      "search_id": "아이디 찾기",
+      "input_spoon_id": "소피아를 사용하는 스푼 아이디를 입력해 주세요."
+    },
+    "spoon": {
+      "title": "스푼 로그인",
+      "phone": "전화번호",
+      "email": "이메일",
+      "description": "이것은 스푼에서 사용하는 계정 로그인입니다!",
+      "spoon_id": "스푼 아이디",
+      "spoon_pw": "스푼 비밀번호",
+      "google": "구글로 로그인",
+      "facebook": "페이스북으로 로그인",
+      "apple": "애플로 로그인"
+    },
+    "error": {
+      "input_id": "아이디를 입력해 주세요",
+      "input_pw": "비밀번호를 입력해 주세요",
       "login_fail": "아이디 또는 비밀번호가 잘못되었습니다.",
-			"live_zero": "본인인증이 되지 않은 계정은 사용할 수 없습니다. 스푼에서 본인인증을 완료해 주세요."
-		},
-		"button": "로그인"
-	},
-	"signin": {
-		"title": "소피아 회원가입",
-		"button": "회원가입",
-		"term": "이용약관",
-		"privacy": "개인정보처리방침",
-		"agree": "<Term></Term> 및 <Privacy></Privacy>에 동의합니다.",
-		"success": "회원가입 되었습니다.\n로그인 해주세요.",
-		"back": "로그인 페이지로 이동",
-		"error": {
-			"id_length": "아이디는 4글자 이상입니다.",
-			"pw_length": "비밀번호는 8글자 이상입니다.",
-			"validate_error": "아이디와 비밀번호는 8글자 이상입니다.",
-			"undefined": "알 수 없는 로그인 오류입니다.",
-			"diff_id": "기존에 등록되어 있는 스푼 아이디와 다른 계정입니다.",
-			"fail_chk_pw": "비밀번호 확인이 다릅니다.",
-			"exists_user_id": "이미 있는 아이디입니다.",
-			"policy": "$t(signin.term) 및 $t(signin.privacy)에 동의하셔야 가입 가능합니다."
-		}
-	},
-	"live": {
-		"category": "방송 주제",
-		"title": "제목",
-		"notice": "방송 공지",
-		"hashtag": "해시태그",
-		"hashtag_description": "엔터를 눌러 태그를 구분합니다. #을 포함하지 않습니다.",
-		"select_category": "방송 주제를 선택해 주세요",
-		"fixed_manager": "고정 매니저 등록",
-		"fixed_manager_placeholder": "매니저를 등록할 팬을 검색하세요.",
-		"release": "해제",
-		"assign": "등록",
-		"upload_image": "배경 이미지 선택",
-		"categories": {
-			"live_keyword_asmr": "ASMR",
-			"live_keyword_chat": "수다/챗",
-			"live_keyword_dailylife": "일상",
-			"live_keyword_healing": "힐링",
-			"live_keyword_humor": "유머",
-			"live_keyword_interest": "취미",
-			"live_keyword_love": "연애",
-			"live_keyword_music": "음악",
-			"live_keyword_voice_acting": "성우",
-			"live_keyword_worries": "고민",
-			"live_keyword_tiki_taka": "티키타카",
-			"live_keyword_book": "책"
-		}
-	},
-	"home": {
-		"help": {
+      "live_zero": "본인인증이 되지 않은 계정은 사용할 수 없습니다. 스푼에서 본인인증을 완료해 주세요."
+    },
+    "button": "로그인"
+  },
+  "signin": {
+    "title": "소피아 회원가입",
+    "button": "회원가입",
+    "term": "이용약관",
+    "privacy": "개인정보처리방침",
+    "agree": "<Term></Term> 및 <Privacy></Privacy>에 동의합니다.",
+    "success": "회원가입 되었습니다.\n로그인 해주세요.",
+    "back": "로그인 페이지로 이동",
+    "error": {
+      "id_length": "아이디는 4글자 이상입니다.",
+      "pw_length": "비밀번호는 8글자 이상입니다.",
+      "validate_error": "아이디와 비밀번호는 8글자 이상입니다.",
+      "undefined": "알 수 없는 로그인 오류입니다.",
+      "diff_id": "기존에 등록되어 있는 스푼 아이디와 다른 계정입니다.",
+      "fail_chk_pw": "비밀번호 확인이 다릅니다.",
+      "exists_user_id": "이미 있는 아이디입니다.",
+      "policy": "$t(signin.term) 및 $t(signin.privacy)에 동의하셔야 가입 가능합니다."
+    }
+  },
+  "live": {
+    "category": "방송 주제",
+    "title": "제목",
+    "notice": "방송 공지",
+    "hashtag": "해시태그",
+    "hashtag_description": "엔터를 눌러 태그를 구분합니다. #을 포함하지 않습니다.",
+    "select_category": "방송 주제를 선택해 주세요",
+    "fixed_manager": "고정 매니저 등록",
+    "fixed_manager_placeholder": "매니저를 등록할 팬을 검색하세요.",
+    "release": "해제",
+    "assign": "등록",
+    "upload_image": "배경 이미지 선택",
+    "categories": {
+      "live_keyword_asmr": "ASMR",
+      "live_keyword_chat": "수다/챗",
+      "live_keyword_dailylife": "일상",
+      "live_keyword_healing": "힐링",
+      "live_keyword_humor": "유머",
+      "live_keyword_interest": "취미",
+      "live_keyword_love": "연애",
+      "live_keyword_music": "음악",
+      "live_keyword_voice_acting": "성우",
+      "live_keyword_worries": "고민",
+      "live_keyword_tiki_taka": "티키타카",
+      "live_keyword_book": "책"
+    }
+  },
+  "home": {
+    "help": {
       "name": "트랙의 이름을 지정합니다.",
-			"select_media": "재생될 오디오 파일을 선택합니다.",
+      "select_media": "재생될 오디오 파일을 선택합니다.",
       "select_device": "재생될 녹음 장치를 선택합니다."
-		},
+    },
     "add_new_track": "새 트랙 추가",
     "delete_track": "트랙 삭제",
     "select_track_type": "트랙 유형 선택",
+    "stop_live": "진행중인 방송을 중지하겠습니까?",
     "track_type": {
       "file": "미디어 파일",
       "input": "녹음 장치",
       "output": "재생 장치"
     },
-		"partner": {
-			"title": "소피아 파트너 디제이가 방송중이에요!",
-			"join": "방송에 참여하기"
-		}
-	},
-	"setting": {
-		"success": "저장에 성공했습니다.",
-		"sidemenu": {
-			"live": "방송 설정"
-		},
-		"live": {
-			"warn": "해당 설정을 잘못 바꾸면 정상적인 방송이 불가할 수 있으니 주의바랍니다.",
-			"command": "방송 명령어",
-			"args": "명령 인수"
-		}
-	}
+    "partner": {
+      "title": "소피아 파트너 디제이가 방송중이에요!",
+      "join": "방송에 참여하기"
+    }
+  },
+  "setting": {
+    "success": "저장에 성공했습니다.",
+    "sidemenu": {
+      "live": "방송 설정",
+      "record": "녹음 설정"
+    },
+    "live": {
+      "warn": "해당 설정을 잘못 바꾸면 정상적인 방송이 불가할 수 있으니 주의바랍니다.",
+      "command": "방송 명령어",
+      "args": "명령 인수"
+    },
+    "record": {
+      "warn": "해당 설정을 잘못 바꾸면 정상적인 음성 녹음이 불가할 수 있으니 주의바랍니다.",
+      "command": "녹음 명령어",
+      "args": "명령 인수"
+    }
+  }
 }

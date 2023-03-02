@@ -17,6 +17,9 @@ export class TrackEntity {
   @Column({ nullable: true })
   deviceId?: string;
 
+  @Column({ nullable: true })
+  id?: number;
+
   @Column()
   mute!: boolean;
 

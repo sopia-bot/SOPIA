@@ -18,6 +18,15 @@ export class LiveService {
 		return await this.spoon.createLive(requestProp, streamSetting);
 	}
 
+  async setting(url: string) {
+    const [streamSetting] = await this.streamSettingRepository.find();
+    return await this.spoon.settingLive(url, streamSetting);
+  }
+
+  async close() {
+    return await this.spoon.closeLive();
+  }
+
 	push(chunk: Buffer) {
 		return this.spoon.push(chunk);
 	}

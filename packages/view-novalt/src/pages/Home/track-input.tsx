@@ -10,6 +10,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { ToggleButton } from 'primereact/togglebutton';
 import { TrackProps } from './track';
+import { getDevices } from '@sopia-bot/bridge';
 
 
 export default function TrackInput(prop: TrackProps) {
@@ -17,19 +18,18 @@ export default function TrackInput(prop: TrackProps) {
   const { t } = useTranslation();
 	const [trackName, setTrackName] = useState(option.trackName);
   const [mute, setMute] = useState(option.mute);
-  const [deviceList, setDeviceList] = useState<ReturnType<MediaDeviceInfo['toJSON']>[]>([]);
-  const [selectDevice, setSelectDevice] = useState<ReturnType<MediaDeviceInfo['toJSON']>>();
+  const [deviceList, setDeviceList] = useState<any[]>([]);
+  const [selectDevice, setSelectDevice] = useState<any>();
 
   const { status, isLoading, data } = useQuery({
     queryKey: ['getInputMediaDeviceList'],
-    queryFn: async () => (await navigator.mediaDevices.enumerateDevices())
-      .filter(device => device.kind === 'audioinput')
-      .map(device => device.toJSON()) || [],
+    queryFn: async () => (await getDevices())
+      .filter(device => device.maxInputChannels > 0) || [],
   });
 
   useEffect(() => {
     if ( status === 'success' && data && data.length > 0 ) {
-      setSelectDevice(data.find((device) => device.deviceId === option.deviceId) || data[0]);
+      setSelectDevice(data.find((device) => device.id === option.id) || data[0]);
       setDeviceList(data);
     }
   }, [status, data]);
@@ -39,7 +39,7 @@ export default function TrackInput(prop: TrackProps) {
       type: 'input',
       trackName,
       mute,
-      ...(selectDevice && {deviceId: selectDevice.deviceId}),
+      ...(selectDevice && {id: selectDevice.id}),
 		});
 	}, [trackName, mute, selectDevice]);
 
@@ -82,6 +82,7 @@ export default function TrackInput(prop: TrackProps) {
             setSelectDevice(e.value);
           }}
           options={deviceList}
+          optionLabel="name"
         />
 			</div>
 		</div>

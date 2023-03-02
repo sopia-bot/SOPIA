@@ -3,3 +3,4 @@ export * from './spoon';
 export * from './live-setting.dto';
 export * from './track.dto';
 export * from './setting';
+export * from './record.dto';

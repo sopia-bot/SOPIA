@@ -35,6 +35,16 @@ export class SpoonController {
     return this.liveService.create(prop);
   }
 
+  @MessagePattern('/spoon/live/setting')
+  settingLive(@Payload('data') url: string) {
+    return this.liveService.setting(url);
+  }
+
+  @MessagePattern('/spoon/live/close')
+  closeLive() {
+    return this.liveService.close();
+  }
+
   @MessagePattern('/spoon/live/push')
   pushLiveChunk(@Payload('data') chunk: Buffer) {
     return this.liveService.push(chunk);

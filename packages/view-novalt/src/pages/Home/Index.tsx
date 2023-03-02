@@ -17,6 +17,8 @@ type TrackType = {
   type: 'file'|'input'|'output';
 }
 
+
+
 export default function Home() {
 	const liveContext = useLiveContext();
   const [trackList, setTrackList] = useState<TrackItem[]>(liveContext.toArray());
@@ -96,6 +98,7 @@ export default function Home() {
           trackName: '',
           mute: false,
           deviceId: 'default',
+          id: -1,
         });
 
         await addTrack({

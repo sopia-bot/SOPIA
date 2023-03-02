@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from './config.service';
 import { ConfigController } from './config.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity, LiveSettingEntity, StreamSettingEntity, TrackEntity } from '@sopia-bot/bridge/dist/entities';
+import { UserEntity, LiveSettingEntity, StreamSettingEntity, TrackEntity, RecordSettingEntity } from '@sopia-bot/bridge/dist/entities';
 
 @Module({
   controllers: [ConfigController],
@@ -13,7 +13,9 @@ import { UserEntity, LiveSettingEntity, StreamSettingEntity, TrackEntity } from 
       LiveSettingEntity,
       StreamSettingEntity,
       TrackEntity,
+      RecordSettingEntity,
     ])
-  ]
+  ],
+  exports: [ConfigService],
 })
 export class ConfigModule {}

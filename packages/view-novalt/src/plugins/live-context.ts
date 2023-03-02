@@ -1,6 +1,7 @@
-import { getFileSystem, pushLiveChunk } from "@sopia-bot/bridge";
+import { getDevices, getFileSystem, getRecordChunk, getRecordStatus, pushLiveChunk, recordStart, recordStop } from "@sopia-bot/bridge";
 
 const fs = getFileSystem();
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export type TrackFileOption = {
 	type: 'file';
@@ -13,6 +14,7 @@ export type TrackInputOption = {
   trackName: string;
   mute: boolean;
   deviceId: string;
+  id: number;
 };
 export type TrackOutputOption = {
   type: 'output';
@@ -28,12 +30,67 @@ export type TrackItem = {
 	audioBuffer?: AudioBufferSourceNode;
   stream?: MediaStream;
   source?: MediaStreamAudioSourceNode;
+  inputStream?: InputStream;
+}
+
+class InputStream {
+  private timeslice: number = 5000;
+  private devices: any[] = [];
+  private tout: NodeJS.Timer|number|null = null;
+  private running = false;
+
+  constructor(private uid: string, private option: TrackInputOption) {
+    
+  }
+
+  async progress() {
+    while ( this.running ) {
+
+    }
+  }
+
+  async start(callback: (chunk: Buffer) => void,timeslice: number = 5000) {
+    this.timeslice = timeslice;
+    if ( this.devices.length === 0 ) {
+      this.devices = await getDevices();
+    }
+    const device = this.devices.find(d => d.id === this.option.id);
+    if ( !device ) return;
+
+    await recordStart({
+      uid: this.uid,
+      deviceName: device.name,
+      smapleRate: 48000,
+      channels: 2,
+      bitDepth: 32,
+    });
+    const progress = () => {
+      setTimeout(() => {
+        progress();
+      }, this.timeslice)
+    }
+    setTimeout(async () => {
+      while ( this.running ) {
+        const chunk = await getRecordChunk(this.uid);
+        callback(chunk);
+        await sleep(this.timeslice);
+      }
+    }, this.timeslice);
+    this.running = true;
+  }
+
+  async stop() {
+    if ( this.running ) {
+      this.running = false;
+    }
+  }
 }
 
 export class LiveContext extends Map<string, TrackItem> {
 	private mainContext = new AudioContext();
 	private destination = this.mainContext.createMediaStreamDestination();
 	private recorder = new MediaRecorder(this.destination.stream, { mimeType: 'audio/webm;codecs=opus' });
+  private status = 'ready';
 
 	constructor() {
 		super();
@@ -43,14 +100,36 @@ export class LiveContext extends Map<string, TrackItem> {
 		});
 	}
 
-	start(timeslice = 5000) {
+  private trackStart(track: TrackItem) {
+    if ( track.option.type === 'file' ) {
+      track.audioBuffer?.start();
+    } else if ( track.option.type === 'input' ) {
+      track.inputStream?.start(async (chunk: Buffer) => {
+        if ( chunk.length > 0 ) {
+          track.audioBuffer = this.mainContext.createBufferSource();
+          track.audioBuffer.buffer = await this.mainContext.decodeAudioData(chunk.buffer);
+          track.audioBuffer.connect(this.destination);
+          track.audioBuffer.start();
+        }
+      }, 1000);
+    }
+  }
+
+	start(timeslice = 1000) {
 		this.recorder.start(timeslice);
 		for ( const track of this.values() ) {
-			if ( track.option.type === 'file' ) {
-				track.audioBuffer?.start();
-			}
+			this.trackStart.call(this, track);
 		}
+    this.status = 'progress';
 	}
+
+  stop() {
+    this.recorder.stop();
+    for ( const track of this.values() ) {
+			this.stopTrack(track.uid);
+		}
+    this.status = 'ready';
+  }
 
 	async addTrack(option: TrackOption): Promise<TrackItem> {
 		const uid = crypto.randomUUID();
@@ -73,26 +152,34 @@ export class LiveContext extends Map<string, TrackItem> {
 				item.audioBuffer.connect(this.destination);
 			}
 		} else if ( option.type === 'input' ) {
-      item.stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          deviceId: option.deviceId,
-        },
-      });
-      //item.context = new AudioContext();
-      //item.context.createMediaStreamSource(item.stream).connect(this.destination);
-      item.source = this.mainContext.createMediaStreamSource(item.stream);
-      item.source.connect(this.destination);
+      item.inputStream = new InputStream(item.uid, option);
     }
 		this.set(id, item);
+
+    if ( this.status === 'progress' ) {
+      this.trackStart.call(this, item);
+    }
+
 		return item;
 	}
 
-  async deleteTrack(id: string): Promise<void> {
+  async stopTrack(id: string): Promise<void> {
     const track = this.get(id);
     if ( !track ) return;
     
     if ( track.option.type === 'file' ) {
       track.audioBuffer?.stop();
+    } else if ( track.option.type === 'input' ) {
+      recordStop(id);
+      track.inputStream?.stop();
+    }
+  }
+
+  async deleteTrack(id: string): Promise<void> {
+    const track = this.get(id);
+    if ( !track ) return;
+    await this.stopTrack(id);
+    if ( track.option.type === 'file' ) {
       track.audioBuffer?.disconnect(this.destination);
       delete track.audioBuffer;
       delete track.context;
@@ -102,7 +189,7 @@ export class LiveContext extends Map<string, TrackItem> {
       delete track.source;
       delete track.stream;
     }
-    this.delete(id);    
+    this.delete(id);
   }
 
   toArray() {

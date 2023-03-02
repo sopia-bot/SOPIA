@@ -1,6 +1,6 @@
 import { ApiLivesCreate, LogonUser } from "@sopia-bot/core";
 import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from "electron";
-import { AddTrackDto, DeleteTrackDto, SetLiveSettingDto, SetStreamDto, SetTrackDto } from "./dto";
+import { AddTrackDto, DeleteTrackDto, RecordStartDto, SetLiveSettingDto, SetRecordDto, SetStreamDto, SetTrackDto } from "./dto";
 import { SetSpoonUserDto } from "./dto/spoon/user.dto";
 import { SetUserDto } from "./dto/user.dto";
 import { LiveSettingEntity } from "./entities/live-setting.entity";
@@ -8,7 +8,13 @@ import { SpoonUserEntity } from "./entities/spoon/user.entity";
 import { UserEntity } from "./entities/user.entity";
 import { readFile, writeFile } from "fs/promises";
 import path from 'path';
-import { StreamSettingEntity, TrackEntity } from "./entities";
+import { RecordSettingEntity, StreamSettingEntity, TrackEntity } from "./entities";
+import { AudioOptions, DeviceInfo } from 'naudiodon';
+
+export interface LiveCreated extends ApiLivesCreate.Response {
+  publishUrl: string;
+}
+
 
 export interface SOPIAFunction {
   request: (url: string, ...args: any[]) => Promise<any>,
@@ -17,12 +23,21 @@ export interface SOPIAFunction {
     maximize: () => void;
     toggleMaximize: () => void;
     quit: () => void;
+    getDevices: () => Promise<DeviceInfo[]>;
+    recording: {
+      start: (option: RecordStartDto) => Promise<void>;
+      status: (uid: string) => Promise<string>;
+      getRecordChunk: (uid: string) => Promise<Buffer>;
+      stop: (uid: string) => Promise<boolean>;
+    },
   },
   spoon: {
     snsLogin: (url: string) => Promise<LogonUser>;
     setUser: (user: SetSpoonUserDto) => Promise<SpoonUserEntity>;
     getUser: () => Promise<SpoonUserEntity>;
-    createLive: (prop: ApiLivesCreate.Request) => Promise<ApiLivesCreate.Response>;
+    createLive: (prop: ApiLivesCreate.Request) => Promise<LiveCreated>;
+    settingLive: (url: string) => Promise<void>;
+    closeLive: () => Promise<void>;
     livePush: (chunk: Buffer) => Promise<void>;
   },
   config: {
@@ -36,6 +51,8 @@ export interface SOPIAFunction {
     addTrack: (track: AddTrackDto) => Promise<TrackEntity>;
     setTrack: (track: SetTrackDto) => Promise<TrackEntity>;
     deleteTrack: (track: DeleteTrackDto) => Promise<void>;
+    setRecord: (setting: SetRecordDto) => Promise<RecordSettingEntity>;
+    getRecord: () => Promise<RecordSettingEntity>;
   },
   dialog: {
     open: (options: OpenDialogOptions) => Promise<OpenDialogReturnValue>;

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity, LiveSettingEntity, StreamSettingEntity, TrackEntity } from '@sopia-bot/bridge/dist/entities';
+import { UserEntity, LiveSettingEntity, StreamSettingEntity, TrackEntity, RecordSettingEntity } from '@sopia-bot/bridge/dist/entities';
 import { Repository } from 'typeorm';
-import { SetUserDto, SetLiveSettingDto, SetStreamDto, AddTrackDto, SetTrackDto, DeleteTrackDto } from '@sopia-bot/bridge/dist/dto';
+import { SetUserDto, SetLiveSettingDto, SetStreamDto, AddTrackDto, SetTrackDto, DeleteTrackDto, SetRecordDto } from '@sopia-bot/bridge/dist/dto';
 
 @Injectable()
 export class ConfigService {
@@ -12,6 +12,7 @@ export class ConfigService {
 		@InjectRepository(LiveSettingEntity) private liveSettingRepository: Repository<LiveSettingEntity>,
 		@InjectRepository(StreamSettingEntity) private streamSettingRepository: Repository<StreamSettingEntity>,
     @InjectRepository(TrackEntity) private trackRepository: Repository<TrackEntity>,
+    @InjectRepository(RecordSettingEntity) private recordSettingRepository: Repository<RecordSettingEntity>,
 	) {}
 
 	async getUser() {
@@ -83,6 +84,7 @@ export class ConfigService {
       newTrack.filePath = track.filePath;
     } else if ( track.type === 'input' ) {
       newTrack.deviceId = track.deviceId;
+      newTrack.id = track.id;
     }
 
     return this.trackRepository.save(newTrack);
@@ -106,6 +108,7 @@ export class ConfigService {
       oldTrack.filePath = track.filePath;
     } else if ( track.type === 'input' ) {
       oldTrack.deviceId = track.deviceId;
+      oldTrack.id = track.id;
     }
 
     return this.trackRepository.save(oldTrack);
@@ -116,4 +119,18 @@ export class ConfigService {
       uid: track.uid,
     });
   }
+
+  async getRecordSetting() {
+    return (await this.recordSettingRepository.find())[0];
+  }
+
+  async setRecordSetting(recordInfo: SetRecordDto) {
+		const setting = (await this.getRecordSetting()) || new RecordSettingEntity();
+
+		setting.args = recordInfo.args;
+		setting.command = recordInfo.command;
+
+		return this.recordSettingRepository.save(setting);
+	}
+
 }

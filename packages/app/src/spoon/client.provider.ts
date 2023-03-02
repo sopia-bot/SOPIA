@@ -6,35 +6,70 @@ import { serialize } from 'typescript-json-serializer';
 
 export class SpoonWrapper extends Client {
 
-	private currentLive!: Live;
+	private currentLive: Live|null = null;
 	private sock!: LiveSocket;
 	private url!: string;
-	private ffmpeg!: ChildProcess;
+	private ffmpeg: ChildProcess|null = null;
 
 	async createLive(prop: ApiLivesCreate.Request, streamSetting: StreamSettingEntity) {
 		const req = await this.api.lives.create(prop);
 		const [live] = req.res.results;
 		this.currentLive = live;
 		this.currentLive.initLiveEngine();
-		this.url = await this.currentLive.liveEngine.publish();
+		const url = await this.currentLive.liveEngine.publish();
 		this.sock = await live.join(live.jwt);
+    this.settingLive(url, streamSetting);
+
+    const returnData = serialize(live);
+    delete returnData._client;
+		return {
+      ...serialize(returnData),
+      publishUrl: url,
+    };
+	}
+
+  settingLive(url: string, streamSetting: StreamSettingEntity) {
+    this.url = url;
+    const options = [
+      ...streamSetting.args.split(/\s+/g),
+      this.url
+    ];
 
 		this.ffmpeg = spawn(
 			streamSetting.command,
-			[
-				...streamSetting.args.split(/\s+/g),
-				this.url
-			],
+			options,
 		);
 
-		console.log(`Running spawn [${streamSetting.command} ${streamSetting.args} ${this.url}]`);
-    const returnData = serialize(live);
-    delete returnData._client;
-		return serialize(returnData);
-	}
+    this.ffmpeg.stderr?.on('data', (data: Buffer) => {
+      //console.error('[FFMPEG] Error', data.toString('utf8'));
+    })
+
+		console.log(`Running spawn [${streamSetting.command} ${options.join(' ')}]`);
+  }
+
+  closeLive() {
+    this.ffmpeg?.kill();
+    this.ffmpeg = null;
+
+    
+    if ( this.currentLive ) {
+      this.api.lives.close(this.currentLive, {
+        headers: {
+          'x-live-authorization': this.currentLive.jwt,
+        },
+        data: {
+          is_save: false,
+        },
+      });
+    }
+
+    this.url = '';
+    this.currentLive = null;
+
+  }
 
 	push(chunk: Buffer) {
-		this.ffmpeg.stdin?.write(chunk, (err) => {
+		this.ffmpeg?.stdin?.write(chunk, (err) => {
 			if ( err ) {
 				console.error('write error', err);
 			}

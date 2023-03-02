@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import LiveSetting from "./live";
+import { RecordSetting } from "./record";
 import SettingSideMenu from "./sidemenu";
 
 export default function Setting() {
@@ -11,6 +12,10 @@ export default function Setting() {
 			label: t('setting.sidemenu.live'),
 			element: <LiveSetting />,
 		},
+    {
+      label: t('setting.sidemenu.record'),
+      element: <RecordSetting />,
+    },
 	];
 
 	const onSidemenuChange = (idx: number) => {
