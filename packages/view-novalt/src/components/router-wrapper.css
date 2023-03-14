@@ -32,6 +32,6 @@
 }
 
 .router-wrap {
-	width: 100vw;
+	width: 100%;
 	min-height: var(--wrapper-height);
 }

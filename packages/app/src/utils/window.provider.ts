@@ -13,3 +13,7 @@ export const BrowserWindow = {
 		return window;
 	},
 }
+
+export function useBrowserWindow() {
+  return window;
+}

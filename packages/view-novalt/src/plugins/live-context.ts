@@ -24,6 +24,7 @@ export type TrackOutputOption = {
 export type TrackOption = TrackFileOption|TrackInputOption;
 export type TrackItem = {
   uid: string;
+  status: string;
   option: TrackOption;
 	context?: OfflineAudioContext|AudioContext;
 	buffer?: ArrayBuffer;
@@ -38,9 +39,10 @@ class InputStream {
   private devices: any[] = [];
   private tout: NodeJS.Timer|number|null = null;
   private running = false;
+  private uuid: string;
 
   constructor(private uid: string, private option: TrackInputOption) {
-    
+    this.uuid = crypto.randomUUID();
   }
 
   async progress() {
@@ -64,14 +66,10 @@ class InputStream {
       channels: 2,
       bitDepth: 32,
     });
-    const progress = () => {
-      setTimeout(() => {
-        progress();
-      }, this.timeslice)
-    }
     setTimeout(async () => {
       while ( this.running ) {
         const chunk = await getRecordChunk(this.uid);
+        console.log('chunk', this.uuid);
         callback(chunk);
         await sleep(this.timeslice);
       }
@@ -101,6 +99,9 @@ export class LiveContext extends Map<string, TrackItem> {
 	}
 
   private trackStart(track: TrackItem) {
+    if ( track.status !== 'ready' ) return;
+    track.status = 'progress';
+
     if ( track.option.type === 'file' ) {
       track.audioBuffer?.start();
     } else if ( track.option.type === 'input' ) {
@@ -116,6 +117,7 @@ export class LiveContext extends Map<string, TrackItem> {
   }
 
 	start(timeslice = 1000) {
+    if ( this.status !== 'ready' ) return;
 		this.recorder.start(timeslice);
 		for ( const track of this.values() ) {
 			this.trackStart.call(this, track);
@@ -133,13 +135,14 @@ export class LiveContext extends Map<string, TrackItem> {
 
 	async addTrack(option: TrackOption): Promise<TrackItem> {
 		const uid = crypto.randomUUID();
-		if ( this.has(uid) ) return this.addTrack(option);
+		if ( this.has(uid) ) return this.addTrack(option); // 중복 방지
 		return await this.setTrack(uid, option);
 	}
 
 	async setTrack(id: string, option: TrackOption): Promise<TrackItem> {
-    const item: TrackItem = {
+    const item: TrackItem = this.get(id) || {
       uid: id,
+      status: 'ready',
       option,
     };
 		if ( option.type === 'file' ) {
@@ -152,7 +155,7 @@ export class LiveContext extends Map<string, TrackItem> {
 				item.audioBuffer.connect(this.destination);
 			}
 		} else if ( option.type === 'input' ) {
-      item.inputStream = new InputStream(item.uid, option);
+      item.inputStream || (item.inputStream = new InputStream(item.uid, option));
     }
 		this.set(id, item);
 
@@ -173,6 +176,7 @@ export class LiveContext extends Map<string, TrackItem> {
       recordStop(id);
       track.inputStream?.stop();
     }
+    track.status = 'ready';
   }
 
   async deleteTrack(id: string): Promise<void> {

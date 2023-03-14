@@ -100,9 +100,11 @@ class AudioRecorder {
       //console.log('[🚫RECORDERR] ', data);
     });
     this.recordProcess.on('exit', () => {
+      this.stop();
       console.log('disconnected recorder exit');
     });
     this.recordProcess.on('close', () => {
+      this.stop();
       console.log('disconnected recorder close');
     });
     this.recordProcess.on('error', () => {
@@ -122,7 +124,6 @@ class AudioRecorder {
     this.audioChunk.copy(copyedBuffer, 0, 0, this.audioChunk.length);
     this.audioChunk = Buffer.from([]);
     const chunk = buildWaveFormat(this.option.channels, this.option.sampleRate, this.option.bitDepth, copyedBuffer);
-    console.log('[RECORDING] chunk', chunk);
     return chunk;
   }
 
@@ -188,8 +189,10 @@ export class RecordingService {
     return this.recorderMap.get(uid)?.status || 'unknown';
   }
 
-  getRecordChunk(uid: string) {
-    return this.recorderMap.get(uid)?.getAudioChunk();
+  async getRecordChunk(uid: string) {
+    const chunk = await this.recorderMap.get(uid)?.getAudioChunk()
+    console.log(new Date().toLocaleString(), '[RECORDING] chunk', uid, chunk);
+    return chunk;
   }
 
   async stopRecording(uid: string) {

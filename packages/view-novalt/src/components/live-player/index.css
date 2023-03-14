@@ -1,0 +1,5 @@
+
+.live-player {
+  width: 400px;
+  height: var(--wrapper-height);
+}

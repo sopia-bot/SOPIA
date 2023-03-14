@@ -9,6 +9,7 @@ import { toastStates } from './store/index';
 import { Toast } from 'primereact/toast';
 import TopMenu from './components/top-menu'
 import { ConfirmDialog } from 'primereact/confirmdialog'
+import LivePlayer from './components/live-player'
 
 function App() {
   const [toast, setToast] = useRecoilState(toastStates);
@@ -39,6 +40,7 @@ function App() {
             <RouterWrapper />
           </HashRouter>
         </div>
+        <LivePlayer/>
       </div>
       <BottomBar></BottomBar>
     </div>

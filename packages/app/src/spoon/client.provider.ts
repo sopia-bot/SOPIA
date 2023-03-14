@@ -1,8 +1,9 @@
 import { StreamSettingEntity } from "@sopia-bot/bridge/dist/entities/setting";
-import { ApiLivesCreate, Live, LiveSocket, SpoonClient as Client } from "@sopia-bot/core";
+import { ApiLivesCreate, Live, LiveEvent, LiveEventStruct, LiveSocket, SpoonClient as Client } from "@sopia-bot/core";
 import { randomUUID } from "crypto";
 import { ChildProcess, spawn } from "child_process";
 import { serialize } from 'typescript-json-serializer';
+import { useBrowserWindow } from "../utils/window.provider";
 
 export class SpoonWrapper extends Client {
 
@@ -18,6 +19,11 @@ export class SpoonWrapper extends Client {
 		this.currentLive.initLiveEngine();
 		const url = await this.currentLive.liveEngine.publish();
 		this.sock = await live.join(live.jwt);
+    this.sock.on(LiveEvent.LIVE_EVENT_ALL, (data) => {
+      console.log(`[${data.event}]`);
+      this.spreadEvent(data);
+    });
+
     this.settingLive(url, streamSetting);
 
     const returnData = serialize(live);
@@ -27,6 +33,12 @@ export class SpoonWrapper extends Client {
       publishUrl: url,
     };
 	}
+
+  spreadEvent(evt: LiveEventStruct) {
+    const browser = useBrowserWindow();
+    browser?.webContents.send(`live/sock/${evt.event}`, evt);
+    browser?.webContents.send(`live/sock/${LiveEvent.LIVE_EVENT_ALL}`, evt);
+  }
 
   settingLive(url: string, streamSetting: StreamSettingEntity) {
     this.url = url;
@@ -51,6 +63,7 @@ export class SpoonWrapper extends Client {
     this.ffmpeg?.kill();
     this.ffmpeg = null;
 
+    this.sock?.removeAllListeners(LiveEvent.LIVE_EVENT_ALL);
     
     if ( this.currentLive ) {
       this.api.lives.close(this.currentLive, {
