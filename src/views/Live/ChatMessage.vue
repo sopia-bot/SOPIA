@@ -40,7 +40,7 @@
 					width="100%"
 					style="background: rgba(0, 0, 0, 0.5); border: thin solid rgb(255 255 255 / 30%)">
 					<v-list-item-content v-if="evt.event === LiveEvent.LIVE_MESSAGE" class="mx-4">
-						<pre style="white-space: pre-wrap;" class="chat-message" v-text="evt.update_component.message.value"></pre>
+						<pre style="white-space: pre-wrap;" class="chat-message" v-html="message"></pre>
 					</v-list-item-content>
 					<v-list-item v-else-if="evt.event === LiveEvent.LIVE_PRESENT" class="mx-4">
 						<v-list-item-avatar>
@@ -87,6 +87,8 @@ import { Component, Prop, Mixins } from 'vue-property-decorator';
 import GlobalMixins from '@/plugins/mixins';
 import { LiveEvent as EventList, User } from '@sopia-bot/core';
 
+const URL_REGIX = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))/gi;
+
 @Component
 export default class ChatMessage extends Mixins(GlobalMixins) {
 	@Prop(Object) public evt: any;
@@ -109,6 +111,17 @@ export default class ChatMessage extends Mixins(GlobalMixins) {
 	get stickerImg() {
 		return this.$sopia.sticker.findSticker(this.evt.data.sticker)?.image_thumbnail;
 	}
+
+  get message(): string {
+    let msg = this.evt.update_component.message.value as string;
+    const m = msg.match(URL_REGIX);
+    if ( m ) {
+      for ( const url of m ) {
+        msg = msg.replace(url, `<a href="${url}" target="_blank" class="indigo--text text--lighten-2">${url}</a>`);
+      }
+    }
+    return msg;
+  }
 }
 </script>
 <style>
