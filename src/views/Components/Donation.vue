@@ -11,16 +11,15 @@
 						<v-col cols="12" align="center">
 							<h1 class="mb-2 d-flex text-h4 font-weight-bold">
 								<span class="mx-auto d-flex indigo--text text--accent-1" style="align-items: center">
-									도와주세요!
+                  감사합니다.
 								</span>
 							</h1>
 						</v-col>
 					</v-row>
 					<v-row class="ma-0 chat-message" align="center">
 						<v-col cols="12" align="left">
-							<p class="mb-1">안녕하세요. <b class="indigo--text text--lighten-3">개발자 윤군</b>입니다.</p>
-							<p class="mb-1">3년간 무료로 운영되던 소피아가, 이대로가면 유지가 어려울 것 갈 것 같아 부끄러움을 무릎쓰고 여러분들께 도움을 요청드립니다.</p>
-							<p class="mb-4">소피아가 유료화 되지는 않지만, 여유가 되시는 분들에 한하여 <b class="red--text text--lighten-3">후원</b>을 부탁드리고자 합니다.</p>
+							<p class="mb-1">후원해 주셔서 감사합니다.</p>
+							<p class="mb-4">이 알림은 후원창 안내 알림입니다. 필수가 <b class="red--text text--lighten-3">아닙</b>니다.</p>
 							<v-img width="150px" class="mx-auto" contain height="150px" src="../../assets/카카오페이.png"></v-img>
 							<p class="text-center mb-4">국민 620601-01-521114 윤여준</p>
 							<p class="mb-4">항상 응원해주시는 분들께 감사드리며, 후원금액 5,000원 이상부터 후원일 기준 1개월동안 아래 기능을 준비했습니다.</p>
