@@ -180,10 +180,12 @@ export default class Home extends Mixins(GlobalMixins) {
 			.map((user) => this.$sopia.api.lives.info(user.current_live.id)),
 		)).map((r: any) => r.res.results[0])
 		.map((live) => {
-			const u = partners.find((user) => live.author.id === user.id);
-			live.author = u as User;
-			return live;
-		});
+      if ( live ) {
+        const u = partners.find((user) => live.author.id === user.id);
+        live.author = u as User;
+        return live;
+      }
+		}).filter((v) => !!v);
 		this.currentBanner = this.livePartner[0];
 	}
 
