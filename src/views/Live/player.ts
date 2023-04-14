@@ -49,7 +49,7 @@ export class Player {
 					.Connect();
 				this.audio.srcObject = this.player.stream;
 			})();
-		} else if ( this.engine === 'sori' ) {
+		} else if ( this.engine === 'sori' || this.engine === 'echo' ) {
 			// Mobile
 			this.player = new Hls();
 			this.player.loadSource(live.url_hls);
