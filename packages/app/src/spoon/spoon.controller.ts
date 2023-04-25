@@ -30,6 +30,11 @@ export class SpoonController {
     return this.spoonService.getUser();
   }
 
+  @MessagePattern('/spoon/user/clear')
+  clearUser() {
+    return this.spoonService.clearUser();
+  }
+
   @MessagePattern('/spoon/live/create')
   createLive(@Payload('data') prop: ApiLivesCreate.Request) {
     return this.liveService.create(prop);

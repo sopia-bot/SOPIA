@@ -27,6 +27,7 @@ function createBridger(fn: any) {
 	return fn(getSOPIA());
 }
 
+export const irequest = createBridger<any, any[]>((s) => s.request);
 export const minimize = createBridger<void>((s) => s.app.minimize);
 export const maximize = createBridger<void>((s) => s.app.maximize);
 export const toggleMaximize = createBridger<void>((s) => s.app.toggleMaximize);

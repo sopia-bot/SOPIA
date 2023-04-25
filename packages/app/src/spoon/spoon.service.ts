@@ -26,4 +26,8 @@ export class SpoonService {
 
 		return this.userRepository.save(user);
 	}
+
+  async clearUser() {
+    return this.userRepository.clear();
+  }
 }

@@ -11,7 +11,7 @@ import { useRecoilState } from 'recoil';
 import { TabMenu } from 'primereact/tabmenu';
 import { useSpoon } from '../../plugins/spoon';
 import { SnsType, LogonUser } from '@sopia-bot/core';
-import { snsLoginOpen, setSpoonUserInfo, getSpoonUserInfo } from '@sopia-bot/bridge';
+import { snsLoginOpen, setSpoonUserInfo, getSpoonUserInfo, irequest } from '@sopia-bot/bridge';
 import { useSopiaAPI } from '../../api';
 import { useQuery } from '@tanstack/react-query';
 
@@ -51,6 +51,10 @@ export default function SpoonLogin() {
 			})
 			.catch((err) => {
 				console.log('error', err);
+        console.log('navigate');
+        irequest('/spoon/user/clear');
+        setAuthorized(false);
+        navigate('/login/spoon');
 				// login fail;
 			})
 		//return <>Loading</>;
