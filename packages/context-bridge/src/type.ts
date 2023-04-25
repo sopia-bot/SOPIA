@@ -1,5 +1,5 @@
 import { ApiLivesCreate, LogonUser } from "@sopia-bot/core";
-import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from "electron";
+import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue, ipcRenderer } from "electron";
 import { AddTrackDto, DeleteTrackDto, RecordStartDto, SetLiveSettingDto, SetRecordDto, SetStreamDto, SetTrackDto } from "./dto";
 import { SetSpoonUserDto } from "./dto/spoon/user.dto";
 import { SetUserDto } from "./dto/user.dto";
@@ -64,5 +64,8 @@ export interface SOPIAFunction {
       writeFile: typeof writeFile,
     },
     path: typeof path,
+    electron: {
+      ipcRenderer: typeof ipcRenderer,
+    },
   },
 }

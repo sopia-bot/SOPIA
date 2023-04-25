@@ -14,6 +14,7 @@ export class SpoonWrapper extends Client {
 
 	async createLive(prop: ApiLivesCreate.Request, streamSetting: StreamSettingEntity) {
 		const req = await this.api.lives.create(prop);
+    console.log('prop', prop, 'req', req);
 		const [live] = req.res.results;
 		this.currentLive = live;
 		this.currentLive.initLiveEngine();

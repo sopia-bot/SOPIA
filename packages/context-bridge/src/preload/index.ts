@@ -19,6 +19,7 @@ import { AudioOptions } from 'naudiodon';
 			});
   }
 	const version = await request('/app/version');
+  const ipcEventStore = new Map<string, any>();
 
 	const SOPIA: SOPIAFunction = {
 		request,
@@ -68,6 +69,24 @@ import { AudioOptions } from 'naudiodon';
 				writeFile,
 			},
 			path,
+      electron: {
+        ipcRenderer: {
+          ...ipcRenderer,
+          on: (key: string, callback: any): any => {
+            if ( ipcEventStore.has(key) ) {
+              ipcRenderer.off(key, ipcEventStore.get(key));
+              ipcEventStore.delete(key);
+            }
+            ipcEventStore.set(key, callback);
+            ipcRenderer.on(key, callback);
+          },
+          off: (key: string): any => {
+            if ( ipcEventStore.has(key) ) {
+              ipcRenderer.off(key, ipcEventStore.get(key));
+            }
+          },
+        },
+      },
 		},
 	};
 

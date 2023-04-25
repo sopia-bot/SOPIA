@@ -62,5 +62,6 @@ export const getRecordSetting = createBridger<Promise<RecordSettingEntity>>((s) 
 export const showOpenDialog = createBridger<Promise<OpenDialogReturnValue>, [OpenDialogOptions]>((s) => s.dialog.open);
 export const showSaveDialog = createBridger<Promise<SaveDialogReturnValue>, [SaveDialogOptions]>((s) => s.dialog.save);
 
+export const getNode = createBridger<SOPIAFunction['node']>((s) => () => s.node);
 export const getFileSystem = createBridger<SOPIAFunction['node']['fs']>((s) => () => s.node.fs as any);
 export const getNodePath = createBridger<SOPIAFunction['node']['path']>((s) => () => s.node.path);
