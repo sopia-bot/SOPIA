@@ -130,6 +130,7 @@ export default class LivePlayer extends Mixins(GlobalMixins) {
 	public lottieQueue: any[] = [];
 	public specialUser: Array<[string, string]> = [
 		['7423666', '👑'],
+		['5738433', '🪪'],
 	];
 
 	public player: Player = new Player();
